@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  font-family: "Noto Sans KR", system-ui, sans-serif;
+  font-weight: 400;
+  background-color: #ffffff;
+  color: #374151;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  overflow-x: hidden;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-sans font-bold text-gray-900;
+  }
+
+  p,
+  li,
+  label,
+  input,
+  textarea,
+  pre {
+    @apply font-sans font-normal;
+  }
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* YarnStitchTrail — 커스텀 커서 (blur·blend 없음) */
+body.yarn-trail-active,
+body.yarn-trail-active * {
+  cursor: none !important;
+}
+
+body.yarn-trail-active {
+  caret-color: #fc5f53;
+}
+
+.yarn-trail-svg {
+  overflow: visible;
+  mix-blend-mode: normal;
+}
+
+.yarn-trail-svg .yarn-segment,
+.yarn-trail-svg path {
+  mix-blend-mode: normal;
+}
+
+.yarn-cursor {
+  will-change: transform;
+  mix-blend-mode: normal;
+}
