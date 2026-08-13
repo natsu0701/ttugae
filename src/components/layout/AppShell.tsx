@@ -255,7 +255,13 @@ export default function AppShell({
             : "sticky top-0 z-50 bg-white/95 backdrop-blur-sm"
         }
       >
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 md:px-8">
+        {/* 뜨개 레이스 무늬(3278×297) — 천장에 1px 틈 없이 밀착, 클릭 이벤트는 통과 */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-0 top-[-20px] z-0 h-[170px] w-full bg-[url('/images/nav_lace.png')] bg-[length:auto_170px] bg-top bg-repeat-x"
+        />
+        {/* 내비 콘텐츠 — 레이스보다 위 레이어(z-10)라 클릭·호버 모두 정상 동작 */}
+        <div className="relative z-10 mx-auto flex h-20 max-w-6xl items-center justify-between px-5 md:h-24 md:px-8">
           <button
             type="button"
             onClick={onGoHome}

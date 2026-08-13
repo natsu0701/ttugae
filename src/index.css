@@ -82,3 +82,10 @@ body.yarn-trail-active {
   will-change: transform;
   mix-blend-mode: normal;
 }
+
+/* 로고·타이틀 점선 테두리가 실처럼 흐르는 자수 모션 */
+@keyframes stitch-dash-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}

@@ -1,17 +1,32 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  buildTimeFadeSegments,
-  fadeWidthScale,
-  pruneExpiredPoints,
-  YARN_TRAIL,
-  type TrailPoint,
-  type TrailSegment,
-} from "../../utils/yarnTrailPath.ts";
 
-const MIN_POINT_DISTANCE = 5;
-const MAX_POINTS_DEFAULT = 64;
+type Point = {
+  x: number;
+  y: number;
+  timestamp: number;
+};
+
+/** 좌표 수명 — 지나면 꼬리부터 사르르 잘려나감 */
+const TRAIL_LIFESPAN_MS = 950;
+const MAX_POINTS_DEFAULT = 48;
 const MAX_POINTS_LOW_SPEC = 24;
-const SEGMENT_COUNT = 6;
+
+/**
+ * 마이크로 파이버 5겹 레이어 사양
+ * - halo 2겹: 바깥 보풀 글로우
+ * - body: 뽀송한 매트 본체
+ * - fiber dark/light: 초단 대시 꼬임 질감
+ */
+const YARN_LAYERS = [
+  { id: "halo-outer", color: "#FC5F53", width: 26, opacity: 0.03 },
+  { id: "halo-mid", color: "#FC5F53", width: 20, opacity: 0.08 },
+  { id: "body", color: "#FC5F53", width: 14, opacity: 0.95 },
+  { id: "fiber-dark", color: "#D94B40", width: 14, opacity: 0.35, dasharray: "1 4" },
+  { id: "fiber-light", color: "#FFE3E1", width: 14, opacity: 0.4, dasharray: "2 6" },
+] as const;
+
+/** 커스텀 커서 핫스팟 = 바늘 끝(궤적 시작점) */
+export const CURSOR_HOTSPOT = { x: 21, y: 5 } as const;
 
 /** 터치(비세밀 포인터) 기기 — 트레일을 아예 마운트하지 않음 */
 function detectTouchDevice(): boolean {
@@ -21,76 +36,42 @@ function detectTouchDevice(): boolean {
   );
 }
 
-/** 저사양 기기 — 추적 좌표 수를 절반 이하로 스로틀링 */
+/** 저사양 기기 — 추적 좌표 수를 절반으로 스로틀링 */
 function detectLowSpecDevice(): boolean {
   const nav = navigator as Navigator & { deviceMemory?: number };
   return (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4;
 }
-const { lifespanMs, layers: YARN_LAYERS } = YARN_TRAIL;
 
-const SEGMENT_INDICES = Array.from({ length: SEGMENT_COUNT }, (_, i) => i);
-
-/** 커스텀 커서 핫스팟 = 바늘 끝(궤적 시작점) */
-export const CURSOR_HOTSPOT = { x: 21, y: 5 } as const;
+/** 이웃 중점 Quadratic 보간 — 각진 폴리라인 없이 부드러운 털실 곡선 */
+function buildSmoothPath(points: Point[]): string {
+  if (points.length === 0) return "";
+  let d = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 1; i < points.length; i++) {
+    const xc = (points[i].x + points[i - 1].x) / 2;
+    const yc = (points[i].y + points[i - 1].y) / 2;
+    d += ` Q ${points[i - 1].x} ${points[i - 1].y}, ${xc} ${yc}`;
+  }
+  return d;
+}
 
 type YarnStitchTrailProps = {
   disabled?: boolean;
 };
-
-/**
- * 세그먼트(6) × 레이어(5) = 30개의 고정 <path>에 setAttribute로 d/굵기/투명도만
- * 직접 주입한다. React 상태·VDOM 리렌더·innerHTML 파싱을 전혀 거치지 않으므로
- * mousemove/rAF 루프가 브라우저 페인트 외의 비용을 만들지 않는다.
- */
-function applySegmentsToDom(
-  refs: (SVGPathElement | null)[][],
-  segments: TrailSegment[],
-) {
-  for (let si = 0; si < refs.length; si++) {
-    const seg = si < segments.length ? segments[si] : null;
-    const layerEls = refs[si];
-
-    for (let li = 0; li < layerEls.length; li++) {
-      const el = layerEls[li];
-      if (!el) continue;
-
-      if (!seg) {
-        // 이미 비워진 path는 건드리지 않음 (불필요한 스타일 무효화 방지)
-        if (el.getAttribute("d")) {
-          el.setAttribute("d", "");
-          el.setAttribute("stroke-opacity", "0");
-        }
-        continue;
-      }
-
-      const layer = YARN_LAYERS[li];
-      const widthScale = fadeWidthScale(seg.opacity);
-      el.setAttribute("d", seg.d);
-      el.setAttribute("stroke-width", (layer.width * widthScale).toFixed(2));
-      el.setAttribute(
-        "stroke-opacity",
-        (layer.opacity * seg.opacity).toFixed(3),
-      );
-    }
-  }
-}
 
 export default function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
   const [isTouchDevice] = useState(detectTouchDevice);
   const [maxPoints] = useState(() =>
     detectLowSpecDevice() ? MAX_POINTS_LOW_SPEC : MAX_POINTS_DEFAULT,
   );
-  const pointsRef = useRef<TrailPoint[]>([]);
-  const lastSampleRef = useRef({ x: -200, y: -200 });
-  /** 세그먼트 × 레이어 <path> 엘리먼트 — 마운트 시 1회 생성 후 속성만 갱신 */
-  const segmentPathRefs = useRef<(SVGPathElement | null)[][]>(
-    Array.from({ length: SEGMENT_COUNT }, () =>
-      Array<SVGPathElement | null>(YARN_LAYERS.length).fill(null),
-    ),
+
+  // React State 대신 ref만 사용 — 마우스 이동 중 리렌더 0회
+  const pointsRef = useRef<Point[]>([]);
+  const layerRefs = useRef<(SVGPathElement | null)[]>(
+    Array<SVGPathElement | null>(YARN_LAYERS.length).fill(null),
   );
+  const lastPathRef = useRef("");
   const cursorRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef(0);
-  const isRunningRef = useRef(false);
+  const rafIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (disabled || isTouchDevice) return;
@@ -99,71 +80,60 @@ export default function YarnStitchTrail({ disabled = false }: YarnStitchTrailPro
     if (reducedMotion) return;
 
     document.body.classList.add("yarn-trail-active");
-    isRunningRef.current = true;
 
-    const updateCursor = (x: number, y: number) => {
-      if (!cursorRef.current) return;
-      cursorRef.current.style.transform = `translate3d(${x - CURSOR_HOTSPOT.x}px, ${y - CURSOR_HOTSPOT.y}px, 0)`;
-    };
+    const handleMouseMove = (e: MouseEvent) => {
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${e.clientX - CURSOR_HOTSPOT.x}px, ${e.clientY - CURSOR_HOTSPOT.y}px, 0)`;
+      }
 
-    const onMove = (e: MouseEvent) => {
-      updateCursor(e.clientX, e.clientY);
-
-      const pts = pointsRef.current;
-      const last = lastSampleRef.current;
-      const dist = Math.hypot(e.clientX - last.x, e.clientY - last.y);
-
-      if (dist >= MIN_POINT_DISTANCE) {
-        pts.push({ x: e.clientX, y: e.clientY, timestamp: Date.now() });
-        lastSampleRef.current = { x: e.clientX, y: e.clientY };
-
-        while (pts.length > maxPoints) pts.shift();
+      pointsRef.current.push({
+        x: e.clientX,
+        y: e.clientY,
+        timestamp: Date.now(),
+      });
+      if (pointsRef.current.length > maxPoints) {
+        pointsRef.current.shift();
       }
     };
 
-    const onLeave = () => {
+    const handleMouseLeave = () => {
       pointsRef.current = [];
-      applySegmentsToDom(segmentPathRefs.current, []);
     };
 
-    const tick = () => {
-      if (!isRunningRef.current) return;
-
+    // 🟢 React를 깨우지 않고 5개 <path>의 d 속성만 직접 주입하는 고성능 드로잉 루프
+    const drawTrail = () => {
       const now = Date.now();
-      const pts = pointsRef.current;
+      pointsRef.current = pointsRef.current.filter(
+        (p) => now - p.timestamp < TRAIL_LIFESPAN_MS,
+      );
 
-      pruneExpiredPoints(pts, now, lifespanMs);
-
-      if (pts.length >= 2) {
-        const segments = buildTimeFadeSegments(
-          pts,
-          now,
-          lifespanMs,
-          SEGMENT_COUNT,
-        );
-        applySegmentsToDom(segmentPathRefs.current, segments);
-      } else {
-        applySegmentsToDom(segmentPathRefs.current, []);
+      const d = buildSmoothPath(pointsRef.current);
+      if (d !== lastPathRef.current) {
+        lastPathRef.current = d;
+        for (const el of layerRefs.current) {
+          el?.setAttribute("d", d);
+        }
       }
 
-      animationRef.current = requestAnimationFrame(tick);
+      rafIdRef.current = requestAnimationFrame(drawTrail);
     };
 
-    window.addEventListener("mousemove", onMove, { passive: true });
-    document.documentElement.addEventListener("mouseleave", onLeave);
-    animationRef.current = requestAnimationFrame(tick);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    document.documentElement.addEventListener("mouseleave", handleMouseLeave);
+    rafIdRef.current = requestAnimationFrame(drawTrail);
 
     return () => {
-      isRunningRef.current = false;
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = 0;
-
-      window.removeEventListener("mousemove", onMove);
-      document.documentElement.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
+      if (rafIdRef.current != null) cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
       document.body.classList.remove("yarn-trail-active");
 
       pointsRef.current = [];
-      applySegmentsToDom(segmentPathRefs.current, []);
+      lastPathRef.current = "";
+      for (const el of layerRefs.current) {
+        el?.setAttribute("d", "");
+      }
     };
   }, [disabled, isTouchDevice, maxPoints]);
 
@@ -174,31 +144,27 @@ export default function YarnStitchTrail({ disabled = false }: YarnStitchTrailPro
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[9998]" aria-hidden>
+      {/* transform-gpu + will-change로 GPU 합성 레이어 생성, 매트한 블렌딩 고정 */}
       <svg
-        className="yarn-trail-svg transform-gpu will-change-transform pointer-events-none h-full w-full"
+        className="yarn-trail-svg pointer-events-none h-full w-full transform-gpu will-change-transform"
+        style={{ mixBlendMode: "normal" }}
         aria-hidden
       >
-        {/* 5중 마이크로 파이버 레이어 × 페이드 세그먼트 — 정적 생성, 속성만 rAF에서 주입 */}
-        {SEGMENT_INDICES.map((si) => (
-          <g key={si} className="yarn-segment" style={{ mixBlendMode: "normal" }}>
-            {YARN_LAYERS.map((layer, li) => (
-              <path
-                key={layer.id}
-                className={`yarn-${layer.id}`}
-                d=""
-                fill="none"
-                stroke={layer.color}
-                strokeOpacity={0}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeDasharray={"dasharray" in layer ? layer.dasharray : undefined}
-                strokeDashoffset={"dashoffset" in layer ? layer.dashoffset : undefined}
-                ref={(el) => {
-                  segmentPathRefs.current[si][li] = el;
-                }}
-              />
-            ))}
-          </g>
+        {YARN_LAYERS.map((layer, i) => (
+          <path
+            key={layer.id}
+            ref={(el) => {
+              layerRefs.current[i] = el;
+            }}
+            className={`yarn-${layer.id}`}
+            fill="none"
+            stroke={layer.color}
+            strokeWidth={layer.width}
+            opacity={layer.opacity}
+            strokeDasharray={"dasharray" in layer ? layer.dasharray : undefined}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         ))}
       </svg>
 

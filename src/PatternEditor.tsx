@@ -17,6 +17,7 @@ import CastOnModal from "./components/editor/CastOnModal.tsx";
 import ChartTabs from "./components/editor/ChartTabs.tsx";
 import ColorChipMenu from "./components/editor/ColorChipMenu.tsx";
 import SelectionColorsPanel from "./components/editor/SelectionColorsPanel.tsx";
+import WorkshopPalettePanel from "./components/editor/WorkshopPalettePanel.tsx";
 import TteuniChatbot from "./components/editor/TteuniChatbot.tsx";
 import EditorOnboardingSpotlight from "./components/editor/EditorOnboardingSpotlight.tsx";
 import YarnSearchPopover from "./components/editor/YarnSearchPopover.tsx";
@@ -152,6 +153,7 @@ export default function PatternEditor({
   const [yarnSearchOpen, setYarnSearchOpen] = useState(false);
   const [patternCopyDone, setPatternCopyDone] = useState(false);
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
+  const [activeWorkshopPaletteId, setActiveWorkshopPaletteId] = useState<string | null>(null);
   const [castOnOpen, setCastOnOpen] = useState(false);
   const [castOnMode, setCastOnMode] = useState<"replace" | "add">("replace");
   const [activeColor, setActiveColor] = useState<string>("coral");
@@ -259,9 +261,26 @@ export default function PatternEditor({
   const applyColorPreset = useCallback(
     (presetId: string, colors: [string, string, string, string]) => {
       setActivePresetId(presetId);
+      setActiveWorkshopPaletteId(null);
       setPaletteYarns((prev) =>
         prev.map((yarn, index) =>
           index < PALETTE_PRESET_SLOTS ? { ...yarn, hex: colors[index] } : yarn,
+        ),
+      );
+    },
+    [],
+  );
+
+  /** 공방 추천 팔레트 원터치 매핑 — 실 색상 3종을 한꺼번에 자동 전환 */
+  const applyWorkshopPalette = useCallback(
+    (paletteId: string, colors: [string, string, string]) => {
+      setActiveWorkshopPaletteId(paletteId);
+      setActivePresetId(null);
+      setPaletteYarns((prev) =>
+        prev.map((yarn, index) =>
+          index < colors.length
+            ? { ...yarn, hex: colors[index].toUpperCase() }
+            : yarn,
         ),
       );
     },
@@ -616,6 +635,12 @@ export default function PatternEditor({
             >
               {t("editor.castOnButton")}
             </button>
+
+            {/* 기호 팔레트 바로 아랫단 — 전문 공방 매칭 내추럴 컬러 추천 칩 */}
+            <WorkshopPalettePanel
+              activePaletteId={activeWorkshopPaletteId}
+              onSelectPalette={applyWorkshopPalette}
+            />
           </div>
 
           <div ref={yarnPaletteRef} className="relative">

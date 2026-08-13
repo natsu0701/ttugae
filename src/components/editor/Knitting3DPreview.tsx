@@ -46,6 +46,65 @@ const GAUGE_MAX = 200;
 const overlayBtnClass =
   "flex h-8 w-8 items-center justify-center rounded-full border border-slate-200/80 bg-white/80 text-slate-600 shadow-sm backdrop-blur-sm transition-colors hover:bg-white hover:text-coral";
 
+/**
+ * 메리노울 V자 꼬임 요철을 오프스크린 캔버스로 합성한 노멀 맵.
+ * 별도 텍스처 파일 없이 브라우저 메모리에서 한 번만 생성한다.
+ */
+function generateMerinoNormalMap(): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return canvas;
+
+  ctx.fillStyle = "rgb(128, 128, 255)";
+  ctx.fillRect(0, 0, 512, 512);
+
+  const stitchW = 16;
+  const stitchH = 24;
+
+  for (let y = 0; y < 512; y += stitchH) {
+    for (let x = 0; x < 512; x += stitchW) {
+      const isOffset = (y / stitchH) % 2 === 0;
+      const px = x + (isOffset ? 0 : stitchW / 2);
+
+      ctx.fillStyle = "rgb(165, 115, 240)";
+      ctx.beginPath();
+      ctx.moveTo(px, y);
+      ctx.lineTo(px + stitchW / 2, y + stitchH);
+      ctx.lineTo(px + stitchW / 2 - 3, y + stitchH);
+      ctx.lineTo(px - 3, y);
+      ctx.fill();
+
+      ctx.fillStyle = "rgb(90, 115, 240)";
+      ctx.beginPath();
+      ctx.moveTo(px + stitchW / 2, y + stitchH);
+      ctx.lineTo(px + stitchW, y);
+      ctx.lineTo(px + stitchW - 3, y);
+      ctx.lineTo(px + stitchW / 2 - 3, y + stitchH);
+      ctx.fill();
+
+      for (let i = 0; i < 8; i++) {
+        const noiseX = px + Math.random() * stitchW;
+        const noiseY = y + Math.random() * stitchH;
+        const noiseVal = 128 + Math.floor(Math.random() * 30 - 15);
+        ctx.fillStyle = `rgb(${noiseVal}, ${noiseVal}, 255)`;
+        ctx.fillRect(noiseX, noiseY, 1.5, 1.5);
+      }
+    }
+  }
+  return canvas;
+}
+
+function createMerinoNormalTexture(): THREE.CanvasTexture {
+  const texture = new THREE.CanvasTexture(generateMerinoNormalMap());
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(4, 4);
+  texture.colorSpace = THREE.NoColorSpace;
+  return texture;
+}
+
 const gaugeInputClass =
   "w-8 [appearance:textfield] rounded-md border border-pink-100 bg-white py-0.5 text-center font-sans text-xs font-semibold text-pink-deep outline-none transition-colors focus:border-coral focus:ring-1 focus:ring-coral/20 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
 
@@ -786,6 +845,8 @@ function KnitSurface({
 }) {
   const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
   const geometry = useMemo(() => createKnitLoopGeometry(), []);
+  const merinoNormal = useMemo(() => createMerinoNormalTexture(), []);
+  const invalidate = useThree((state) => state.invalidate);
   const placements = useMemo(
     () => buildPlacements(itemType, gridData, charts),
     [itemType, gridData, charts],
@@ -865,13 +926,16 @@ function KnitSurface({
       instancedMeshRef.current.instanceColor.needsUpdate = true;
     }
     mesh.computeBoundingSphere();
-  }, [placements, colorMap, count]);
+    // frameloop="demand": 도안·배색 데이터가 바뀐 프레임만 다시 그리기 요청
+    invalidate();
+  }, [placements, colorMap, count, invalidate]);
 
   useEffect(() => {
     return () => {
       geometry.dispose();
+      merinoNormal.dispose();
     };
-  }, [geometry]);
+  }, [geometry, merinoNormal]);
 
   return (
     <instancedMesh
@@ -880,7 +944,12 @@ function KnitSurface({
       args={[geometry, undefined, count]}
       frustumCulled={false}
     >
-      <meshStandardMaterial roughness={0.62} metalness={0.04} />
+      <meshStandardMaterial
+        roughness={0.95}
+        metalness={0.05}
+        normalMap={merinoNormal}
+        normalScale={new THREE.Vector2(1.5, 1.5)}
+      />
     </instancedMesh>
   );
 }
@@ -891,7 +960,7 @@ function CameraControls({
   apiRef: MutableRefObject<PreviewControls | null>;
 }) {
   const controlsRef = useRef<OrbitControlsImpl>(null);
-  const { camera } = useThree();
+  const { camera, invalidate } = useThree();
   const animRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -926,6 +995,7 @@ function CameraControls({
         const offset = startOffset.clone().setLength(dist);
         camera.position.copy(target).add(offset);
         controls.update();
+        invalidate();
         if (t < 1) {
           animRef.current = requestAnimationFrame(tick);
         } else {
@@ -958,6 +1028,7 @@ function CameraControls({
           controls.target.set(0, 0, 0);
           controls.update();
         }
+        invalidate();
       },
     };
 
@@ -1132,14 +1203,16 @@ export default function Knitting3DPreview({
           <Canvas
             className="absolute inset-0 block h-full w-full"
             style={{ width: "100%", height: "100%", display: "block" }}
+            frameloop="demand"
             resize={{ offsetSize: true, debounce: 0, scroll: false }}
             dpr={[1, 2]}
             gl={{ antialias: true, alpha: true }}
             camera={{ position: [0, 0.4, 15], fov: 50 }}
           >
-            <ambientLight intensity={1.2} />
-            <directionalLight position={[10, 10, 10]} intensity={1.5} />
+            <ambientLight intensity={1.1} />
+            <directionalLight position={[5, 6, 8]} intensity={1.6} />
             <directionalLight position={[-6, 3, -8]} intensity={0.35} />
+            <pointLight position={[-10, 10, -10]} intensity={0.5} />
             <KnitSurface
               itemType={itemType}
               gridData={pattern}

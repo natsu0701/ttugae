@@ -20,20 +20,10 @@ import {
 import { getQaPost, QA_POSTS } from "./data/qaPosts.ts";
 import { getPatternThumbnail } from "./data/patternThumbnails.ts";
 import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
+import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
 import { COMMUNITY_TAB_EVENT } from "./CreatePostPage.tsx";
 import { deleteSharedCommunityPattern } from "./utils/communityShare.ts";
 import { deleteMyFinishedWork } from "./utils/myFinishedWorksStore.ts";
-
-function TteuniCommunityMascot() {
-  return (
-    <img
-      src={TTEUNI_IMAGES.community}
-      alt=""
-      className="hidden h-32 w-32 shrink-0 object-contain sm:block md:h-36 md:w-36"
-      aria-hidden
-    />
-  );
-}
 
 type CommunityProps = {
   onImportToEditor: (pattern: CommunityPattern) => void;
@@ -191,17 +181,14 @@ export default function Community({
 
   return (
     <div className="relative pb-24">
-      <section className="bg-gray-50">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-5 py-12 md:flex-row md:items-end md:px-8 md:py-16">
-          <div className="max-w-2xl">
-            <h1 className="font-sans text-3xl font-bold leading-tight text-gray-900 md:text-4xl lg:text-5xl">
-              {t("community.heroTitle")}
-            </h1>
-            <p className="mt-4 font-sans text-base font-normal leading-relaxed text-gray-600 md:text-lg">
-              {t("community.heroSubtitle")}
-            </p>
-          </div>
-          <TteuniCommunityMascot />
+      <section className="px-5 pt-8 md:px-8">
+        <div className="mx-auto max-w-6xl">
+          <WelcomeBanner
+            chip="LOUNGE 🧶"
+            title={t("community.heroTitle")}
+            subtitle={t("community.heroSubtitle")}
+            image={TTEUNI_IMAGES.community}
+          />
         </div>
       </section>
 

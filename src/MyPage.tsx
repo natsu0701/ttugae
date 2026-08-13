@@ -14,6 +14,8 @@ import { getCommunityPattern } from "./data/communityPatterns.ts";
 import type { StoredPattern } from "./Dashboard.tsx";
 import type { CommunityPattern } from "./data/communityPatterns.ts";
 import { loadProfile, saveProfileAvatar } from "./utils/profileStorage.ts";
+import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
+import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
 import {
   ProfileFillIcon,
   PatternsFillIcon,
@@ -272,15 +274,13 @@ export default function MyPage({
 
   return (
     <div className="pb-16">
-      <div className="bg-gray-50">
-        <div className="mx-auto max-w-6xl px-5 py-8 md:px-8">
-          <h1 className="font-sans text-3xl font-bold text-gray-900">
-            {t("mypage.title")}
-          </h1>
-          <p className="mt-2 font-sans text-sm font-normal text-gray-600">
-            {t("mypage.subtitle")}
-          </p>
-        </div>
+      <div className="mx-auto max-w-6xl px-5 pt-8 md:px-8">
+        <WelcomeBanner
+          chip="MY PAGE 🧶"
+          title={t("mypage.title")}
+          subtitle={t("mypage.subtitle")}
+          image={TTEUNI_IMAGES.feature}
+        />
       </div>
 
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-8 md:flex-row md:px-8">

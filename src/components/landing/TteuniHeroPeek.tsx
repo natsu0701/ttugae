@@ -62,7 +62,7 @@ function TteuniHeroPeek() {
 
   return (
     <div
-      className="pointer-events-none relative z-10 mx-auto mt-2 flex h-[20rem] w-full shrink-0 items-end justify-center overflow-hidden sm:mt-4 sm:h-[25rem] md:h-[29rem] [@media(max-height:750px)]:h-[17rem]"
+      className="pointer-events-none relative z-10 mx-auto mt-auto flex h-[20rem] w-full shrink-0 items-end justify-center overflow-hidden sm:h-[25rem] md:h-[29rem] [@media(max-height:750px)]:h-[17rem]"
       aria-hidden
     >
       <motion.img

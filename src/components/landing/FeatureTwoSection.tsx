@@ -10,7 +10,7 @@ function FeatureTwoSection() {
     <section className={landingSection.gray}>
       <Reveal className="mx-auto mb-12 max-w-3xl text-center">
         <FeatureBadge>Feature 02</FeatureBadge>
-        <h2 className={`${landingHeading.h2Center} inline-flex flex-wrap items-center justify-center gap-2`}>
+        <h2 className={`${landingHeading.h2Center} flex flex-col items-center justify-center gap-3 leading-tight md:gap-4`}>
           웹에서 만나는
           <BrandTextLogo className="h-8 w-auto object-contain md:h-9" />
         </h2>
