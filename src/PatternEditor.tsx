@@ -10,9 +10,11 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import AiPreviewNavigator from "./components/editor/AiPreviewNavigator.tsx";
+import EditorRightSidebar from "./components/editor/EditorRightSidebar.tsx";
 import ColorPresetsSection from "./components/editor/ColorPresetsSection.tsx";
 import EditorHeader from "./components/editor/EditorHeader.tsx";
 import CastOnModal from "./components/editor/CastOnModal.tsx";
+import ChartTabs from "./components/editor/ChartTabs.tsx";
 import ColorChipMenu from "./components/editor/ColorChipMenu.tsx";
 import SelectionColorsPanel from "./components/editor/SelectionColorsPanel.tsx";
 import TteuniChatbot from "./components/editor/TteuniChatbot.tsx";
@@ -29,6 +31,11 @@ import {
   resizeGrid,
   type EditorCell,
 } from "./utils/patternGrid.ts";
+import {
+  newChartId,
+  type ChartTargetPart,
+  type KnittingChart,
+} from "./types/knittingProject.ts";
 
 const STITCHES = [
   { id: "empty", symbol: "·" },
@@ -63,7 +70,6 @@ type PatternEditorProps = {
     gridSize: number;
     grid: EditorCell[][];
   } | null;
-  aiPreviewImage?: string;
   onSave: (pattern: {
     id: string;
     title: string;
@@ -103,33 +109,51 @@ function initGrid(initial: PatternEditorProps["initialPattern"]) {
   };
 }
 
+function initCharts(initial: PatternEditorProps["initialPattern"]): {
+  charts: KnittingChart[];
+  activeChartId: string;
+} {
+  const seeded = initGrid(initial);
+  const id = newChartId();
+  return {
+    activeChartId: id,
+    charts: [
+      {
+        id,
+        name: "앞판 몸통",
+        targetPart: "body",
+        gridData: seeded.grid,
+      },
+    ],
+  };
+}
+
 function isCheckerCell(r: number, c: number) {
   return (r + c) % 2 === 0;
 }
 
 export default function PatternEditor({
   initialPattern,
-  aiPreviewImage,
   onSave,
   onShare,
   onExit,
   onGoDashboard,
 }: PatternEditorProps) {
   const { t } = useTranslation();
-  const initial = initGrid(initialPattern);
+  const seeded = initCharts(initialPattern);
   const defaultTitle = t("editor.defaultTitle");
   const [patternId] = useState<string>(
     initialPattern?.id ?? (crypto.randomUUID?.() ?? String(Date.now())),
   );
   const [title, setTitle] = useState<string>(initialPattern?.title ?? defaultTitle);
-  const [gridRows, setGridRows] = useState(initial.rows);
-  const [gridCols, setGridCols] = useState(initial.cols);
-  const [grid, setGrid] = useState<EditorCell[][]>(initial.grid);
+  const [charts, setCharts] = useState<KnittingChart[]>(seeded.charts);
+  const [activeChartId, setActiveChartId] = useState(seeded.activeChartId);
   const [paletteYarns, setPaletteYarns] = useState<EditorYarn[]>(() => [...BASE_EDITOR_YARNS]);
   const [yarnSearchOpen, setYarnSearchOpen] = useState(false);
   const [patternCopyDone, setPatternCopyDone] = useState(false);
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [castOnOpen, setCastOnOpen] = useState(false);
+  const [castOnMode, setCastOnMode] = useState<"replace" | "add">("replace");
   const [activeColor, setActiveColor] = useState<string>("coral");
   const [activeStitch, setActiveStitch] = useState<string>("knit");
   const [tool, setTool] = useState<Tool>("paint");
@@ -141,14 +165,35 @@ export default function PatternEditor({
   } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [sizeMenuOpen, setSizeMenuOpen] = useState(false);
-  const [customW, setCustomW] = useState(String(initial.cols));
-  const [customH, setCustomH] = useState(String(initial.rows));
+  const [customW, setCustomW] = useState(
+    String(seeded.charts[0]?.gridData[0]?.length ?? 14),
+  );
+  const [customH, setCustomH] = useState(String(seeded.charts[0]?.gridData.length ?? 14));
   const dragStart = useRef<{ r: number; c: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const leftToolbarRef = useRef<HTMLElement>(null);
   const chatbotPanelRef = useRef<HTMLDivElement>(null);
   const sizeMenuRef = useRef<HTMLDivElement>(null);
   const yarnPaletteRef = useRef<HTMLDivElement>(null);
+
+  const activeChart =
+    charts.find((chart) => chart.id === activeChartId) ?? charts[0];
+  const grid = activeChart?.gridData ?? emptyGrid(14, 14);
+  const gridRows = grid.length;
+  const gridCols = grid[0]?.length ?? 0;
+
+  const patchActiveGrid = useCallback(
+    (updater: (prev: EditorCell[][]) => EditorCell[][]) => {
+      setCharts((prev) =>
+        prev.map((chart) =>
+          chart.id === activeChartId
+            ? { ...chart, gridData: updater(chart.gridData) }
+            : chart,
+        ),
+      );
+    },
+    [activeChartId],
+  );
 
   const paletteYarnIds = useMemo(
     () => new Set(paletteYarns.map((y) => y.id)),
@@ -174,15 +219,22 @@ export default function PatternEditor({
     [paletteYarns],
   );
 
+  const stitchSymbols = useMemo(
+    () => Object.fromEntries(STITCHES.map((s) => [s.id, s.symbol])) as Record<string, string>,
+    [],
+  );
+
   const usedYarns = useMemo(() => {
     const ids = new Set<string>();
-    grid.flat().forEach((cell) => {
-      if (cell.stitchId !== "empty") ids.add(cell.colorId);
+    charts.forEach((chart) => {
+      chart.gridData.flat().forEach((cell) => {
+        if (cell.stitchId !== "empty") ids.add(cell.colorId);
+      });
     });
     return [...ids]
       .map((id) => paletteYarns.find((y) => y.id === id))
       .filter((y): y is EditorYarn => Boolean(y));
-  }, [grid, paletteYarns]);
+  }, [charts, paletteYarns]);
 
   const changeYarnColor = useCallback((colorId: string, hex: string) => {
     const normalized = hex.toUpperCase();
@@ -192,7 +244,7 @@ export default function PatternEditor({
   }, []);
 
   const deleteColorFromCanvas = useCallback((colorId: string) => {
-    setGrid((prev) =>
+    patchActiveGrid((prev) =>
       prev.map((row) =>
         row.map((cell) =>
           cell.colorId === colorId
@@ -202,7 +254,7 @@ export default function PatternEditor({
       ),
     );
     if (activeColor === colorId) setActiveColor("white");
-  }, [activeColor]);
+  }, [activeColor, patchActiveGrid]);
 
   const applyColorPreset = useCallback(
     (presetId: string, colors: [string, string, string, string]) => {
@@ -219,30 +271,63 @@ export default function PatternEditor({
   const applySize = useCallback((w: number, h: number) => {
     const cols = Math.min(MAX_GRID, Math.max(4, w));
     const rows = Math.min(MAX_GRID, Math.max(4, h));
-    setGridCols(cols);
-    setGridRows(rows);
     setCustomW(String(cols));
     setCustomH(String(rows));
-    setGrid((prev) => resizeGrid(prev, rows, cols));
+    patchActiveGrid((prev) => resizeGrid(prev, rows, cols));
     setSelection(null);
     setSizeMenuOpen(false);
-  }, []);
+  }, [patchActiveGrid]);
 
   const handleCastOnCanvas = useCallback((cols: number, rows: number) => {
     const c = Math.min(MAX_GRID, Math.max(4, cols));
     const r = Math.min(MAX_GRID, Math.max(4, rows));
-    setGridCols(c);
-    setGridRows(r);
     setCustomW(String(c));
     setCustomH(String(r));
-    setGrid(emptyGrid(r, c));
+    patchActiveGrid(() => emptyGrid(r, c));
     setSelection(null);
-    setTitle(t("editor.defaultTitle"));
-  }, [t]);
+  }, [patchActiveGrid]);
+
+  const handleAddChart = useCallback(
+    (payload: {
+      cols: number;
+      rows: number;
+      name: string;
+      targetPart: ChartTargetPart;
+    }) => {
+      const c = Math.min(MAX_GRID, Math.max(4, payload.cols));
+      const r = Math.min(MAX_GRID, Math.max(4, payload.rows));
+      const id = newChartId();
+      const chart: KnittingChart = {
+        id,
+        name: payload.name,
+        targetPart: payload.targetPart,
+        gridData: emptyGrid(r, c),
+      };
+      setCharts((prev) => [...prev, chart]);
+      setActiveChartId(id);
+      setCustomW(String(c));
+      setCustomH(String(r));
+      setSelection(null);
+    },
+    [],
+  );
+
+  const handleSelectChart = useCallback(
+    (id: string) => {
+      setActiveChartId(id);
+      setSelection(null);
+      const found = charts.find((chart) => chart.id === id);
+      if (found) {
+        setCustomW(String(found.gridData[0]?.length ?? 14));
+        setCustomH(String(found.gridData.length));
+      }
+    },
+    [charts],
+  );
 
   const applyCell = useCallback(
     (r: number, c: number) => {
-      setGrid((prev) => {
+      patchActiveGrid((prev) => {
         const next = prev.map((row) => row.map((cell) => ({ ...cell })));
         if (tool === "eraser") {
           next[r][c] = { colorId: "white", stitchId: "empty" };
@@ -255,7 +340,7 @@ export default function PatternEditor({
         return next;
       });
     },
-    [tool, activeColor, activeStitch],
+    [tool, activeColor, activeStitch, patchActiveGrid],
   );
 
   const fillSelection = useCallback(() => {
@@ -265,7 +350,7 @@ export default function PatternEditor({
     const rMax = Math.max(r0, r1);
     const cMin = Math.min(c0, c1);
     const cMax = Math.max(c0, c1);
-    setGrid((prev) => {
+    patchActiveGrid((prev) => {
       const next = prev.map((row) => row.map((cell) => ({ ...cell })));
       for (let r = rMin; r <= rMax; r++) {
         for (let c = cMin; c <= cMax; c++) {
@@ -279,7 +364,7 @@ export default function PatternEditor({
       }
       return next;
     });
-  }, [selection, activeColor, activeStitch, tool]);
+  }, [selection, activeColor, activeStitch, tool, patchActiveGrid]);
 
   const handlePointerDown = (r: number, c: number) => {
     if (tool === "paint" || tool === "eraser" || tool === "checker") {
@@ -344,7 +429,7 @@ export default function PatternEditor({
   const handleAiMessage = useCallback(
     (message: string) => {
       const colorIds = paletteYarns.map((y) => y.id);
-      setGrid((prev) => applyAiPatternFromMessage(prev, message, colorIds));
+      patchActiveGrid((prev) => applyAiPatternFromMessage(prev, message, colorIds));
       const lower = message.toLowerCase();
       const untitled = t("editor.defaultTitle");
       if (lower.includes("가디건") || lower.includes("cardigan")) {
@@ -354,7 +439,7 @@ export default function PatternEditor({
       }
       return getTteuniReply(message);
     },
-    [paletteYarns, t],
+    [paletteYarns, t, patchActiveGrid],
   );
 
   const patternText = useMemo(() => {
@@ -410,12 +495,6 @@ export default function PatternEditor({
     return r >= rMin && r <= rMax && c >= cMin && c <= cMax;
   };
 
-  const aiImageSrc = aiPreviewImage
-    ? aiPreviewImage.startsWith("/")
-      ? aiPreviewImage
-      : `/images/${aiPreviewImage}`
-    : undefined;
-
   const toolHint = t(`editor.toolHints.${tool}`);
 
   return (
@@ -443,10 +522,22 @@ export default function PatternEditor({
         sizeMenuRef={sizeMenuRef}
       />
 
+      <ChartTabs
+        charts={charts}
+        activeChartId={activeChartId}
+        onSelect={handleSelectChart}
+        onAdd={() => {
+          setCastOnMode("add");
+          setCastOnOpen(true);
+        }}
+      />
+
       <CastOnModal
         open={castOnOpen}
+        mode={castOnMode}
         onClose={() => setCastOnOpen(false)}
         onApply={handleCastOnCanvas}
+        onAddChart={handleAddChart}
       />
 
       <EditorOnboardingSpotlight
@@ -517,7 +608,10 @@ export default function PatternEditor({
             </div>
             <button
               type="button"
-              onClick={() => setCastOnOpen(true)}
+              onClick={() => {
+                setCastOnMode("replace");
+                setCastOnOpen(true);
+              }}
               className="mt-2 w-full rounded-xl bg-white px-3 py-2.5 font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
             >
               {t("editor.castOnButton")}
@@ -632,9 +726,15 @@ export default function PatternEditor({
         <p className="mt-3 font-rounded text-sm font-normal text-gray-500">{toolHint}</p>
         </main>
 
-        <aside className="flex h-[calc(100vh-64px)] w-[280px] shrink-0 flex-col overflow-hidden bg-gray-50 md:w-[300px]">
+        <EditorRightSidebar>
           <div className="flex shrink-0 flex-col gap-4 overflow-y-auto p-4 md:p-5">
-            <AiPreviewNavigator imageSrc={aiImageSrc} yarnMeta={usedYarns} />
+            <AiPreviewNavigator
+              grid={grid}
+              charts={charts}
+              colorMap={colorMap}
+              stitchSymbols={stitchSymbols}
+              yarnMeta={usedYarns}
+            />
             <div ref={chatbotPanelRef}>
               <TteuniChatbot onUserMessage={handleAiMessage} />
             </div>
@@ -670,7 +770,7 @@ export default function PatternEditor({
               {patternText}
             </pre>
           </div>
-        </aside>
+        </EditorRightSidebar>
       </div>
     </div>
   );

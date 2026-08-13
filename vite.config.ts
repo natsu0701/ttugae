@@ -16,6 +16,10 @@ export default defineConfig({
       "i18next",
       "react-i18next",
       "html2canvas",
+      // 3D 스택 — 최초 진입 시 대기 없이 사전 번들링
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei",
     ],
   },
 

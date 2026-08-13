@@ -2,8 +2,12 @@ import { memo, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 
-/** 반신이 보이는 안착 위치 (입까지만 노출) */
-export const TTEUNI_REST_Y = "53%";
+/**
+ * 히어로 하단 안착 위치 (px) — 값이 작을수록 뜨니가 텍스트 쪽으로 올라옴.
+ * 이미지 비율(705×776, 세로≈가로×1.10) 기준으로 래퍼 높이가
+ * "이미지 폭 × 1.10 + (진폭 − REST_Y)" 이상이면 머리가 잘리지 않는다.
+ */
+const TTEUNI_REST_Y = 12;
 
 const ENTRANCE_SPRING = {
   type: "spring" as const,
@@ -12,7 +16,16 @@ const ENTRANCE_SPRING = {
   mass: 0.9,
 };
 
-const FLOAT_KEYFRAMES = [TTEUNI_REST_Y, "50%", TTEUNI_REST_Y, "56%", TTEUNI_REST_Y];
+/** 부유 진폭 — 래퍼 천장(overflow-hidden)에 머리가 닿지 않는 범위로 제한 */
+const FLOAT_AMPLITUDE = 8;
+
+const FLOAT_KEYFRAMES = [
+  TTEUNI_REST_Y,
+  TTEUNI_REST_Y - FLOAT_AMPLITUDE,
+  TTEUNI_REST_Y,
+  TTEUNI_REST_Y + FLOAT_AMPLITUDE,
+  TTEUNI_REST_Y,
+];
 
 const FLOAT_LOOP = {
   duration: 3.2,
@@ -49,16 +62,16 @@ function TteuniHeroPeek() {
 
   return (
     <div
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[11rem] overflow-hidden sm:h-[20rem] md:h-[25rem]"
+      className="pointer-events-none relative z-10 mx-auto mt-2 flex h-[20rem] w-full shrink-0 items-end justify-center overflow-hidden sm:mt-4 sm:h-[25rem] md:h-[29rem] [@media(max-height:750px)]:h-[17rem]"
       aria-hidden
     >
       <motion.img
         src={TTEUNI_IMAGES.hero}
         alt=""
-        className="absolute bottom-0 left-1/2 h-auto w-[26rem] max-w-none object-contain object-bottom sm:w-[30rem] md:w-[36rem] lg:w-[28rem]"
-        initial={{ y: "100%", x: "-50%" }}
+        className="relative h-auto w-[18rem] max-w-none object-contain object-bottom sm:w-[22rem] md:w-[26rem] [@media(max-height:750px)]:w-[15rem]"
+        initial={{ y: 96 }}
         animate={controls}
-        style={{ x: "-50%" }}
+        style={{ position: "relative" }}
       />
     </div>
   );

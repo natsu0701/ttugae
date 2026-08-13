@@ -8,10 +8,14 @@ module.exports = {
         coral: {
           DEFAULT: "#FC5F53",
         },
+        "pink-deep": "#FC5F53",
+        "beige-cream": "#F5EDE6",
       },
       fontFamily: {
         sans: ['"Noto Sans KR"', "system-ui", "sans-serif"],
         rounded: ["Jua", "sans-serif"],
+        han: ['"Black Han Sans"', "sans-serif"],
+        gamhong: ["Mungyeong-Gamhong-Apple", "sans-serif"],
       },
     },
   },

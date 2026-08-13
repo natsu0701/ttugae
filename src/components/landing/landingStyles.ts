@@ -1,7 +1,7 @@
 /** 랜딩 페이지 공통 섹션·타이포 클래스 */
 export const landingSection = {
   hero:
-    "relative min-h-[32rem] overflow-hidden bg-gray-50 px-5 pb-32 pt-10 sm:min-h-[36rem] sm:pb-[260px] md:px-8 md:pt-16",
+    "relative isolate flex h-screen w-full flex-col justify-between overflow-hidden [clip-path:inset(0)] px-5 pb-0 pt-16 sm:pt-20 md:px-8 md:pt-24",
   white: "bg-white px-5 py-20 md:px-8 md:py-28",
   gray: "bg-gray-50 px-5 py-20 md:px-8 md:py-28",
   promo: "bg-white px-5 py-16 md:px-8 md:py-24",

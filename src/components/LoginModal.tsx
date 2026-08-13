@@ -1,5 +1,6 @@
 import { type FormEvent } from "react";
 import { motion } from "framer-motion";
+import BrandTextLogo from "./ui/BrandTextLogo.tsx";
 import Button from "./ui/Button.tsx";
 import Input from "./ui/Input.tsx";
 
@@ -83,8 +84,9 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           ×
         </button>
 
-        <h2 id="login-title" className="font-sans text-2xl font-bold text-gray-900">
-          뜨개러투게더 시작하기
+        <h2 id="login-title" className="flex flex-wrap items-center gap-2 font-sans text-2xl font-bold text-gray-900">
+          <BrandTextLogo className="h-7 w-auto object-contain" />
+          시작하기
         </h2>
         <p className="mt-2 font-rounded text-sm text-gray-600">
           로그인하고 도안을 저장하고 공유해 보세요.

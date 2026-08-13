@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   buildTimeFadeSegments,
   fadeWidthScale,
@@ -9,38 +9,26 @@ import {
 } from "../../utils/yarnTrailPath.ts";
 
 const MIN_POINT_DISTANCE = 5;
-const MAX_POINTS = 64;
+const MAX_POINTS_DEFAULT = 64;
+const MAX_POINTS_LOW_SPEC = 24;
 const SEGMENT_COUNT = 6;
+
+/** 터치(비세밀 포인터) 기기 — 트레일을 아예 마운트하지 않음 */
+function detectTouchDevice(): boolean {
+  return (
+    window.matchMedia("(pointer: coarse)").matches ||
+    !window.matchMedia("(pointer: fine)").matches
+  );
+}
+
+/** 저사양 기기 — 추적 좌표 수를 절반 이하로 스로틀링 */
+function detectLowSpecDevice(): boolean {
+  const nav = navigator as Navigator & { deviceMemory?: number };
+  return (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4;
+}
 const { lifespanMs, layers: YARN_LAYERS } = YARN_TRAIL;
 
-const PATH_CAPS = `stroke-linecap="round" stroke-linejoin="round"`;
-
-type YarnLayerDef = (typeof YARN_LAYERS)[number];
-
-function layerPathMarkup(
-  seg: TrailSegment,
-  layer: YarnLayerDef,
-  widthScale: number,
-  opacityScale: number,
-): string {
-  const dash =
-    "dasharray" in layer
-      ? `stroke-dasharray="${layer.dasharray}"${
-          "dashoffset" in layer ? ` stroke-dashoffset="${layer.dashoffset}"` : ""
-        }`
-      : "";
-
-  return `<path
-        class="yarn-${layer.id}"
-        d="${seg.d}"
-        fill="none"
-        stroke="${layer.color}"
-        stroke-width="${(layer.width * widthScale).toFixed(2)}"
-        stroke-opacity="${(layer.opacity * opacityScale).toFixed(3)}"
-        ${dash}
-        ${PATH_CAPS}
-      />`;
-}
+const SEGMENT_INDICES = Array.from({ length: SEGMENT_COUNT }, (_, i) => i);
 
 /** 커스텀 커서 핫스팟 = 바늘 끝(궤적 시작점) */
 export const CURSOR_HOTSPOT = { x: 21, y: 5 } as const;
@@ -49,48 +37,66 @@ type YarnStitchTrailProps = {
   disabled?: boolean;
 };
 
-function renderSegmentPaths(
-  container: SVGGElement | null,
+/**
+ * 세그먼트(6) × 레이어(5) = 30개의 고정 <path>에 setAttribute로 d/굵기/투명도만
+ * 직접 주입한다. React 상태·VDOM 리렌더·innerHTML 파싱을 전혀 거치지 않으므로
+ * mousemove/rAF 루프가 브라우저 페인트 외의 비용을 만들지 않는다.
+ */
+function applySegmentsToDom(
+  refs: (SVGPathElement | null)[][],
   segments: TrailSegment[],
 ) {
-  if (!container) return;
+  for (let si = 0; si < refs.length; si++) {
+    const seg = si < segments.length ? segments[si] : null;
+    const layerEls = refs[si];
 
-  if (segments.length === 0) {
-    container.innerHTML = "";
-    return;
+    for (let li = 0; li < layerEls.length; li++) {
+      const el = layerEls[li];
+      if (!el) continue;
+
+      if (!seg) {
+        // 이미 비워진 path는 건드리지 않음 (불필요한 스타일 무효화 방지)
+        if (el.getAttribute("d")) {
+          el.setAttribute("d", "");
+          el.setAttribute("stroke-opacity", "0");
+        }
+        continue;
+      }
+
+      const layer = YARN_LAYERS[li];
+      const widthScale = fadeWidthScale(seg.opacity);
+      el.setAttribute("d", seg.d);
+      el.setAttribute("stroke-width", (layer.width * widthScale).toFixed(2));
+      el.setAttribute(
+        "stroke-opacity",
+        (layer.opacity * seg.opacity).toFixed(3),
+      );
+    }
   }
-
-  const html = segments
-    .map((seg, i) => {
-      const w = fadeWidthScale(seg.opacity);
-      const layerPaths = YARN_LAYERS.map((layer) =>
-        layerPathMarkup(seg, layer, w, seg.opacity),
-      ).join("\n");
-
-      return `
-    <g class="yarn-segment" data-i="${i}" style="mix-blend-mode: normal">
-      ${layerPaths}
-    </g>`;
-    })
-    .join("");
-
-  container.innerHTML = html;
 }
 
 export default function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
+  const [isTouchDevice] = useState(detectTouchDevice);
+  const [maxPoints] = useState(() =>
+    detectLowSpecDevice() ? MAX_POINTS_LOW_SPEC : MAX_POINTS_DEFAULT,
+  );
   const pointsRef = useRef<TrailPoint[]>([]);
   const lastSampleRef = useRef({ x: -200, y: -200 });
-  const segmentsRef = useRef<SVGGElement>(null);
+  /** 세그먼트 × 레이어 <path> 엘리먼트 — 마운트 시 1회 생성 후 속성만 갱신 */
+  const segmentPathRefs = useRef<(SVGPathElement | null)[][]>(
+    Array.from({ length: SEGMENT_COUNT }, () =>
+      Array<SVGPathElement | null>(YARN_LAYERS.length).fill(null),
+    ),
+  );
   const cursorRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef(0);
   const isRunningRef = useRef(false);
 
   useEffect(() => {
-    if (disabled) return;
+    if (disabled || isTouchDevice) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const finePointer = window.matchMedia("(pointer: fine)").matches;
-    if (reducedMotion || !finePointer) return;
+    if (reducedMotion) return;
 
     document.body.classList.add("yarn-trail-active");
     isRunningRef.current = true;
@@ -111,13 +117,13 @@ export default function YarnStitchTrail({ disabled = false }: YarnStitchTrailPro
         pts.push({ x: e.clientX, y: e.clientY, timestamp: Date.now() });
         lastSampleRef.current = { x: e.clientX, y: e.clientY };
 
-        while (pts.length > MAX_POINTS) pts.shift();
+        while (pts.length > maxPoints) pts.shift();
       }
     };
 
     const onLeave = () => {
       pointsRef.current = [];
-      renderSegmentPaths(segmentsRef.current, []);
+      applySegmentsToDom(segmentPathRefs.current, []);
     };
 
     const tick = () => {
@@ -135,9 +141,9 @@ export default function YarnStitchTrail({ disabled = false }: YarnStitchTrailPro
           lifespanMs,
           SEGMENT_COUNT,
         );
-        renderSegmentPaths(segmentsRef.current, segments);
+        applySegmentsToDom(segmentPathRefs.current, segments);
       } else {
-        renderSegmentPaths(segmentsRef.current, []);
+        applySegmentsToDom(segmentPathRefs.current, []);
       }
 
       animationRef.current = requestAnimationFrame(tick);
@@ -157,21 +163,43 @@ export default function YarnStitchTrail({ disabled = false }: YarnStitchTrailPro
       document.body.classList.remove("yarn-trail-active");
 
       pointsRef.current = [];
-      renderSegmentPaths(segmentsRef.current, []);
+      applySegmentsToDom(segmentPathRefs.current, []);
     };
-  }, [disabled]);
+  }, [disabled, isTouchDevice, maxPoints]);
 
-  if (disabled) {
+  // 터치/모바일 기기: 리스너·rAF 루프·DOM 자체를 등록하지 않음
+  if (disabled || isTouchDevice) {
     return null;
   }
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[9998]" aria-hidden>
       <svg
-        className="yarn-trail-svg pointer-events-none h-full w-full"
+        className="yarn-trail-svg transform-gpu will-change-transform pointer-events-none h-full w-full"
         aria-hidden
       >
-        <g ref={segmentsRef} style={{ mixBlendMode: "normal" }} />
+        {/* 5중 마이크로 파이버 레이어 × 페이드 세그먼트 — 정적 생성, 속성만 rAF에서 주입 */}
+        {SEGMENT_INDICES.map((si) => (
+          <g key={si} className="yarn-segment" style={{ mixBlendMode: "normal" }}>
+            {YARN_LAYERS.map((layer, li) => (
+              <path
+                key={layer.id}
+                className={`yarn-${layer.id}`}
+                d=""
+                fill="none"
+                stroke={layer.color}
+                strokeOpacity={0}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray={"dasharray" in layer ? layer.dasharray : undefined}
+                strokeDashoffset={"dashoffset" in layer ? layer.dashoffset : undefined}
+                ref={(el) => {
+                  segmentPathRefs.current[si][li] = el;
+                }}
+              />
+            ))}
+          </g>
+        ))}
       </svg>
 
       <div

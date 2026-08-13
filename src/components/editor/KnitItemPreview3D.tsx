@@ -6,9 +6,10 @@ import {
   useMemo,
   useRef,
   useState,
+  type MutableRefObject,
   type ReactNode,
 } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows, OrbitControls } from "@react-three/drei";
 import {
   CanvasTexture,
@@ -91,9 +92,15 @@ const TEXTURE_REPEAT: Record<KnitItemId, [number, number]> = {
 
 /**
  * 2D 도안 배열을 숨겨진 캔버스에 그려 CanvasTexture로 변환하는 훅.
- * grid가 바뀔 때마다 다시 그리고 needsUpdate로 GPU에 반영한다.
+ * - 에디터 드래그처럼 grid가 연속 갱신돼도 requestAnimationFrame으로
+ *   프레임당 1회로 스로틀링 (이전 예약은 취소하고 최신 grid만 그림)
+ * - 그리기 완료 후 onDrawnRef를 호출해 on-demand 캔버스에 프레임을 요청
  */
-function usePatternTexture(grid: string[][], item: KnitItemId): CanvasTexture {
+function usePatternTexture(
+  grid: string[][],
+  item: KnitItemId,
+  onDrawnRef: MutableRefObject<() => void>,
+): CanvasTexture {
   const { canvas, ctx, texture } = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = GRID_SIZE * CELL_PX;
@@ -112,23 +119,28 @@ function usePatternTexture(grid: string[][], item: KnitItemId): CanvasTexture {
     return { canvas, ctx, texture };
   }, []);
 
-  // 그리드 변경 감지 → 캔버스 다시 그리기 → 텍스처 갱신
+  // 그리드 변경 감지 → rAF 스로틀링된 캔버스 다시 그리기 → 텍스처 갱신
   useEffect(() => {
-    for (let r = 0; r < grid.length; r++) {
-      for (let c = 0; c < grid[r].length; c++) {
-        ctx.fillStyle = grid[r][c] || BASE_COLOR;
-        ctx.fillRect(c * CELL_PX, r * CELL_PX, CELL_PX, CELL_PX);
+    const raf = requestAnimationFrame(() => {
+      for (let r = 0; r < grid.length; r++) {
+        for (let c = 0; c < grid[r].length; c++) {
+          ctx.fillStyle = grid[r][c] || BASE_COLOR;
+          ctx.fillRect(c * CELL_PX, r * CELL_PX, CELL_PX, CELL_PX);
+        }
       }
-    }
-    texture.needsUpdate = true;
-  }, [grid, ctx, canvas, texture]);
+      texture.needsUpdate = true;
+      onDrawnRef.current();
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [grid, ctx, canvas, texture, onDrawnRef]);
 
   // 아이템 형태에 맞춰 반복 횟수 조정
   useEffect(() => {
     const [rx, ry] = TEXTURE_REPEAT[item];
     texture.repeat.set(rx, ry);
     texture.needsUpdate = true;
-  }, [item, texture]);
+    onDrawnRef.current();
+  }, [item, texture, onDrawnRef]);
 
   useEffect(() => () => texture.dispose(), [texture]);
 
@@ -274,6 +286,7 @@ function DampedGroup({
   const ref = useRef<Group>(null);
   const targetRef = useRef(target);
   targetRef.current = target;
+  const invalidate = useThree((state) => state.invalidate);
 
   useFrame((_, delta) => {
     if (!ref.current) return;
@@ -283,6 +296,12 @@ function DampedGroup({
     s.x += (tx - s.x) * k;
     s.y += (ty - s.y) * k;
     s.z += (tz - s.z) * k;
+
+    // frameloop="demand": 목표에 수렴할 때까지만 다음 프레임을 요청하고,
+    // 수렴하면 요청을 멈춰 유휴 시 GPU/CPU 사용량 0%를 보장
+    const error =
+      Math.abs(tx - s.x) + Math.abs(ty - s.y) + Math.abs(tz - s.z);
+    if (error > 0.001) invalidate();
   });
 
   return (
@@ -297,6 +316,28 @@ function DampedGroup({
 
 /* ─────────────────── 씬 ─────────────────── */
 
+/**
+ * Canvas 바깥(usePatternTexture)에서 프레임을 요청할 수 있도록
+ * R3F의 invalidate를 ref에 연결해 주는 브리지.
+ */
+function DemandInvalidateBridge({
+  invalidateRef,
+}: {
+  invalidateRef: MutableRefObject<() => void>;
+}) {
+  const invalidate = useThree((state) => state.invalidate);
+
+  useEffect(() => {
+    invalidateRef.current = () => invalidate();
+    invalidate();
+    return () => {
+      invalidateRef.current = () => {};
+    };
+  }, [invalidate, invalidateRef]);
+
+  return null;
+}
+
 function PreviewScene({
   item,
   wireframe,
@@ -308,6 +349,13 @@ function PreviewScene({
   target: [number, number, number];
   patternTexture: Texture;
 }) {
+  const invalidate = useThree((state) => state.invalidate);
+
+  // 아이템·와이어프레임·슬라이더 등 props가 바뀌어 리렌더될 때마다 프레임 1회 요청
+  useEffect(() => {
+    invalidate();
+  });
+
   return (
     <>
       {/* 따뜻한 스튜디오 느낌의 로컬 조명 (네트워크 HDRI 불필요) */}
@@ -343,9 +391,9 @@ function PreviewScene({
         frames={Infinity}
       />
 
+      {/* drei OrbitControls는 demand 모드에서 change 이벤트마다 자동 invalidate —
+          드래그·줌 시에만 프레임이 그려지고 유휴 시 연산 0%가 되도록 autoRotate 제거 */}
       <OrbitControls
-        autoRotate
-        autoRotateSpeed={1.2}
         enableDamping
         dampingFactor={0.08}
         minDistance={2}
@@ -395,7 +443,9 @@ function KnitItemPreview3D() {
   const [rowCount, setRowCount] = useState(SIZE_BASE);
   const [grid, setGrid] = useState<string[][]>(createInitialGrid);
 
-  const patternTexture = usePatternTexture(grid, item);
+  /** Canvas 내부의 invalidate가 브리지를 통해 연결됨 (연결 전엔 no-op) */
+  const invalidateRef = useRef<() => void>(() => {});
+  const patternTexture = usePatternTexture(grid, item, invalidateRef);
 
   const handleShuffle = useCallback(() => {
     setGrid((prev) => shuffleGrid(prev));
@@ -467,6 +517,7 @@ function KnitItemPreview3D() {
       <div className="h-[260px] w-full overflow-hidden rounded-xl bg-gray-100">
         <Canvas
           shadows
+          frameloop="demand"
           dpr={[1, 1.5]}
           gl={{
             antialias: true,
@@ -476,6 +527,7 @@ function KnitItemPreview3D() {
           }}
           camera={{ position: [0, 2.5, 6], fov: 50 }}
         >
+          <DemandInvalidateBridge invalidateRef={invalidateRef} />
           <Suspense fallback={null}>
             <PreviewScene
               item={item}
