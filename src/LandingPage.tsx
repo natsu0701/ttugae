@@ -2,8 +2,8 @@ import { useCallback } from "react";
 import FeatureOneSection from "./components/landing/FeatureOneSection.tsx";
 import FeatureTwoSection from "./components/landing/FeatureTwoSection.tsx";
 import HeroSection from "./components/landing/HeroSection.tsx";
+import AppPromotionSection from "./components/landing/AppPromotionSection.tsx";
 import LandingFooter from "./components/landing/LandingFooter.tsx";
-import MobileAppPromo from "./components/landing/MobileAppPromo.tsx";
 
 export type LandingPageProps = {
   onOpenEditor: () => void;
@@ -17,7 +17,7 @@ export default function LandingPage({ onOpenEditor }: LandingPageProps) {
       <HeroSection onOpenEditor={handleOpenEditor} />
       <FeatureOneSection onOpenEditor={handleOpenEditor} />
       <FeatureTwoSection />
-      <MobileAppPromo />
+      <AppPromotionSection />
       <LandingFooter />
     </div>
   );

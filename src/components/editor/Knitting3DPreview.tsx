@@ -1,6 +1,6 @@
 import { memo, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { Html, OrbitControls, useGLTF } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import { Loader2, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
@@ -207,9 +207,26 @@ const GARMENT_MODELS: Record<KnitItemType, { url: string }> = {
 };
 
 const TARGET_GARMENT_SIZE = 5.2;
+const SWEATER_FIT_SCALE: [number, number, number] = [1.15, 1.0, 0.52];
+
+const LOADING_COPY = "뜨니가 실시간 3D 스웨터를 준비하고 있어요...";
+
+function PreviewLoadingFallback() {
+  return (
+    <Html center>
+      <div className="flex flex-col items-center gap-3">
+        <Loader2 className="h-6 w-6 animate-spin text-coral" />
+        <span className="whitespace-nowrap font-sans text-xs font-light text-stone-400">
+          {LOADING_COPY}
+        </span>
+      </div>
+    </Html>
+  );
+}
 
 type GarmentModelProps = {
   modelUrl: string;
+  fitScale?: [number, number, number];
   cells: EditorCell[][];
   colorMap: Record<string, string>;
   stitchSymbols: Record<string, string>;
@@ -318,6 +335,7 @@ function applyPatternMap(root: THREE.Object3D, map: THREE.Texture) {
 
 function GarmentModel({
   modelUrl,
+  fitScale = [1, 1, 1],
   cells,
   colorMap,
   stitchSymbols,
@@ -388,7 +406,7 @@ function GarmentModel({
 
   return (
     <group ref={wrapRef}>
-      <primitive object={clonedScene} />
+      <primitive object={clonedScene} scale={fitScale} />
     </group>
   );
 }
@@ -460,7 +478,7 @@ function Knitting3DCanvas({
   };
 
   return (
-    <div className="relative h-[300px] min-h-[220px] w-full min-w-0 overflow-hidden bg-stone-50/50">
+    <div className="relative h-[300px] min-h-[220px] w-full min-w-0 overflow-hidden bg-stone-700">
       {active ? (
         <Canvas
           className="absolute inset-0 block h-full w-full"
@@ -469,15 +487,16 @@ function Knitting3DCanvas({
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true }}
         >
-          <ambientLight intensity={1.1} />
-          <pointLight position={[-10, 10, -10]} intensity={0.5} />
-          <directionalLight position={[5, 6, 8]} intensity={1.6} />
-          <Suspense fallback={null}>
+          <ambientLight intensity={1.45} />
+          <pointLight position={[-10, 10, -10]} intensity={0.7} />
+          <directionalLight position={[5, 6, 8]} intensity={1.9} />
+          <Suspense fallback={<PreviewLoadingFallback />}>
             <InvalidateOnChange value={garment.url} />
             {normalTexture ? (
               <GarmentModel
                 key={garment.url}
                 modelUrl={garment.url}
+                fitScale={itemType === "sweater" ? SWEATER_FIT_SCALE : [1, 1, 1]}
                 cells={cells}
                 colorMap={colorMap}
                 stitchSymbols={stitchSymbols}
@@ -496,16 +515,16 @@ function Knitting3DCanvas({
           </Suspense>
         </Canvas>
       ) : (
-        <div className="flex h-full w-full items-center justify-center bg-slate-50 text-[11px] text-stone-400">
+        <div className="flex h-full w-full items-center justify-center bg-stone-700 text-[11px] text-stone-300">
           미리보기 일시 정지
         </div>
       )}
 
       {!normalTexture && active ? (
-        <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 bg-stone-50 text-stone-400">
+        <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 bg-stone-700 text-stone-300">
           <Loader2 className="h-6 w-6 animate-spin text-coral" />
           <span className="font-sans text-xs font-light">
-            뜨니가 실시간 3D 스웨터를 준비하고 있어요...
+            {LOADING_COPY}
           </span>
         </div>
       ) : null}
@@ -516,7 +535,7 @@ function Knitting3DCanvas({
             type="button"
             onClick={handleZoomIn}
             title="확대"
-            className="rounded-xl bg-white/90 p-2 text-stone-600 transition-colors hover:bg-black hover:text-white"
+            className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
             <ZoomIn size={15} />
           </button>
@@ -524,7 +543,7 @@ function Knitting3DCanvas({
             type="button"
             onClick={handleZoomOut}
             title="축소"
-            className="rounded-xl bg-white/90 p-2 text-stone-600 transition-colors hover:bg-black hover:text-white"
+            className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
             <ZoomOut size={15} />
           </button>
@@ -532,7 +551,7 @@ function Knitting3DCanvas({
             type="button"
             onClick={handleReset}
             title="초기화"
-            className="rounded-xl bg-white/90 p-2 text-stone-600 transition-colors hover:bg-black hover:text-white"
+            className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
             <RotateCcw size={15} />
           </button>
@@ -570,7 +589,7 @@ function Knitting3DPreview({
   );
 
   return (
-    <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-xl bg-[#FFFBF7]">
+    <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-xl bg-stone-700">
       <Knitting3DCanvas
         cells={pattern}
         colorMap={colorMap}

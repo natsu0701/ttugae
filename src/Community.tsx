@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import PatternCard, { type FeedViewMode } from "./components/community/PatternCard.tsx";
+import PatternCard, { communityPostPath } from "./components/community/PatternCard.tsx";
+import ShowcaseFeedCard from "./components/community/ShowcaseFeedCard.tsx";
 import QaList from "./components/community/QaList.tsx";
 import QaDetail from "./components/community/QaDetail.tsx";
 import FinishedWorkDetail from "./components/community/FinishedWorkDetail.tsx";
-import FeedViewToggle from "./components/community/FeedViewToggle.tsx";
 import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
 import {
   COMMUNITY_PATTERNS,
@@ -24,6 +24,10 @@ import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
 import { COMMUNITY_TAB_EVENT } from "./CreatePostPage.tsx";
 import { deleteSharedCommunityPattern } from "./utils/communityShare.ts";
 import { deleteMyFinishedWork } from "./utils/myFinishedWorksStore.ts";
+import {
+  loadTasteProfile,
+  patternTasteScore,
+} from "./utils/personalizationStorage.ts";
 
 type CommunityProps = {
   onImportToEditor: (pattern: CommunityPattern) => void;
@@ -37,7 +41,7 @@ function qaIdFromPath(pathname: string): string | null {
 }
 
 function workIdFromPath(pathname: string): string | null {
-  const m = pathname.match(/^\/community\/work\/([^/]+)/);
+  const m = pathname.match(/^\/community\/(?:post|work)\/([^/]+)/);
   return m?.[1] ?? null;
 }
 
@@ -62,7 +66,6 @@ export default function Community({
   const [selectedWorkId, setSelectedWorkId] = useState<string | null>(
     initialPath.workId,
   );
-  const [feedView, setFeedView] = useState<FeedViewMode>("pattern");
   const [sharedPatterns, setSharedPatterns] = useState<CommunityPattern[]>(() =>
     loadSharedCommunityPatterns(),
   );
@@ -78,7 +81,6 @@ export default function Community({
       const detail = (e as CustomEvent<{ tab?: CommunityCategory }>).detail;
       if (detail?.tab === "showcase") {
         setActiveTab("showcase");
-        setFeedView("finished");
         setSelectedQaId(null);
         setSelectedWorkId(null);
         window.history.replaceState({}, "", "/community");
@@ -119,7 +121,7 @@ export default function Community({
   const openWork = (pattern: CommunityPattern) => {
     setSelectedWorkId(pattern.id);
     setSelectedQaId(null);
-    window.history.pushState({}, "", `/community/work/${pattern.id}`);
+    window.history.pushState({}, "", communityPostPath(pattern.id));
   };
 
   const closeWork = () => {
@@ -131,28 +133,32 @@ export default function Community({
     setActiveTab(tabId);
     setSelectedQaId(null);
     setSelectedWorkId(null);
-    if (tabId === "showcase") {
-      setFeedView("finished");
-    } else if (tabId !== "qa") {
-      setFeedView("pattern");
-    }
     window.history.pushState({}, "", "/community");
   };
 
   const filtered = useMemo(() => {
-    if (activeTab === "all") return allPatterns;
     if (activeTab === "qa") return [];
     if (activeTab === "best") {
       return [...allPatterns]
         .filter((p) => p.category === "best")
         .sort((a, b) => b.likes - a.likes);
     }
-    return allPatterns.filter((p) => p.category === activeTab);
+    const base =
+      activeTab === "all"
+        ? allPatterns
+        : allPatterns.filter((p) => p.category === activeTab);
+    if (activeTab !== "all") return base;
+    const taste = loadTasteProfile();
+    if (taste.styles.length === 0) return base;
+    return [...base].sort(
+      (a, b) =>
+        patternTasteScore(b.title, b.finishedCaption, taste.styles) -
+        patternTasteScore(a.title, a.finishedCaption, taste.styles),
+    );
   }, [activeTab, allPatterns]);
 
   const selectedPost = selectedQaId ? getQaPost(selectedQaId) : null;
   const selectedWork = selectedWorkId ? getCommunityPattern(selectedWorkId) : null;
-  const showFeedToggle = activeTab !== "qa";
 
   if (selectedPost) {
     return <QaDetail post={selectedPost} onBack={closeQa} />;
@@ -193,23 +199,17 @@ export default function Community({
       </section>
 
       <section className="mx-auto max-w-6xl px-5 pt-8 md:px-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap gap-2">
-            {COMMUNITY_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => handleTabChange(tab.id)}
-                className={`${tabButtonBase} ${tabButtonClass(activeTab === tab.id)}`}
-              >
-                {t(`community.tabs.${tab.id}`)}
-              </button>
-            ))}
-          </div>
-
-          {showFeedToggle && (
-            <FeedViewToggle value={feedView} onChange={setFeedView} />
-          )}
+        <div className="flex flex-wrap gap-2">
+          {COMMUNITY_TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => handleTabChange(tab.id)}
+              className={`${tabButtonBase} ${tabButtonClass(activeTab === tab.id)}`}
+            >
+              {t(`community.tabs.${tab.id}`)}
+            </button>
+          ))}
         </div>
       </section>
 
@@ -226,24 +226,41 @@ export default function Community({
             </p>
           </div>
         ) : (
-          <div
-            className={
-              activeTab === "best"
-                ? "grid grid-cols-1 gap-4 md:grid-cols-3"
-                : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-            }
-          >
-            {filtered.map((pattern, index) => (
-              <PatternCard
-                key={pattern.id}
-                pattern={pattern}
-                viewMode={feedView}
-                rank={activeTab === "best" ? index + 1 : undefined}
-                onImport={onImportToEditor}
-                onOpenFinished={openWork}
-              />
-            ))}
-          </div>
+          <>
+            {activeTab === "all" && loadTasteProfile().styles.length > 0 ? (
+              <p className="mb-4 font-sans text-sm font-medium text-stone-600">
+                설정한 취향에 맞춘 추천 도안을 먼저 보여드려요.
+              </p>
+            ) : null}
+            <div
+              className={
+                activeTab === "showcase"
+                  ? "mx-auto grid max-w-3xl grid-cols-1 md:max-w-none md:grid-cols-2 md:gap-8"
+                  : activeTab === "best"
+                    ? "grid grid-cols-1 gap-4 md:grid-cols-3"
+                    : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              }
+            >
+              {filtered.map((pattern, index) =>
+                activeTab === "showcase" ? (
+                  <ShowcaseFeedCard
+                    key={pattern.id}
+                    pattern={pattern}
+                    onImport={onImportToEditor}
+                    onOpenFinished={openWork}
+                  />
+                ) : (
+                  <PatternCard
+                    key={pattern.id}
+                    pattern={pattern}
+                    rank={activeTab === "best" ? index + 1 : undefined}
+                    onImport={onImportToEditor}
+                    onOpenFinished={openWork}
+                  />
+                ),
+              )}
+            </div>
+          </>
         )}
       </section>
 

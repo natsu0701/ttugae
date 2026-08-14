@@ -106,7 +106,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
               playWelcomeKnitSound();
               onOpenEditor();
             }}
-            className="relative z-10 px-8 py-4 text-base font-extrabold sm:px-10 sm:text-lg"
+            className="relative z-10 px-8 py-4 text-base font-extrabold shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-all duration-300 hover:shadow-[0_10px_28px_rgba(252,95,83,0.18)] sm:px-10 sm:text-lg"
           >
             도안 그리기
           </Button>

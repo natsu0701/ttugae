@@ -22,7 +22,11 @@ function FeatureOneSection({ onOpenEditor }: FeatureOneSectionProps) {
           <p className={`${landingHeading.body} font-seoyun`}>
             격자 위에 기호와 색을 놓고, 실수는 뜨니가 체크해 줘요.
           </p>
-          <Button variant="primary" onClick={onOpenEditor} className="mt-8 px-6 py-3 font-extrabold">
+          <Button
+            variant="primary"
+            onClick={onOpenEditor}
+            className="mt-8 px-6 py-3 font-extrabold shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-all duration-300 hover:shadow-[0_10px_28px_rgba(252,95,83,0.18)]"
+          >
             도안 그리기
           </Button>
         </Reveal>

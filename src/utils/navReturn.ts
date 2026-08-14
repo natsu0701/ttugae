@@ -48,7 +48,8 @@ export function consumeNavReturn(): NavReturn | null {
 export function resolvePathFallback(pathname: string): NavReturn {
   if (
     pathname.startsWith("/community/qa/") ||
-    pathname.startsWith("/community/work/")
+    pathname.startsWith("/community/work/") ||
+    pathname.startsWith("/community/post/")
   ) {
     return { view: "community", path: "/community" };
   }

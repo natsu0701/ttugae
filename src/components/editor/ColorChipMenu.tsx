@@ -54,10 +54,10 @@ export default function ColorChipMenu({
         }}
         className={`relative flex items-center justify-center overflow-hidden transition-colors ${
           variant === "palette"
-            ? `aspect-square w-full rounded-xl ${isActive ? "bg-coral p-0.5" : "bg-transparent hover:bg-black/5"}`
+            ? `aspect-square w-full rounded-xl ${isActive ? "bg-coral p-0.5" : "border border-stone-600/80 bg-stone-700 p-0.5 hover:border-stone-500 hover:bg-stone-600"}`
             : variant === "selection"
-              ? `rounded-lg p-0.5 ${isActive ? "bg-coral" : "bg-white hover:bg-black"}`
-              : `rounded-lg bg-white p-1 ${isActive ? "bg-coral p-0.5" : ""}`
+              ? `rounded-lg p-0.5 ${isActive ? "bg-coral" : "border border-stone-600/80 bg-stone-700 hover:border-stone-500 hover:bg-stone-600"}`
+              : `rounded-lg p-1 ${isActive ? "bg-coral p-0.5" : "border border-stone-600/80 bg-stone-700"}`
         }`}
       >
         <span
@@ -77,17 +77,17 @@ export default function ColorChipMenu({
       ) : null}
 
       {open && variant !== "selection" && (
-        <div className="absolute left-0 top-full z-50 mt-1 min-w-[7rem] rounded-xl bg-[#FFFBF7] p-1 shadow-[0_8px_30px_rgba(252,95,83,0.025)]">
+        <div className="absolute left-0 top-full z-50 mt-1 min-w-[7rem] rounded-xl border border-stone-800/80 bg-stone-900 p-1">
           <button
             type="button"
-            className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
+            className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-stone-200 transition-colors hover:bg-stone-800 hover:text-white"
             onClick={() => colorInputRef.current?.click()}
           >
             변경
           </button>
           <button
             type="button"
-            className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
+            className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-stone-200 transition-colors hover:bg-stone-800 hover:text-white"
             onClick={() => {
               onDeleteFromCanvas(yarn.id);
               setOpen(false);

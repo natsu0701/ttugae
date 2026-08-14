@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../ui/Button.tsx";
-import Input from "../ui/Input.tsx";
+import SmoothInput from "../ui/SmoothInput.tsx";
 import MiniPatternCanvas from "./MiniPatternCanvas.tsx";
 import {
   finishedImageUrl,
@@ -12,6 +12,7 @@ import {
 } from "../../data/finishedWorkComments.ts";
 import { getRemixLineage } from "../../data/patternRemixLineage.ts";
 import RemixFamilyTree from "./RemixFamilyTree.tsx";
+import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
 
 type FinishedWorkDetailProps = {
   pattern: CommunityPattern;
@@ -78,7 +79,7 @@ export default function FinishedWorkDetail({
   };
 
   return (
-    <div className="pb-20">
+    <div className="pb-20 pt-20 md:pt-24">
       <div className="mx-auto max-w-3xl px-5 py-4 md:px-8">
         <button
           type="button"
@@ -116,8 +117,9 @@ export default function FinishedWorkDetail({
               {pattern.author.slice(0, 1)}
             </span>
             <div>
-              <p className="font-sans text-sm font-normal text-gray-800">
+              <p className="flex items-center gap-1.5 font-sans text-sm font-normal text-gray-800">
                 @{pattern.author}
+                <EquippedAuthorChip author={pattern.author} />
               </p>
               <p className="font-sans text-xs font-normal text-gray-500">
                 {pattern.publishedAt}
@@ -239,11 +241,11 @@ export default function FinishedWorkDetail({
               댓글 남기기
             </label>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
-              <Input
+              <SmoothInput
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="응원의 말을 남겨 주세요"
-                className="flex-1"
+                className="flex-1 border-stone-200"
               />
               <Button type="submit" className="shrink-0 px-4 py-2">
                 등록

@@ -2,7 +2,7 @@ import { type FormEvent } from "react";
 import { motion } from "framer-motion";
 import BrandTextLogo from "./ui/BrandTextLogo.tsx";
 import Button from "./ui/Button.tsx";
-import Input from "./ui/Input.tsx";
+import SmoothInput from "./ui/SmoothInput.tsx";
 
 type LoginModalProps = {
   onClose: () => void;
@@ -93,8 +93,20 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-          <Input label="이메일" type="email" placeholder="you@example.com" required />
-          <Input label="비밀번호" type="password" placeholder="••••••••" required />
+          <SmoothInput
+            label="이메일"
+            type="email"
+            placeholder="you@example.com"
+            className="border-stone-200"
+            required
+          />
+          <SmoothInput
+            label="비밀번호"
+            type="password"
+            placeholder="••••••••"
+            className="border-stone-200"
+            required
+          />
           <Button type="submit" variant="primary" fullWidth className="mt-2 py-3.5">
             로그인
           </Button>

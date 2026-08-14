@@ -6,6 +6,7 @@ import {
   pickRandomPresets,
   type ColorPreset,
 } from "../../data/colorPresets.ts";
+import { editorChromeBtn, editorChromeBtnActive, editorChromeTone } from "../ui/tabButtonStyles.ts";
 
 const REFRESH_SPIN_MS = 500;
 
@@ -40,14 +41,14 @@ export default function ColorPresetsSection({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
+        <p className="font-sans text-xs font-normal uppercase tracking-wide text-stone-400">
           {t("editor.colorPresetsTitle")}
         </p>
         <button
           type="button"
           onClick={handleRefresh}
           disabled={isRefreshing}
-          className="rounded-full p-1 text-gray-500 transition-colors duration-200 hover:text-coral disabled:pointer-events-none"
+          className={`rounded-full p-1.5 ${editorChromeTone} disabled:pointer-events-none`}
           aria-label={t("editor.colorPresetsRefresh")}
           title={t("editor.colorPresetsRefresh")}
         >
@@ -83,10 +84,8 @@ export default function ColorPresetsSection({
                     ease: "easeOut",
                   }}
                   onClick={() => onApply(preset.id, preset.colors)}
-                  className={`group flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left transition-colors duration-200 ${
-                    active
-                      ? "bg-coral text-white"
-                      : "bg-white text-gray-700 hover:bg-black hover:text-white"
+                  className={`group flex w-full items-center gap-2 px-2.5 py-2 text-left ${
+                    active ? editorChromeBtnActive : editorChromeBtn
                   }`}
                 >
                   <span className="flex shrink-0 gap-0.5">
@@ -100,7 +99,7 @@ export default function ColorPresetsSection({
                   </span>
                   <span
                     className={`truncate font-sans text-xs font-normal ${
-                      active ? "text-white" : "text-gray-700 group-hover:text-white"
+                      active ? "text-white" : "text-stone-100"
                     }`}
                   >
                     {presetLabel(preset, t)}
@@ -112,7 +111,7 @@ export default function ColorPresetsSection({
         </AnimatePresence>
       </div>
 
-      <p className="mt-2 font-rounded text-[10px] font-normal text-gray-500">
+      <p className="mt-2 font-rounded text-[10px] font-normal text-stone-500">
         {t("editor.colorPresetsHint")}
       </p>
     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { FolderOpen } from "lucide-react";
 import Button from "./components/ui/Button.tsx";
-import Input from "./components/ui/Input.tsx";
+import SmoothInput from "./components/ui/SmoothInput.tsx";
 import Textarea from "./components/ui/Textarea.tsx";
 import PatternThumbnailPreview from "./components/create-post/PatternThumbnailPreview.tsx";
 import LoadMyPatternModal from "./components/create-post/LoadMyPatternModal.tsx";
@@ -259,19 +259,21 @@ export default function CreatePostPage({
           </Button>
         </div>
 
-        <Input
+        <SmoothInput
           label="제목"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="예: 베이지 가디건 완성!"
+          className="border-stone-200"
           required
         />
 
-        <Input
+        <SmoothInput
           label="사용 실 / 바늘 정보"
           value={yarnNeedle}
           onChange={(e) => setYarnNeedle(e.target.value)}
           placeholder="예: 메리노 울 100%, 코바늘 4.5mm"
+          className="border-stone-200"
         />
 
         <Textarea

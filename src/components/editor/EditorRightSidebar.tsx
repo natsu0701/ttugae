@@ -124,14 +124,14 @@ export default function EditorRightSidebar({
       <button
         type="button"
         onClick={toggle}
-        className="absolute -left-3 top-1/2 z-30 -translate-y-1/2 cursor-pointer rounded-full bg-white p-1 shadow-[0_8px_30px_rgba(252,95,83,0.025)] transition-all hover:bg-black hover:text-white"
+        className="absolute -left-3 top-1/2 z-30 -translate-y-1/2 cursor-pointer rounded-full border border-stone-600/80 bg-stone-700 p-1 text-stone-100 transition-all hover:border-stone-500 hover:bg-stone-600 hover:text-white"
         aria-label={isCollapsed ? "사이드바 열기" : "사이드바 닫기"}
         title={isCollapsed ? "사이드바 열기" : "사이드바 닫기"}
       >
         {isCollapsed ? (
-          <ChevronRight className="h-4 w-4 text-stone-600" strokeWidth={2} />
+          <ChevronRight className="h-4 w-4" strokeWidth={2} />
         ) : (
-          <ChevronLeft className="h-4 w-4 text-stone-600" strokeWidth={2} />
+          <ChevronLeft className="h-4 w-4" strokeWidth={2} />
         )}
       </button>
 
@@ -140,12 +140,12 @@ export default function EditorRightSidebar({
         aria-orientation="vertical"
         aria-label="사이드바 너비 조절"
         onMouseDown={onMouseDown}
-        className="absolute left-0 top-0 z-20 h-full w-1 cursor-col-resize transition-colors hover:bg-pink-300"
+        className="absolute left-0 top-0 z-20 h-full w-1 cursor-col-resize transition-colors hover:bg-coral/40"
       />
 
       <motion.aside
         layout
-        className="relative h-full overflow-hidden bg-stone-100/80"
+        className="relative h-full overflow-hidden border-l border-stone-800/80 bg-stone-800"
         initial={false}
         animate={{ width: isCollapsed ? 0 : sidebarWidth }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}

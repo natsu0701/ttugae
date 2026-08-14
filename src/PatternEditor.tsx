@@ -19,10 +19,11 @@ import ColorChipMenu from "./components/editor/ColorChipMenu.tsx";
 import SelectionColorsPanel from "./components/editor/SelectionColorsPanel.tsx";
 import WorkshopPalettePanel from "./components/editor/WorkshopPalettePanel.tsx";
 import TteuniChatbot from "./components/editor/TteuniChatbot.tsx";
-import EditorOnboardingSpotlight from "./components/editor/EditorOnboardingSpotlight.tsx";
 import YarnSearchPopover from "./components/editor/YarnSearchPopover.tsx";
+import EditorOnboardingSpotlight from "./components/editor/EditorOnboardingSpotlight.tsx";
+import GiftPackagingAnimation from "./components/ui/GiftPackagingAnimation.tsx";
 import { applyAiPatternFromMessage, getTteuniReply } from "./utils/aiPatternApply.ts";
-import Button from "./components/ui/Button.tsx";
+import { editorChromeBtn, editorChromeBtnActive, editorChromeTone, editorPanel } from "./components/ui/tabButtonStyles.ts";
 import { BASE_EDITOR_YARNS } from "./data/baseEditorYarns.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
 import { symbolColorForBackground } from "./utils/colorContrast.ts";
@@ -136,7 +137,7 @@ function isCheckerCell(r: number, c: number) {
 export default function PatternEditor({
   initialPattern,
   onSave,
-  onShare,
+  onShare: _onShare,
   onExit,
   onGoDashboard,
 }: PatternEditorProps) {
@@ -156,6 +157,7 @@ export default function PatternEditor({
   const [activeWorkshopPaletteId, setActiveWorkshopPaletteId] = useState<string | null>(null);
   const [castOnOpen, setCastOnOpen] = useState(false);
   const [castOnMode, setCastOnMode] = useState<"replace" | "add">("replace");
+  const [isPackOpen, setIsPackOpen] = useState(false);
   const [activeColor, setActiveColor] = useState<string>("coral");
   const [activeStitch, setActiveStitch] = useState<string>("knit");
   const [tool, setTool] = useState<Tool>("paint");
@@ -433,16 +435,18 @@ export default function PatternEditor({
 
   const handleSave = () => {
     onSave(buildPatternPayload());
+    setIsPackOpen(true);
   };
 
   const handleShareToCommunity = () => {
-    onShare({
-      pattern: buildPatternPayload(),
-      yarns: usedYarns.length > 0 ? usedYarns : paletteYarns.slice(0, 3),
-      colorMap,
-      gridRows,
-      gridCols,
-    });
+    onSave(buildPatternPayload());
+    setIsPackOpen(true);
+  };
+
+  const handleGoVault = () => {
+    onSave(buildPatternPayload());
+    setIsPackOpen(false);
+    onGoDashboard();
   };
 
   const handleAiMessage = useCallback(
@@ -518,7 +522,7 @@ export default function PatternEditor({
 
   return (
     <div
-      className="flex h-screen flex-col overflow-hidden bg-[#FFFBF7] font-sans text-gray-900"
+      className="flex h-screen flex-col overflow-hidden bg-stone-800 font-sans text-stone-100"
       onPointerUp={endDrag}
       onPointerLeave={endDrag}
     >
@@ -567,10 +571,10 @@ export default function PatternEditor({
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <aside
           ref={leftToolbarRef}
-          className="scrollbar-thin flex h-[calc(100vh-64px)] w-[200px] shrink-0 flex-col gap-4 overflow-y-auto bg-stone-100/80 p-3 md:p-4"
+          className="scrollbar-thin flex h-[calc(100vh-4rem)] w-[200px] shrink-0 flex-col gap-4 overflow-y-auto border-r border-stone-800/80 bg-stone-800 p-3 pb-8 md:p-5 md:pb-8"
         >
           <div>
-            <p className="mb-2 font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
+            <p className="mb-2 font-sans text-xs font-normal uppercase tracking-wide text-stone-400">
               {t("editor.drawingTools")}
             </p>
             <div className="flex flex-col gap-2">
@@ -583,10 +587,8 @@ export default function PatternEditor({
                     type="button"
                     onClick={() => setTool(toolItem.id)}
                     title={t(`editor.tools.${toolItem.id}`)}
-                    className={`flex items-center gap-2 rounded-full px-3 py-2 font-sans text-sm font-normal transition-colors duration-200 ${
-                      isActive
-                        ? "bg-coral text-white"
-                        : "bg-white text-gray-700 hover:bg-black hover:text-white"
+                    className={`flex items-center gap-2 px-3 py-2 font-sans text-sm font-normal ${
+                      isActive ? editorChromeBtnActive : editorChromeBtn
                     }`}
                   >
                     <ToolIcon className="h-5 w-5 shrink-0" strokeWidth={2} aria-hidden />
@@ -596,14 +598,18 @@ export default function PatternEditor({
               })}
             </div>
             {tool === "select" && selection && (
-              <Button variant="primary" fullWidth onClick={fillSelection} className="mt-2 px-3 py-2 text-sm">
+              <button
+                type="button"
+                onClick={fillSelection}
+                className={`mt-2 w-full px-3 py-2 font-sans text-sm font-normal ${editorChromeBtn}`}
+              >
                 {t("editor.fillSelection")}
-              </Button>
+              </button>
             )}
           </div>
 
           <div>
-            <p className="mb-2 font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
+            <p className="mb-2 font-sans text-xs font-normal uppercase tracking-wide text-stone-400">
               {t("editor.symbolPalette")}
             </p>
             <div className="grid grid-cols-2 gap-1.5">
@@ -612,10 +618,8 @@ export default function PatternEditor({
                   key={s.id}
                   type="button"
                   onClick={() => setActiveStitch(s.id)}
-                  className={`flex flex-col items-center rounded-xl px-1.5 py-2 font-sans text-xs font-normal transition-colors duration-200 ${
-                    activeStitch === s.id
-                      ? "bg-coral text-white"
-                      : "bg-white text-gray-700 hover:bg-black hover:text-white"
+                  className={`flex flex-col items-center px-1.5 py-2 font-sans text-xs font-normal ${
+                    activeStitch === s.id ? editorChromeBtnActive : editorChromeBtn
                   }`}
                 >
                   <span className="text-base">{s.symbol}</span>
@@ -631,7 +635,7 @@ export default function PatternEditor({
                 setCastOnMode("replace");
                 setCastOnOpen(true);
               }}
-              className="mt-2 w-full rounded-xl bg-white px-3 py-2.5 font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
+              className={`mt-2 w-full px-3 py-2.5 font-sans text-xs font-normal ${editorChromeBtn}`}
             >
               {t("editor.castOnButton")}
             </button>
@@ -641,7 +645,7 @@ export default function PatternEditor({
                 setCastOnMode("replace");
                 setCastOnOpen(true);
               }}
-              className="mt-1.5 w-full rounded-xl bg-white px-3 py-2.5 font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
+              className={`mt-1.5 w-full px-3 py-2.5 font-sans text-xs font-normal ${editorChromeBtn}`}
             >
               {t("editor.gaugeButton")}
             </button>
@@ -654,7 +658,7 @@ export default function PatternEditor({
           </div>
 
           <div ref={yarnPaletteRef} className="relative">
-            <p className="mb-2 font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
+            <p className="mb-2 font-sans text-xs font-normal uppercase tracking-wide text-stone-400">
               {t("editor.yarnColors")}
             </p>
             <div className="grid grid-cols-3 gap-1.5">
@@ -673,7 +677,7 @@ export default function PatternEditor({
             <button
               type="button"
               onClick={() => setYarnSearchOpen((o) => !o)}
-              className="mt-2 w-full rounded-xl bg-white px-3 py-2 font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
+              className={`mt-2 w-full px-3 py-2 font-sans text-xs font-normal ${editorChromeBtn}`}
             >
               {t("editor.addYarn")}
             </button>
@@ -699,11 +703,11 @@ export default function PatternEditor({
           />
         </aside>
 
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center overflow-auto bg-[#FFFBF7] p-4 md:p-6">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center overflow-auto bg-[#F7F5F0] p-4 md:p-8">
         <div className="flex w-full max-w-full justify-center px-1">
           <div
             ref={canvasRef}
-            className="flex aspect-square w-full max-w-[min(100%,32rem)] items-center justify-center rounded-2xl bg-stone-100/80 p-3 shadow-[0_8px_30px_rgba(252,95,83,0.025)]"
+            className="flex aspect-square w-full max-w-[min(100%,32rem)] items-center justify-center rounded-3xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.06)]"
           >
             <div
               className="max-h-full max-w-full"
@@ -762,7 +766,7 @@ export default function PatternEditor({
             </div>
           </div>
         </div>
-        <p className="mt-3 font-rounded text-sm font-normal text-gray-500">{toolHint}</p>
+        <p className="mt-3 font-rounded text-sm font-normal text-stone-500">{toolHint}</p>
         </main>
 
         <EditorRightSidebar>
@@ -777,15 +781,15 @@ export default function PatternEditor({
             <div ref={chatbotPanelRef}>
               <TteuniChatbot onUserMessage={handleAiMessage} />
             </div>
-            <div className="relative min-w-0 rounded-2xl bg-[#FFFBF7] p-4 shadow-[0_8px_30px_rgba(252,95,83,0.025)]">
+            <div className={`relative min-w-0 p-4 ${editorPanel}`}>
               <div className="mb-2 flex shrink-0 items-center justify-between gap-2">
-                <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
+                <p className="font-sans text-xs font-normal uppercase tracking-wide text-stone-400">
                   {t("editor.narrativePreview")}
                 </p>
                 <button
                   type="button"
                   onClick={() => void copyPatternText()}
-                  className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-600 shadow-[0_8px_30px_rgba(252,95,83,0.025)] transition-colors duration-200 hover:bg-black hover:text-white"
+                  className={`relative flex h-8 w-8 items-center justify-center rounded-full ${editorChromeTone}`}
                   aria-label="서술형 텍스트 복사"
                   title={patternCopyDone ? "복사 완료!" : "복사하기"}
                 >
@@ -801,13 +805,20 @@ export default function PatternEditor({
                   ) : null}
                 </button>
               </div>
-              <pre className="scrollbar-thin max-h-[200px] min-w-0 overflow-x-hidden overflow-y-auto break-keep break-words whitespace-pre-wrap font-sans text-xs font-normal leading-relaxed text-gray-600 md:max-h-[240px]">
+              <pre className="scrollbar-thin max-h-[200px] min-w-0 overflow-x-hidden overflow-y-auto break-keep break-words whitespace-pre-wrap font-sans text-xs font-normal leading-relaxed text-stone-200 md:max-h-[240px]">
                 {patternText}
               </pre>
             </div>
           </div>
         </EditorRightSidebar>
       </div>
+
+      <GiftPackagingAnimation
+        isOpen={isPackOpen}
+        onClose={() => setIsPackOpen(false)}
+        patternTitle={title}
+        onGoVault={handleGoVault}
+      />
     </div>
   );
 }

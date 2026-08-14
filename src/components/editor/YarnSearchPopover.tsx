@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { searchYarnCatalog } from "../../data/yarnCatalog.ts";
 import type { EditorYarn, YarnCatalogEntry } from "../../types/editorYarn.ts";
-import { softShadow } from "../ui/tabButtonStyles.ts";
+import SmoothInput from "../ui/SmoothInput.tsx";
 
 type YarnSearchPopoverProps = {
   open: boolean;
@@ -88,19 +88,20 @@ export default function YarnSearchPopover({
   return (
     <div
       ref={panelRef}
-      className={`absolute left-0 right-0 top-full z-30 mt-2 rounded-xl bg-white p-3 ${softShadow}`}
+      className="absolute left-0 right-0 top-full z-30 mt-2 rounded-xl border border-stone-600/80 bg-stone-800 p-3"
       role="dialog"
       aria-label="실 검색"
     >
-      <label className="mb-1.5 block font-sans text-xs font-bold text-gray-900">
+      <label className="mb-1.5 block font-sans text-xs font-bold text-stone-100">
         실 검색
       </label>
-      <p className="mb-2 font-rounded text-[11px] font-normal text-gray-500">
+      <p className="mb-2 font-rounded text-[11px] font-normal text-stone-400">
         브랜드·종류(메리노울, 모헤어 등)를 입력해 보세요
       </p>
-      <input
+      <SmoothInput
         ref={inputRef}
         type="text"
+        tone="dark"
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
@@ -108,12 +109,12 @@ export default function YarnSearchPopover({
         }}
         onKeyDown={onKeyDown}
         placeholder="예: 메리노울, 모헤어"
-        className={`w-full rounded-xl bg-gray-50 px-3 py-2.5 font-sans text-sm font-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow}`}
+        className="rounded-xl border-stone-700/80 px-3 py-2.5 text-sm"
       />
 
       <ul className="mt-2 max-h-48 overflow-y-auto hide-scrollbar" role="listbox">
         {results.length === 0 ? (
-          <li className="px-2 py-3 font-rounded text-xs font-normal text-gray-500">
+          <li className="px-2 py-3 font-rounded text-xs font-normal text-stone-500">
             검색 결과가 없어요. 다른 키워드를 입력해 보세요.
           </li>
         ) : (
@@ -129,7 +130,7 @@ export default function YarnSearchPopover({
                   onMouseEnter={() => setHighlight(i)}
                   onClick={() => pick(entry)}
                   className={`flex w-full items-center gap-2.5 rounded-xl px-2 py-2 text-left transition-colors ${
-                    i === highlight ? "bg-gray-50" : "hover:bg-gray-50"
+                    i === highlight ? "bg-stone-800" : "hover:bg-stone-800"
                   }`}
                 >
                   <span
@@ -137,10 +138,10 @@ export default function YarnSearchPopover({
                     style={{ backgroundColor: entry.hex }}
                   />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-sans text-sm font-normal text-gray-900">
+                    <span className="block truncate font-sans text-sm font-normal text-stone-100">
                       {entry.name}
                     </span>
-                    <span className="block truncate font-rounded text-[11px] font-normal text-gray-500">
+                    <span className="block truncate font-rounded text-[11px] font-normal text-stone-400">
                       {entry.brand} · {entry.fiberType}
                       {added ? " · 팔레트에 있음" : ""}
                     </span>

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
-import { softShadow } from "../ui/tabButtonStyles.ts";
+import { loadYarnInventory } from "../../utils/personalizationStorage.ts";
+import SmoothInput from "../ui/SmoothInput.tsx";
+import { editorPanel } from "../ui/tabButtonStyles.ts";
 
 export type ChatMessage = {
   id: string;
@@ -30,7 +32,24 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
       { id: `u-${Date.now()}`, role: "user", text },
     ]);
     setInput("");
-    const reply = onUserMessage(text);
+    let reply = onUserMessage(text);
+    const askedInventory = /보관함|재고|내 실|바늘|모카|그램/.test(text);
+    if (askedInventory) {
+      const stock = loadYarnInventory();
+      if (stock.length > 0) {
+        const list = stock
+          .map((y) => {
+            const bits = [y.name];
+            if (y.grams) bits.push(`${y.grams}g`);
+            if (y.needle) bits.push(y.needle);
+            return bits.join(" ");
+          })
+          .join(", ");
+        reply = `${reply}\n\n보관함에 등록된 실은 ${list}입니다. 이 재고를 기준으로 가늠해 봤어요.`;
+      } else {
+        reply = `${reply}\n\n아직 실 장고 보관함이 비어 있어요. 마이페이지 설정에서 잔량을 등록하면 더 정확히 가늠할 수 있어요.`;
+      }
+    }
     window.setTimeout(() => {
       setMessages((prev) => [
         ...prev,
@@ -47,8 +66,8 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
   };
 
   return (
-    <div className={`rounded-2xl bg-white/80 p-4 ${softShadow}`}>
-      <p className="mb-3 font-sans text-sm font-bold text-gray-900">뜨니 AI</p>
+    <div className={`${editorPanel} p-4`}>
+      <p className="mb-3 font-sans text-sm font-bold text-white">뜨니 AI</p>
 
       <div
         ref={listRef}
@@ -61,8 +80,8 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
               alt="뜨니"
               className="h-10 w-10 shrink-0 object-contain"
             />
-            <div className="rounded-2xl rounded-tl-sm bg-stone-100 px-3 py-2.5">
-              <p className="font-rounded text-sm font-normal leading-relaxed text-gray-700">
+            <div className="rounded-2xl rounded-tl-sm border border-stone-600/80 bg-stone-700 px-3 py-2.5">
+              <p className="font-rounded text-sm font-normal leading-relaxed text-stone-100">
                 가을용 가디건 도안 생성해줘, 라고 말해보세요!
               </p>
             </div>
@@ -85,12 +104,12 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
                 className={`max-w-[85%] rounded-2xl px-3 py-2 ${
                   msg.role === "user"
                     ? "rounded-tr-sm bg-coral text-white"
-                    : "rounded-tl-sm bg-stone-100 text-gray-700"
+                    : "rounded-tl-sm border border-stone-600/80 bg-stone-700 text-stone-100"
                 }`}
               >
                 <p
                   className={`font-rounded text-sm font-normal leading-relaxed ${
-                    msg.role === "user" ? "text-white" : "text-gray-700"
+                    msg.role === "user" ? "text-white" : "text-stone-100"
                   }`}
                 >
                   {msg.text}
@@ -102,18 +121,19 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
       </div>
 
       <div className="flex gap-2">
-        <input
+        <SmoothInput
           type="text"
+          tone="dark"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder="뜨니에게 요청하기..."
-          className={`min-w-0 flex-1 rounded-xl bg-gray-50 px-3 py-2.5 font-sans text-sm font-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow}`}
+          className="min-w-0 flex-1 rounded-xl border-stone-700/80 px-3 py-2.5 text-sm"
         />
         <button
           type="button"
           onClick={submit}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral text-white shadow-sm shadow-gray-200/50 transition-colors hover:bg-black"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral text-white transition-colors hover:bg-black"
           aria-label="전송"
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>

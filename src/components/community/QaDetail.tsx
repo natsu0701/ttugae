@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../ui/Button.tsx";
-import Input from "../ui/Input.tsx";
+import SmoothInput from "../ui/SmoothInput.tsx";
 import {
   getAnswersForPost,
   type QaAnswer,
@@ -68,8 +68,8 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-16 font-sans text-gray-900">
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm">
+    <div className="min-h-screen bg-white pb-16 pt-20 font-sans text-gray-900 md:pt-24">
+      <header className="sticky top-20 z-40 bg-white/95 backdrop-blur-sm md:top-24">
         <div className="mx-auto flex max-w-3xl items-center px-5 py-4 md:px-8">
           <button
             type="button"
@@ -181,11 +181,11 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
               답변 작성
             </label>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
-              <Input
+              <SmoothInput
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="도움이 되는 답변을 남겨 주세요"
-                className="flex-1"
+                className="flex-1 border-stone-200"
               />
               <Button type="submit" variant="primary" className="shrink-0 px-4 py-2">
                 등록

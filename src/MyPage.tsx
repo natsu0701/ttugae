@@ -1,12 +1,13 @@
 import { useMemo, useRef, useState, type FC } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "./components/ui/Button.tsx";
-import Input from "./components/ui/Input.tsx";
+import SmoothInput from "./components/ui/SmoothInput.tsx";
 import PatternCard from "./components/community/PatternCard.tsx";
 import MyPatternsPanel from "./components/mypage/MyPatternsPanel.tsx";
 import FinishedWorksGallery from "./components/mypage/FinishedWorksGallery.tsx";
 import SettingsPanel from "./components/mypage/SettingsPanel.tsx";
 import ProfileStatsSummary from "./components/mypage/ProfileStatsSummary.tsx";
+import ProfileBadgeCustomizer from "./components/ui/ProfileBadgeCustomizer.tsx";
 import StatsDetailPanel from "./components/mypage/StatsDetailPanel.tsx";
 import { useCommunityActions } from "./context/CommunityActionsContext.tsx";
 import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
@@ -90,7 +91,6 @@ function PatternGallery({
         <PatternCard
           key={pattern.id}
           pattern={pattern}
-          viewMode="pattern"
           onImport={onImport}
           showImportOverlay
         />
@@ -155,7 +155,8 @@ function ProfilePanel({
   };
 
   return (
-    <div className="max-w-lg">
+    <div>
+      <div className="max-w-lg">
       <h2 className="font-sans text-2xl font-bold text-gray-900">
         {t("mypage.profile.title")}
       </h2>
@@ -201,38 +202,45 @@ function ProfilePanel({
           <label className="mb-1.5 block font-sans text-sm font-normal text-gray-700">
             {t("mypage.profile.nickname")}
           </label>
-          <Input value={nickname} onChange={(e) => setNickname(e.target.value)} />
+          <SmoothInput
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            className="border-stone-200"
+          />
         </div>
         <div>
           <label className="mb-1.5 block font-sans text-sm font-normal text-gray-700">
             {t("mypage.profile.email")}
           </label>
-          <Input
+          <SmoothInput
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="border-stone-200"
           />
         </div>
         <div>
           <label className="mb-1.5 block font-sans text-sm font-normal text-gray-700">
             {t("mypage.profile.newPassword")}
           </label>
-          <Input
+          <SmoothInput
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={t("mypage.profile.passwordPlaceholder")}
+            className="border-stone-200"
           />
         </div>
         <div>
           <label className="mb-1.5 block font-sans text-sm font-normal text-gray-700">
             {t("mypage.profile.confirmPassword")}
           </label>
-          <Input
+          <SmoothInput
             type="password"
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
             placeholder={t("mypage.profile.confirmPlaceholder")}
+            className="border-stone-200"
           />
         </div>
         <Button type="submit" className="w-fit px-4 py-2">
@@ -246,6 +254,11 @@ function ProfilePanel({
         finishedCount={finishedCount}
         savedCount={savedCount}
       />
+      </div>
+
+      <div className="mt-10">
+        <ProfileBadgeCustomizer />
+      </div>
 
       <div className="mt-10 border-t border-gray-100 pt-8 md:hidden">
         <p className="mb-3 font-sans text-sm font-bold text-gray-900">

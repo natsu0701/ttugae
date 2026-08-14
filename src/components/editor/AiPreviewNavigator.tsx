@@ -6,6 +6,7 @@ import type { KnittingChart } from "../../types/knittingProject.ts";
 import Knitting3DPreview, {
   type KnitItemType,
 } from "./Knitting3DPreview.tsx";
+import { editorChromeTone, editorPanel } from "../ui/tabButtonStyles.ts";
 
 type AiPreviewNavigatorProps = {
   grid: EditorCell[][];
@@ -40,12 +41,12 @@ export default function AiPreviewNavigator({
   }, [yarnMeta]);
 
   return (
-    <div className="rounded-2xl bg-white/80 p-4 shadow-[0_8px_30px_rgba(252,95,83,0.025)]">
-      <p className="mb-1 font-sans text-sm font-bold text-gray-900">
+    <div className={`${editorPanel} p-4`}>
+      <p className="mb-1 font-sans text-sm font-bold text-white">
         {t("editor.preview3d")}
       </p>
       {metaHint && (
-        <p className="mb-2 font-rounded text-[11px] font-normal leading-snug text-gray-500">
+        <p className="mb-2 font-rounded text-[11px] font-normal leading-snug text-stone-300">
           {metaHint}
         </p>
       )}
@@ -58,10 +59,8 @@ export default function AiPreviewNavigator({
               key={item.id}
               type="button"
               onClick={() => setItemType(item.id)}
-              className={`rounded-full px-2.5 py-1 font-sans text-[11px] font-normal transition-colors duration-200 ${
-                active
-                  ? "bg-coral text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-black hover:text-white"
+              className={`rounded-full px-2.5 py-1 font-sans text-[11px] font-normal ${
+                active ? "border border-coral bg-coral text-white" : editorChromeTone
               }`}
             >
               {item.label}

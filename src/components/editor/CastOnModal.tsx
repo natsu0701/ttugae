@@ -1,13 +1,14 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../ui/Button.tsx";
-import Input from "../ui/Input.tsx";
+import SmoothInput from "../ui/SmoothInput.tsx";
 import { softShadow } from "../ui/tabButtonStyles.ts";
 import {
   CHART_PART_LABELS,
   type ChartTargetPart,
 } from "../../types/knittingProject.ts";
+import { loadGaugeProfile } from "../../utils/personalizationStorage.ts";
 
 export type CastOnMode = "replace" | "add";
 
@@ -45,6 +46,24 @@ export default function CastOnModal({
   const [afterSts, setAfterSts] = useState("20");
   const [afterRows, setAfterRows] = useState("28");
   const isAdd = mode === "add";
+
+  useEffect(() => {
+    if (!open) return;
+    const saved = loadGaugeProfile();
+    if (!saved) return;
+    if (saved.beforeSts) setBeforeSts(saved.beforeSts);
+    if (saved.beforeRows) setBeforeRows(saved.beforeRows);
+    if (saved.afterSts) setAfterSts(saved.afterSts);
+    if (saved.afterRows) setAfterRows(saved.afterRows);
+    const afterS = Number.parseFloat(saved.afterSts);
+    const afterR = Number.parseFloat(saved.afterRows);
+    if (Number.isFinite(afterS) && afterS > 0) {
+      setW(String(Math.round((STANDARD_BODY_WIDTH_CM / 10) * afterS)));
+    }
+    if (Number.isFinite(afterR) && afterR > 0) {
+      setH(String(Math.round((60 / 10) * afterR)));
+    }
+  }, [open]);
 
   const recommended = useMemo(() => {
     const afterS = Number.parseFloat(afterSts);
@@ -109,11 +128,11 @@ export default function CastOnModal({
                   <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
                     {t("editor.castOn.nameLabel")}
                   </label>
-                  <Input
+                  <SmoothInput
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={CHART_PART_LABELS[targetPart]}
-                    className="bg-white py-2 text-sm"
+                    className="border-stone-200 bg-white py-2 text-sm"
                   />
                 </div>
                 <div>
@@ -150,20 +169,20 @@ export default function CastOnModal({
                     {t("editor.castOn.gaugeBefore")}
                   </p>
                   <div className="flex gap-2">
-                    <Input
+                    <SmoothInput
                       value={beforeSts}
                       onChange={(e) => setBeforeSts(e.target.value)}
                       inputMode="numeric"
                       placeholder="코"
-                      className="bg-white py-1.5 text-sm"
+                      className="border-stone-200 bg-white py-1.5 text-sm"
                       aria-label={t("editor.castOn.gaugeSts")}
                     />
-                    <Input
+                    <SmoothInput
                       value={beforeRows}
                       onChange={(e) => setBeforeRows(e.target.value)}
                       inputMode="numeric"
                       placeholder="단"
-                      className="bg-white py-1.5 text-sm"
+                      className="border-stone-200 bg-white py-1.5 text-sm"
                       aria-label={t("editor.castOn.gaugeRows")}
                     />
                   </div>
@@ -173,20 +192,20 @@ export default function CastOnModal({
                     {t("editor.castOn.gaugeAfter")}
                   </p>
                   <div className="flex gap-2">
-                    <Input
+                    <SmoothInput
                       value={afterSts}
                       onChange={(e) => setAfterSts(e.target.value)}
                       inputMode="numeric"
                       placeholder="코"
-                      className="bg-white py-1.5 text-sm"
+                      className="border-stone-200 bg-white py-1.5 text-sm"
                       aria-label={t("editor.castOn.gaugeSts")}
                     />
-                    <Input
+                    <SmoothInput
                       value={afterRows}
                       onChange={(e) => setAfterRows(e.target.value)}
                       inputMode="numeric"
                       placeholder="단"
-                      className="bg-white py-1.5 text-sm"
+                      className="border-stone-200 bg-white py-1.5 text-sm"
                       aria-label={t("editor.castOn.gaugeRows")}
                     />
                   </div>
@@ -227,24 +246,24 @@ export default function CastOnModal({
                 <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
                   {t("editor.castOn.widthLabel")}
                 </label>
-                <Input
+                <SmoothInput
                   value={w}
                   onChange={(e) => setW(e.target.value)}
                   inputMode="numeric"
                   placeholder="W"
-                  className="bg-white py-2 text-sm"
+                  className="border-stone-200 bg-white py-2 text-sm"
                 />
               </div>
               <div className="flex-1">
                 <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
                   {t("editor.castOn.heightLabel")}
                 </label>
-                <Input
+                <SmoothInput
                   value={h}
                   onChange={(e) => setH(e.target.value)}
                   inputMode="numeric"
                   placeholder="H"
-                  className="bg-white py-2 text-sm"
+                  className="border-stone-200 bg-white py-2 text-sm"
                 />
               </div>
             </div>

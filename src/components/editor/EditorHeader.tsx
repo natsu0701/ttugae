@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
-import Input from "../ui/Input.tsx";
+import SmoothInput from "../ui/SmoothInput.tsx";
 import { UserFillIcon } from "../icons/FillIcons.tsx";
-import { softShadow } from "../ui/tabButtonStyles.ts";
+import { editorChromeBtn, editorChromeBtnActive, editorChromeTone } from "../ui/tabButtonStyles.ts";
 
 const SIZE_PRESETS = [
   { label: "10 × 10", w: 10, h: 10 },
@@ -50,14 +50,12 @@ export default function EditorHeader({
   const { t } = useTranslation();
 
   return (
-    <header
-      className={`relative z-20 flex h-14 shrink-0 items-center bg-[#FFFBF7] px-4 md:px-5 ${softShadow}`}
-    >
+    <header className="relative z-20 flex h-16 shrink-0 items-center border-b border-stone-800/80 bg-stone-950 px-4 md:px-6">
       <div className="z-10 flex shrink-0 items-center">
         <button
           type="button"
           onClick={onExit}
-          className={`flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-700 transition-colors hover:bg-black hover:text-white ${softShadow}`}
+          className={`flex h-10 w-10 items-center justify-center ${editorChromeBtn}`}
           aria-label={t("editor.exitAria")}
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
@@ -68,12 +66,14 @@ export default function EditorHeader({
 
       <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-2 md:gap-3">
         <div className="pointer-events-auto">
-          <Input
+          <SmoothInput
+            type="text"
+            tone="dark"
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
             placeholder={t("editor.patternNamePlaceholder")}
-            className="w-[9.5rem] py-1.5 text-center text-sm font-bold sm:w-44 md:w-52"
             aria-label={t("editor.patternName")}
+            className="h-10 w-64 rounded-xl border-stone-700/80 bg-stone-950 px-4 py-1.5 text-sm font-semibold tracking-normal placeholder:text-stone-500"
           />
         </div>
 
@@ -81,57 +81,55 @@ export default function EditorHeader({
           <button
             type="button"
             onClick={onToggleSizeMenu}
-            className={`whitespace-nowrap rounded-full bg-white px-3 py-1.5 font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white md:px-4 md:text-sm ${softShadow}`}
+            className={`${editorChromeBtn} whitespace-nowrap px-3 py-1.5 font-sans text-xs font-medium md:px-4 md:text-sm`}
           >
             {t("editor.sizeLabel", { cols: gridCols, rows: gridRows })}
           </button>
           {sizeMenuOpen && (
-            <div
-              className={`absolute left-1/2 top-full z-30 mt-2 w-56 -translate-x-1/2 rounded-2xl bg-[#FFFBF7] p-3 md:w-64 ${softShadow}`}
-            >
-              <p className="mb-2 font-sans text-xs font-normal text-gray-500">
+            <div className="absolute left-1/2 top-full z-30 mt-2 w-56 -translate-x-1/2 rounded-2xl border border-stone-600/80 bg-stone-700 p-3 md:w-64">
+              <p className="mb-2 font-sans text-xs font-normal text-stone-400">
                 {t("editor.sizePresetsTitle")}
               </p>
               {SIZE_PRESETS.map((preset) => {
                 const active = preset.w === gridCols && preset.h === gridRows;
                 return (
-                <button
-                  key={preset.label}
-                  type="button"
-                  onClick={() => onApplySize(preset.w, preset.h)}
-                  className={`mb-1 w-full rounded-full px-3 py-2 text-left font-sans text-sm font-normal transition-colors ${
-                    active
-                      ? "bg-coral text-white"
-                      : "bg-stone-100 text-gray-700 hover:bg-black hover:text-white"
-                  }`}
-                >
-                  {preset.label}
-                </button>
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => onApplySize(preset.w, preset.h)}
+                    className={`mb-1 w-full px-3 py-2 text-left font-sans text-sm font-normal ${
+                      active ? editorChromeBtnActive : editorChromeBtn
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
                 );
               })}
-              <p className="mb-2 mt-3 font-sans text-xs font-normal text-gray-500">
+              <p className="mb-2 mt-3 font-sans text-xs font-normal text-stone-400">
                 {t("editor.sizeCustomTitle")}
               </p>
               <div className="flex gap-2">
-                <Input
+                <SmoothInput
+                  tone="dark"
                   value={customW}
                   onChange={(e) => onCustomWChange(e.target.value)}
                   placeholder="W"
-                  className="py-1.5 text-sm"
+                  className="rounded-xl border-stone-700/80 py-1.5 text-sm"
                   inputMode="numeric"
                 />
-                <Input
+                <SmoothInput
+                  tone="dark"
                   value={customH}
                   onChange={(e) => onCustomHChange(e.target.value)}
                   placeholder="H"
-                  className="py-1.5 text-sm"
+                  className="rounded-xl border-stone-700/80 py-1.5 text-sm"
                   inputMode="numeric"
                 />
               </div>
               <Button
                 variant="primary"
                 fullWidth
-                className="mt-2 py-2 text-sm"
+                className="mt-2 bg-coral py-2 text-sm text-white hover:bg-black"
                 onClick={() => {
                   const w = parseInt(customW, 10);
                   const h = parseInt(customH, 10);
@@ -146,20 +144,24 @@ export default function EditorHeader({
       </div>
 
       <div className="z-10 ml-auto flex shrink-0 items-center gap-2">
-        <Button type="button" onClick={onSave} className="px-3 py-2 text-sm">
+        <button
+          type="button"
+          onClick={onSave}
+          className={`${editorChromeBtn} px-4 py-2 font-sans text-sm font-semibold`}
+        >
           {t("editor.save")}
-        </Button>
+        </button>
         <button
           type="button"
           onClick={onShare}
-          className="rounded-full bg-coral px-4 py-2 font-sans text-sm font-normal text-white transition-colors hover:bg-black"
+          className="rounded-xl bg-coral px-4 py-2 font-sans text-sm font-bold text-white transition-colors hover:bg-black"
         >
           {t("editor.share")}
         </button>
         <button
           type="button"
           onClick={onGoMypage}
-          className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200 ${softShadow} bg-white text-gray-700 hover:bg-black hover:text-white`}
+          className={`flex h-10 w-10 items-center justify-center rounded-full ${editorChromeTone}`}
           aria-label={t("editor.mypageAria")}
         >
           <UserFillIcon className="h-5 w-5" />
