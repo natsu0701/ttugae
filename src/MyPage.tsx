@@ -276,7 +276,7 @@ export default function MyPage({
     <div className="pb-16">
       <div className="mx-auto max-w-6xl px-5 pt-8 md:px-8">
         <WelcomeBanner
-          chip="MY PAGE 🧶"
+          chip="MY PAGE"
           title={t("mypage.title")}
           subtitle={t("mypage.subtitle")}
           image={TTEUNI_IMAGES.feature}

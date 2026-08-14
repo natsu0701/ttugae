@@ -16,7 +16,7 @@ export default function ChartTabs({
   onAdd,
 }: ChartTabsProps) {
   return (
-    <div className="flex shrink-0 items-center gap-1 overflow-x-auto border-b border-pink-100 bg-white px-3 py-1.5">
+    <div className="flex shrink-0 items-center gap-1 overflow-x-auto bg-[#FFFBF7] px-3 py-1.5">
       {charts.map((chart) => {
         const active = chart.id === activeChartId;
         return (
@@ -27,7 +27,7 @@ export default function ChartTabs({
             className={`max-w-[9.5rem] shrink-0 truncate rounded-full px-2.5 py-1 font-sans text-[11px] font-normal transition-colors duration-200 ${
               active
                 ? "bg-coral text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-black hover:text-white"
+                : "bg-stone-100 text-gray-600 hover:bg-black hover:text-white"
             }`}
             title={`${chart.name} · ${CHART_PART_LABELS[chart.targetPart]}`}
           >
@@ -38,7 +38,7 @@ export default function ChartTabs({
       <button
         type="button"
         onClick={onAdd}
-        className="flex shrink-0 items-center gap-0.5 rounded-full bg-white px-2 py-1 font-sans text-[11px] font-normal text-coral transition-colors hover:bg-pink-50"
+        className="flex shrink-0 items-center gap-0.5 rounded-full bg-white px-2 py-1 font-sans text-[11px] font-normal text-gray-600 transition-colors hover:bg-black hover:text-white"
       >
         <Plus className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden />
         도안 추가

@@ -7,7 +7,7 @@ type ColorChipMenuProps = {
   onSelect?: () => void;
   onChangeColor: (colorId: string, hex: string) => void;
   onDeleteFromCanvas: (colorId: string) => void;
-  variant?: "palette" | "compact";
+  variant?: "palette" | "compact" | "selection";
 };
 
 export default function ColorChipMenu({
@@ -34,9 +34,13 @@ export default function ColorChipMenu({
   }, [open]);
 
   const chipClass =
-    variant === "compact"
-      ? "h-6 w-6 rounded-md"
-      : "h-full w-full rounded-lg min-h-[2rem]";
+    variant === "selection"
+      ? "h-7 w-7 rounded-md"
+      : variant === "compact"
+        ? "h-6 w-6 rounded-md"
+        : "h-full w-full rounded-lg min-h-[2rem]";
+
+  const hexValue = yarn.hex.startsWith("#") ? yarn.hex.slice(0, 7) : `#${yarn.hex.slice(0, 6)}`;
 
   return (
     <div ref={rootRef} className="relative">
@@ -45,12 +49,15 @@ export default function ColorChipMenu({
         title={yarn.label}
         onClick={() => {
           onSelect?.();
+          if (variant === "selection") return;
           setOpen((o) => !o);
         }}
-        className={`flex items-center justify-center transition-colors ${
+        className={`relative flex items-center justify-center overflow-hidden transition-colors ${
           variant === "palette"
-            ? `aspect-square w-full rounded-xl ${isActive ? "bg-coral p-0.5" : "bg-transparent"}`
-            : `rounded-lg bg-white p-1 ${isActive ? "ring-2 ring-coral" : ""}`
+            ? `aspect-square w-full rounded-xl ${isActive ? "bg-coral p-0.5" : "bg-transparent hover:bg-black/5"}`
+            : variant === "selection"
+              ? `rounded-lg p-0.5 ${isActive ? "bg-coral" : "bg-white hover:bg-black"}`
+              : `rounded-lg bg-white p-1 ${isActive ? "bg-coral p-0.5" : ""}`
         }`}
       >
         <span
@@ -58,21 +65,29 @@ export default function ColorChipMenu({
           style={{ backgroundColor: yarn.hex }}
         />
       </button>
+      {variant === "selection" ? (
+        <input
+          type="color"
+          aria-label={`${yarn.label} 색 변경`}
+          className="absolute inset-0 cursor-pointer opacity-0"
+          value={hexValue}
+          onChange={(e) => onChangeColor(yarn.id, e.target.value)}
+          onClick={() => onSelect?.()}
+        />
+      ) : null}
 
-      {open && (
-        <div className="absolute left-0 top-full z-50 mt-1 min-w-[7rem] rounded-xl bg-gray-50 p-1">
+      {open && variant !== "selection" && (
+        <div className="absolute left-0 top-full z-50 mt-1 min-w-[7rem] rounded-xl bg-[#FFFBF7] p-1 shadow-[0_8px_30px_rgba(252,95,83,0.025)]">
           <button
             type="button"
             className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
-            onClick={() => {
-              colorInputRef.current?.click();
-            }}
+            onClick={() => colorInputRef.current?.click()}
           >
             변경
           </button>
           <button
             type="button"
-            className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-coral hover:text-white"
+            className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
             onClick={() => {
               onDeleteFromCanvas(yarn.id);
               setOpen(false);
@@ -83,16 +98,18 @@ export default function ColorChipMenu({
         </div>
       )}
 
-      <input
-        ref={colorInputRef}
-        type="color"
-        className="sr-only"
-        value={yarn.hex}
-        onChange={(e) => {
-          onChangeColor(yarn.id, e.target.value);
-          setOpen(false);
-        }}
-      />
+      {variant !== "selection" ? (
+        <input
+          ref={colorInputRef}
+          type="color"
+          className="sr-only"
+          value={hexValue}
+          onChange={(e) => {
+            onChangeColor(yarn.id, e.target.value);
+            setOpen(false);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

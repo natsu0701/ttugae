@@ -19,12 +19,11 @@ function MobileAppPromo() {
         <div className="overflow-hidden rounded-[2.5rem] bg-gray-100">
           <div className="grid items-center gap-10 p-8 md:grid-cols-2 md:gap-12 md:p-12 lg:p-16">
             <div>
-              <h2 className="font-sans text-2xl font-bold leading-snug text-black sm:text-3xl md:text-4xl">
-                실전 뜨개질은 뜨니와 함께!
-                <br />
-                AR 내비게이션 앱
+              <h2 className="flex flex-col gap-2 font-sans text-2xl font-bold leading-none text-black sm:text-3xl md:gap-2.5 md:text-4xl">
+                <span>실전 뜨개질은 뜨니와 함께!</span>
+                <span>AR 내비게이션 앱</span>
               </h2>
-              <p className="mt-5 font-rounded text-base font-normal leading-relaxed text-gray-700 md:text-lg">
+              <p className="mt-5 font-seoyun text-[1.5rem] font-normal leading-tight text-gray-700 md:text-[1.7rem]">
                 웹에서 그린 도안을 앱으로 연동해 보세요. 카메라로 비추면 다음 코를
                 안내해 줍니다.
               </p>

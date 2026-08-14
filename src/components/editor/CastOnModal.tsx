@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../ui/Button.tsx";
@@ -25,6 +25,8 @@ type CastOnModalProps = {
 };
 
 const PARTS = Object.keys(CHART_PART_LABELS) as ChartTargetPart[];
+/** 성인 스웨터 몸통 한 판 표준 폭 (cm) */
+const STANDARD_BODY_WIDTH_CM = 50;
 
 export default function CastOnModal({
   open,
@@ -38,7 +40,24 @@ export default function CastOnModal({
   const [h, setH] = useState("28");
   const [name, setName] = useState("");
   const [targetPart, setTargetPart] = useState<ChartTargetPart>("body");
+  const [beforeSts, setBeforeSts] = useState("22");
+  const [beforeRows, setBeforeRows] = useState("30");
+  const [afterSts, setAfterSts] = useState("20");
+  const [afterRows, setAfterRows] = useState("28");
   const isAdd = mode === "add";
+
+  const recommended = useMemo(() => {
+    const afterS = Number.parseFloat(afterSts);
+    const afterR = Number.parseFloat(afterRows);
+    const beforeS = Number.parseFloat(beforeSts);
+    const beforeR = Number.parseFloat(beforeRows);
+    const safe = (n: number) => (Number.isFinite(n) && n > 0 ? n : 0);
+    const startSts = Math.round((STANDARD_BODY_WIDTH_CM / 10) * safe(afterS));
+    const beforeStartSts = Math.round((STANDARD_BODY_WIDTH_CM / 10) * safe(beforeS));
+    const startRows = Math.round((60 / 10) * safe(afterR));
+    const beforeStartRows = Math.round((60 / 10) * safe(beforeR));
+    return { startSts, beforeStartSts, startRows, beforeStartRows };
+  }, [afterSts, afterRows, beforeSts, beforeRows]);
 
   const handleApply = () => {
     const cols = parseInt(w, 10);
@@ -53,11 +72,16 @@ export default function CastOnModal({
     onClose();
   };
 
+  const applyRecommended = () => {
+    if (recommended.startSts > 0) setW(String(recommended.startSts));
+    if (recommended.startRows > 0) setH(String(recommended.startRows));
+  };
+
   return (
     <AnimatePresence>
       {open && (
         <motion.div
-          className="pointer-events-auto fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-6"
+          className="pointer-events-auto fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/20 p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -66,44 +90,42 @@ export default function CastOnModal({
           aria-modal
         >
           <motion.div
-            className={`w-full max-w-sm rounded-2xl bg-white p-6 ${softShadow}`}
+            className={`max-h-[90vh] w-full max-w-md overflow-y-auto rounded-[1.75rem] bg-[#FFFBF7] p-6 ${softShadow}`}
             initial={{ scale: 0.96, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.96, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="font-sans text-xl font-bold text-gray-900">
-              {isAdd ? "서브 도안 만들기" : t("editor.castOn.title")}
+              {isAdd ? t("editor.castOn.addTitle") : t("editor.castOn.title")}
             </h2>
             <p className="mt-2 font-rounded text-sm font-normal text-gray-600">
-              {isAdd
-                ? "새 도안의 코·단 수와 3D 매핑 부위를 정해 주세요."
-                : t("editor.castOn.description")}
+              {isAdd ? t("editor.castOn.addDescription") : t("editor.castOn.description")}
             </p>
 
             {isAdd && (
               <div className="mt-5 space-y-3">
                 <div>
                   <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
-                    도안 이름
+                    {t("editor.castOn.nameLabel")}
                   </label>
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={CHART_PART_LABELS[targetPart]}
-                    className="py-2 text-sm"
+                    className="bg-white py-2 text-sm"
                   />
                 </div>
                 <div>
                   <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
-                    3D 부위
+                    {t("editor.castOn.partLabel")}
                   </label>
                   <select
                     value={targetPart}
                     onChange={(e) =>
                       setTargetPart(e.target.value as ChartTargetPart)
                     }
-                    className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 font-sans text-sm text-gray-800 outline-none focus:border-coral"
+                    className="w-full rounded-2xl bg-white px-3 py-2 font-sans text-sm text-gray-800 outline-none"
                   >
                     {PARTS.map((part) => (
                       <option key={part} value={part}>
@@ -115,7 +137,92 @@ export default function CastOnModal({
               </div>
             )}
 
-            <div className="mt-6 flex gap-3">
+            <div className="mt-5 rounded-2xl bg-stone-100/80 p-4">
+              <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
+                {t("editor.castOn.gaugeTitle")}
+              </p>
+              <p className="mt-1 font-rounded text-[11px] font-normal text-gray-500">
+                {t("editor.castOn.gaugeHint")}
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <div>
+                  <p className="mb-2 font-sans text-[11px] font-normal text-gray-600">
+                    {t("editor.castOn.gaugeBefore")}
+                  </p>
+                  <div className="flex gap-2">
+                    <Input
+                      value={beforeSts}
+                      onChange={(e) => setBeforeSts(e.target.value)}
+                      inputMode="numeric"
+                      placeholder="코"
+                      className="bg-white py-1.5 text-sm"
+                      aria-label={t("editor.castOn.gaugeSts")}
+                    />
+                    <Input
+                      value={beforeRows}
+                      onChange={(e) => setBeforeRows(e.target.value)}
+                      inputMode="numeric"
+                      placeholder="단"
+                      className="bg-white py-1.5 text-sm"
+                      aria-label={t("editor.castOn.gaugeRows")}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <p className="mb-2 font-sans text-[11px] font-normal text-gray-600">
+                    {t("editor.castOn.gaugeAfter")}
+                  </p>
+                  <div className="flex gap-2">
+                    <Input
+                      value={afterSts}
+                      onChange={(e) => setAfterSts(e.target.value)}
+                      inputMode="numeric"
+                      placeholder="코"
+                      className="bg-white py-1.5 text-sm"
+                      aria-label={t("editor.castOn.gaugeSts")}
+                    />
+                    <Input
+                      value={afterRows}
+                      onChange={(e) => setAfterRows(e.target.value)}
+                      inputMode="numeric"
+                      placeholder="단"
+                      className="bg-white py-1.5 text-sm"
+                      aria-label={t("editor.castOn.gaugeRows")}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 rounded-xl bg-white px-3 py-2.5">
+                <p className="font-sans text-[11px] font-normal text-gray-500">
+                  {t("editor.castOn.recommended")}
+                </p>
+                <p className="mt-0.5 font-sans text-sm font-semibold text-coral">
+                  {recommended.startSts > 0
+                    ? t("editor.castOn.recommendedValue", {
+                        sts: recommended.startSts,
+                        rows: recommended.startRows,
+                      })
+                    : "—"}
+                </p>
+                {recommended.beforeStartSts > 0 ? (
+                  <p className="mt-0.5 font-rounded text-[10px] text-gray-400">
+                    {t("editor.castOn.recommendedBefore", {
+                      sts: recommended.beforeStartSts,
+                      rows: recommended.beforeStartRows,
+                    })}
+                  </p>
+                ) : null}
+              </div>
+              <button
+                type="button"
+                onClick={applyRecommended}
+                className="mt-2 w-full rounded-full bg-white px-3 py-2 font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
+              >
+                {t("editor.castOn.applyRecommended")}
+              </button>
+            </div>
+
+            <div className="mt-5 flex gap-3">
               <div className="flex-1">
                 <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
                   {t("editor.castOn.widthLabel")}
@@ -125,7 +232,7 @@ export default function CastOnModal({
                   onChange={(e) => setW(e.target.value)}
                   inputMode="numeric"
                   placeholder="W"
-                  className="py-2 text-sm"
+                  className="bg-white py-2 text-sm"
                 />
               </div>
               <div className="flex-1">
@@ -137,7 +244,7 @@ export default function CastOnModal({
                   onChange={(e) => setH(e.target.value)}
                   inputMode="numeric"
                   placeholder="H"
-                  className="py-2 text-sm"
+                  className="bg-white py-2 text-sm"
                 />
               </div>
             </div>
@@ -146,8 +253,8 @@ export default function CastOnModal({
               <Button type="button" variant="ghost" onClick={onClose} className="flex-1 py-2.5">
                 {t("editor.castOn.cancel")}
               </Button>
-              <Button type="button" onClick={handleApply} className="flex-1 py-2.5">
-                {isAdd ? "도안 추가" : t("editor.castOn.createCanvas")}
+              <Button type="button" onClick={handleApply} className="flex-1 bg-coral py-2.5 text-white hover:bg-black">
+                {isAdd ? t("editor.castOn.addAction") : t("editor.castOn.createCanvas")}
               </Button>
             </div>
           </motion.div>

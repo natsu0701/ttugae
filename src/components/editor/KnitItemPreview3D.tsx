@@ -80,7 +80,7 @@ function shuffleGrid(prev: string[][]): string[][] {
 
 /* ─────────────── HTML5 Canvas → THREE.CanvasTexture 변환 ─────────────── */
 
-const CELL_PX = 8;
+const CELL_PX = 16;
 
 /** 아이템 형태별 텍스처 반복 횟수 */
 const TEXTURE_REPEAT: Record<KnitItemId, [number, number]> = {
@@ -126,6 +126,31 @@ function usePatternTexture(
         for (let c = 0; c < grid[r].length; c++) {
           ctx.fillStyle = grid[r][c] || BASE_COLOR;
           ctx.fillRect(c * CELL_PX, r * CELL_PX, CELL_PX, CELL_PX);
+          const x = c * CELL_PX;
+          const y = r * CELL_PX;
+          const w = CELL_PX;
+          const h = CELL_PX;
+          const cx = x + w / 2;
+          const top = y + h * 0.1;
+          const bottom = y + h * 0.9;
+          const left = x + w * 0.16;
+          const right = x + w * 0.84;
+          const midY = y + h * 0.52;
+          const strokeV = (color: string, width: number, inset: number) => {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(left + inset, top);
+            ctx.quadraticCurveTo(cx - w * 0.08, midY, cx, bottom);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(right - inset, top);
+            ctx.quadraticCurveTo(cx + w * 0.08, midY, cx, bottom);
+            ctx.stroke();
+          };
+          strokeV("rgba(0,0,0,0.18)", Math.max(1.4, w * 0.22), 0);
+          strokeV("rgba(255,255,255,0.22)", Math.max(0.7, w * 0.1), w * 0.08);
         }
       }
       texture.needsUpdate = true;

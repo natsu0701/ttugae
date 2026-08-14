@@ -47,7 +47,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
   };
 
   return (
-    <div className={`rounded-2xl bg-white p-4 ${softShadow}`}>
+    <div className={`rounded-2xl bg-white/80 p-4 ${softShadow}`}>
       <p className="mb-3 font-sans text-sm font-bold text-gray-900">뜨니 AI</p>
 
       <div
@@ -61,7 +61,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
               alt="뜨니"
               className="h-10 w-10 shrink-0 object-contain"
             />
-            <div className="rounded-2xl rounded-tl-sm bg-gray-50 px-3 py-2.5">
+            <div className="rounded-2xl rounded-tl-sm bg-stone-100 px-3 py-2.5">
               <p className="font-rounded text-sm font-normal leading-relaxed text-gray-700">
                 가을용 가디건 도안 생성해줘, 라고 말해보세요!
               </p>
@@ -85,7 +85,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
                 className={`max-w-[85%] rounded-2xl px-3 py-2 ${
                   msg.role === "user"
                     ? "rounded-tr-sm bg-coral text-white"
-                    : "rounded-tl-sm bg-gray-50 text-gray-700"
+                    : "rounded-tl-sm bg-stone-100 text-gray-700"
                 }`}
               >
                 <p

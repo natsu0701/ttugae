@@ -51,7 +51,7 @@ export default function EditorHeader({
 
   return (
     <header
-      className={`relative z-20 flex h-14 shrink-0 items-center bg-gray-50 px-4 md:px-5 ${softShadow}`}
+      className={`relative z-20 flex h-14 shrink-0 items-center bg-[#FFFBF7] px-4 md:px-5 ${softShadow}`}
     >
       <div className="z-10 flex shrink-0 items-center">
         <button
@@ -87,21 +87,28 @@ export default function EditorHeader({
           </button>
           {sizeMenuOpen && (
             <div
-              className={`absolute left-1/2 top-full z-30 mt-2 w-56 -translate-x-1/2 rounded-2xl bg-white p-3 md:w-64 ${softShadow}`}
+              className={`absolute left-1/2 top-full z-30 mt-2 w-56 -translate-x-1/2 rounded-2xl bg-[#FFFBF7] p-3 md:w-64 ${softShadow}`}
             >
               <p className="mb-2 font-sans text-xs font-normal text-gray-500">
                 {t("editor.sizePresetsTitle")}
               </p>
-              {SIZE_PRESETS.map((preset) => (
+              {SIZE_PRESETS.map((preset) => {
+                const active = preset.w === gridCols && preset.h === gridRows;
+                return (
                 <button
                   key={preset.label}
                   type="button"
                   onClick={() => onApplySize(preset.w, preset.h)}
-                  className="mb-1 w-full rounded-full bg-gray-50 px-3 py-2 text-left font-sans text-sm font-normal text-gray-700 transition-colors hover:bg-coral hover:text-white"
+                  className={`mb-1 w-full rounded-full px-3 py-2 text-left font-sans text-sm font-normal transition-colors ${
+                    active
+                      ? "bg-coral text-white"
+                      : "bg-stone-100 text-gray-700 hover:bg-black hover:text-white"
+                  }`}
                 >
                   {preset.label}
                 </button>
-              ))}
+                );
+              })}
               <p className="mb-2 mt-3 font-sans text-xs font-normal text-gray-500">
                 {t("editor.sizeCustomTitle")}
               </p>

@@ -58,10 +58,10 @@ function FeatureInteractiveTabs() {
               />
             )}
             <div>
-              <h3 className="font-sans text-2xl font-bold text-gray-900 md:text-3xl">
+              <h3 className="font-sans text-2xl font-bold leading-loose text-gray-900 md:text-3xl">
                 {active.title}
               </h3>
-              <p className="mt-4 font-rounded text-base font-normal leading-relaxed text-gray-700 md:text-lg">
+              <p className="mt-4 font-seoyun text-[1.5rem] font-normal leading-tight text-gray-700 md:text-[1.7rem]">
                 {active.description}
               </p>
             </div>

@@ -80,7 +80,7 @@ export default function WorkshopPalettePanel({
                 {palette.colors.map((hex) => (
                   <span
                     key={hex}
-                    className="h-5 w-5 rounded-full border-2 border-white shadow-sm"
+                    className="h-5 w-5 rounded-full border border-white"
                     style={{ backgroundColor: hex }}
                     aria-hidden
                   />

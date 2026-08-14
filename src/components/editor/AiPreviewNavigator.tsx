@@ -18,8 +18,8 @@ type AiPreviewNavigatorProps = {
 const ITEM_OPTIONS: { id: KnitItemType; label: string }[] = [
   { id: "sweater", label: "스웨터" },
   { id: "vest", label: "조끼" },
-  { id: "beanie", label: "비니" },
-  { id: "blanket", label: "블랭킷" },
+  { id: "beanie", label: "모자" },
+  { id: "glove", label: "장갑" },
   { id: "socks", label: "양말" },
 ];
 
@@ -40,7 +40,7 @@ export default function AiPreviewNavigator({
   }, [yarnMeta]);
 
   return (
-    <div className="rounded-2xl bg-white p-4">
+    <div className="rounded-2xl bg-white/80 p-4 shadow-[0_8px_30px_rgba(252,95,83,0.025)]">
       <p className="mb-1 font-sans text-sm font-bold text-gray-900">
         {t("editor.preview3d")}
       </p>

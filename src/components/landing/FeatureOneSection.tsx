@@ -16,14 +16,13 @@ function FeatureOneSection({ onOpenEditor }: FeatureOneSectionProps) {
         <Reveal>
           <FeatureBadge>Feature 01</FeatureBadge>
           <h2 className={landingHeading.h2}>
-            클릭 몇 번으로
-            <br />
-            완성되는 나만의 도안
+            <span>클릭 몇 번으로</span>
+            <span>완성되는 나만의 도안</span>
           </h2>
-          <p className={landingHeading.body}>
+          <p className={`${landingHeading.body} font-seoyun`}>
             격자 위에 기호와 색을 놓고, 실수는 뜨니가 체크해 줘요.
           </p>
-          <Button variant="primary" onClick={onOpenEditor} className="mt-8 px-6 py-3">
+          <Button variant="primary" onClick={onOpenEditor} className="mt-8 px-6 py-3 font-extrabold">
             도안 그리기
           </Button>
         </Reveal>

@@ -184,7 +184,7 @@ export default function Community({
       <section className="px-5 pt-8 md:px-8">
         <div className="mx-auto max-w-6xl">
           <WelcomeBanner
-            chip="LOUNGE 🧶"
+            chip="LOUNGE"
             title={t("community.heroTitle")}
             subtitle={t("community.heroSubtitle")}
             image={TTEUNI_IMAGES.community}

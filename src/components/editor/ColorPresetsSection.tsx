@@ -83,17 +83,17 @@ export default function ColorPresetsSection({
                     ease: "easeOut",
                   }}
                   onClick={() => onApply(preset.id, preset.colors)}
-                  className={`group flex w-full items-center gap-2 rounded-xl bg-white px-2.5 py-2 text-left transition-colors duration-200 shadow-sm shadow-gray-200/50 ${
+                  className={`group flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left transition-colors duration-200 ${
                     active
                       ? "bg-coral text-white"
-                      : "hover:bg-black hover:shadow-none"
+                      : "bg-white text-gray-700 hover:bg-black hover:text-white"
                   }`}
                 >
                   <span className="flex shrink-0 gap-0.5">
                     {preset.colors.map((hex, i) => (
                       <span
                         key={`${preset.id}-${i}`}
-                        className="h-5 w-5 rounded-full shadow-sm shadow-gray-200/50 first:rounded-l-full last:rounded-r-full"
+                        className="h-5 w-5 rounded-full first:rounded-l-full last:rounded-r-full"
                         style={{ backgroundColor: hex }}
                       />
                     ))}

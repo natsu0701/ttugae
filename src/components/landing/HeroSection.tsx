@@ -68,11 +68,11 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
                 마우스 위치를 정교하게 트래킹하는 솜사탕 그라데이션 효과
               */}
               <span
-                className="interactive-gradient-text mt-3 flex cursor-pointer flex-col items-center gap-4 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] sm:text-5xl md:mt-4 md:gap-6 md:text-6xl lg:text-7xl"
+                className="interactive-gradient-text mt-3 flex cursor-pointer flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] sm:text-5xl md:mt-4 md:gap-1 md:text-6xl lg:text-7xl"
                 style={{ fontFamily: "Mungyeong-Gamhong-Apple, sans-serif" }}
               >
                 {HERO_SLOGAN_LINES.map((line) => (
-                  <span key={line} className="block overflow-visible py-1">
+                  <span key={line} className="block overflow-visible py-0.5">
                     {line.split("").map((char, index) => (
                       <span
                         key={`${line}-${char}-${index}`}
@@ -91,8 +91,9 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
 
         {/* 3줄 서브 설명 */}
         <Reveal delay={0.75}>
-          <p className="mx-auto mt-2 max-w-xl font-sans text-xs font-light leading-relaxed tracking-[0.05em] text-white/60 [text-shadow:0_1px_2px_rgba(0,0,0,0.14),0_4px_16px_rgba(0,0,0,0.16)] sm:text-sm md:mt-3 md:text-base">
-            에디터부터 AI 챗봇, 커뮤니티까지 — 뜨개질의 모든 순간을 한곳에서.
+          <p className="mx-auto mt-0.5 max-w-xl font-seoyun text-lg font-light leading-tight tracking-[0.05em] text-white/60 [text-shadow:0_1px_2px_rgba(0,0,0,0.14),0_4px_16px_rgba(0,0,0,0.16)] sm:text-xl md:mt-1 md:text-[1.3rem]">
+            에디터부터 AI 챗봇, 커뮤니티까지 
+            뜨개질의 모든 순간을 한곳에서.
           </p>
         </Reveal>
 
@@ -105,7 +106,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
               playWelcomeKnitSound();
               onOpenEditor();
             }}
-            className="relative z-10 px-8 py-4 text-base font-bold sm:px-10 sm:text-lg"
+            className="relative z-10 px-8 py-4 text-base font-extrabold sm:px-10 sm:text-lg"
           >
             도안 그리기
           </Button>

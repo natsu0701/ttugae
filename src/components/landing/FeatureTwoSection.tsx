@@ -10,9 +10,9 @@ function FeatureTwoSection() {
     <section className={landingSection.gray}>
       <Reveal className="mx-auto mb-12 max-w-3xl text-center">
         <FeatureBadge>Feature 02</FeatureBadge>
-        <h2 className={`${landingHeading.h2Center} flex flex-col items-center justify-center gap-3 leading-tight md:gap-4`}>
+        <h2 className={`${landingHeading.h2Center} flex flex-nowrap items-center justify-center gap-2.5 leading-tight`}>
           웹에서 만나는
-          <BrandTextLogo className="h-8 w-auto object-contain md:h-9" />
+          <BrandTextLogo className="h-11 w-auto object-contain md:h-14" />
         </h2>
         <p className={landingHeading.bodyCenter}>
           에디터부터 AI 챗봇, 커뮤니티까지 — 뜨개질의 모든 순간을 한곳에서.

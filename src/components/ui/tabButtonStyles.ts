@@ -1,5 +1,5 @@
-/** 탭·필터: 기본 white(대비) → hover black → active coral + 소프트 섀도우 */
-export const softShadow = "shadow-[0_8px_30px_rgb(0,0,0,0.04)]";
+/** 탭·필터: 기본 white → hover black → active coral + 에어브러시 섀도우 */
+export const softShadow = "shadow-[0_8px_30px_rgba(252,95,83,0.025)]";
 
 export function tabButtonClass(active: boolean, variant: "fill" | "outline" = "fill") {
   if (active) {

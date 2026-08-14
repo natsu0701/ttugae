@@ -120,11 +120,11 @@ export default function EditorRightSidebar({
   };
 
   return (
-    <div className="relative h-[calc(100vh-64px)] shrink-0">
+    <div className="relative flex h-full max-h-[calc(100vh-6rem)] shrink-0 flex-col">
       <button
         type="button"
         onClick={toggle}
-        className="absolute -left-3 top-1/2 z-30 -translate-y-1/2 cursor-pointer rounded-full border border-pink-100 bg-white p-1 shadow-md transition-all hover:bg-pink-50"
+        className="absolute -left-3 top-1/2 z-30 -translate-y-1/2 cursor-pointer rounded-full bg-white p-1 shadow-[0_8px_30px_rgba(252,95,83,0.025)] transition-all hover:bg-black hover:text-white"
         aria-label={isCollapsed ? "사이드바 열기" : "사이드바 닫기"}
         title={isCollapsed ? "사이드바 열기" : "사이드바 닫기"}
       >
@@ -145,7 +145,7 @@ export default function EditorRightSidebar({
 
       <motion.aside
         layout
-        className="relative h-full overflow-hidden bg-gray-50"
+        className="relative h-full overflow-hidden bg-stone-100/80"
         initial={false}
         animate={{ width: isCollapsed ? 0 : sidebarWidth }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -156,7 +156,7 @@ export default function EditorRightSidebar({
       >
         {contentMounted ? (
           <div
-            className="flex h-full min-w-0 flex-col overflow-hidden"
+            className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden"
             style={{ width: sidebarWidth }}
           >
             {children}

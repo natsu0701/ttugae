@@ -518,7 +518,7 @@ export default function PatternEditor({
 
   return (
     <div
-      className="flex h-screen flex-col overflow-hidden bg-white font-sans text-gray-900"
+      className="flex h-screen flex-col overflow-hidden bg-[#FFFBF7] font-sans text-gray-900"
       onPointerUp={endDrag}
       onPointerLeave={endDrag}
     >
@@ -567,7 +567,7 @@ export default function PatternEditor({
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <aside
           ref={leftToolbarRef}
-          className="flex h-[calc(100vh-64px)] w-[200px] shrink-0 flex-col gap-4 overflow-y-auto bg-gray-50 p-3 md:p-4"
+          className="scrollbar-thin flex h-[calc(100vh-64px)] w-[200px] shrink-0 flex-col gap-4 overflow-y-auto bg-stone-100/80 p-3 md:p-4"
         >
           <div>
             <p className="mb-2 font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
@@ -635,6 +635,16 @@ export default function PatternEditor({
             >
               {t("editor.castOnButton")}
             </button>
+            <button
+              type="button"
+              onClick={() => {
+                setCastOnMode("replace");
+                setCastOnOpen(true);
+              }}
+              className="mt-1.5 w-full rounded-xl bg-white px-3 py-2.5 font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
+            >
+              {t("editor.gaugeButton")}
+            </button>
 
             {/* 기호 팔레트 바로 아랫단 — 전문 공방 매칭 내추럴 컬러 추천 칩 */}
             <WorkshopPalettePanel
@@ -689,18 +699,22 @@ export default function PatternEditor({
           />
         </aside>
 
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center overflow-auto bg-white p-4 md:p-6">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center overflow-auto bg-[#FFFBF7] p-4 md:p-6">
         <div className="flex w-full max-w-full justify-center px-1">
           <div
             ref={canvasRef}
-            className="w-full max-w-[min(100%,32rem)] rounded-2xl bg-gray-50 p-3"
+            className="flex aspect-square w-full max-w-[min(100%,32rem)] items-center justify-center rounded-2xl bg-stone-100/80 p-3 shadow-[0_8px_30px_rgba(252,95,83,0.025)]"
           >
             <div
-              className="w-full max-h-[min(70vh,32rem)]"
-              style={{ aspectRatio: `${gridCols} / ${gridRows}` }}
+              className="max-h-full max-w-full"
+              style={{
+                aspectRatio: `${gridCols} / ${gridRows}`,
+                width: gridCols >= gridRows ? "100%" : "auto",
+                height: gridRows > gridCols ? "100%" : "auto",
+              }}
             >
               <div
-                className="grid h-full w-full gap-px rounded-xl bg-gray-200 p-1"
+                className="grid h-full w-full gap-px rounded-xl bg-stone-200/70 p-1"
                 style={{
                   gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
                 }}
@@ -752,7 +766,7 @@ export default function PatternEditor({
         </main>
 
         <EditorRightSidebar>
-          <div className="flex shrink-0 flex-col gap-4 overflow-y-auto p-4 md:p-5">
+          <div className="scrollbar-thin flex h-full min-h-0 flex-col gap-4 overflow-x-hidden overflow-y-auto p-4 md:p-5">
             <AiPreviewNavigator
               grid={grid}
               charts={charts}
@@ -763,37 +777,34 @@ export default function PatternEditor({
             <div ref={chatbotPanelRef}>
               <TteuniChatbot onUserMessage={handleAiMessage} />
             </div>
-          </div>
-
-          <div className="flex min-h-0 flex-1 flex-col px-4 pb-4 md:px-5 md:pb-5">
-            <div className="mb-2 flex shrink-0 items-center justify-between gap-2">
-              <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
-                {t("editor.narrativePreview")}
-              </p>
-              <button
-                type="button"
-                onClick={() => void copyPatternText()}
-                className={`flex items-center gap-1 rounded-full px-2.5 py-1.5 font-sans text-xs font-normal transition-colors duration-200 ${
-                  patternCopyDone
-                    ? "bg-coral/10 text-coral"
-                    : "bg-white text-gray-600 hover:bg-black hover:text-white"
-                }`}
-                aria-label="서술형 텍스트 복사"
-                title={patternCopyDone ? "복사 완료!" : "복사"}
-              >
-                {patternCopyDone ? (
-                  <>
-                    <Check className="h-4 w-4 shrink-0" strokeWidth={2} aria-hidden />
-                    <span>복사 완료!</span>
-                  </>
-                ) : (
-                  <Copy className="h-4 w-4 shrink-0" strokeWidth={2} aria-hidden />
-                )}
-              </button>
+            <div className="relative min-w-0 rounded-2xl bg-[#FFFBF7] p-4 shadow-[0_8px_30px_rgba(252,95,83,0.025)]">
+              <div className="mb-2 flex shrink-0 items-center justify-between gap-2">
+                <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
+                  {t("editor.narrativePreview")}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void copyPatternText()}
+                  className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-600 shadow-[0_8px_30px_rgba(252,95,83,0.025)] transition-colors duration-200 hover:bg-black hover:text-white"
+                  aria-label="서술형 텍스트 복사"
+                  title={patternCopyDone ? "복사 완료!" : "복사하기"}
+                >
+                  {patternCopyDone ? (
+                    <Check className="h-3.5 w-3.5 text-coral" strokeWidth={2.2} aria-hidden />
+                  ) : (
+                    <Copy className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
+                  )}
+                  {patternCopyDone ? (
+                    <span className="absolute -bottom-8 right-0 z-10 whitespace-nowrap rounded-full bg-stone-800 px-2.5 py-1 font-sans text-[10px] font-medium text-white shadow-md">
+                      복사 완료!
+                    </span>
+                  ) : null}
+                </button>
+              </div>
+              <pre className="scrollbar-thin max-h-[200px] min-w-0 overflow-x-hidden overflow-y-auto break-keep break-words whitespace-pre-wrap font-sans text-xs font-normal leading-relaxed text-gray-600 md:max-h-[240px]">
+                {patternText}
+              </pre>
             </div>
-            <pre className="min-h-[10rem] max-h-80 flex-1 overflow-y-auto rounded-2xl bg-white p-4 font-sans text-xs font-normal leading-relaxed text-gray-600 whitespace-pre-wrap">
-              {patternText}
-            </pre>
           </div>
         </EditorRightSidebar>
       </div>
