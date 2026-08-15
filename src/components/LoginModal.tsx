@@ -67,8 +67,8 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
       />
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         className="relative w-full max-w-md rounded-2xl bg-gray-50 p-8"
         role="dialog"
@@ -88,7 +88,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           <BrandTextLogo className="h-7 w-auto object-contain" />
           시작하기
         </h2>
-        <p className="mt-2 font-rounded text-sm text-gray-600">
+        <p className="mt-2 font-seoyun text-sm text-gray-600">
           로그인하고 도안을 저장하고 공유해 보세요.
         </p>
 
@@ -116,7 +116,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           <div className="absolute inset-0 flex items-center">
             <div className="h-px w-full bg-gray-200" />
           </div>
-          <p className="relative mx-auto w-fit bg-gray-50 px-4 font-rounded text-sm text-gray-500">
+          <p className="relative mx-auto w-fit bg-gray-50 px-4 font-seoyun text-sm text-gray-500">
             또는 간편 로그인
           </p>
         </div>

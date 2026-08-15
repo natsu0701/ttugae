@@ -81,7 +81,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
               className="h-10 w-10 shrink-0 object-contain"
             />
             <div className="rounded-2xl rounded-tl-sm border border-stone-600/80 bg-stone-700 px-3 py-2.5">
-              <p className="font-rounded text-sm font-normal leading-relaxed text-stone-100">
+              <p className="font-seoyun text-sm font-normal leading-relaxed text-stone-100">
                 가을용 가디건 도안 생성해줘, 라고 말해보세요!
               </p>
             </div>
@@ -108,7 +108,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
                 }`}
               >
                 <p
-                  className={`font-rounded text-sm font-normal leading-relaxed ${
+                  className={`font-seoyun text-sm font-normal leading-relaxed ${
                     msg.role === "user" ? "text-white" : "text-stone-100"
                   }`}
                 >

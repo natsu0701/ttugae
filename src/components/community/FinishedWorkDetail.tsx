@@ -13,6 +13,7 @@ import {
 import { getRemixLineage } from "../../data/patternRemixLineage.ts";
 import RemixFamilyTree from "./RemixFamilyTree.tsx";
 import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
+import NeedleBadge from "./NeedleBadge.tsx";
 
 type FinishedWorkDetailProps = {
   pattern: CommunityPattern;
@@ -79,7 +80,7 @@ export default function FinishedWorkDetail({
   };
 
   return (
-    <div className="pb-20 pt-20 md:pt-24">
+    <div className="pb-20">
       <div className="mx-auto max-w-3xl px-5 py-4 md:px-8">
         <button
           type="button"
@@ -94,9 +95,16 @@ export default function FinishedWorkDetail({
         {/* 상단: 제목 · 작성자 · 날짜 */}
         <header className="pb-8">
           <div className="flex flex-wrap items-start justify-between gap-4">
-            <h1 className="font-sans text-3xl font-bold leading-snug text-gray-900 md:text-4xl">
-              {pattern.title}
-            </h1>
+            <div className="min-w-0 flex-1">
+              <h1 className="font-sans text-3xl font-bold leading-snug text-gray-900 md:text-4xl">
+                {pattern.title}
+              </h1>
+              <NeedleBadge
+                spec={pattern.needle}
+                needleText={pattern.finishedDetail.needle}
+                className="mt-3 bg-gray-100 px-3 py-1 text-xs text-gray-600"
+              />
+            </div>
             {(onEdit || onDelete) && (
               <div className="flex gap-2">
                 {onEdit && (
@@ -148,7 +156,7 @@ export default function FinishedWorkDetail({
 
         {/* 중단: 실 · 바늘 · 후기 */}
         <section className="prose-like mt-10 space-y-6">
-          <p className="font-rounded text-base font-normal leading-relaxed text-gray-600">
+          <p className="font-seoyun text-base font-normal leading-relaxed text-gray-600">
             {pattern.finishedCaption}
           </p>
 
@@ -193,7 +201,7 @@ export default function FinishedWorkDetail({
               </p>
               <div className="mt-4">
                 <MiniPatternCanvas
-                  patternId={pattern.id}
+                  pattern={pattern}
                   label={`${pattern.gridCols}×${pattern.gridRows}`}
                 />
               </div>
@@ -208,7 +216,7 @@ export default function FinishedWorkDetail({
               </p>
               <div className="mt-4">
                 <AiPredictedImage
-                  filename={pattern.aiPredictedImage ?? "그림4_AI예상_스웨터.PNG"}
+                  filename={pattern.aiPredictedImage ?? "completed_muffler_rainbow.jpg"}
                 />
               </div>
             </>

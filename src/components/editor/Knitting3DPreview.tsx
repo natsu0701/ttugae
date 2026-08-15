@@ -3,7 +3,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { Html, OrbitControls, useGLTF } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
-import { Loader2, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { RotateFillIcon, SpinnerFillIcon, ZoomInFillIcon, ZoomOutFillIcon } from "../icons/FillIcons.tsx";
 import type { EditorYarn } from "../../types/editorYarn.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
@@ -14,6 +14,35 @@ export type KnitItemType =
   | "beanie"
   | "glove"
   | "socks";
+
+const ITEM_TYPE_RULES: { type: KnitItemType; keywords: string[] }[] = [
+  { type: "glove", keywords: ["장갑", "글러브", "glove", "mitten", "미튼"] },
+  { type: "socks", keywords: ["양말", "삭스", "sock"] },
+  { type: "beanie", keywords: ["비니", "털모자", "모자", "beanie", "hat"] },
+  { type: "vest", keywords: ["조끼", "베스트", "vest"] },
+  { type: "sweater", keywords: ["스웨터", "가디건", "sweater", "cardigan", "풀오버"] },
+];
+
+const ITEM_LOADING_NAME: Record<KnitItemType, string> = {
+  sweater: "스웨터를",
+  vest: "조끼를",
+  beanie: "모자를",
+  glove: "장갑을",
+  socks: "양말을",
+};
+
+/** 도안 제목·설명에서 3D 미리보기 종류를 고릅니다. */
+export function inferKnitItemType(...texts: Array<string | undefined>): KnitItemType {
+  const hay = texts.filter(Boolean).join(" ").toLowerCase();
+  for (const rule of ITEM_TYPE_RULES) {
+    if (rule.keywords.some((kw) => hay.includes(kw))) return rule.type;
+  }
+  return "sweater";
+}
+
+function loadingCopy(itemType: KnitItemType) {
+  return `뜨니가 실시간 3D ${ITEM_LOADING_NAME[itemType]} 준비하고 있어요...`;
+}
 
 export type KnitGauge = {
   stitches: number;
@@ -32,6 +61,13 @@ export type Knitting3DPreviewProps = {
   active?: boolean;
   charts?: KnittingChart[];
 };
+
+let merinoNormalCanvas: HTMLCanvasElement | null = null;
+
+function getMerinoNormalCanvas(): HTMLCanvasElement {
+  if (!merinoNormalCanvas) merinoNormalCanvas = generateMerinoNormalMap();
+  return merinoNormalCanvas;
+}
 
 function generateMerinoNormalMap(): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
@@ -209,15 +245,13 @@ const GARMENT_MODELS: Record<KnitItemType, { url: string }> = {
 const TARGET_GARMENT_SIZE = 5.2;
 const SWEATER_FIT_SCALE: [number, number, number] = [1.15, 1.0, 0.52];
 
-const LOADING_COPY = "뜨니가 실시간 3D 스웨터를 준비하고 있어요...";
-
-function PreviewLoadingFallback() {
+function PreviewLoadingFallback({ itemType }: { itemType: KnitItemType }) {
   return (
     <Html center>
       <div className="flex flex-col items-center gap-3">
-        <Loader2 className="h-6 w-6 animate-spin text-coral" />
+        <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
         <span className="whitespace-nowrap font-sans text-xs font-light text-stone-400">
-          {LOADING_COPY}
+          {loadingCopy(itemType)}
         </span>
       </div>
     </Html>
@@ -419,12 +453,6 @@ function InvalidateOnChange({ value }: { value: string }) {
   return null;
 }
 
-useGLTF.preload("/models/sweater.glb");
-useGLTF.preload("/models/vest.glb");
-useGLTF.preload("/models/beanie.glb");
-useGLTF.preload("/models/glove.glb");
-useGLTF.preload("/models/sock.glb");
-
 function Knitting3DCanvas({
   cells,
   colorMap,
@@ -445,7 +473,7 @@ function Knitting3DCanvas({
   const [normalTexture, setNormalTexture] = useState<THREE.CanvasTexture | null>(null);
 
   useEffect(() => {
-    const canvas = generateMerinoNormalMap();
+    const canvas = getMerinoNormalCanvas();
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
@@ -490,7 +518,7 @@ function Knitting3DCanvas({
           <ambientLight intensity={1.45} />
           <pointLight position={[-10, 10, -10]} intensity={0.7} />
           <directionalLight position={[5, 6, 8]} intensity={1.9} />
-          <Suspense fallback={<PreviewLoadingFallback />}>
+          <Suspense fallback={<PreviewLoadingFallback itemType={itemType} />}>
             <InvalidateOnChange value={garment.url} />
             {normalTexture ? (
               <GarmentModel
@@ -522,9 +550,9 @@ function Knitting3DCanvas({
 
       {!normalTexture && active ? (
         <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 bg-stone-700 text-stone-300">
-          <Loader2 className="h-6 w-6 animate-spin text-coral" />
+          <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
           <span className="font-sans text-xs font-light">
-            {LOADING_COPY}
+            {loadingCopy(itemType)}
           </span>
         </div>
       ) : null}
@@ -537,7 +565,7 @@ function Knitting3DCanvas({
             title="확대"
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
-            <ZoomIn size={15} />
+            <ZoomInFillIcon className="h-[15px] w-[15px]" />
           </button>
           <button
             type="button"
@@ -545,7 +573,7 @@ function Knitting3DCanvas({
             title="축소"
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
-            <ZoomOut size={15} />
+            <ZoomOutFillIcon className="h-[15px] w-[15px]" />
           </button>
           <button
             type="button"
@@ -553,7 +581,7 @@ function Knitting3DCanvas({
             title="초기화"
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
-            <RotateCcw size={15} />
+            <RotateFillIcon className="h-[15px] w-[15px]" />
           </button>
         </div>
       ) : null}
@@ -571,6 +599,8 @@ function Knitting3DPreview({
   itemType = "sweater",
   active = true,
 }: Knitting3DPreviewProps) {
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
   const pattern = useMemo(() => {
     const source = gridData && gridData.length > 0 ? gridData : grid;
     return source && source.length > 0 ? source : [[EMPTY_CELL]];
@@ -588,16 +618,40 @@ function Knitting3DPreview({
     [pattern, colorMap, stitchSymbols],
   );
 
+  useEffect(() => {
+    const el = hostRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setInView(true);
+        io.disconnect();
+      },
+      { rootMargin: "120px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-xl bg-stone-700">
-      <Knitting3DCanvas
-        cells={pattern}
-        colorMap={colorMap}
-        stitchSymbols={stitchSymbols}
-        chartKey={chartKey}
-        itemType={itemType}
-        active={active}
-      />
+    <div
+      ref={hostRef}
+      className="flex w-full min-w-0 flex-col overflow-hidden rounded-xl bg-stone-700"
+    >
+      {inView ? (
+        <Knitting3DCanvas
+          cells={pattern}
+          colorMap={colorMap}
+          stitchSymbols={stitchSymbols}
+          chartKey={chartKey}
+          itemType={itemType}
+          active={active}
+        />
+      ) : (
+        <div className="flex h-[300px] min-h-[220px] items-center justify-center">
+          <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
+        </div>
+      )}
     </div>
   );
 }

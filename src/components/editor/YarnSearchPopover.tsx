@@ -95,7 +95,7 @@ export default function YarnSearchPopover({
       <label className="mb-1.5 block font-sans text-xs font-bold text-stone-100">
         실 검색
       </label>
-      <p className="mb-2 font-rounded text-[11px] font-normal text-stone-400">
+      <p className="mb-2 font-seoyun text-[11px] font-normal text-stone-400">
         브랜드·종류(메리노울, 모헤어 등)를 입력해 보세요
       </p>
       <SmoothInput
@@ -114,7 +114,7 @@ export default function YarnSearchPopover({
 
       <ul className="mt-2 max-h-48 overflow-y-auto hide-scrollbar" role="listbox">
         {results.length === 0 ? (
-          <li className="px-2 py-3 font-rounded text-xs font-normal text-stone-500">
+          <li className="px-2 py-3 font-seoyun text-xs font-normal text-stone-500">
             검색 결과가 없어요. 다른 키워드를 입력해 보세요.
           </li>
         ) : (
@@ -141,7 +141,7 @@ export default function YarnSearchPopover({
                     <span className="block truncate font-sans text-sm font-normal text-stone-100">
                       {entry.name}
                     </span>
-                    <span className="block truncate font-rounded text-[11px] font-normal text-stone-400">
+                    <span className="block truncate font-seoyun text-[11px] font-normal text-stone-400">
                       {entry.brand} · {entry.fiberType}
                       {added ? " · 팔레트에 있음" : ""}
                     </span>

@@ -29,6 +29,11 @@ export function saveProfileAvatar(avatarUrl: string): void {
   writeProfile({ ...loadProfile(), avatarUrl });
 }
 
+export function clearProfileAvatar(): void {
+  const { avatarUrl: _removed, ...rest } = loadProfile();
+  writeProfile(rest);
+}
+
 export function saveProfileAccount(patch: Pick<ProfileData, "nickname" | "handle" | "email">): void {
   writeProfile({ ...loadProfile(), ...patch });
 }

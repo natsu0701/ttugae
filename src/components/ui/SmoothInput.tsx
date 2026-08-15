@@ -20,10 +20,10 @@ export type SmoothInputProps = InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const LIGHT_TONE =
-  "w-full rounded-2xl border border-stone-200 bg-gray-100 px-4 py-3 font-sans font-normal text-gray-800 placeholder:text-gray-400 outline-none transition-colors focus:border-coral focus:bg-gray-50";
+  "w-full rounded-2xl border border-stone-200 bg-gray-100 px-4 py-3 font-sans font-normal leading-normal text-gray-800 placeholder:text-gray-400 outline-none transition-colors focus:border-coral focus:bg-gray-50";
 
 const DARK_TONE =
-  "w-full rounded-2xl border border-stone-700/80 bg-stone-700 px-4 py-3 font-sans font-normal text-stone-100 placeholder:text-stone-400 outline-none transition-colors focus:border-coral focus:bg-stone-700";
+  "w-full rounded-2xl border border-stone-700/80 bg-stone-700 px-4 py-3 font-sans font-normal leading-normal text-stone-100 placeholder:text-stone-400 outline-none transition-colors focus:border-coral focus:bg-stone-700";
 
 function utilityGroup(token: string): string {
   const variant = token.match(/^((?:[\w-]+:)+)/)?.[1] ?? "";
@@ -42,7 +42,8 @@ function utilityGroup(token: string): string {
     core === "font-sans" ||
     core === "font-serif" ||
     core === "font-mono" ||
-    core === "font-rounded"
+    core === "font-rounded" ||
+    core === "font-seoyun"
   ) {
     return `${variant}font-family`;
   }
@@ -133,6 +134,7 @@ const SmoothInput = forwardRef<HTMLInputElement, SmoothInputProps>(function Smoo
     measurer.style.fontSize = cs.fontSize;
     measurer.style.fontWeight = cs.fontWeight;
     measurer.style.letterSpacing = cs.letterSpacing;
+    measurer.style.lineHeight = cs.lineHeight;
     measurer.style.font = cs.font;
     measurer.textContent = displayBeforeCaret(liveValue, selectionStart, type);
     const paddingLeft = Number.parseFloat(cs.paddingLeft) || 0;
@@ -184,15 +186,17 @@ const SmoothInput = forwardRef<HTMLInputElement, SmoothInputProps>(function Smoo
     <div className={rootClassName(mergedClassName)}>
       <span
         ref={measurerRef}
-        className="pointer-events-none absolute whitespace-pre opacity-0"
+        className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 whitespace-pre opacity-0"
         aria-hidden
       />
-      <motion.div
-        style={{ x: springCaretX, opacity: focused ? undefined : 0 }}
-        className="pointer-events-none absolute left-0 top-1/2 z-10 h-[1.15em] w-[2.5px] -translate-y-1/2 rounded-full bg-coral"
-        animate={focused ? { opacity: [1, 0.15, 1] } : { opacity: 0 }}
-        transition={{ repeat: focused ? Infinity : 0, duration: 0.9, ease: "easeInOut" }}
-      />
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center overflow-hidden">
+        <motion.div
+          style={{ x: springCaretX, opacity: focused ? undefined : 0 }}
+          className="h-[1.05em] w-[2.5px] shrink-0 rounded-full bg-coral"
+          animate={focused ? { opacity: [1, 0.15, 1] } : { opacity: 0 }}
+          transition={{ repeat: focused ? Infinity : 0, duration: 0.9, ease: "easeInOut" }}
+        />
+      </div>
       <input
         {...props}
         ref={inputRef}

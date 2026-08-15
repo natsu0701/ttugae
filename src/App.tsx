@@ -169,12 +169,15 @@ function AppRoutes() {
   };
 
   const importCommunityPattern = (pattern: CommunityPattern) => {
+    const grid = communityPatternToGrid(pattern);
     setIncomingShare({
       id: `import-${pattern.id}-${Date.now()}`,
       title: pattern.title,
       updatedAt: Date.now(),
       gridSize: Math.max(pattern.gridRows, pattern.gridCols),
-      grid: communityPatternToGrid(pattern),
+      grid,
+      colorMap: pattern.colorMap,
+      needle: pattern.needle,
     });
     setActivePatternId(null);
     rememberReturn();

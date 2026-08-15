@@ -40,7 +40,7 @@ function BarChart({
                 style={{ height: `${Math.max(height, 8)}%` }}
               />
             </div>
-            <span className="font-rounded text-[10px] font-normal text-gray-500">
+            <span className="font-seoyun text-[10px] font-normal text-gray-500">
               {item.label}
             </span>
           </div>
@@ -95,7 +95,7 @@ export default function StatsDetailPanel({
 
       <div className={`rounded-2xl bg-white p-6 ${softShadow}`}>
         <h3 className="font-sans text-base font-bold text-gray-900">월별 도안 생성 추이</h3>
-        <p className="mt-1 font-rounded text-xs font-normal text-gray-500">
+        <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
           최근 6개월 기준
         </p>
         <BarChart data={monthlyData} maxValue={maxMonthly} />
@@ -103,7 +103,7 @@ export default function StatsDetailPanel({
 
       <div className={`rounded-2xl bg-white p-6 ${softShadow}`}>
         <h3 className="font-sans text-base font-bold text-gray-900">가장 많이 사용한 색상</h3>
-        <p className="mt-1 font-rounded text-xs font-normal text-gray-500">
+        <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
           전체 도안 기준 비율
         </p>
         <ul className="mt-6 space-y-4">

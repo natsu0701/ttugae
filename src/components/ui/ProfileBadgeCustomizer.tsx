@@ -8,7 +8,9 @@ import {
 import {
   CheckFillIcon,
   ChevronFillIcon,
+  ImageFillIcon,
   LockFillIcon,
+  ProfileFillIcon,
 } from "../icons/FillIcons.tsx";
 import type { BadgeUnlockMap } from "../mypage/achievementStats.ts";
 import {
@@ -38,6 +40,7 @@ export type ProfileBadgeCustomizerProps = {
   avatarUrl?: string;
   unlocks?: BadgeUnlockMap;
   onPickAvatar?: () => void;
+  onResetAvatar?: () => void;
 };
 
 const BADGE_TILE = "h-16 w-16";
@@ -53,11 +56,13 @@ function ProfileBadgeCustomizer({
   avatarUrl,
   unlocks = DEFAULT_UNLOCKS,
   onPickAvatar,
+  onResetAvatar,
 }: ProfileBadgeCustomizerProps) {
   const [equippedBadgeId, setEquippedBadgeId] = useState<string | null>(() =>
     loadEquippedBadgeId() ?? "badge1",
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const displayAvatar = avatarUrl || TTEUNI_IMAGES.chatProfile;
 
@@ -79,6 +84,7 @@ function ProfileBadgeCustomizer({
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
+        setIsAvatarMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -91,7 +97,15 @@ function ProfileBadgeCustomizer({
     setIsDropdownOpen(false);
   };
 
-  const openBadgePicker = () => setIsDropdownOpen((open) => !open);
+  const openBadgePicker = () => {
+    setIsAvatarMenuOpen(false);
+    setIsDropdownOpen((open) => !open);
+  };
+
+  const openAvatarMenu = () => {
+    setIsDropdownOpen(false);
+    setIsAvatarMenuOpen((open) => !open);
+  };
 
   const displayHandle = `@${handle.replace(/^@/, "")}`;
 
@@ -100,12 +114,58 @@ function ProfileBadgeCustomizer({
       <div className="relative mb-8 h-28 w-28 select-none">
         <button
           type="button"
-          onClick={onPickAvatar}
+          onClick={openAvatarMenu}
           className="flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-stone-200 bg-stone-100 transition-colors hover:border-coral"
           aria-label="프로필 이미지 변경"
+          aria-expanded={isAvatarMenuOpen}
         >
-          <img src={displayAvatar} alt="" className="h-full w-full object-cover" />
+          <img
+            src={displayAvatar}
+            alt=""
+            className={
+              avatarUrl
+                ? "h-full w-full object-cover"
+                : "h-[78%] w-[78%] object-contain"
+            }
+          />
         </button>
+
+        <AnimatePresence>
+          {isAvatarMenuOpen ? (
+            <motion.div
+              initial={{ opacity: 0, y: 6, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 6, scale: 0.96 }}
+              transition={{ type: "spring", damping: 22, stiffness: 320 }}
+              className="absolute left-1/2 top-[calc(100%+20px)] z-40 w-48 origin-top -translate-x-1/2 rounded-2xl border border-stone-200 bg-white p-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.08)]"
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAvatarMenuOpen(false);
+                  onPickAvatar?.();
+                }}
+                className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-xs font-bold text-stone-700 transition-colors hover:bg-stone-50"
+              >
+                <ImageFillIcon className="h-4 w-4 shrink-0 text-stone-500" />
+                사진 변경
+              </button>
+              <button
+                type="button"
+                disabled={!avatarUrl}
+                onClick={() => {
+                  if (!avatarUrl) return;
+                  setIsAvatarMenuOpen(false);
+                  onResetAvatar?.();
+                }}
+                className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-xs font-bold text-stone-700 transition-colors hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ProfileFillIcon className="h-4 w-4 shrink-0 text-stone-500" />
+                기본 프로필로 바꾸기
+              </button>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
 
         <AnimatePresence mode="wait">
           {equippedBadge ? (

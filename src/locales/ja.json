@@ -188,6 +188,8 @@
       "recommendedValue": "{{sts}}目 · {{rows}}段",
       "recommendedBefore": "洗い前基準 {{sts}}目 · {{rows}}段",
       "applyRecommended": "推奨目数を入れる",
+      "needleTitle": "針の仕様",
+      "needleHint": "棒針かかぎ針かを選び、形に合うタイプと号数を指定してください。",
       "cancel": "キャンセル",
       "createCanvas": "キャンバスを作成"
     },

@@ -92,6 +92,40 @@ const LINEAGE_BY_PATTERN: Record<string, RemixLineageNode[]> = {
       isCurrent: true,
     },
   ],
+  "cp-8": [
+    {
+      id: "n0",
+      patternId: "cp-5",
+      title: "미니 하트 코스터",
+      author: "heart_stitch",
+      changeLabel: "원본",
+    },
+    {
+      id: "n1",
+      patternId: "cp-8",
+      title: "분홍 별 코스터",
+      author: "star_table",
+      changeLabel: "형태 변경",
+      isCurrent: true,
+    },
+  ],
+  "cp-10": [
+    {
+      id: "n0",
+      patternId: "cp-4",
+      title: "겨울 털모자 기본형",
+      author: "뜨니친구",
+      changeLabel: "원본",
+    },
+    {
+      id: "n1",
+      patternId: "cp-10",
+      title: "노란 비니 모자",
+      author: "sunny_knit",
+      changeLabel: "배색 변경",
+      isCurrent: true,
+    },
+  ],
 };
 
 const DEFAULT_LINEAGE = (patternId: string, title: string, author: string): RemixLineageNode[] => [

@@ -4,7 +4,6 @@ import PatternCard from "./components/community/PatternCard.tsx";
 import MyPatternsPanel from "./components/mypage/MyPatternsPanel.tsx";
 import FinishedWorksGallery from "./components/mypage/FinishedWorksGallery.tsx";
 import SettingsPanel from "./components/mypage/SettingsPanel.tsx";
-import AccountManagePanel from "./components/mypage/AccountManagePanel.tsx";
 import ProfileBadgeCustomizer from "./components/ui/ProfileBadgeCustomizer.tsx";
 import SmoothInput from "./components/ui/SmoothInput.tsx";
 import KnitAchievementDashboard from "./components/mypage/KnitAchievementDashboard.tsx";
@@ -21,6 +20,7 @@ import type { CommunityPattern } from "./data/communityPatterns.ts";
 import {
   DEFAULT_HANDLE,
   DEFAULT_NICKNAME,
+  clearProfileAvatar,
   loadProfile,
   saveProfileAvatar,
 } from "./utils/profileStorage.ts";
@@ -53,8 +53,7 @@ export type MyPageTab =
   | "liked"
   | "saved"
   | "stats"
-  | "settings"
-  | "account";
+  | "settings";
 
 const NAV_TABS: { id: MyPageTab; Icon: typeof ProfileFillIcon; label: string }[] = [
   { id: "profile", Icon: ProfileFillIcon, label: "내 정보" },
@@ -160,7 +159,7 @@ function ProfileInfoPanel({
     <div className="space-y-6">
       <div>
         <h2 className="font-sans text-2xl font-bold text-gray-900">내 정보</h2>
-        <p className="mt-1 font-sans text-sm font-light text-stone-500">
+        <p className="mt-1 font-seoyun text-sm font-normal text-stone-500">
           프로필과 손땀 게이지를 관리해요.
         </p>
       </div>
@@ -180,13 +179,19 @@ function ProfileInfoPanel({
           avatarUrl={avatarUrl}
           unlocks={badgeUnlocks}
           onPickAvatar={() => avatarInputRef.current?.click()}
+          onResetAvatar={() => {
+            setAvatarUrl(undefined);
+            clearProfileAvatar();
+          }}
         />
 
         <div className="mt-8 space-y-4 border-t border-stone-100 pt-6">
-          <h4 className="font-sans text-xs font-black tracking-wider text-stone-400">내 게이지</h4>
-          <p className="font-sans text-[10px] font-light leading-normal text-stone-400">
-            10x10cm 편물의 세탁 전후 코·단 수를 저장하면 에디터 시작 코 수에 연동됩니다.
-          </p>
+          <div>
+            <h3 className="font-sans text-sm font-bold text-gray-900">내 게이지</h3>
+            <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
+              10x10cm 편물의 세탁 전후 코·단 수를 저장하면 에디터 시작 코 수에 연동됩니다.
+            </p>
+          </div>
           <div className="grid grid-cols-2 gap-3.5">
             <SmoothInput
               label="세탁 전 코"
@@ -240,14 +245,14 @@ function ProfileInfoPanel({
 }
 
 function AccountMenu({
-  active,
-  onManage,
+  open,
+  onToggle,
   onAddAccount,
   onLogout,
   onWithdraw,
 }: {
-  active: boolean;
-  onManage: () => void;
+  open: boolean;
+  onToggle: () => void;
   onAddAccount: () => void;
   onLogout: () => void;
   onWithdraw: () => void;
@@ -257,36 +262,36 @@ function AccountMenu({
     "flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-sm font-normal text-stone-700 transition-colors hover:bg-white";
 
   return (
-    <div className="mt-6 rounded-2xl bg-white p-3 shadow-[0_8px_30px_rgba(252,95,83,0.025)]">
-      <p className="mb-2 px-1 font-sans text-[10px] font-black tracking-wider text-stone-400">
-        {t("mypage.account.section")}
-      </p>
+    <div className="mt-2 md:w-full">
       <button
         type="button"
-        onClick={onManage}
-        className={`flex w-full items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-sm font-normal ${tabButtonBase} ${tabButtonClass(active)}`}
+        onClick={onToggle}
+        className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-sm font-normal md:w-full ${tabButtonBase} ${tabButtonClass(open)}`}
+        aria-expanded={open}
       >
         <AccountFillIcon className="h-5 w-5 shrink-0" />
-        {t("mypage.account.manage")}
+        {t("mypage.account.section")}
       </button>
-      <div className="mt-2 space-y-0.5 rounded-2xl bg-stone-50 p-1.5">
-        <button type="button" onClick={onAddAccount} className={itemClass}>
-          <UserPlusFillIcon className="h-5 w-5 shrink-0" />
-          {t("mypage.account.addAccount")}
-        </button>
-        <button type="button" onClick={onLogout} className={itemClass}>
-          <LogoutFillIcon className="h-5 w-5 shrink-0" />
-          {t("mypage.account.logout")}
-        </button>
-      </div>
-      <button
-        type="button"
-        onClick={onWithdraw}
-        className="mt-1.5 flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-sm font-normal text-coral transition-colors hover:bg-coral/5"
-      >
-        <WithdrawFillIcon className="h-5 w-5 shrink-0" />
-        {t("mypage.account.withdraw")}
-      </button>
+      {open ? (
+        <div className="mt-2 space-y-0.5 rounded-2xl bg-stone-50 p-1.5">
+          <button type="button" onClick={onAddAccount} className={itemClass}>
+            <UserPlusFillIcon className="h-5 w-5 shrink-0" />
+            {t("mypage.account.addAccount")}
+          </button>
+          <button type="button" onClick={onLogout} className={itemClass}>
+            <LogoutFillIcon className="h-5 w-5 shrink-0" />
+            {t("mypage.account.logout")}
+          </button>
+          <button
+            type="button"
+            onClick={onWithdraw}
+            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-sm font-normal text-coral transition-colors hover:bg-white"
+          >
+            <WithdrawFillIcon className="h-5 w-5 shrink-0" />
+            {t("mypage.account.withdraw")}
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -304,6 +309,7 @@ export default function MyPage({
 }: MyPageProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<MyPageTab>("profile");
+  const [accountOpen, setAccountOpen] = useState(false);
   const { likedPatternIds, savedPatternIds } = useCommunityActions();
   const achievementStats = useMemo(() => computeAchievementStats(patterns), [patterns]);
 
@@ -314,8 +320,8 @@ export default function MyPage({
 
   const accountMenu = (
     <AccountMenu
-      active={activeTab === "account"}
-      onManage={() => setActiveTab("account")}
+      open={accountOpen}
+      onToggle={() => setAccountOpen((open) => !open)}
       onAddAccount={onAddAccount}
       onLogout={onLogout}
       onWithdraw={handleWithdraw}
@@ -429,10 +435,6 @@ export default function MyPage({
           ) : null}
 
           {activeTab === "settings" ? <SettingsPanel /> : null}
-
-          {activeTab === "account" ? (
-            <AccountManagePanel onWithdraw={handleWithdraw} />
-          ) : null}
 
           <div className="mt-10 md:hidden">{accountMenu}</div>
         </main>

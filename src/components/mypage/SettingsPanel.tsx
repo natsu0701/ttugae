@@ -8,14 +8,24 @@ import { SUPPORTED_LANGUAGES } from "../../i18n.ts";
 import {
   SKILL_LABELS,
   TASTE_STYLE_LABELS,
+  loadNeedleInventory,
   loadTasteProfile,
   loadYarnInventory,
+  saveNeedleInventory,
   saveTasteProfile,
   saveYarnInventory,
+  type NeedleStock,
   type SkillLevel,
   type TasteStyle,
   type YarnStock,
 } from "../../utils/personalizationStorage.ts";
+import NeedleSpecFields from "../editor/NeedleSpecFields.tsx";
+import {
+  DEFAULT_NEEDLE,
+  formatNeedleBadge,
+  needleDetailLabel,
+  type NeedleSpec,
+} from "../../data/knittingMetadataLibrary.ts";
 import {
   loadYarnTrailEnabled,
   saveYarnTrailEnabled,
@@ -45,7 +55,7 @@ function SettingsCard({
   return (
     <div className={`mt-6 rounded-2xl bg-white p-6 ${softShadow}`}>
       <h3 className="font-sans text-sm font-bold text-gray-900">{title}</h3>
-      <p className="mt-1 font-rounded text-xs font-normal text-gray-500">{hint}</p>
+      <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">{hint}</p>
       <div className="mt-4">{children}</div>
     </div>
   );
@@ -60,6 +70,8 @@ export default function SettingsPanel() {
 
   const [isYarnTrailEnabled, setIsYarnTrailEnabled] = useState(loadYarnTrailEnabled);
   const [yarns, setYarns] = useState<YarnStock[]>(() => loadYarnInventory());
+  const [needles, setNeedles] = useState<NeedleStock[]>(() => loadNeedleInventory());
+  const [needleDraft, setNeedleDraft] = useState<NeedleSpec>(DEFAULT_NEEDLE);
   const [taste, setTaste] = useState(() => loadTasteProfile());
   const [yarnDraft, setYarnDraft] = useState({
     name: "",
@@ -101,6 +113,25 @@ export default function SettingsPanel() {
     const next = yarns.filter((y) => y.id !== id);
     setYarns(next);
     saveYarnInventory(next);
+  };
+
+  const addNeedle = () => {
+    const size = needleDraft.needleSize.trim();
+    if (!size) return;
+    const next: NeedleStock[] = [
+      ...needles,
+      { id: `needle-${Date.now()}`, ...needleDraft, needleSize: size },
+    ];
+    setNeedles(next);
+    saveNeedleInventory(next);
+    setNeedleDraft(DEFAULT_NEEDLE);
+    flash("바늘 창고에 추가했어요.");
+  };
+
+  const removeNeedle = (id: string) => {
+    const next = needles.filter((n) => n.id !== id);
+    setNeedles(next);
+    saveNeedleInventory(next);
   };
 
   const toggleStyle = (style: TasteStyle) => {
@@ -171,7 +202,7 @@ export default function SettingsPanel() {
             <GlobeFillIcon className="h-5 w-5 text-stone-500" />
             {t("mypage.settings.languageLabel")}
           </label>
-          <p className="mt-2 font-rounded text-xs font-normal text-gray-500">
+          <p className="mt-2 font-seoyun text-xs font-normal text-gray-500">
             {t("mypage.settings.appliedHint")}
           </p>
           <select
@@ -221,7 +252,7 @@ export default function SettingsPanel() {
             ))}
           </ul>
         ) : (
-          <p className="mb-4 font-rounded text-xs font-normal text-gray-500">
+          <p className="mb-4 font-seoyun text-xs font-normal text-gray-500">
             아직 등록된 실이 없어요.
           </p>
         )}
@@ -257,6 +288,48 @@ export default function SettingsPanel() {
         </div>
         <Button type="button" onClick={addYarn} className="mt-4 px-5 py-2.5 text-sm">
           실 추가
+        </Button>
+      </SettingsCard>
+
+      <SettingsCard
+        title="바늘 창고"
+        hint="보유 바늘을 등록하면 커뮤니티에서 지금 바로 뜰 수 있는 도안만 걸러 볼 수 있어요."
+      >
+        {needles.length > 0 ? (
+          <ul className="mb-4 space-y-2">
+            {needles.map((item) => (
+              <li
+                key={item.id}
+                className="flex items-center justify-between gap-3 rounded-xl bg-gray-50 px-3 py-2.5"
+              >
+                <span className="min-w-0">
+                  <span className="block truncate font-sans text-sm font-medium text-gray-900">
+                    {formatNeedleBadge(item)}
+                  </span>
+                  {needleDetailLabel(item) ? (
+                    <span className="block font-sans text-[11px] font-normal text-gray-500">
+                      {needleDetailLabel(item)}
+                    </span>
+                  ) : null}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeNeedle(item.id)}
+                  className="shrink-0 font-sans text-xs text-gray-400 transition-colors hover:text-coral"
+                >
+                  삭제
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mb-4 font-seoyun text-xs font-normal text-gray-500">
+            아직 등록된 바늘이 없어요.
+          </p>
+        )}
+        <NeedleSpecFields value={needleDraft} onChange={setNeedleDraft} tone="light" />
+        <Button type="button" onClick={addNeedle} className="mt-4 px-5 py-2.5 text-sm">
+          바늘 추가
         </Button>
       </SettingsCard>
 

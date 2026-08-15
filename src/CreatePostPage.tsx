@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { FolderOpen } from "lucide-react";
+import { FolderFillIcon } from "./components/icons/FillIcons.tsx";
+import LandingFooter from "./components/landing/LandingFooter.tsx";
 import Button from "./components/ui/Button.tsx";
 import SmoothInput from "./components/ui/SmoothInput.tsx";
 import Textarea from "./components/ui/Textarea.tsx";
@@ -14,6 +15,7 @@ import {
   type ShareDraftPayload,
 } from "./utils/shareDraft.ts";
 import { shareDraftFromStoredPattern } from "./utils/createShareDraft.ts";
+import { formatNeedleBadge } from "./data/knittingMetadataLibrary.ts";
 import {
   getSharedCommunityPattern,
   publishPatternToCommunity,
@@ -49,7 +51,10 @@ function applyDraftToForm(
   const yarnLine = loaded.yarns
     .map((y) => `${y.brand} ${y.label} (${y.fiberType})`)
     .join(", ");
-  setters.setYarnNeedle(yarnLine);
+  const needleLine = loaded.pattern.needle
+    ? formatNeedleBadge(loaded.pattern.needle)
+    : "";
+  setters.setYarnNeedle([yarnLine, needleLine].filter(Boolean).join(" · "));
   setters.setPhotoUrl(loaded.finishedPhotoDataUrl);
 
   if (loaded.editCommunityId) {
@@ -138,6 +143,7 @@ export default function CreatePostPage({
       gridCols: draft.gridCols,
       colorMap: draft.colorMap,
       yarns: draft.yarns,
+      needle: draft.pattern.needle,
       existingCommunityId: draft.editCommunityId,
       meta: {
         title,
@@ -164,32 +170,35 @@ export default function CreatePostPage({
 
   if (!draft) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white px-6 font-sans text-gray-900">
-        <p className="text-center text-sm text-gray-600">
-          첨부할 도안이 없습니다. 저장된 도안을 불러오거나 돌아가 주세요.
-        </p>
-        <Button
-          type="button"
-          variant="primary"
-          className="px-6 py-3"
-          onClick={() => setPatternModalOpen(true)}
-        >
-          <FolderOpen className="mr-2 inline h-4 w-4" strokeWidth={2} aria-hidden />
-          내 도안 불러오기
-        </Button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="text-sm text-gray-500 hover:text-coral"
-        >
-          ← 돌아가기
-        </button>
+      <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900">
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6">
+          <p className="text-center text-sm text-gray-600">
+            첨부할 도안이 없습니다. 저장된 도안을 불러오거나 돌아가 주세요.
+          </p>
+          <Button
+            type="button"
+            variant="primary"
+            className="px-6 py-3"
+            onClick={() => setPatternModalOpen(true)}
+          >
+            <FolderFillIcon className="mr-2 inline h-4 w-4" />
+            내 도안 불러오기
+          </Button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="text-sm text-gray-500 hover:text-coral"
+          >
+            ← 돌아가기
+          </button>
+        </div>
         <LoadMyPatternModal
           open={patternModalOpen}
           patterns={savedPatterns}
           onClose={() => setPatternModalOpen(false)}
           onSelect={handleSelectPattern}
         />
+        <LandingFooter />
       </div>
     );
   }
@@ -198,7 +207,7 @@ export default function CreatePostPage({
 
   return (
     <div className="min-h-screen bg-white pb-24 font-sans text-gray-900">
-      <header className={`sticky top-0 z-20 bg-gray-50 px-5 py-4 md:px-8 ${softShadow}`}>
+      <header className={`relative z-20 bg-gray-50 px-5 py-4 md:px-8 ${softShadow}`}>
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
           <button
             type="button"
@@ -226,7 +235,7 @@ export default function CreatePostPage({
             className="px-4 py-2 text-sm"
             onClick={() => setPatternModalOpen(true)}
           >
-            <FolderOpen className="mr-1.5 inline h-4 w-4" strokeWidth={2} aria-hidden />
+            <FolderFillIcon className="mr-1.5 inline h-4 w-4" />
             내 도안 불러오기
           </Button>
         </div>
@@ -294,6 +303,7 @@ export default function CreatePostPage({
         onClose={() => setPatternModalOpen(false)}
         onSelect={handleSelectPattern}
       />
+      <LandingFooter />
     </div>
   );
 }

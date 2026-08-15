@@ -9,6 +9,8 @@ import {
   type ChartTargetPart,
 } from "../../types/knittingProject.ts";
 import { loadGaugeProfile } from "../../utils/personalizationStorage.ts";
+import NeedleSpecFields from "./NeedleSpecFields.tsx";
+import { DEFAULT_NEEDLE, type NeedleSpec } from "../../data/knittingMetadataLibrary.ts";
 
 export type CastOnMode = "replace" | "add";
 
@@ -23,6 +25,8 @@ type CastOnModalProps = {
     name: string;
     targetPart: ChartTargetPart;
   }) => void;
+  needle?: NeedleSpec;
+  onNeedleChange?: (next: NeedleSpec) => void;
 };
 
 const PARTS = Object.keys(CHART_PART_LABELS) as ChartTargetPart[];
@@ -35,6 +39,8 @@ export default function CastOnModal({
   onClose,
   onApply,
   onAddChart,
+  needle = DEFAULT_NEEDLE,
+  onNeedleChange,
 }: CastOnModalProps) {
   const { t } = useTranslation();
   const [w, setW] = useState("24");
@@ -118,7 +124,7 @@ export default function CastOnModal({
             <h2 className="font-sans text-xl font-bold text-gray-900">
               {isAdd ? t("editor.castOn.addTitle") : t("editor.castOn.title")}
             </h2>
-            <p className="mt-2 font-rounded text-sm font-normal text-gray-600">
+            <p className="mt-2 font-seoyun text-sm font-normal text-gray-600">
               {isAdd ? t("editor.castOn.addDescription") : t("editor.castOn.description")}
             </p>
 
@@ -160,7 +166,7 @@ export default function CastOnModal({
               <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
                 {t("editor.castOn.gaugeTitle")}
               </p>
-              <p className="mt-1 font-rounded text-[11px] font-normal text-gray-500">
+              <p className="mt-1 font-seoyun text-[11px] font-normal text-gray-500">
                 {t("editor.castOn.gaugeHint")}
               </p>
               <div className="mt-3 grid grid-cols-2 gap-3">
@@ -224,7 +230,7 @@ export default function CastOnModal({
                     : "—"}
                 </p>
                 {recommended.beforeStartSts > 0 ? (
-                  <p className="mt-0.5 font-rounded text-[10px] text-gray-400">
+                  <p className="mt-0.5 font-seoyun text-[10px] text-gray-400">
                     {t("editor.castOn.recommendedBefore", {
                       sts: recommended.beforeStartSts,
                       rows: recommended.beforeStartRows,
@@ -239,6 +245,22 @@ export default function CastOnModal({
               >
                 {t("editor.castOn.applyRecommended")}
               </button>
+            </div>
+
+            <div className="mt-5 rounded-2xl bg-stone-100/80 p-4">
+              <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
+                {t("editor.castOn.needleTitle")}
+              </p>
+              <p className="mt-1 font-seoyun text-[11px] font-normal text-gray-500">
+                {t("editor.castOn.needleHint")}
+              </p>
+              <div className="mt-3">
+                <NeedleSpecFields
+                  value={needle}
+                  onChange={(next) => onNeedleChange?.(next)}
+                  tone="light"
+                />
+              </div>
             </div>
 
             <div className="mt-5 flex gap-3">

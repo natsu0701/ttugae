@@ -10,7 +10,7 @@ function LandingFooter() {
         <p className="font-seoyun text-lg font-bold text-gray-900 md:text-xl">
           오늘도 한 땀, 함께해요
         </p>
-        <p className="mt-2 inline-flex items-center gap-1.5 font-rounded text-sm font-normal text-gray-500">
+        <p className="mt-2 inline-flex items-center gap-1.5 font-seoyun text-sm font-normal text-gray-500">
           ©
           <BrandTextLogo className="h-4 w-auto object-contain opacity-80" />
         </p>

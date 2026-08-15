@@ -25,7 +25,7 @@ function FeatureOneSection({ onOpenEditor }: FeatureOneSectionProps) {
           <Button
             variant="primary"
             onClick={onOpenEditor}
-            className="mt-8 px-6 py-3 font-extrabold shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-all duration-300 hover:shadow-[0_10px_28px_rgba(252,95,83,0.18)]"
+            className="mt-8 px-6 py-3 font-extrabold !shadow-[0_3px_8px_rgba(0,0,0,0.07)] transition-all duration-300 hover:!shadow-[0_4px_10px_rgba(252,95,83,0.14)]"
           >
             도안 그리기
           </Button>

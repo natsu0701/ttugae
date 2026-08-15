@@ -1,5 +1,5 @@
-import { gridToThumbnailHex } from "../../utils/communityShare.ts";
-import type { EditorCell } from "../../utils/patternGrid.ts";
+import PatternChartGrid from "../community/PatternChartGrid.tsx";
+import { EDITOR_COLOR_HEX, type EditorCell } from "../../utils/patternGrid.ts";
 
 type PatternThumbnailPreviewProps = {
   grid: EditorCell[][];
@@ -14,7 +14,7 @@ export default function PatternThumbnailPreview({
   photoUrl,
   title,
 }: PatternThumbnailPreviewProps) {
-  const cells = gridToThumbnailHex(grid, colorMap, 14);
+  const mergedColorMap = { ...EDITOR_COLOR_HEX, ...colorMap };
 
   return (
     <div className="overflow-hidden rounded-2xl bg-gray-50">
@@ -29,21 +29,12 @@ export default function PatternThumbnailPreview({
           <p className="mb-3 font-sans text-xs font-normal text-gray-500">
             도안 미리보기
           </p>
-          <div
-            className="mx-auto grid max-w-xs gap-px rounded-xl bg-gray-200 p-1"
-            style={{
-              gridTemplateColumns: `repeat(${cells[0]?.length ?? 1}, minmax(0, 1fr))`,
-            }}
-          >
-            {cells.flatMap((row, r) =>
-              row.map((hex, c) => (
-                <div
-                  key={`${r}-${c}`}
-                  className="aspect-square rounded-sm"
-                  style={{ backgroundColor: hex }}
-                />
-              )),
-            )}
+          <div className="mx-auto max-w-xs overflow-hidden rounded-xl bg-gray-200 p-1">
+            <PatternChartGrid
+              cells={grid}
+              colorMap={mergedColorMap}
+              fit="cells"
+            />
           </div>
         </div>
       )}

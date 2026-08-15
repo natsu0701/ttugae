@@ -4,6 +4,11 @@ import {
 } from "../data/patternThumbnails.ts";
 import type { EditorYarn } from "../types/editorYarn.ts";
 import type { EditorCell } from "./patternGrid.ts";
+import {
+  DEFAULT_NEEDLE,
+  formatNeedleBadge,
+  type NeedleSpec,
+} from "../data/knittingMetadataLibrary.ts";
 
 const SHARED_KEY = "ttugae.community.shared.v1";
 
@@ -89,6 +94,7 @@ export function publishPatternToCommunity(input: {
   gridCols: number;
   colorMap: Record<string, string>;
   yarns: EditorYarn[];
+  needle?: NeedleSpec;
   meta?: PublishPostMeta;
   existingCommunityId?: string;
 }): CommunityPattern {
@@ -106,7 +112,10 @@ export function publishPatternToCommunity(input: {
   const finishedImage =
     input.meta?.finishedPhotoDataUrl ??
     prev?.finishedImage ??
-    "그림4_AI예상_스웨터.PNG";
+    "completed_muffler_rainbow.jpg";
+
+  const needle = input.needle ?? prev?.needle ?? DEFAULT_NEEDLE;
+  const needleBadge = formatNeedleBadge(needle);
 
   const pattern: CommunityPattern = {
     id: communityId,
@@ -118,16 +127,19 @@ export function publishPatternToCommunity(input: {
     gridCols: input.gridCols,
     gridRows: input.gridRows,
     grid: editorGridToBooleanGrid(input.grid),
+    editorGrid: input.grid,
+    colorMap: input.colorMap,
+    needle,
     publishedAt: prev?.publishedAt ?? formatToday(),
     hasAttachedPattern: true,
-    aiPredictedImage: prev?.aiPredictedImage ?? "그림4_AI예상_스웨터.PNG",
+    aiPredictedImage: prev?.aiPredictedImage ?? "completed_muffler_rainbow.jpg",
     finishedImage,
     finishedCaption:
       review ||
       (yarnNeedle ? `${yarnNeedle}` : `사용 실: ${yarnSummary(input.yarns)}.`),
     finishedDetail: {
       yarn: yarnNeedle || defaultYarn,
-      needle: prev?.finishedDetail.needle ?? "4.0mm",
+      needle: needleBadge,
       duration: prev?.finishedDetail.duration ?? "—",
       review: review || "에디터에서 공유한 도안입니다.",
     },

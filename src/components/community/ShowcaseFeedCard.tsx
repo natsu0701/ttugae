@@ -1,14 +1,17 @@
 import { memo, useState, type MouseEvent } from "react";
-import { Bookmark, Heart, MessageCircle } from "lucide-react";
+import { BookmarkFillIcon, ChatFillIcon, HeartFillIcon } from "../icons/FillIcons.tsx";
 import {
   finishedImageUrl,
   type CommunityPattern,
 } from "../../data/communityPatterns.ts";
 import { useCommunityActions } from "../../context/CommunityActionsContext.tsx";
-import { getPatternThumbnail } from "../../data/patternThumbnails.ts";
+import { getPatternPreviewModel } from "../../data/patternThumbnails.ts";
 import { getCommentsForPattern } from "../../data/finishedWorkComments.ts";
 import { communityPostPath } from "./PatternCard.tsx";
 import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
+import NeedleBadge from "./NeedleBadge.tsx";
+import PatternChartGrid from "./PatternChartGrid.tsx";
+import { getLoungeMeta } from "../../data/loungeFilters.ts";
 
 type ShowcaseFeedCardProps = {
   pattern: CommunityPattern;
@@ -17,31 +20,28 @@ type ShowcaseFeedCardProps = {
 };
 
 function skillBadge(pattern: CommunityPattern): string {
-  const cells = pattern.gridCols * pattern.gridRows;
-  if (cells <= 225) return "초급";
-  if (cells <= 900) return "중급";
+  const level = getLoungeMeta(pattern).level;
+  if (level === "beginner") return "초급";
+  if (level === "intermediate") return "중급";
   return "고급";
 }
 
 function PatternOverlay({ pattern }: { pattern: CommunityPattern }) {
-  const cells = getPatternThumbnail(pattern.id);
-  const cols = cells[0]?.length ?? 12;
+  const { cells, colorMap } = getPatternPreviewModel(pattern);
+  const rows = cells.length;
+  const cols = cells[0]?.length ?? 1;
 
   return (
-    <div className="absolute inset-0 bg-stone-50 p-3">
+    <div className="absolute inset-0 flex items-center justify-center bg-stone-50 p-3">
       <div
-        className="grid h-full w-full gap-px"
-        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+        className="max-h-full max-w-full"
+        style={{
+          aspectRatio: `${cols} / ${rows}`,
+          width: cols >= rows ? "100%" : "auto",
+          height: rows > cols ? "100%" : "auto",
+        }}
       >
-        {cells.flatMap((row, r) =>
-          row.map((hex, c) => (
-            <div
-              key={`${r}-${c}`}
-              className="min-h-0 rounded-sm"
-              style={{ backgroundColor: hex }}
-            />
-          )),
-        )}
+        <PatternChartGrid cells={cells} colorMap={colorMap} />
       </div>
     </div>
   );
@@ -111,6 +111,7 @@ function ShowcaseFeedCard({
               alt={`${pattern.title} 완성작`}
               className="h-full w-full object-cover"
               loading="lazy"
+              decoding="async"
               onError={() => setImageFailed(true)}
             />
           )}
@@ -128,17 +129,24 @@ function ShowcaseFeedCard({
                   }}
                   className="rounded-2xl bg-white px-5 py-3 font-sans text-xs font-bold text-stone-950 shadow-md transition-colors hover:bg-stone-100"
                 >
-                  내 에디터로 불러오기
+                  도안 에디터로 복제하기
                 </button>
               </div>
             ) : null}
           </div>
+          <NeedleBadge
+            spec={pattern.needle}
+            needleText={pattern.finishedDetail.needle}
+            className="pointer-events-none absolute bottom-3 right-3 z-[2] shadow-sm"
+          />
         </div>
       </a>
 
       <div className="mt-4 flex items-end justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h3 className="font-sans text-base font-bold text-stone-900">{pattern.title}</h3>
+          <h3 className="font-sans text-base font-bold text-stone-900">
+            {pattern.title}
+          </h3>
           <p className="mt-2 font-sans text-sm font-light leading-relaxed text-stone-500">
             {body}
           </p>
@@ -153,7 +161,7 @@ function ShowcaseFeedCard({
             aria-pressed={liked}
             aria-label="좋아요"
           >
-            <Heart size={16} fill={liked ? "#FC5F53" : "none"} />
+            <HeartFillIcon className="h-4 w-4" filled={liked} />
             <span>{likeCount}</span>
           </button>
           <button
@@ -165,7 +173,7 @@ function ShowcaseFeedCard({
             aria-pressed={saved}
             aria-label="저장"
           >
-            <Bookmark size={16} fill={saved ? "#292524" : "none"} />
+            <BookmarkFillIcon className="h-4 w-4" filled={saved} />
             <span>{saveCount}</span>
           </button>
           <button
@@ -174,7 +182,7 @@ function ShowcaseFeedCard({
             className="flex items-center gap-1 text-xs text-stone-400 transition-colors hover:text-stone-600"
             aria-label="댓글"
           >
-            <MessageCircle size={16} />
+            <ChatFillIcon className="h-4 w-4" />
             <span>{commentCount}</span>
           </button>
         </div>

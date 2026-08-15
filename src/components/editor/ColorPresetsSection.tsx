@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
-import { RefreshCw } from "lucide-react";
+import { RefreshFillIcon } from "../icons/FillIcons.tsx";
 import {
   pickRandomPresets,
   type ColorPreset,
@@ -52,10 +52,8 @@ export default function ColorPresetsSection({
           aria-label={t("editor.colorPresetsRefresh")}
           title={t("editor.colorPresetsRefresh")}
         >
-          <RefreshCw
+          <RefreshFillIcon
             className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
-            strokeWidth={2}
-            aria-hidden
           />
         </button>
       </div>
@@ -111,7 +109,7 @@ export default function ColorPresetsSection({
         </AnimatePresence>
       </div>
 
-      <p className="mt-2 font-rounded text-[10px] font-normal text-stone-500">
+      <p className="mt-2 font-seoyun text-[10px] font-normal text-stone-500">
         {t("editor.colorPresetsHint")}
       </p>
     </div>

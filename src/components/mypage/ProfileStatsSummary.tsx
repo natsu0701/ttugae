@@ -44,7 +44,7 @@ export default function ProfileStatsSummary({
       <h3 className="font-sans text-lg font-bold text-gray-900">
         {t("mypage.profile.statsTitle")}
       </h3>
-      <p className="mt-1 font-rounded text-sm font-normal text-gray-500">
+      <p className="mt-1 font-seoyun text-sm font-normal text-gray-500">
         {t("mypage.profile.statsHint")}
       </p>
       <div className="mt-4 grid grid-cols-2 gap-3">

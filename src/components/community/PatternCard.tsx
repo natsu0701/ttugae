@@ -1,37 +1,36 @@
 import { memo, useState, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Bookmark, Heart } from "lucide-react";
+import { BookmarkFillIcon, HeartFillIcon } from "../icons/FillIcons.tsx";
 import {
   finishedImageUrl,
   type CommunityPattern,
 } from "../../data/communityPatterns.ts";
 import { useCommunityActions } from "../../context/CommunityActionsContext.tsx";
-import { getPatternThumbnail } from "../../data/patternThumbnails.ts";
+import { getPatternPreviewModel } from "../../data/patternThumbnails.ts";
 import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
+import NeedleBadge from "./NeedleBadge.tsx";
+import PatternChartGrid from "./PatternChartGrid.tsx";
 
 export function communityPostPath(patternId: string) {
   return `/community/post/${patternId}`;
 }
 
 function PatternGridPreview({ pattern }: { pattern: CommunityPattern }) {
-  const cells = getPatternThumbnail(pattern.id);
-  const cols = cells[0]?.length ?? 12;
+  const { cells, colorMap } = getPatternPreviewModel(pattern);
+  const rows = cells.length;
+  const cols = cells[0]?.length ?? 1;
 
   return (
-    <div className="absolute inset-0 bg-stone-50 p-3">
+    <div className="absolute inset-0 flex items-center justify-center bg-stone-50 p-3">
       <div
-        className="grid h-full w-full gap-px"
-        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+        className="max-h-full max-w-full"
+        style={{
+          aspectRatio: `${cols} / ${rows}`,
+          width: cols >= rows ? "100%" : "auto",
+          height: rows > cols ? "100%" : "auto",
+        }}
       >
-        {cells.flatMap((row, r) =>
-          row.map((hex, c) => (
-            <div
-              key={`${r}-${c}`}
-              className="min-h-0 rounded-sm"
-              style={{ backgroundColor: hex }}
-            />
-          )),
-        )}
+        <PatternChartGrid cells={cells} colorMap={colorMap} />
       </div>
     </div>
   );
@@ -49,6 +48,7 @@ function FinishedHoverLayer({ pattern }: { pattern: CommunityPattern }) {
       alt={`${pattern.title} 완성작`}
       className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
       loading="lazy"
+      decoding="async"
       onError={() => setFailed(true)}
     />
   );
@@ -73,6 +73,7 @@ function PatternCard({
   const { isLiked, isSaved, getLikeCount, getSaveCount, toggleLike, toggleSave } =
     useCommunityActions();
 
+  const [hoverPhoto, setHoverPhoto] = useState(false);
   const liked = isLiked(pattern.id);
   const saved = isSaved(pattern.id);
   const likeCount = getLikeCount(pattern.id);
@@ -97,7 +98,10 @@ function PatternCard({
   };
 
   return (
-    <article className="group overflow-hidden rounded-3xl bg-white shadow-sm transition-all duration-300 hover:shadow-md">
+    <article
+      className="group overflow-hidden rounded-3xl bg-white shadow-sm transition-all duration-300 hover:shadow-md"
+      onPointerEnter={() => setHoverPhoto(true)}
+    >
       <a
         href={href}
         onClick={openDetail}
@@ -106,7 +110,7 @@ function PatternCard({
       >
         <div className="relative aspect-square w-full overflow-hidden bg-stone-50">
           <PatternGridPreview pattern={pattern} />
-          <FinishedHoverLayer pattern={pattern} />
+          {hoverPhoto ? <FinishedHoverLayer pattern={pattern} /> : null}
 
           {showImportOverlay && onImport ? (
             <div className="absolute inset-0 z-[1] flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -146,6 +150,11 @@ function PatternCard({
               {sizeLabel}
             </span>
           )}
+          <NeedleBadge
+            spec={pattern.needle}
+            needleText={pattern.finishedDetail.needle}
+            className="pointer-events-none absolute bottom-3.5 right-3.5 z-[2] shadow-sm"
+          />
         </div>
 
         <div className="bg-white p-4">
@@ -168,7 +177,7 @@ function PatternCard({
           }`}
           aria-pressed={liked}
         >
-          <Heart size={14} fill={liked ? "#FC5F53" : "none"} />
+          <HeartFillIcon className="h-3.5 w-3.5" filled={liked} />
           <span>{likeCount}</span>
         </button>
         <button
@@ -179,7 +188,7 @@ function PatternCard({
           }`}
           aria-pressed={saved}
         >
-          <Bookmark size={14} fill={saved ? "#292524" : "none"} />
+          <BookmarkFillIcon className="h-3.5 w-3.5" filled={saved} />
           <span>{saveCount}</span>
         </button>
       </div>

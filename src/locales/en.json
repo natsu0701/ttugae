@@ -189,6 +189,8 @@
       "recommendedValue": "{{sts}} sts · {{rows}} rows",
       "recommendedBefore": "Before wash: {{sts}} sts · {{rows}} rows",
       "applyRecommended": "Use recommended count",
+      "needleTitle": "Needle spec",
+      "needleHint": "Choose knitting needles or a crochet hook, then pick a type and size.",
       "cancel": "Cancel",
       "createCanvas": "Create canvas"
     },

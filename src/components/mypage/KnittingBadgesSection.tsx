@@ -58,7 +58,7 @@ function KnittingBadgesSection({ patterns, likedCount }: KnittingBadgesSectionPr
   return (
     <section className={`rounded-2xl bg-white p-6 ${softShadow}`}>
       <h3 className="font-sans text-base font-bold text-gray-900">나의 뜨개 칭호</h3>
-      <p className="mt-1 font-rounded text-xs font-normal text-gray-500">
+      <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
         활동에 따라 뱃지가 잠금 해제돼요
       </p>
 
@@ -82,7 +82,7 @@ function KnittingBadgesSection({ patterns, likedCount }: KnittingBadgesSectionPr
               </span>
               <p className="mt-3 font-sans text-sm font-bold">{badge.label}</p>
               <p
-                className={`mt-1 font-rounded text-[11px] font-normal ${
+                className={`mt-1 font-seoyun text-[11px] font-normal ${
                   isOn ? "text-white/85" : "text-gray-400"
                 }`}
               >

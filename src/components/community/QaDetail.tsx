@@ -68,8 +68,8 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-16 pt-20 font-sans text-gray-900 md:pt-24">
-      <header className="sticky top-20 z-40 bg-white/95 backdrop-blur-sm md:top-24">
+    <div className="min-h-screen bg-white pb-16 font-sans text-gray-900">
+      <header className="relative z-10 bg-white">
         <div className="mx-auto flex max-w-3xl items-center px-5 py-4 md:px-8">
           <button
             type="button"
@@ -139,7 +139,7 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
                         value={editDraft}
                         onChange={(e) => setEditDraft(e.target.value)}
                         rows={3}
-                        className="w-full rounded-2xl bg-white px-4 py-3 font-sans text-sm font-normal text-gray-700 outline-none focus:bg-gray-100"
+                        className="w-full rounded-2xl bg-white px-4 py-3 font-sans text-sm font-normal leading-normal text-gray-700 outline-none focus:bg-gray-100"
                       />
                       <div className="mt-2 flex gap-2">
                         <Button

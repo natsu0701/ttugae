@@ -20,7 +20,7 @@ export default function Textarea({ label, className = "", id, ...props }: Textar
       )}
       <textarea
         id={inputId}
-        className={`w-full resize-y rounded-xl bg-gray-50 px-4 py-3 font-sans text-sm font-normal text-gray-800 outline-none transition-colors focus:bg-white min-h-[120px] ${softShadow} ${className}`}
+        className={`min-h-[120px] w-full resize-y rounded-xl bg-gray-50 px-4 py-3 font-sans text-sm font-normal leading-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow} ${className}`}
         {...props}
       />
     </div>

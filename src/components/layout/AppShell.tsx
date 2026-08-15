@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
+import LandingFooter from "../landing/LandingFooter.tsx";
 import BrandTextLogo from "../ui/BrandTextLogo.tsx";
 import Button from "../ui/Button.tsx";
 import { UserFillIcon } from "../icons/FillIcons.tsx";
@@ -243,7 +244,7 @@ export default function AppShell({
 }: AppShellProps) {
   const { t } = useTranslation();
 
-  // 랜딩: 투명 헤더를 히어로 비디오 위에 오버레이 / 그 외: 흰 배경 sticky 헤더
+  // 랜딩: 투명 헤더를 히어로 비디오 위에 오버레이 / 그 외: 흰 배경 헤더(스크롤과 함께 이동)
   const isOverlayHeader = currentPage === "landing";
 
   return (
@@ -252,7 +253,7 @@ export default function AppShell({
         className={
           isOverlayHeader
             ? "absolute left-0 top-0 z-50 w-full border-none bg-transparent"
-            : "sticky top-0 z-50 bg-white/95 backdrop-blur-sm"
+            : "relative bg-white"
         }
       >
         {/* 뜨개 레이스 무늬(3278×297) — 천장에 1px 틈 없이 밀착, 클릭 이벤트는 통과 */}
@@ -329,7 +330,12 @@ export default function AppShell({
         </div>
       </header>
 
-      {children}
+      {isOverlayHeader ? (
+        children
+      ) : (
+        <div className="relative z-10 pt-20 md:pt-16">{children}</div>
+      )}
+      <LandingFooter />
     </div>
   );
 }

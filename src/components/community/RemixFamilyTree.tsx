@@ -81,7 +81,7 @@ function RemixFamilyTree({ nodes }: RemixFamilyTreeProps) {
   return (
     <section className="mt-14 rounded-2xl bg-gray-50 p-6 md:p-8">
       <h2 className="font-sans text-xl font-bold text-gray-900">이 도안의 리믹스 계보</h2>
-      <p className="mt-2 font-rounded text-sm font-normal text-gray-600">
+      <p className="mt-2 font-seoyun text-sm font-normal text-gray-600">
         원본부터 현재 작품까지, 포크(Fork)와 변형이 이어진 흐름이에요.
       </p>
 

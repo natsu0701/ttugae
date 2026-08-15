@@ -3,7 +3,6 @@ import FeatureOneSection from "./components/landing/FeatureOneSection.tsx";
 import FeatureTwoSection from "./components/landing/FeatureTwoSection.tsx";
 import HeroSection from "./components/landing/HeroSection.tsx";
 import AppPromotionSection from "./components/landing/AppPromotionSection.tsx";
-import LandingFooter from "./components/landing/LandingFooter.tsx";
 
 export type LandingPageProps = {
   onOpenEditor: () => void;
@@ -18,7 +17,6 @@ export default function LandingPage({ onOpenEditor }: LandingPageProps) {
       <FeatureOneSection onOpenEditor={handleOpenEditor} />
       <FeatureTwoSection />
       <AppPromotionSection />
-      <LandingFooter />
     </div>
   );
 }

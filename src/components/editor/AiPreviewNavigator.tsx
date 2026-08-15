@@ -1,14 +1,16 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { EditorYarn } from "../../types/editorYarn.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
 import Knitting3DPreview, {
+  inferKnitItemType,
   type KnitItemType,
 } from "./Knitting3DPreview.tsx";
 import { editorChromeTone, editorPanel } from "../ui/tabButtonStyles.ts";
 
 type AiPreviewNavigatorProps = {
+  title?: string;
   grid: EditorCell[][];
   charts?: KnittingChart[];
   colorMap: Record<string, string>;
@@ -25,6 +27,7 @@ const ITEM_OPTIONS: { id: KnitItemType; label: string }[] = [
 ];
 
 export default function AiPreviewNavigator({
+  title = "",
   grid,
   charts = [],
   colorMap,
@@ -32,7 +35,15 @@ export default function AiPreviewNavigator({
   yarnMeta = [],
 }: AiPreviewNavigatorProps) {
   const { t } = useTranslation();
-  const [itemType, setItemType] = useState<KnitItemType>("sweater");
+  const inferred = useMemo(() => inferKnitItemType(title), [title]);
+  const [itemType, setItemType] = useState<KnitItemType>(inferred);
+  const lastInferred = useRef(inferred);
+
+  useEffect(() => {
+    if (inferred === lastInferred.current) return;
+    lastInferred.current = inferred;
+    setItemType(inferred);
+  }, [inferred]);
   const metaHint = useMemo(() => {
     if (yarnMeta.length === 0) return null;
     const fibers = [...new Set(yarnMeta.map((y) => y.fiberType))];
@@ -46,7 +57,7 @@ export default function AiPreviewNavigator({
         {t("editor.preview3d")}
       </p>
       {metaHint && (
-        <p className="mb-2 font-rounded text-[11px] font-normal leading-snug text-stone-300">
+        <p className="mb-2 font-seoyun text-[11px] font-normal leading-snug text-stone-300">
           {metaHint}
         </p>
       )}

@@ -1,5 +1,9 @@
+import type { NeedleSpec } from "../data/knittingMetadataLibrary.ts";
+import { parseNeedleFromText } from "../data/knittingMetadataLibrary.ts";
+
 const GAUGE_KEY = "ttugae.settings.gauge.v1";
 const YARN_KEY = "ttugae.settings.yarnInventory.v1";
+const NEEDLE_KEY = "ttugae.settings.needleInventory.v1";
 const TASTE_KEY = "ttugae.settings.taste.v1";
 export const LOUNGE_POSTS_KEY = "lounge_posts";
 export const INTERACTIONS_KEY = "ttugae.community.interactions.v1";
@@ -10,6 +14,8 @@ export type GaugeProfile = {
   afterSts: string;
   afterRows: string;
 };
+
+export type NeedleStock = NeedleSpec & { id: string };
 
 export type YarnStock = {
   id: string;
@@ -65,6 +71,23 @@ export function loadYarnInventory(): YarnStock[] {
 
 export function saveYarnInventory(items: YarnStock[]): void {
   localStorage.setItem(YARN_KEY, JSON.stringify(items));
+}
+
+export function loadNeedleInventory(): NeedleStock[] {
+  const list = readJson<NeedleStock[]>(NEEDLE_KEY, []);
+  return Array.isArray(list) ? list : [];
+}
+
+export function saveNeedleInventory(items: NeedleStock[]): void {
+  localStorage.setItem(NEEDLE_KEY, JSON.stringify(items));
+}
+
+export function ownedNeedlesForFilter(): NeedleSpec[] {
+  const fromWarehouse = loadNeedleInventory();
+  const fromYarn = loadYarnInventory()
+    .map((yarn) => parseNeedleFromText(yarn.needle))
+    .filter((spec): spec is NeedleSpec => Boolean(spec));
+  return [...fromWarehouse, ...fromYarn];
 }
 
 export function loadTasteProfile(): TasteProfile {

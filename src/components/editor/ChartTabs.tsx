@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { PlusFillIcon } from "../icons/FillIcons.tsx";
 import type { KnittingChart } from "../../types/knittingProject.ts";
 import { CHART_PART_LABELS } from "../../types/knittingProject.ts";
 import { editorChromeTone } from "../ui/tabButtonStyles.ts";
@@ -39,7 +39,7 @@ export default function ChartTabs({
         onClick={onAdd}
         className={`flex shrink-0 items-center gap-0.5 rounded-full px-2 py-1 font-sans text-[11px] font-normal ${editorChromeTone}`}
       >
-        <Plus className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden />
+        <PlusFillIcon className="h-3.5 w-3.5" />
         도안 추가
       </button>
     </div>

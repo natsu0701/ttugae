@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
-import { UserFillIcon } from "../icons/FillIcons.tsx";
+import { CloseFillIcon, UserFillIcon } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive, editorChromeTone } from "../ui/tabButtonStyles.ts";
 
 const SIZE_PRESETS = [
@@ -58,9 +58,7 @@ export default function EditorHeader({
           className={`flex h-10 w-10 items-center justify-center ${editorChromeBtn}`}
           aria-label={t("editor.exitAria")}
         >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
-            <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-          </svg>
+          <CloseFillIcon className="h-5 w-5" />
         </button>
       </div>
 

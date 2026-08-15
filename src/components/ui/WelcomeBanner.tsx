@@ -37,7 +37,7 @@ export default function WelcomeBanner({
         >
           {title}
         </h1>
-        <p className="mt-2.5 max-w-xl break-keep font-sans text-sm font-light leading-relaxed text-stone-500 sm:text-base">
+        <p className="mt-2.5 max-w-xl break-keep font-seoyun text-base font-normal leading-relaxed text-stone-500 sm:text-lg">
           {subtitle}
         </p>
       </div>

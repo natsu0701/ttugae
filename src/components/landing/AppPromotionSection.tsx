@@ -2,7 +2,7 @@ import { memo, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectCreative } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeftFillIcon, ChevronRightFillIcon } from "../icons/FillIcons.tsx";
 import Reveal from "./Reveal.tsx";
 
 import "swiper/css";
@@ -81,7 +81,7 @@ function AppPromotionSection() {
               className={`${ARROW_BTN} absolute left-4 top-1/2 z-20 -translate-y-1/2 md:left-8`}
               aria-label="이전 목업"
             >
-              <ChevronLeft className="h-5 w-5" strokeWidth={2.2} />
+              <ChevronLeftFillIcon className="h-5 w-5" />
             </button>
 
             <Swiper
@@ -133,7 +133,7 @@ function AppPromotionSection() {
               className={`${ARROW_BTN} absolute right-4 top-1/2 z-20 -translate-y-1/2 md:right-8`}
               aria-label="다음 목업"
             >
-              <ChevronRight className="h-5 w-5" strokeWidth={2.2} />
+              <ChevronRightFillIcon className="h-5 w-5" />
             </button>
           </div>
 
@@ -146,8 +146,9 @@ function AppPromotionSection() {
             <span>AR 내비게이션 앱</span>
           </h2>
           <p className="mt-5 font-seoyun text-[1.5rem] font-normal leading-tight text-gray-700 md:text-[1.7rem]">
-            웹에서 그린 도안을 앱으로 연동해 보세요. 카메라로 비추면 다음 코를
-            안내해 줍니다.
+            웹에서 그린 도안을 앱으로 연동해 보세요.
+            <br />
+            카메라로 비추면 다음 코를 안내해 줍니다.
           </p>
           <div className="flex flex-wrap justify-center gap-3 pt-6">
             <a

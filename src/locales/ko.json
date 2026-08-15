@@ -91,7 +91,7 @@
     "emptyDesc": "다른 탭을 둘러보거나 내 도안을 공유해 보세요.",
     "shareFabLabel": "내 도안 공유하기",
     "shareFabAria": "내 도안 공유하기",
-    "importToEditor": "에디터로 불러오기",
+    "importToEditor": "도안 에디터로 복제하기",
     "importOverlayLine1": "에디터로",
     "importOverlayLine2": "불러오기",
     "finishedDetailAria": "완성작 상세 보기",
@@ -189,6 +189,8 @@
       "recommendedValue": "{{sts}}코 · {{rows}}단",
       "recommendedBefore": "세탁 전 기준 {{sts}}코 · {{rows}}단",
       "applyRecommended": "권장 코 수로 넣기",
+      "needleTitle": "바늘 사양 설정",
+      "needleHint": "대바늘 또는 코바늘을 고르고, 형태에 맞는 타입과 호수를 정해 주세요.",
       "cancel": "취소",
       "createCanvas": "캔버스 만들기"
     },

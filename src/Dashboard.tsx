@@ -1,4 +1,5 @@
 import Button from "./components/ui/Button.tsx";
+import type { NeedleSpec, PatternMetadata } from "./data/knittingMetadataLibrary.ts";
 
 export type StoredPattern = {
   id: string;
@@ -6,6 +7,9 @@ export type StoredPattern = {
   updatedAt: number;
   gridSize: number;
   grid: { colorId: string; stitchId: string }[][];
+  colorMap?: Record<string, string>;
+  needle?: NeedleSpec;
+  metadata?: PatternMetadata;
 };
 
 const COLOR_MAP: Record<string, string> = {
@@ -71,7 +75,7 @@ export default function Dashboard({
             </Button>
             <p className="font-sans text-sm font-semibold text-coral">My Patterns</p>
             <h1 className="mt-1 font-sans text-3xl font-bold text-gray-900">내 도안 보관함</h1>
-            <p className="mt-2 font-rounded text-sm text-gray-600">
+            <p className="mt-2 font-seoyun text-sm text-gray-600">
               저장한 도안을 다시 열고, 새로운 도안을 시작해요.
             </p>
           </div>
@@ -83,7 +87,7 @@ export default function Dashboard({
         {patterns.length === 0 ? (
           <div className="rounded-2xl bg-gray-50 p-8 text-center">
             <p className="font-sans text-xl font-bold text-gray-900">아직 저장된 도안이 없어요</p>
-            <p className="mt-2 font-rounded text-sm text-gray-600">
+            <p className="mt-2 font-seoyun text-sm text-gray-600">
               ‘새 도안 만들기’로 첫 도안을 시작해 보세요.
             </p>
           </div>
@@ -102,7 +106,7 @@ export default function Dashboard({
                       <p className="truncate font-sans text-xl font-bold text-gray-900">
                         {p.title}
                       </p>
-                      <p className="mt-1 font-rounded text-xs text-gray-500">
+                      <p className="mt-1 font-seoyun text-xs text-gray-500">
                         마지막 수정: {formatDate(p.updatedAt)}
                       </p>
                     </div>

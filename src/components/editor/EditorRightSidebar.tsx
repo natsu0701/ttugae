@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeftFillIcon, ChevronRightFillIcon } from "../icons/FillIcons.tsx";
 
 const SIDEBAR_MIN = 240;
 const SIDEBAR_MAX = 600;
@@ -129,9 +129,9 @@ export default function EditorRightSidebar({
         title={isCollapsed ? "사이드바 열기" : "사이드바 닫기"}
       >
         {isCollapsed ? (
-          <ChevronRight className="h-4 w-4" strokeWidth={2} />
+          <ChevronRightFillIcon className="h-4 w-4" />
         ) : (
-          <ChevronLeft className="h-4 w-4" strokeWidth={2} />
+          <ChevronLeftFillIcon className="h-4 w-4" />
         )}
       </button>
 

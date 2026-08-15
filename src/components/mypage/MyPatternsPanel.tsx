@@ -82,7 +82,7 @@ export default function MyPatternsPanel({
           <p className="font-sans text-xl font-bold text-gray-900">
             {t("mypage.patterns.emptyTitle")}
           </p>
-          <p className="mt-2 font-rounded text-sm text-gray-600">
+          <p className="mt-2 font-seoyun text-sm text-gray-600">
             {t("mypage.patterns.emptyDesc")}
           </p>
         </div>

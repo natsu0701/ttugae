@@ -15,6 +15,8 @@ export function resolveStoredPatternFromCommunity(
       updatedAt: Date.now(),
       gridSize: Math.max(pattern.gridRows, pattern.gridCols),
       grid: communityPatternToGrid(pattern),
+      colorMap: pattern.colorMap,
+      needle: pattern.needle,
     }
   );
 }
@@ -35,7 +37,7 @@ export function openCommunityPostForEdit(
   saveShareDraft({
     pattern: stored,
     yarns: [],
-    colorMap: {},
+    colorMap: { ...pattern.colorMap, ...stored.colorMap },
     gridRows: pattern.gridRows,
     gridCols: pattern.gridCols,
     finishedPhotoDataUrl: finishedPhotoDataUrl(pattern.finishedImage),
