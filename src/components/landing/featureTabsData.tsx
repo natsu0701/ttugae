@@ -1,70 +1,49 @@
-import type { ReactNode } from "react";
+import { FileText, Grid, MessageSquare, Users, type LucideIcon } from "lucide-react";
 
 export type FeatureTab = {
   id: string;
   title: string;
-  shortLabel: string;
+  subtitle: string;
   description: string;
-  image: string;
-  icon: ReactNode;
+  imagePath: string;
+  icon: LucideIcon;
 };
 
 export const FEATURE_TABS: FeatureTab[] = [
   {
     id: "editor",
-    title: "스마트 도안 에디터",
-    shortLabel: "에디터",
+    title: "도안 에디터",
+    subtitle: "2D 격자 에디터",
     description:
-      "격자 위에 뜨개 기호와 실 색을 직접 배치하고, 사이즈를 자유롭게 조절해 보세요. 초보자도 클릭 몇 번으로 나만의 도안을 완성할 수 있어요.",
-    image: "그림2_기능1_에디터.PNG",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
-        <rect x="3" y="3" width="7" height="7" rx="1.5" />
-        <rect x="14" y="3" width="7" height="7" rx="1.5" />
-        <rect x="3" y="14" width="7" height="7" rx="1.5" />
-        <rect x="14" y="14" width="7" height="7" rx="1.5" />
-      </svg>
-    ),
+      "터치와 마우스 드래그로 한 코, 한 코 정교하게 도안을 그릴 수 있습니다. 사용자의 뜨개 바늘 규격과 실의 두께에 따라 캔버스 크기를 유연하게 설정할 수 있어 입문자부터 마스터까지 자신만의 독창적인 패턴을 설계할 수 있습니다.",
+    imagePath: "/images/Editor Page.png",
+    icon: Grid,
   },
   {
-    id: "ai-chat",
-    title: "AI 뜨니 챗봇",
-    shortLabel: "AI 챗",
+    id: "chatbot",
+    title: "AI 챗봇",
+    subtitle: "지능형 뜨개 코칭",
     description:
-      "채팅으로 원하는 디자인을 말하면, 뜨니가 찰떡같이 알아듣고 도안의 초안을 만들어 주거나 쉽게 수정해 줘요!",
-    image: "그림2_기능2_AI챗봇.PNG",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
-        <path d="M4 5h16v10H7l-3 3V5z" />
-      </svg>
-    ),
+      "인공지능 뜨니가 도안 에디팅 중 실시간으로 오류를 감지하고 보정안을 제시합니다. 대화창에 필요한 가이드를 질문하면 뜨개질 기법을 도안 데이터로 변환하여 캔버스 위에 한 땀씩 한글 또는 기호로 자동 배치해 줍니다.",
+    imagePath: "/images/Tteuni AI Chat.png",
+    icon: MessageSquare,
   },
   {
-    id: "narrative",
-    title: "도안 서술형 자동 변환",
-    shortLabel: "서술 변환",
+    id: "converter",
+    title: "서술형 변환",
+    subtitle: "자연어 도안 생성",
     description:
-      "그린 도안을 행·열 단위 서술형 텍스트로 자동 변환해요. 인쇄용 도안지나 공유용 설명을 따로 적을 필요가 없어요.",
-    image: "그림2_기능3_서술형변환.PNG",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
-        <path d="M5 6h14v2H5V6zm0 5h14v2H5v-2zm0 5h10v2H5v-2z" />
-      </svg>
-    ),
+      "복잡한 격자 그림 도안을 읽는 피로감을 해소하기 위해, 에디터에 그려진 기호 레이아웃을 '1단: 겉뜨기 2코, 안뜨기 1코'와 같이 자연스러운 서술형 한글 텍스트 도안으로 1초 만에 자동 번역하여 출력합니다.",
+    imagePath: "/images/Converting Designs into Descriptive Text.png",
+    icon: FileText,
   },
   {
     id: "community",
-    title: "오픈 커뮤니티",
-    shortLabel: "커뮤니티",
+    title: "커뮤니티",
+    subtitle: "라운지 도안 공유",
     description:
-      "다른 뜨개러들의 도안과 완성작을 구경하고, 마음에 드는 작품은 에디터로 바로 가져와 떠 보세요. Q&A로 궁금한 점도 나눠요.",
-    image: "그림2_기능4_커뮤니티.PNG",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
-        <circle cx="9" cy="9" r="2.5" />
-        <circle cx="15" cy="9" r="2.5" />
-        <path d="M4 18c0-2.5 2.2-4.5 5-4.5h6c2.8 0 5 2 5 4.5" />
-      </svg>
-    ),
+      "내가 설계하고 완성한 정성 어린 도안 카드를 포장하여 라운지 피드에 자랑해 보세요. 다른 유저들이 올린 완성작 실물 사진을 마우스로 확인하고, 클릭 한 번으로 내 도안 작업실 에디터 창으로 즉시 가져와 수정 및 배포할 수 있습니다.",
+    imagePath: "/images/community.png",
+    icon: Users,
   },
 ];

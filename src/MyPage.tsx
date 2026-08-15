@@ -1,22 +1,35 @@
-import { useMemo, useRef, useState, type FC } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Button from "./components/ui/Button.tsx";
-import SmoothInput from "./components/ui/SmoothInput.tsx";
 import PatternCard from "./components/community/PatternCard.tsx";
 import MyPatternsPanel from "./components/mypage/MyPatternsPanel.tsx";
 import FinishedWorksGallery from "./components/mypage/FinishedWorksGallery.tsx";
 import SettingsPanel from "./components/mypage/SettingsPanel.tsx";
-import ProfileStatsSummary from "./components/mypage/ProfileStatsSummary.tsx";
+import AccountManagePanel from "./components/mypage/AccountManagePanel.tsx";
 import ProfileBadgeCustomizer from "./components/ui/ProfileBadgeCustomizer.tsx";
+import SmoothInput from "./components/ui/SmoothInput.tsx";
+import KnitAchievementDashboard from "./components/mypage/KnitAchievementDashboard.tsx";
 import StatsDetailPanel from "./components/mypage/StatsDetailPanel.tsx";
+import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
+import {
+  buildBadgeUnlocks,
+  computeAchievementStats,
+} from "./components/mypage/achievementStats.ts";
 import { useCommunityActions } from "./context/CommunityActionsContext.tsx";
-import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
 import { getCommunityPattern } from "./data/communityPatterns.ts";
 import type { StoredPattern } from "./Dashboard.tsx";
 import type { CommunityPattern } from "./data/communityPatterns.ts";
-import { loadProfile, saveProfileAvatar } from "./utils/profileStorage.ts";
+import {
+  DEFAULT_HANDLE,
+  DEFAULT_NICKNAME,
+  loadProfile,
+  saveProfileAvatar,
+} from "./utils/profileStorage.ts";
+import {
+  loadGaugeProfile,
+  saveGaugeProfile,
+} from "./utils/personalizationStorage.ts";
 import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
-import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
+import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
 import {
   ProfileFillIcon,
   PatternsFillIcon,
@@ -25,25 +38,33 @@ import {
   BookmarkFillIcon,
   StatsFillIcon,
   SettingsFillIcon,
+  DashboardFillIcon,
+  AccountFillIcon,
+  UserPlusFillIcon,
+  LogoutFillIcon,
+  WithdrawFillIcon,
 } from "./components/icons/FillIcons.tsx";
 
 export type MyPageTab =
   | "profile"
+  | "summary"
   | "patterns"
   | "finished"
   | "liked"
   | "saved"
   | "stats"
-  | "settings";
+  | "settings"
+  | "account";
 
-const TAB_IDS: { id: MyPageTab; Icon: FC<{ className?: string }> }[] = [
-  { id: "profile", Icon: ProfileFillIcon },
-  { id: "patterns", Icon: PatternsFillIcon },
-  { id: "finished", Icon: ImageFillIcon },
-  { id: "liked", Icon: HeartFillIcon },
-  { id: "saved", Icon: BookmarkFillIcon },
-  { id: "stats", Icon: StatsFillIcon },
-  { id: "settings", Icon: SettingsFillIcon },
+const NAV_TABS: { id: MyPageTab; Icon: typeof ProfileFillIcon; label: string }[] = [
+  { id: "profile", Icon: ProfileFillIcon, label: "내 정보" },
+  { id: "summary", Icon: DashboardFillIcon, label: "활동 요약" },
+  { id: "patterns", Icon: PatternsFillIcon, label: "내 도안" },
+  { id: "finished", Icon: ImageFillIcon, label: "완성작" },
+  { id: "liked", Icon: HeartFillIcon, label: "좋아요" },
+  { id: "saved", Icon: BookmarkFillIcon, label: "저장" },
+  { id: "stats", Icon: StatsFillIcon, label: "상세 통계" },
+  { id: "settings", Icon: SettingsFillIcon, label: "환경 설정" },
 ];
 
 type MyPageProps = {
@@ -55,6 +76,7 @@ type MyPageProps = {
   onImportCommunity: (pattern: CommunityPattern) => void;
   onLogout: () => void;
   onAddAccount: () => void;
+  onDeleteAccount: () => void;
 };
 
 function PatternGallery({
@@ -99,53 +121,29 @@ function PatternGallery({
   );
 }
 
-function AccountActions({
-  onLogout,
-  onAddAccount,
-  className = "",
-}: {
-  onLogout: () => void;
-  onAddAccount: () => void;
-  className?: string;
-}) {
-  const { t } = useTranslation();
-
-  return (
-    <div className={`flex flex-col gap-2 ${className}`}>
-      <Button type="button" onClick={onAddAccount} className="w-full px-4 py-2.5 text-sm">
-        {t("mypage.account.addAccount")}
-      </Button>
-      <Button type="button" onClick={onLogout} className="w-full px-4 py-2.5 text-sm">
-        {t("mypage.account.logout")}
-      </Button>
-    </div>
-  );
+function loadCompactGauge() {
+  const gauge = loadGaugeProfile();
+  return {
+    beforeSts: gauge?.beforeSts || "24",
+    beforeRows: gauge?.beforeRows || "32",
+    afterSts: gauge?.afterSts || "",
+    afterRows: gauge?.afterRows || "",
+  };
 }
 
-function ProfilePanel({
-  onLogout,
-  onAddAccount,
-  patternCount,
-  heartCount,
-  finishedCount,
-  savedCount,
+function ProfileInfoPanel({
+  patterns,
 }: {
-  onLogout: () => void;
-  onAddAccount: () => void;
-  patternCount: number;
-  heartCount: number;
-  finishedCount: number;
-  savedCount: number;
+  patterns: StoredPattern[];
 }) {
-  const { t } = useTranslation();
-  const [nickname, setNickname] = useState("뜨개러투게더");
-  const [email, setEmail] = useState("knitter@example.com");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(
-    () => loadProfile().avatarUrl,
-  );
+  const stored = loadProfile();
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(() => stored.avatarUrl);
+  const [gauge, setGauge] = useState(loadCompactGauge);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const achievementStats = useMemo(() => computeAchievementStats(patterns), [patterns]);
+  const badgeUnlocks = useMemo(() => buildBadgeUnlocks(achievementStats), [achievementStats]);
+  const nickname = stored.nickname || DEFAULT_NICKNAME;
+  const handle = stored.handle || DEFAULT_HANDLE;
 
   const handleAvatarChange = (file: File | undefined) => {
     if (!file) return;
@@ -154,28 +152,20 @@ function ProfilePanel({
     saveProfileAvatar(url);
   };
 
-  return (
-    <div>
-      <div className="max-w-lg">
-      <h2 className="font-sans text-2xl font-bold text-gray-900">
-        {t("mypage.profile.title")}
-      </h2>
-      <p className="mt-1 font-sans text-sm font-normal text-gray-600">
-        {t("mypage.profile.subtitle")}
-      </p>
+  const persistGauge = (next: typeof gauge) => {
+    saveGaugeProfile(next);
+  };
 
-      <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:items-center">
-        <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white text-coral">
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt=""
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <ProfileFillIcon className="h-12 w-12" />
-          )}
-        </div>
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="font-sans text-2xl font-bold text-gray-900">내 정보</h2>
+        <p className="mt-1 font-sans text-sm font-light text-stone-500">
+          프로필과 손땀 게이지를 관리해요.
+        </p>
+      </div>
+
+      <div className="rounded-[32px] border border-stone-200/40 bg-white p-6 shadow-[0_8px_30px_rgb(252,95,83,0.02)] md:p-8">
         <input
           ref={avatarInputRef}
           type="file"
@@ -183,89 +173,120 @@ function ProfilePanel({
           className="hidden"
           onChange={(e) => handleAvatarChange(e.target.files?.[0])}
         />
-        <Button
-          type="button"
-          className="px-4 py-2 text-sm"
-          onClick={() => avatarInputRef.current?.click()}
-        >
-          {t("mypage.profile.changeAvatar")}
-        </Button>
-      </div>
+        <ProfileBadgeCustomizer
+          nickname={nickname}
+          handle={handle}
+          subtitle="포근한 솜털 뜨개러 (Level 3)"
+          avatarUrl={avatarUrl}
+          unlocks={badgeUnlocks}
+          onPickAvatar={() => avatarInputRef.current?.click()}
+        />
 
-      <form
-        className="mt-8 flex flex-col gap-5"
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
+        <div className="mt-8 space-y-4 border-t border-stone-100 pt-6">
+          <h4 className="font-sans text-xs font-black tracking-wider text-stone-400">내 게이지</h4>
+          <p className="font-sans text-[10px] font-light leading-normal text-stone-400">
+            10x10cm 편물의 세탁 전후 코·단 수를 저장하면 에디터 시작 코 수에 연동됩니다.
+          </p>
+          <div className="grid grid-cols-2 gap-3.5">
+            <SmoothInput
+              label="세탁 전 코"
+              value={gauge.beforeSts}
+              onChange={(e) => {
+                const next = { ...gauge, beforeSts: e.target.value };
+                setGauge(next);
+                persistGauge(next);
+              }}
+              inputMode="numeric"
+              className="h-9 rounded-lg px-3 py-1.5 text-xs"
+            />
+            <SmoothInput
+              label="세탁 전 단"
+              value={gauge.beforeRows}
+              onChange={(e) => {
+                const next = { ...gauge, beforeRows: e.target.value };
+                setGauge(next);
+                persistGauge(next);
+              }}
+              inputMode="numeric"
+              className="h-9 rounded-lg px-3 py-1.5 text-xs"
+            />
+            <SmoothInput
+              label="세탁 후 코"
+              value={gauge.afterSts}
+              onChange={(e) => {
+                const next = { ...gauge, afterSts: e.target.value };
+                setGauge(next);
+                persistGauge(next);
+              }}
+              inputMode="numeric"
+              className="h-9 rounded-lg px-3 py-1.5 text-xs"
+            />
+            <SmoothInput
+              label="세탁 후 단"
+              value={gauge.afterRows}
+              onChange={(e) => {
+                const next = { ...gauge, afterRows: e.target.value };
+                setGauge(next);
+                persistGauge(next);
+              }}
+              inputMode="numeric"
+              className="h-9 rounded-lg px-3 py-1.5 text-xs"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AccountMenu({
+  active,
+  onManage,
+  onAddAccount,
+  onLogout,
+  onWithdraw,
+}: {
+  active: boolean;
+  onManage: () => void;
+  onAddAccount: () => void;
+  onLogout: () => void;
+  onWithdraw: () => void;
+}) {
+  const { t } = useTranslation();
+  const itemClass =
+    "flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-sm font-normal text-stone-700 transition-colors hover:bg-white";
+
+  return (
+    <div className="mt-6 rounded-2xl bg-white p-3 shadow-[0_8px_30px_rgba(252,95,83,0.025)]">
+      <p className="mb-2 px-1 font-sans text-[10px] font-black tracking-wider text-stone-400">
+        {t("mypage.account.section")}
+      </p>
+      <button
+        type="button"
+        onClick={onManage}
+        className={`flex w-full items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-sm font-normal ${tabButtonBase} ${tabButtonClass(active)}`}
       >
-        <div>
-          <label className="mb-1.5 block font-sans text-sm font-normal text-gray-700">
-            {t("mypage.profile.nickname")}
-          </label>
-          <SmoothInput
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            className="border-stone-200"
-          />
-        </div>
-        <div>
-          <label className="mb-1.5 block font-sans text-sm font-normal text-gray-700">
-            {t("mypage.profile.email")}
-          </label>
-          <SmoothInput
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border-stone-200"
-          />
-        </div>
-        <div>
-          <label className="mb-1.5 block font-sans text-sm font-normal text-gray-700">
-            {t("mypage.profile.newPassword")}
-          </label>
-          <SmoothInput
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder={t("mypage.profile.passwordPlaceholder")}
-            className="border-stone-200"
-          />
-        </div>
-        <div>
-          <label className="mb-1.5 block font-sans text-sm font-normal text-gray-700">
-            {t("mypage.profile.confirmPassword")}
-          </label>
-          <SmoothInput
-            type="password"
-            value={passwordConfirm}
-            onChange={(e) => setPasswordConfirm(e.target.value)}
-            placeholder={t("mypage.profile.confirmPlaceholder")}
-            className="border-stone-200"
-          />
-        </div>
-        <Button type="submit" className="w-fit px-4 py-2">
-          {t("mypage.profile.save")}
-        </Button>
-      </form>
-
-      <ProfileStatsSummary
-        patternCount={patternCount}
-        heartCount={heartCount}
-        finishedCount={finishedCount}
-        savedCount={savedCount}
-      />
+        <AccountFillIcon className="h-5 w-5 shrink-0" />
+        {t("mypage.account.manage")}
+      </button>
+      <div className="mt-2 space-y-0.5 rounded-2xl bg-stone-50 p-1.5">
+        <button type="button" onClick={onAddAccount} className={itemClass}>
+          <UserPlusFillIcon className="h-5 w-5 shrink-0" />
+          {t("mypage.account.addAccount")}
+        </button>
+        <button type="button" onClick={onLogout} className={itemClass}>
+          <LogoutFillIcon className="h-5 w-5 shrink-0" />
+          {t("mypage.account.logout")}
+        </button>
       </div>
-
-      <div className="mt-10">
-        <ProfileBadgeCustomizer />
-      </div>
-
-      <div className="mt-10 border-t border-gray-100 pt-8 md:hidden">
-        <p className="mb-3 font-sans text-sm font-bold text-gray-900">
-          {t("mypage.account.section")}
-        </p>
-        <AccountActions onLogout={onLogout} onAddAccount={onAddAccount} />
-      </div>
+      <button
+        type="button"
+        onClick={onWithdraw}
+        className="mt-1.5 flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-sm font-normal text-coral transition-colors hover:bg-coral/5"
+      >
+        <WithdrawFillIcon className="h-5 w-5 shrink-0" />
+        {t("mypage.account.withdraw")}
+      </button>
     </div>
   );
 }
@@ -279,11 +300,27 @@ export default function MyPage({
   onImportCommunity,
   onLogout,
   onAddAccount,
+  onDeleteAccount,
 }: MyPageProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<MyPageTab>("profile");
   const { likedPatternIds, savedPatternIds } = useCommunityActions();
-  const heartCount = likedPatternIds.length * 24 + 420;
+  const achievementStats = useMemo(() => computeAchievementStats(patterns), [patterns]);
+
+  const handleWithdraw = () => {
+    const ok = window.confirm(t("mypage.account.withdrawConfirm"));
+    if (ok) onDeleteAccount();
+  };
+
+  const accountMenu = (
+    <AccountMenu
+      active={activeTab === "account"}
+      onManage={() => setActiveTab("account")}
+      onAddAccount={onAddAccount}
+      onLogout={onLogout}
+      onWithdraw={handleWithdraw}
+    />
+  );
 
   return (
     <div className="pb-16">
@@ -299,7 +336,7 @@ export default function MyPage({
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-8 md:flex-row md:px-8">
         <div className="flex shrink-0 flex-col md:w-56">
           <nav className="flex flex-row flex-wrap gap-2 md:flex-col">
-            {TAB_IDS.map(({ id, Icon }) => {
+            {NAV_TABS.map(({ id, Icon, label }) => {
               const active = activeTab === id;
               return (
                 <button
@@ -309,47 +346,53 @@ export default function MyPage({
                   className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-sm font-normal md:w-full ${tabButtonBase} ${tabButtonClass(active)}`}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
-                  {t(`mypage.tabs.${id}`)}
+                  {label}
                 </button>
               );
             })}
           </nav>
-
-          <AccountActions
-            onLogout={onLogout}
-            onAddAccount={onAddAccount}
-            className="mt-6 hidden md:flex"
-          />
+          <div className="hidden md:block">{accountMenu}</div>
         </div>
 
         <main className="min-w-0 flex-1">
-          {activeTab === "profile" && (
-            <ProfilePanel
-              onLogout={onLogout}
-              onAddAccount={onAddAccount}
-              patternCount={patterns.length}
-              heartCount={heartCount}
-              finishedCount={3}
-              savedCount={savedPatternIds.length}
+          {activeTab === "profile" ? <ProfileInfoPanel patterns={patterns} /> : null}
+
+          {activeTab === "summary" ? (
+            <KnitAchievementDashboard
+              totalStitches={achievementStats.totalStitches}
+              completedProjects={achievementStats.completedProjects}
+              activeStreak={achievementStats.activeStreak}
+              hasPackagedPattern={achievementStats.hasPackagedPattern}
+              gaugeConversions={achievementStats.gaugeConversions}
+              colorPaletteUses={achievementStats.colorPaletteUses}
+              hasSharedLoungePost={achievementStats.hasSharedLoungePost}
+              tteuniChats={achievementStats.tteuniChats}
+              activeProjectCount={achievementStats.activeProjectCount}
+              yarnInventoryCount={achievementStats.yarnInventoryCount}
+              marketplaceDownloads={achievementStats.marketplaceDownloads}
+              finishedCount={achievementStats.finishedCount}
             />
-          )}
-          {activeTab === "patterns" && (
+          ) : null}
+
+          {activeTab === "patterns" ? (
             <MyPatternsPanel
               patterns={patterns}
               onCreateNew={onCreateNew}
               onOpen={onOpenPattern}
               onDelete={onDeletePattern}
             />
-          )}
-          {activeTab === "finished" && (
+          ) : null}
+
+          {activeTab === "finished" ? (
             <div>
               <h2 className="mb-6 font-sans text-2xl font-bold text-gray-900">
                 {t("mypage.finishedTitle")}
               </h2>
               <FinishedWorksGallery onEditPost={onEditCommunityPost} />
             </div>
-          )}
-          {activeTab === "liked" && (
+          ) : null}
+
+          {activeTab === "liked" ? (
             <div>
               <h2 className="mb-6 font-sans text-2xl font-bold text-gray-900">
                 {t("mypage.likedTitle")}
@@ -361,8 +404,9 @@ export default function MyPage({
                 onImport={onImportCommunity}
               />
             </div>
-          )}
-          {activeTab === "saved" && (
+          ) : null}
+
+          {activeTab === "saved" ? (
             <div>
               <h2 className="mb-6 font-sans text-2xl font-bold text-gray-900">
                 {t("mypage.savedTitle")}
@@ -374,15 +418,23 @@ export default function MyPage({
                 onImport={onImportCommunity}
               />
             </div>
-          )}
-          {activeTab === "stats" && (
+          ) : null}
+
+          {activeTab === "stats" ? (
             <StatsDetailPanel
               patterns={patterns}
               likedCount={likedPatternIds.length}
               savedCount={savedPatternIds.length}
             />
-          )}
-          {activeTab === "settings" && <SettingsPanel />}
+          ) : null}
+
+          {activeTab === "settings" ? <SettingsPanel /> : null}
+
+          {activeTab === "account" ? (
+            <AccountManagePanel onWithdraw={handleWithdraw} />
+          ) : null}
+
+          <div className="mt-10 md:hidden">{accountMenu}</div>
         </main>
       </div>
     </div>

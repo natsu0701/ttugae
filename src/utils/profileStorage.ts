@@ -2,7 +2,14 @@ const PROFILE_KEY = "ttugae.profile.v1";
 
 export type ProfileData = {
   avatarUrl?: string;
+  nickname?: string;
+  handle?: string;
+  email?: string;
 };
+
+export const DEFAULT_NICKNAME = "뜨개러";
+export const DEFAULT_HANDLE = "뜨개러";
+export const DEFAULT_EMAIL = "knitter@example.com";
 
 export function loadProfile(): ProfileData {
   try {
@@ -14,7 +21,18 @@ export function loadProfile(): ProfileData {
   }
 }
 
+function writeProfile(next: ProfileData): void {
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
+}
+
 export function saveProfileAvatar(avatarUrl: string): void {
-  const prev = loadProfile();
-  localStorage.setItem(PROFILE_KEY, JSON.stringify({ ...prev, avatarUrl }));
+  writeProfile({ ...loadProfile(), avatarUrl });
+}
+
+export function saveProfileAccount(patch: Pick<ProfileData, "nickname" | "handle" | "email">): void {
+  writeProfile({ ...loadProfile(), ...patch });
+}
+
+export function clearProfile(): void {
+  localStorage.removeItem(PROFILE_KEY);
 }

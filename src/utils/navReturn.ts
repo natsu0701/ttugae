@@ -56,6 +56,9 @@ export function resolvePathFallback(pathname: string): NavReturn {
   if (pathname.startsWith("/create-post")) {
     return { view: "community", path: "/community" };
   }
+  if (pathname.startsWith("/editor")) {
+    return { view: "landing", path: "/" };
+  }
   if (pathname.startsWith("/community")) {
     return { view: "community", path: "/community" };
   }

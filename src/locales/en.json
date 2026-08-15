@@ -22,8 +22,12 @@
     },
     "account": {
       "section": "Account",
+      "manage": "Manage account",
+      "handle": "Username",
       "addAccount": "Add account",
-      "logout": "Log out"
+      "logout": "Log out",
+      "withdraw": "Delete account",
+      "withdrawConfirm": "Deleting your account will sign you out on this device. Continue?"
     },
     "profile": {
       "title": "Profile",
@@ -63,7 +67,7 @@
     "savedEmptyDesc": "Bookmark patterns to revisit them later.",
     "settings": {
       "title": "Settings",
-      "subtitle": "Language, gauge, yarn stash, and taste preferences.",
+      "subtitle": "Language, yarn trail, yarn stash, and taste preferences.",
       "languageLabel": "Language",
       "appliedHint": "Your language updates instantly.",
       "langKo": "한국어",

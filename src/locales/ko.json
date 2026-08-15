@@ -22,8 +22,12 @@
     },
     "account": {
       "section": "계정",
+      "manage": "내 계정 관리",
+      "handle": "아이디",
       "addAccount": "계정 추가",
-      "logout": "로그아웃"
+      "logout": "로그아웃",
+      "withdraw": "계정 탈퇴",
+      "withdrawConfirm": "계정을 탈퇴하면 로그인 정보가 삭제되고 로그아웃됩니다. 계속할까요?"
     },
     "profile": {
       "title": "내 정보",
@@ -62,8 +66,8 @@
     "savedEmptyTitle": "저장한 도안이 없어요",
     "savedEmptyDesc": "책갈피 버튼으로 나중에 볼 도안을 모아 보세요.",
     "settings": {
-      "title": "설정",
-      "subtitle": "앱 표시 언어와 손땀 게이지, 실 장고, 취향을 설정해요.",
+      "title": "환경 설정",
+      "subtitle": "표시 언어, 마우스 털실 효과, 실 장고, 취향을 설정해요.",
       "languageLabel": "언어 선택 (Language)",
       "appliedHint": "선택한 언어가 즉시 적용됩니다.",
       "langKo": "한국어",

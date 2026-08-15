@@ -5,7 +5,7 @@ import {
   subscribeEquippedBadge,
 } from "../../utils/equippedBadgeStorage.ts";
 
-const OWN_AUTHORS = new Set(["나", "다영"]);
+const OWN_AUTHORS = new Set(["나", "뜨개러"]);
 
 type EquippedAuthorChipProps = {
   author: string;
@@ -21,13 +21,11 @@ function EquippedAuthorChip({ author }: EquippedAuthorChipProps) {
   const badge = getAchievementBadge(badgeId);
   if (!badge) return null;
 
-  const Icon = badge.icon;
-
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-full border border-coral/10 px-2 py-0.5 font-sans text-[9px] font-bold leading-none ${badge.bgColor} ${badge.color}`}
     >
-      <Icon className="h-2.5 w-2.5" strokeWidth={2.2} />
+      <img src={badge.imageSrc} alt="" className="h-[18px] w-[18px] object-contain" />
       <span>{badge.name}</span>
     </span>
   );

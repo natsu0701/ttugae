@@ -22,8 +22,12 @@
     },
     "account": {
       "section": "アカウント",
+      "manage": "アカウント管理",
+      "handle": "ユーザーID",
       "addAccount": "アカウント追加",
-      "logout": "ログアウト"
+      "logout": "ログアウト",
+      "withdraw": "アカウント削除",
+      "withdrawConfirm": "アカウントを削除すると、この端末からログアウトされます。続けますか？"
     },
     "profile": {
       "title": "プロフィール",
@@ -62,8 +66,8 @@
     "savedEmptyTitle": "保存した編み図がありません",
     "savedEmptyDesc": "ブックマークであとから見る編み図を集めましょう。",
     "settings": {
-      "title": "設定",
-      "subtitle": "表示言語、ゲージ、毛糸在庫、好みの設定。",
+      "title": "環境設定",
+      "subtitle": "表示言語、毛糸エフェクト、毛糸在庫、好みの設定。",
       "languageLabel": "言語選択 (Language)",
       "appliedHint": "選択した言語がすぐに反映されます。",
       "langKo": "한국어",

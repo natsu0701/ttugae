@@ -2,9 +2,7 @@ import { useMemo } from "react";
 import type { StoredPattern } from "../../Dashboard.tsx";
 import { softShadow } from "../ui/tabButtonStyles.ts";
 import KnitAchievementDashboard from "./KnitAchievementDashboard.tsx";
-import { loadMyFinishedWorks } from "../../utils/myFinishedWorksStore.ts";
-import { loadSharedCommunityPatterns } from "../../utils/communityShare.ts";
-import { loadGaugeProfile } from "../../utils/personalizationStorage.ts";
+import { computeAchievementStats } from "./achievementStats.ts";
 
 const MONTH_LABELS = ["1월", "2월", "3월", "4월", "5월", "6월"];
 
@@ -73,30 +71,7 @@ export default function StatsDetailPanel({
 
   const maxMonthly = Math.max(...monthlyData.map((d) => d.value), 1);
 
-  const achievementStats = useMemo(() => {
-    const computedStitches = patterns.reduce((sum, p) => {
-      const rows = p.grid?.length ?? 0;
-      const cols = p.grid?.[0]?.length ?? p.gridSize ?? 0;
-      return sum + rows * cols;
-    }, 0);
-    const finishedWorks = loadMyFinishedWorks();
-    const sharedMine = loadSharedCommunityPatterns().filter((p) => p.author === "나");
-    const gauge = loadGaugeProfile();
-    const gaugeFilled = Boolean(
-      gauge && (gauge.beforeSts || gauge.afterSts || gauge.beforeRows || gauge.afterRows),
-    );
-
-    return {
-      totalStitches: computedStitches > 0 ? computedStitches : 12450,
-      completedProjects: finishedWorks.length > 0 ? finishedWorks.length : 8,
-      activeStreak: 12,
-      hasPackagedPattern: patterns.length > 0,
-      gaugeConversions: gaugeFilled ? 3 : 0,
-      colorPaletteUses: Math.min(3, Math.max(0, patterns.length)),
-      hasSharedLoungePost: sharedMine.length > 0,
-      tteuniChats: Math.min(10, patterns.length * 2),
-    };
-  }, [patterns]);
+  const achievementStats = useMemo(() => computeAchievementStats(patterns), [patterns]);
 
   return (
     <div className="space-y-8">

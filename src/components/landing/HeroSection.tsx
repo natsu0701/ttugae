@@ -25,7 +25,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
     <section className={`${landingSection.hero} relative isolate overflow-hidden`}>
       <video
         src="/web_back.mp4"
-        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
+        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover transform-gpu will-change-transform"
         autoPlay
         loop
         muted
@@ -35,7 +35,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
 
       {/* 웰컴 그라데이션 오버레이 필터 (따스한 분위기 연출 및 6px 최적화 블러 적용) */}
       <motion.div
-        className="absolute inset-0 z-0"
+        className="pointer-events-none absolute inset-0 z-0 transform-gpu"
         initial={{
           backgroundColor: "rgba(244, 164, 184, 0.45)",
           backdropFilter: "blur(4px)",

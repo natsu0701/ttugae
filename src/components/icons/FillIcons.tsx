@@ -115,3 +115,111 @@ export function CommunityFillIcon({ className = "h-5 w-5" }: IconProps) {
     </svg>
   );
 }
+
+export function DashboardFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="3" width="8" height="8" rx="2.5" fill="currentColor" />
+      <rect x="13" y="3" width="8" height="5" rx="2.5" fill="currentColor" />
+      <rect x="13" y="10" width="8" height="11" rx="2.5" fill="currentColor" />
+      <rect x="3" y="13" width="8" height="8" rx="2.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function UserPlusFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="10" cy="8" r="4" fill="currentColor" />
+      <path d="M3.5 19.5c.6-3.2 3.4-5.5 6.5-5.5s5.9 2.3 6.5 5.5" fill="currentColor" />
+      <path
+        d="M18 8.5h1.5v1.5H21v1.5h-1.5V13H18v-1.5h-1.5V10H18V8.5z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function LogoutFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="4" width="11" height="16" rx="3.5" fill="currentColor" />
+      <path
+        d="M15.2 11.1h4.4l-1.55-1.55a.95.95 0 011.34-1.34l3.2 3.2a.95.95 0 010 1.34l-3.2 3.2a.95.95 0 11-1.34-1.34L19.6 12.9h-4.4a.95.95 0 010-1.8z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function AccountFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="5" width="18" height="14" rx="4" fill="currentColor" />
+      <circle cx="9" cy="12" r="2.4" fill="white" />
+      <rect x="13" y="10" width="5.5" height="1.6" rx="0.8" fill="white" />
+      <rect x="13" y="13" width="4" height="1.6" rx="0.8" fill="white" />
+    </svg>
+  );
+}
+
+export function WithdrawFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="10" cy="8" r="4" fill="currentColor" />
+      <path d="M3.5 19.5c.6-3.2 3.4-5.5 6.5-5.5s5.9 2.3 6.5 5.5" fill="currentColor" />
+      <rect x="16" y="7.2" width="6" height="2.4" rx="1.2" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function GlobeFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="12" cy="12" r="9" fill="currentColor" />
+      <ellipse cx="12" cy="12" rx="3.6" ry="9" fill="white" fillOpacity="0.22" />
+      <ellipse cx="12" cy="12" rx="9" ry="3.6" fill="white" fillOpacity="0.18" />
+    </svg>
+  );
+}
+
+export function CheckFillIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M9.3 16.8L4.6 12.1l1.7-1.7 3 3 8.4-8.4 1.7 1.7-10.1 10.1z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function LockFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="5" y="11" width="14" height="10" rx="3" fill="currentColor" />
+      <path
+        d="M8 11V8.2a4 4 0 018 0V11h-2.3V8.5a1.7 1.7 0 10-3.4 0V11H8z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function ChevronFillIcon({
+  className = "h-3 w-3",
+  open = false,
+}: IconProps & { open?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={`${className} transition-transform ${open ? "rotate-180" : ""}`}
+      aria-hidden
+    >
+      <path
+        d="M6.2 9.2a1.2 1.2 0 011.7 0L12 13.3l4.1-4.1a1.2 1.2 0 111.7 1.7l-5 5a1.2 1.2 0 01-1.7 0l-5-5a1.2 1.2 0 010-1.7z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}

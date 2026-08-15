@@ -1,4 +1,8 @@
-import { getAchievementBadge, type AchievementBadge } from "../data/achievementBadges.ts";
+import {
+  getAchievementBadge,
+  resolveAchievementBadgeId,
+  type AchievementBadge,
+} from "../data/achievementBadges.ts";
 
 export const EQUIPPED_BADGE_KEY = "equipped_badge_id";
 export const EQUIPPED_BADGE_EVENT = "ttugae:equipped-badge-changed";
@@ -7,7 +11,7 @@ export function loadEquippedBadgeId(): string | null {
   try {
     const raw = localStorage.getItem(EQUIPPED_BADGE_KEY);
     if (!raw || raw === "none") return null;
-    return getAchievementBadge(raw) ? raw : null;
+    return resolveAchievementBadgeId(raw);
   } catch {
     return null;
   }

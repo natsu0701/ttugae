@@ -20,6 +20,7 @@ import {
   loadAuthSession,
   saveAuthSession,
 } from "./utils/authStorage.ts";
+import { clearProfile } from "./utils/profileStorage.ts";
 import {
   consumeNavReturn,
   resolvePathFallback,
@@ -35,6 +36,7 @@ function viewFromPath(pathname: string): AppView {
   if (pathname.startsWith("/mypage") || pathname.startsWith("/dashboard")) {
     return "mypage";
   }
+  if (pathname.startsWith("/editor")) return "editor";
   return "landing";
 }
 
@@ -42,7 +44,16 @@ function pathFromView(view: AppView): string {
   if (view === "community") return "/community";
   if (view === "mypage") return "/mypage";
   if (view === "create-post") return "/create-post";
+  if (view === "editor") return "/editor";
   return "/";
+}
+
+function commitPath(path: string, replace: boolean) {
+  const current = `${window.location.pathname}${window.location.search}`;
+  if (current === path) return;
+  if (replace) window.history.replaceState({}, "", path);
+  else window.history.pushState({}, "", path);
+  window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
 function AppRoutes() {
@@ -66,27 +77,61 @@ function AppRoutes() {
     window.setTimeout(() => setToastMessage(null), 2800);
   }, []);
 
-  const navigate = useCallback((next: AppView, pathOverride?: string) => {
-    setView(next);
-    if (next !== "editor") {
-      window.history.pushState({}, "", pathOverride ?? pathFromView(next));
+  const navigate = useCallback(
+    (next: AppView, pathOverride?: string, replace = false) => {
+      const path = pathOverride ?? pathFromView(next);
+      setView(next);
+      commitPath(path, replace);
+    },
+    [],
+  );
+
+  const rememberReturn = useCallback(() => {
+    setNavReturn({
+      view,
+      path: `${window.location.pathname}${window.location.search}` || pathFromView(view),
+    });
+  }, [view]);
+
+  const openEditor = useCallback(
+    (options?: { patternId?: string | null; share?: StoredPattern | null }) => {
+      rememberReturn();
+      if (options && "patternId" in options) {
+        setActivePatternId(options.patternId ?? null);
+      }
+      if (options && "share" in options) {
+        setIncomingShare(options.share ?? null);
+      }
+      navigate("editor");
+    },
+    [navigate, rememberReturn],
+  );
+
+  const leaveEditor = useCallback(() => {
+    setIncomingShare(null);
+    setActivePatternId(null);
+    const target =
+      consumeNavReturn() ??
+      (isLoggedIn
+        ? { view: "mypage" as const, path: "/mypage" }
+        : { view: "landing" as const, path: "/" });
+    if (target.view === "editor") {
+      navigate(isLoggedIn ? "mypage" : "landing");
+      return;
     }
-  }, []);
+    navigate(target.view, target.path, true);
+  }, [isLoggedIn, navigate]);
 
   const leaveCreatePost = useCallback(() => {
     const target =
       consumeNavReturn() ?? resolvePathFallback(window.location.pathname);
     if (target.view === "editor") {
       setView("editor");
-      window.history.replaceState({}, "", target.path ?? "/");
+      commitPath(target.path ?? "/editor", true);
       return;
     }
     setView(target.view);
-    window.history.replaceState(
-      {},
-      "",
-      target.path ?? pathFromView(target.view),
-    );
+    commitPath(target.path ?? pathFromView(target.view), true);
   }, []);
 
   const requestMypage = useCallback(() => {
@@ -115,6 +160,14 @@ function AppRoutes() {
     navigate("landing");
   };
 
+  const handleDeleteAccount = () => {
+    clearAuthSession();
+    clearProfile();
+    setIsLoggedIn(false);
+    navigate("landing");
+    showToast("계정이 탈퇴되었습니다.");
+  };
+
   const importCommunityPattern = (pattern: CommunityPattern) => {
     setIncomingShare({
       id: `import-${pattern.id}-${Date.now()}`,
@@ -124,7 +177,8 @@ function AppRoutes() {
       grid: communityPatternToGrid(pattern),
     });
     setActivePatternId(null);
-    setView("editor");
+    rememberReturn();
+    navigate("editor");
   };
 
   const openCreatePostFromEditor = useCallback(
@@ -149,7 +203,7 @@ function AppRoutes() {
         gridRows: payload.gridRows,
         gridCols: payload.gridCols,
       });
-      setNavReturn({ view: "editor", path: "/" });
+      setNavReturn({ view: "editor", path: "/editor" });
       navigate("create-post");
     },
     [navigate, patterns, persistPatterns],
@@ -217,6 +271,7 @@ function AppRoutes() {
           updatedAt: Date.now(),
         });
         setView("editor");
+        window.history.replaceState({}, "", "/editor");
       }
     } catch {
       // ignore
@@ -246,7 +301,7 @@ function AppRoutes() {
           onCancel={leaveCreatePost}
           onPublished={() => {
             showToast("게시물이 업로드되었습니다!");
-            navigate("community");
+            navigate("community", undefined, true);
           }}
           onSavePattern={(pattern) => {
             const existing = patterns.slice();
@@ -273,15 +328,11 @@ function AppRoutes() {
         {yarnTrail}
         <PatternEditor
           initialPattern={initial}
-          onExit={() => {
-            setIncomingShare(null);
-            setActivePatternId(null);
-            if (isLoggedIn) navigate("mypage");
-            else navigate("landing");
-          }}
+          onExit={leaveEditor}
           onGoDashboard={() => {
             setIncomingShare(null);
             setActivePatternId(null);
+            consumeNavReturn();
             requestMypage();
           }}
           onSave={(pattern) => {
@@ -312,7 +363,7 @@ function AppRoutes() {
         onGoHome={() => navigate("landing")}
         onGoCommunity={() => navigate("community")}
         onGoMypage={requestMypage}
-        onGoEditor={() => setView("editor")}
+        onGoEditor={() => openEditor({ patternId: null, share: null })}
         onLogin={() => setShowLogin(true)}
       >
         {view === "mypage" && isLoggedIn && (
@@ -320,16 +371,9 @@ function AppRoutes() {
             patterns={patterns}
             onLogout={handleLogout}
             onAddAccount={() => setShowLogin(true)}
-            onCreateNew={() => {
-              setActivePatternId(null);
-              setIncomingShare(null);
-              setView("editor");
-            }}
-            onOpenPattern={(id) => {
-              setActivePatternId(id);
-              setIncomingShare(null);
-              setView("editor");
-            }}
+            onDeleteAccount={handleDeleteAccount}
+            onCreateNew={() => openEditor({ patternId: null, share: null })}
+            onOpenPattern={(id) => openEditor({ patternId: id, share: null })}
             onDeletePattern={(id) => {
               persistPatterns(patterns.filter((p) => p.id !== id));
               showToast("도안이 삭제되었습니다.");
@@ -355,7 +399,7 @@ function AppRoutes() {
           />
         )}
         {view === "landing" && (
-          <LandingPage onOpenEditor={() => setView("editor")} />
+          <LandingPage onOpenEditor={() => openEditor({ patternId: null, share: null })} />
         )}
       </AppShell>
       <Toast message={toastMessage ?? ""} visible={Boolean(toastMessage)} />

@@ -8,16 +8,19 @@ import { SUPPORTED_LANGUAGES } from "../../i18n.ts";
 import {
   SKILL_LABELS,
   TASTE_STYLE_LABELS,
-  loadGaugeProfile,
   loadTasteProfile,
   loadYarnInventory,
-  saveGaugeProfile,
   saveTasteProfile,
   saveYarnInventory,
   type SkillLevel,
   type TasteStyle,
   type YarnStock,
 } from "../../utils/personalizationStorage.ts";
+import {
+  loadYarnTrailEnabled,
+  saveYarnTrailEnabled,
+} from "../../utils/yarnTrailStorage.ts";
+import { GlobeFillIcon } from "../icons/FillIcons.tsx";
 
 const LANG_OPTIONS: { id: AppLanguage; labelKey: string }[] = [
   { id: "ko", labelKey: "mypage.settings.langKo" },
@@ -55,15 +58,7 @@ export default function SettingsPanel() {
       ? (i18n.language as AppLanguage)
       : "ko";
 
-  const [gauge, setGauge] = useState(
-    () =>
-      loadGaugeProfile() ?? {
-        beforeSts: "22",
-        beforeRows: "30",
-        afterSts: "20",
-        afterRows: "28",
-      },
-  );
+  const [isYarnTrailEnabled, setIsYarnTrailEnabled] = useState(loadYarnTrailEnabled);
   const [yarns, setYarns] = useState<YarnStock[]>(() => loadYarnInventory());
   const [taste, setTaste] = useState(() => loadTasteProfile());
   const [yarnDraft, setYarnDraft] = useState({
@@ -81,11 +76,6 @@ export default function SettingsPanel() {
 
   const handleLanguageChange = (lng: AppLanguage) => {
     void i18n.changeLanguage(lng);
-  };
-
-  const saveGauge = () => {
-    saveGaugeProfile(gauge);
-    flash("손땀 게이지를 저장했어요.");
   };
 
   const addYarn = () => {
@@ -142,68 +132,61 @@ export default function SettingsPanel() {
         <p className="mt-3 font-sans text-xs font-medium text-coral">{savedHint}</p>
       ) : null}
 
-      <div className={`mt-8 rounded-2xl bg-white p-6 ${softShadow}`}>
-        <label
-          htmlFor="language-select"
-          className="block font-sans text-sm font-bold text-gray-900"
-        >
-          {t("mypage.settings.languageLabel")}
-        </label>
-        <p className="mt-2 font-rounded text-xs font-normal text-gray-500">
-          {t("mypage.settings.appliedHint")}
-        </p>
-
-        <select
-          id="language-select"
-          value={current}
-          onChange={(e) => handleLanguageChange(e.target.value as AppLanguage)}
-          className={`mt-4 w-full rounded-xl bg-gray-50 px-4 py-3 font-sans text-sm font-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow}`}
-        >
-          {LANG_OPTIONS.map((lang) => (
-            <option key={lang.id} value={lang.id}>
-              {t(lang.labelKey)}
-            </option>
-          ))}
-        </select>
-      </div>
-
       <SettingsCard
-        title="내 손땀 게이지"
-        hint="10x10cm 편물의 세탁 전후 코·단 수를 저장해 두면, 에디터에서 시작 코 수를 바로 추천합니다."
+        title="플랫폼 환경 설정"
+        hint="마우스 궤적과 표시 언어 등 앱 전반의 환경을 조절해요."
       >
-        <div className="grid grid-cols-2 gap-3">
-          <SmoothInput
-            label="세탁 전 코"
-            value={gauge.beforeSts}
-            onChange={(e) => setGauge((g) => ({ ...g, beforeSts: e.target.value }))}
-            inputMode="numeric"
-            className="border-stone-200"
-          />
-          <SmoothInput
-            label="세탁 전 단"
-            value={gauge.beforeRows}
-            onChange={(e) => setGauge((g) => ({ ...g, beforeRows: e.target.value }))}
-            inputMode="numeric"
-            className="border-stone-200"
-          />
-          <SmoothInput
-            label="세탁 후 코"
-            value={gauge.afterSts}
-            onChange={(e) => setGauge((g) => ({ ...g, afterSts: e.target.value }))}
-            inputMode="numeric"
-            className="border-stone-200"
-          />
-          <SmoothInput
-            label="세탁 후 단"
-            value={gauge.afterRows}
-            onChange={(e) => setGauge((g) => ({ ...g, afterRows: e.target.value }))}
-            inputMode="numeric"
-            className="border-stone-200"
-          />
+        <div className="flex items-center justify-between rounded-xl border border-stone-100 bg-stone-50 p-3.5">
+          <div className="flex flex-col">
+            <span className="font-sans text-xs font-bold text-stone-700">마우스 털실 효과</span>
+            <span className="mt-0.5 text-[10px] text-stone-400">
+              마우스를 따라 흐르는 털실 궤적 켜기
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              const next = !isYarnTrailEnabled;
+              setIsYarnTrailEnabled(next);
+              saveYarnTrailEnabled(next);
+            }}
+            aria-pressed={isYarnTrailEnabled}
+            className={`flex h-6 w-10 items-center rounded-full p-0.5 transition-colors duration-200 ${
+              isYarnTrailEnabled ? "bg-coral" : "bg-stone-300"
+            }`}
+          >
+            <span
+              className={`h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                isYarnTrailEnabled ? "translate-x-4" : "translate-x-0"
+              }`}
+            />
+          </button>
         </div>
-        <Button type="button" onClick={saveGauge} className="mt-4 px-5 py-2.5 text-sm">
-          게이지 저장
-        </Button>
+
+        <div className="mt-4">
+          <label
+            htmlFor="language-select"
+            className="flex items-center gap-2 font-sans text-sm font-bold text-gray-900"
+          >
+            <GlobeFillIcon className="h-5 w-5 text-stone-500" />
+            {t("mypage.settings.languageLabel")}
+          </label>
+          <p className="mt-2 font-rounded text-xs font-normal text-gray-500">
+            {t("mypage.settings.appliedHint")}
+          </p>
+          <select
+            id="language-select"
+            value={current}
+            onChange={(e) => handleLanguageChange(e.target.value as AppLanguage)}
+            className={`mt-4 w-full rounded-xl bg-gray-50 px-4 py-3 font-sans text-sm font-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow}`}
+          >
+            {LANG_OPTIONS.map((lang) => (
+              <option key={lang.id} value={lang.id}>
+                {t(lang.labelKey)}
+              </option>
+            ))}
+          </select>
+        </div>
       </SettingsCard>
 
       <SettingsCard

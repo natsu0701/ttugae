@@ -114,8 +114,11 @@ export default function Community({
   };
 
   const closeQa = () => {
+    if (qaIdFromPath(window.location.pathname)) {
+      window.history.back();
+      return;
+    }
     setSelectedQaId(null);
-    window.history.replaceState({}, "", "/community");
   };
 
   const openWork = (pattern: CommunityPattern) => {
@@ -125,15 +128,20 @@ export default function Community({
   };
 
   const closeWork = () => {
+    if (workIdFromPath(window.location.pathname)) {
+      window.history.back();
+      return;
+    }
     setSelectedWorkId(null);
-    window.history.replaceState({}, "", "/community");
   };
 
   const handleTabChange = (tabId: CommunityCategory) => {
     setActiveTab(tabId);
     setSelectedQaId(null);
     setSelectedWorkId(null);
-    window.history.pushState({}, "", "/community");
+    if (window.location.pathname !== "/community") {
+      window.history.replaceState({}, "", "/community");
+    }
   };
 
   const filtered = useMemo(() => {
