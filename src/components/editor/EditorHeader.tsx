@@ -1,3 +1,4 @@
+import type { ReactNode, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
@@ -26,7 +27,8 @@ type EditorHeaderProps = {
   onShare: () => void;
   onExit: () => void;
   onGoMypage: () => void;
-  sizeMenuRef: React.RefObject<HTMLDivElement>;
+  sizeMenuRef: RefObject<HTMLDivElement>;
+  leftExtra?: ReactNode;
 };
 
 export default function EditorHeader({
@@ -46,20 +48,22 @@ export default function EditorHeader({
   onExit,
   onGoMypage,
   sizeMenuRef,
+  leftExtra,
 }: EditorHeaderProps) {
   const { t } = useTranslation();
 
   return (
     <header className="relative z-20 flex h-16 shrink-0 items-center border-b border-stone-800/80 bg-stone-950 px-4 md:px-6">
-      <div className="z-10 flex shrink-0 items-center">
+      <div className="z-10 flex min-w-0 items-center gap-2 pr-3">
         <button
           type="button"
           onClick={onExit}
-          className={`flex h-10 w-10 items-center justify-center ${editorChromeBtn}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center ${editorChromeBtn}`}
           aria-label={t("editor.exitAria")}
         >
           <CloseFillIcon className="h-5 w-5" />
         </button>
+        {leftExtra ? <div className="min-w-0 max-w-[min(100%,42vw)]">{leftExtra}</div> : null}
       </div>
 
       <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-2 md:gap-3">

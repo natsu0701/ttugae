@@ -260,9 +260,10 @@ export function ChevronRightFillIcon({ className = "h-5 w-5" }: IconProps) {
 export function PlusFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <circle cx="12" cy="12" r="9" fill="currentColor" />
-      <rect x="11" y="7.2" width="2" height="9.6" rx="1" fill="white" />
-      <rect x="7.2" y="11" width="9.6" height="2" rx="1" fill="white" />
+      <path
+        fill="currentColor"
+        d="M10.6 4.4h2.8v6.2h6.2v2.8h-6.2v6.2h-2.8v-6.2H4.4v-2.8h6.2V4.4z"
+      />
     </svg>
   );
 }
@@ -374,7 +375,7 @@ export function RotateFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
-        d="M7.2 6.4A8 8 0 1020 12.2a1.3 1.3 0 10-2.6-.2 5.4 5.4 0 11-8.6-4.4l.6.6 2.6-4.4L6.2 5.4l1-1z"
+        d="M12 3.1a8.9 8.9 0 1 0 8.1 5.3 1.45 1.45 0 0 0-2.7 1.1A6 6 0 1 1 12 6v2.5l5.4-3.5L12 1.5V3.1z"
         fill="currentColor"
       />
     </svg>
@@ -384,10 +385,15 @@ export function RotateFillIcon({ className = "h-5 w-5" }: IconProps) {
 export function ZoomInFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <circle cx="10.4" cy="10.4" r="6.6" fill="currentColor" />
-      <rect x="16" y="17.2" width="5.2" height="2.2" rx="1.1" transform="rotate(45 16 17.2)" fill="currentColor" />
-      <rect x="9.4" y="7.4" width="2" height="6" rx="1" fill="white" />
-      <rect x="7.4" y="9.4" width="6" height="2" rx="1" fill="white" />
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M10.5 17.9a7.4 7.4 0 1 1 0-14.8 7.4 7.4 0 0 1 0 14.8ZM11.7 6.4h-2.4v2.9H6.4v2.4h2.9v2.9h2.4v-2.9h2.9v-2.4h-2.9V6.4Z"
+      />
+      <path
+        fill="currentColor"
+        d="M15.3 16.1a1.3 1.3 0 0 1 1.8 0l3.2 3.2a1.3 1.3 0 1 1-1.8 1.8l-3.2-3.2a1.3 1.3 0 0 1 0-1.8Z"
+      />
     </svg>
   );
 }
@@ -395,9 +401,15 @@ export function ZoomInFillIcon({ className = "h-5 w-5" }: IconProps) {
 export function ZoomOutFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <circle cx="10.4" cy="10.4" r="6.6" fill="currentColor" />
-      <rect x="16" y="17.2" width="5.2" height="2.2" rx="1.1" transform="rotate(45 16 17.2)" fill="currentColor" />
-      <rect x="7.4" y="9.4" width="6" height="2" rx="1" fill="white" />
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M10.5 17.9a7.4 7.4 0 1 1 0-14.8 7.4 7.4 0 0 1 0 14.8ZM6.4 9.3h8.2v2.4H6.4V9.3Z"
+      />
+      <path
+        fill="currentColor"
+        d="M15.3 16.1a1.3 1.3 0 0 1 1.8 0l3.2 3.2a1.3 1.3 0 1 1-1.8 1.8l-3.2-3.2a1.3 1.3 0 0 1 0-1.8Z"
+      />
     </svg>
   );
 }

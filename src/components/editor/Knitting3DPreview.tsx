@@ -52,6 +52,8 @@ export type KnitGauge = {
 export type Knitting3DPreviewProps = {
   grid?: EditorCell[][];
   gridData?: EditorCell[][];
+  backGrid?: EditorCell[][];
+  facesIndependent?: boolean;
   colorMap?: Record<string, string>;
   stitchSymbols?: Record<string, string>;
   className?: string;
@@ -205,28 +207,29 @@ function paintSymbolChart(
   ctx: CanvasRenderingContext2D,
   cells: EditorCell[][],
   colorMap: Record<string, string>,
-  _stitchSymbols: Record<string, string>,
-  canvasW: number,
-  canvasH: number,
+  destX: number,
+  destY: number,
+  destW: number,
+  destH: number,
 ) {
   const rows = cells.length;
   const cols = cells[0]?.length ?? 0;
   if (rows === 0 || cols === 0) return;
 
   ctx.fillStyle = "#FFFBF7";
-  ctx.fillRect(0, 0, canvasW, canvasH);
+  ctx.fillRect(destX, destY, destW, destH);
 
   const { r0, r1, c0, c1 } = filledBounds(cells);
   const usedRows = r1 - r0 + 1;
   const usedCols = c1 - c0 + 1;
-  const cellW = canvasW / usedCols;
-  const cellH = canvasH / usedRows;
+  const cellW = destW / usedCols;
+  const cellH = destH / usedRows;
 
   for (let r = r0; r <= r1; r++) {
     for (let c = c0; c <= c1; c++) {
       const cell = cells[r]?.[c];
-      const cx = (c - c0) * cellW;
-      const cy = (r - r0) * cellH;
+      const cx = destX + (c - c0) * cellW;
+      const cy = destY + (r - r0) * cellH;
       const filled = isFilledCell(cell);
       const color = filled ? cellHex(cell, colorMap) : "#FFFBF7";
       drawVTripletCell(ctx, cx, cy, cellW, cellH, color);
@@ -262,17 +265,32 @@ type GarmentModelProps = {
   modelUrl: string;
   fitScale?: [number, number, number];
   cells: EditorCell[][];
+  backCells?: EditorCell[][];
+  splitFaces: boolean;
   colorMap: Record<string, string>;
   stitchSymbols: Record<string, string>;
   chartKey: string;
   normalTexture: THREE.CanvasTexture;
 };
 
-function applyCoveringUVs(root: THREE.Object3D) {
+const ATLAS_PAD = 0.008;
+const FRONT_U0 = ATLAS_PAD;
+const FRONT_U1 = 0.5 - ATLAS_PAD;
+const BACK_U0 = 0.5 + ATLAS_PAD;
+const BACK_U1 = 1 - ATLAS_PAD;
+
+function remapAtlasU(localU: number, isBack: boolean, flip: boolean) {
+  const u = THREE.MathUtils.clamp(flip ? 1 - localU : localU, 0, 1);
+  if (isBack) return BACK_U0 + u * (BACK_U1 - BACK_U0);
+  return FRONT_U0 + u * (FRONT_U1 - FRONT_U0);
+}
+
+function applyCoveringUVs(root: THREE.Object3D, splitFaces: boolean) {
   root.updateMatrixWorld(true);
   const box = new THREE.Box3().setFromObject(root);
   const size = box.getSize(new THREE.Vector3());
   const min = box.min;
+  const centerZ = (box.min.z + box.max.z) * 0.5;
   size.x = Math.max(size.x, 1e-4);
   size.y = Math.max(size.y, 1e-4);
   size.z = Math.max(size.z, 1e-4);
@@ -286,7 +304,9 @@ function applyCoveringUVs(root: THREE.Object3D) {
     const mesh = child as THREE.Mesh;
     let geometry = mesh.geometry.clone();
     if (geometry.index) {
-      geometry = geometry.toNonIndexed();
+      const nonIndexed = geometry.toNonIndexed();
+      geometry.dispose();
+      geometry = nonIndexed;
     }
     if (!geometry.attributes.normal) {
       geometry.computeVertexNormals();
@@ -316,19 +336,29 @@ function applyCoveringUVs(root: THREE.Object3D) {
         u = (worldPos.x - min.x) / size.x;
         v = (worldPos.y - min.y) / size.y;
       }
-      uv[i * 2] = THREE.MathUtils.clamp(u, 0, 1);
-      uv[i * 2 + 1] = THREE.MathUtils.clamp(v, 0, 1);
+      u = THREE.MathUtils.clamp(u, 0, 1);
+      v = THREE.MathUtils.clamp(v, 0, 1);
+
+      if (splitFaces) {
+        const zDominant = az >= ax && az >= ay;
+        const isBack = zDominant ? worldNrm.z < 0 : worldPos.z < centerZ;
+        u = remapAtlasU(u, isBack, zDominant && isBack);
+      }
+
+      uv[i * 2] = u;
+      uv[i * 2 + 1] = v;
     }
 
     geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
     if (geometry.hasAttribute("color")) geometry.deleteAttribute("color");
+    if (mesh.geometry !== geometry) {
+      mesh.geometry.dispose();
+    }
     mesh.geometry = geometry;
   });
 }
 
 function bindPatternMaterial(root: THREE.Object3D, normalMap: THREE.Texture) {
-  applyCoveringUVs(root);
-
   root.traverse((child) => {
     if (!(child as THREE.Mesh).isMesh) return;
     const mesh = child as THREE.Mesh;
@@ -371,8 +401,10 @@ function GarmentModel({
   modelUrl,
   fitScale = [1, 1, 1],
   cells,
+  backCells,
+  splitFaces,
   colorMap,
-  stitchSymbols,
+  stitchSymbols: _stitchSymbols,
   chartKey,
   normalTexture,
 }: GarmentModelProps) {
@@ -409,14 +441,24 @@ function GarmentModel({
     invalidate();
   }, [clonedScene, invalidate]);
 
+  useLayoutEffect(() => {
+    applyCoveringUVs(clonedScene, splitFaces);
+    normalTexture.repeat.set(splitFaces ? 64 : 32, 32);
+    invalidate();
+  }, [clonedScene, splitFaces, normalTexture, invalidate]);
+
   useEffect(() => {
+    const face = 1024;
     const canvas = document.createElement("canvas");
-    canvas.width = 1024;
-    canvas.height = 1024;
+    canvas.width = splitFaces ? face * 2 : face;
+    canvas.height = face;
     const ctx = canvas.getContext("2d");
     if (!ctx || cells.length === 0) return;
 
-    paintSymbolChart(ctx, cells, colorMap, stitchSymbols, canvas.width, canvas.height);
+    paintSymbolChart(ctx, cells, colorMap, 0, 0, face, face);
+    if (splitFaces) {
+      paintSymbolChart(ctx, backCells && backCells.length > 0 ? backCells : cells, colorMap, face, 0, face, face);
+    }
 
     const next = new THREE.CanvasTexture(canvas);
     next.colorSpace = THREE.SRGBColorSpace;
@@ -430,7 +472,7 @@ function GarmentModel({
     return () => {
       next.dispose();
     };
-  }, [cells, colorMap, stitchSymbols, chartKey]);
+  }, [cells, backCells, splitFaces, colorMap, chartKey]);
 
   useEffect(() => {
     if (!clonedScene || !colorTexture) return;
@@ -455,6 +497,8 @@ function InvalidateOnChange({ value }: { value: string }) {
 
 function Knitting3DCanvas({
   cells,
+  backCells,
+  splitFaces,
   colorMap,
   stitchSymbols,
   chartKey,
@@ -462,6 +506,8 @@ function Knitting3DCanvas({
   active,
 }: {
   cells: EditorCell[][];
+  backCells?: EditorCell[][];
+  splitFaces: boolean;
   colorMap: Record<string, string>;
   stitchSymbols: Record<string, string>;
   chartKey: string;
@@ -526,6 +572,8 @@ function Knitting3DCanvas({
                 modelUrl={garment.url}
                 fitScale={itemType === "sweater" ? SWEATER_FIT_SCALE : [1, 1, 1]}
                 cells={cells}
+                backCells={backCells}
+                splitFaces={splitFaces}
                 colorMap={colorMap}
                 stitchSymbols={stitchSymbols}
                 chartKey={chartKey}
@@ -565,7 +613,7 @@ function Knitting3DCanvas({
             title="확대"
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
-            <ZoomInFillIcon className="h-[15px] w-[15px]" />
+            <ZoomInFillIcon className="h-5 w-5" />
           </button>
           <button
             type="button"
@@ -573,7 +621,7 @@ function Knitting3DCanvas({
             title="축소"
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
-            <ZoomOutFillIcon className="h-[15px] w-[15px]" />
+            <ZoomOutFillIcon className="h-5 w-5" />
           </button>
           <button
             type="button"
@@ -581,7 +629,7 @@ function Knitting3DCanvas({
             title="초기화"
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
-            <RotateFillIcon className="h-[15px] w-[15px]" />
+            <RotateFillIcon className="h-5 w-5" />
           </button>
         </div>
       ) : null}
@@ -591,9 +639,17 @@ function Knitting3DCanvas({
 
 const EMPTY_CELL: EditorCell = { colorId: "white", stitchId: "empty" };
 
+function serializeGrid(cells: EditorCell[][]) {
+  return cells
+    .map((row) => row.map((cell) => `${cell.colorId}:${cell.stitchId}`).join(","))
+    .join("|");
+}
+
 function Knitting3DPreview({
   grid,
   gridData,
+  backGrid,
+  facesIndependent = false,
   colorMap = {},
   stitchSymbols = {},
   itemType = "sweater",
@@ -605,17 +661,18 @@ function Knitting3DPreview({
     const source = gridData && gridData.length > 0 ? gridData : grid;
     return source && source.length > 0 ? source : [[EMPTY_CELL]];
   }, [grid, gridData]);
+  const splitFaces = Boolean(facesIndependent && backGrid && backGrid.length > 0);
+  const backPattern = useMemo(() => {
+    if (!splitFaces) return undefined;
+    return backGrid && backGrid.length > 0 ? backGrid : pattern;
+  }, [splitFaces, backGrid, pattern]);
 
   const chartKey = useMemo(
     () =>
-      pattern
-        .map((row) => row.map((cell) => `${cell.colorId}:${cell.stitchId}`).join(","))
-        .join("|") +
-      "|" +
-      JSON.stringify(colorMap) +
-      "|" +
-      JSON.stringify(stitchSymbols),
-    [pattern, colorMap, stitchSymbols],
+      `${splitFaces ? "split" : "same"}|${serializeGrid(pattern)}|${
+        backPattern ? serializeGrid(backPattern) : ""
+      }|${JSON.stringify(colorMap)}|${JSON.stringify(stitchSymbols)}`,
+    [pattern, backPattern, splitFaces, colorMap, stitchSymbols],
   );
 
   useEffect(() => {
@@ -641,6 +698,8 @@ function Knitting3DPreview({
       {inView ? (
         <Knitting3DCanvas
           cells={pattern}
+          backCells={backPattern}
+          splitFaces={splitFaces}
           colorMap={colorMap}
           stitchSymbols={stitchSymbols}
           chartKey={chartKey}

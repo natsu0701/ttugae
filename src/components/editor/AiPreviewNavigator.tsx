@@ -12,6 +12,9 @@ import { editorChromeTone, editorPanel } from "../ui/tabButtonStyles.ts";
 type AiPreviewNavigatorProps = {
   title?: string;
   grid: EditorCell[][];
+  frontGrid?: EditorCell[][];
+  backGrid?: EditorCell[][];
+  facesIndependent?: boolean;
   charts?: KnittingChart[];
   colorMap: Record<string, string>;
   stitchSymbols: Record<string, string>;
@@ -29,6 +32,9 @@ const ITEM_OPTIONS: { id: KnitItemType; label: string }[] = [
 export default function AiPreviewNavigator({
   title = "",
   grid,
+  frontGrid,
+  backGrid,
+  facesIndependent = false,
   charts = [],
   colorMap,
   stitchSymbols,
@@ -82,8 +88,10 @@ export default function AiPreviewNavigator({
 
       <div className="relative w-full overflow-hidden rounded-lg">
         <Knitting3DPreview
-          grid={grid}
-          gridData={grid}
+          grid={frontGrid ?? grid}
+          gridData={frontGrid ?? grid}
+          backGrid={backGrid}
+          facesIndependent={facesIndependent}
           charts={charts}
           colorMap={colorMap}
           stitchSymbols={stitchSymbols}
@@ -91,6 +99,11 @@ export default function AiPreviewNavigator({
           yarnMeta={yarnMeta}
         />
       </div>
+      {facesIndependent ? (
+        <p className="mt-2 font-seoyun text-[11px] font-normal leading-snug text-stone-300">
+          {t("editor.previewFacesSplit")}
+        </p>
+      ) : null}
     </div>
   );
 }

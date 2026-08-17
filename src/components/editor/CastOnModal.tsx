@@ -5,14 +5,15 @@ import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import { softShadow } from "../ui/tabButtonStyles.ts";
 import {
+  CAST_ON_PARTS,
   CHART_PART_LABELS,
   type ChartTargetPart,
 } from "../../types/knittingProject.ts";
-import { loadGaugeProfile } from "../../utils/personalizationStorage.ts";
+import { loadGaugeProfile, saveGaugeProfile } from "../../utils/personalizationStorage.ts";
 import NeedleSpecFields from "./NeedleSpecFields.tsx";
 import { DEFAULT_NEEDLE, type NeedleSpec } from "../../data/knittingMetadataLibrary.ts";
 
-export type CastOnMode = "replace" | "add";
+export type CastOnMode = "replace" | "add" | "gauge";
 
 type CastOnModalProps = {
   open: boolean;
@@ -29,7 +30,7 @@ type CastOnModalProps = {
   onNeedleChange?: (next: NeedleSpec) => void;
 };
 
-const PARTS = Object.keys(CHART_PART_LABELS) as ChartTargetPart[];
+const PARTS = CAST_ON_PARTS;
 /** 성인 스웨터 몸통 한 판 표준 폭 (cm) */
 const STANDARD_BODY_WIDTH_CM = 50;
 
@@ -52,6 +53,7 @@ export default function CastOnModal({
   const [afterSts, setAfterSts] = useState("20");
   const [afterRows, setAfterRows] = useState("28");
   const isAdd = mode === "add";
+  const isGauge = mode === "gauge";
 
   useEffect(() => {
     if (!open) return;
@@ -85,6 +87,11 @@ export default function CastOnModal({
   }, [afterSts, afterRows, beforeSts, beforeRows]);
 
   const handleApply = () => {
+    if (isGauge) {
+      saveGaugeProfile({ beforeSts, beforeRows, afterSts, afterRows });
+      onClose();
+      return;
+    }
     const cols = parseInt(w, 10);
     const rows = parseInt(h, 10);
     if (!Number.isFinite(cols) || !Number.isFinite(rows)) return;
@@ -98,8 +105,13 @@ export default function CastOnModal({
   };
 
   const applyRecommended = () => {
+    saveGaugeProfile({ beforeSts, beforeRows, afterSts, afterRows });
     if (recommended.startSts > 0) setW(String(recommended.startSts));
     if (recommended.startRows > 0) setH(String(recommended.startRows));
+    if (isGauge && recommended.startSts > 0 && recommended.startRows > 0) {
+      onApply(recommended.startSts, recommended.startRows);
+      onClose();
+    }
   };
 
   return (
@@ -122,10 +134,18 @@ export default function CastOnModal({
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="font-sans text-xl font-bold text-gray-900">
-              {isAdd ? t("editor.castOn.addTitle") : t("editor.castOn.title")}
+              {isGauge
+                ? t("editor.gaugeButton")
+                : isAdd
+                  ? t("editor.castOn.addTitle")
+                  : t("editor.castOn.title")}
             </h2>
             <p className="mt-2 font-seoyun text-sm font-normal text-gray-600">
-              {isAdd ? t("editor.castOn.addDescription") : t("editor.castOn.description")}
+              {isGauge
+                ? t("editor.castOn.gaugeHint")
+                : isAdd
+                  ? t("editor.castOn.addDescription")
+                  : t("editor.castOn.description")}
             </p>
 
             {isAdd && (
@@ -162,14 +182,9 @@ export default function CastOnModal({
               </div>
             )}
 
+            {isGauge ? (
             <div className="mt-5 rounded-2xl bg-stone-100/80 p-4">
-              <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
-                {t("editor.castOn.gaugeTitle")}
-              </p>
-              <p className="mt-1 font-seoyun text-[11px] font-normal text-gray-500">
-                {t("editor.castOn.gaugeHint")}
-              </p>
-              <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <p className="mb-2 font-sans text-[11px] font-normal text-gray-600">
                     {t("editor.castOn.gaugeBefore")}
@@ -246,7 +261,9 @@ export default function CastOnModal({
                 {t("editor.castOn.applyRecommended")}
               </button>
             </div>
-
+            ) : (
+            <>
+            {!isAdd ? (
             <div className="mt-5 rounded-2xl bg-stone-100/80 p-4">
               <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
                 {t("editor.castOn.needleTitle")}
@@ -262,6 +279,7 @@ export default function CastOnModal({
                 />
               </div>
             </div>
+            ) : null}
 
             <div className="mt-5 flex gap-3">
               <div className="flex-1">
@@ -289,13 +307,19 @@ export default function CastOnModal({
                 />
               </div>
             </div>
+            </>
+            )}
 
             <div className="mt-6 flex gap-2">
               <Button type="button" variant="ghost" onClick={onClose} className="flex-1 py-2.5">
                 {t("editor.castOn.cancel")}
               </Button>
               <Button type="button" onClick={handleApply} className="flex-1 bg-coral py-2.5 text-white hover:bg-black">
-                {isAdd ? t("editor.castOn.addAction") : t("editor.castOn.createCanvas")}
+                {isGauge
+                  ? t("editor.castOn.gaugeSave")
+                  : isAdd
+                    ? t("editor.castOn.addAction")
+                    : t("editor.castOn.createCanvas")}
               </Button>
             </div>
           </motion.div>
