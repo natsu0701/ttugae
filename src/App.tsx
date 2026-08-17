@@ -15,6 +15,11 @@ import { saveShareDraft } from "./utils/shareDraft.ts";
 import { openShareDraftFromPatterns } from "./utils/createShareDraft.ts";
 import { openCommunityPostForEdit } from "./utils/communityPostDraft.ts";
 import { loadStoredPatterns, saveStoredPatterns } from "./utils/patternStorage.ts";
+import { forkPatternToWorkspace } from "./utils/offlineReviewBridge.ts";
+import {
+  readFreshWorkspaceGrid,
+  workspaceGridToStoredPattern,
+} from "./utils/workspaceGridStorage.ts";
 import {
   clearAuthSession,
   loadAuthSession,
@@ -169,6 +174,7 @@ function AppRoutes() {
   };
 
   const importCommunityPattern = (pattern: CommunityPattern) => {
+    forkPatternToWorkspace(pattern);
     const grid = communityPatternToGrid(pattern);
     setIncomingShare({
       id: `import-${pattern.id}-${Date.now()}`,
@@ -320,8 +326,11 @@ function AppRoutes() {
   }
 
   if (view === "editor") {
+    const fromWorkspace =
+      incomingShare || activePatternId ? null : readFreshWorkspaceGrid();
     const initial =
       incomingShare ??
+      (fromWorkspace ? workspaceGridToStoredPattern(fromWorkspace) : null) ??
       (activePatternId
         ? patterns.find((p) => p.id === activePatternId) ?? null
         : null);
@@ -392,6 +401,11 @@ function AppRoutes() {
         {view === "community" && (
           <Community
             onImportToEditor={importCommunityPattern}
+            onGoEditor={() => {
+              const data = readFreshWorkspaceGrid();
+              const share = data ? workspaceGridToStoredPattern(data) : null;
+              openEditor({ patternId: null, share });
+            }}
             onSharePattern={openCreatePostFromCommunity}
             onEditPost={(pattern) => {
               if (pattern.author !== "나") return;

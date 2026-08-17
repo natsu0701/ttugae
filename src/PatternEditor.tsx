@@ -49,6 +49,7 @@ import {
   type ChartTargetPart,
   type KnittingChart,
 } from "./types/knittingProject.ts";
+import { persistCurrentProgressRow } from "./utils/editorProgressStorage.ts";
 
 const MAX_GRID = 50;
 const PALETTE_PRESET_SLOTS = 4;
@@ -400,6 +401,7 @@ export default function PatternEditor({
         next[r][c] = { colorId: activeColor, stitchId: activeStitch };
         return next;
       });
+      persistCurrentProgressRow(r);
     },
     [tool, activeColor, activeStitch, patchActiveGrid],
   );

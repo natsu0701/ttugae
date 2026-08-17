@@ -3,6 +3,8 @@ import type { AchievementBadgeId } from "../../data/achievementBadges.ts";
 import { loadMyFinishedWorks } from "../../utils/myFinishedWorksStore.ts";
 import { loadSharedCommunityPatterns } from "../../utils/communityShare.ts";
 import { loadGaugeProfile, loadYarnInventory } from "../../utils/personalizationStorage.ts";
+import { loadTickets } from "../../utils/offlineActivityStorage.ts";
+import { loadCurrentProgressRow } from "../../utils/editorProgressStorage.ts";
 
 export type BadgeUnlockEntry = {
   unlocked: boolean;
@@ -24,6 +26,9 @@ export type KnitAchievementStats = {
   yarnInventoryCount?: number;
   marketplaceDownloads?: number;
   finishedCount?: number;
+  hasOfflineCheckin?: boolean;
+  offlineCheckins?: number;
+  currentProgressRow?: number;
 };
 
 export function computeAchievementStats(patterns: StoredPattern[]): KnitAchievementStats {
@@ -39,6 +44,7 @@ export function computeAchievementStats(patterns: StoredPattern[]): KnitAchievem
     gauge && (gauge.beforeSts || gauge.afterSts || gauge.beforeRows || gauge.afterRows),
   );
   const yarnCount = loadYarnInventory().length;
+  const tickets = loadTickets();
   const totalStitches = computedStitches > 0 ? computedStitches : 12450;
   const completedProjects = finishedWorks.length > 0 ? finishedWorks.length : 8;
 
@@ -55,6 +61,9 @@ export function computeAchievementStats(patterns: StoredPattern[]): KnitAchievem
     yarnInventoryCount: yarnCount,
     marketplaceDownloads: sharedMine.length,
     finishedCount: finishedWorks.length > 0 ? finishedWorks.length : completedProjects,
+    hasOfflineCheckin: tickets.length > 0,
+    offlineCheckins: tickets.length,
+    currentProgressRow: loadCurrentProgressRow() ?? 0,
   };
 }
 
@@ -100,8 +109,11 @@ export function buildBadgeUnlocks(stats: KnitAchievementStats): BadgeUnlockMap {
       progressText: chats >= 10 ? undefined : `${chats} / 10 완료`,
     },
     badge10: {
-      unlocked: downloads >= 1,
-      progressText: downloads >= 1 ? undefined : `${downloads} / 1 완료`,
+      unlocked: downloads >= 1 || Boolean(stats.hasOfflineCheckin),
+      progressText:
+        downloads >= 1 || stats.hasOfflineCheckin
+          ? undefined
+          : `${downloads} / 1 완료`,
     },
     badge11: {
       unlocked: stitches >= 30000,

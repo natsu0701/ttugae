@@ -34,6 +34,9 @@ function KnitAchievementDashboard({
   yarnInventoryCount = 0,
   marketplaceDownloads = 0,
   finishedCount,
+  hasOfflineCheckin = false,
+  offlineCheckins = 0,
+  currentProgressRow = 0,
 }: KnitAchievementDashboardProps) {
   const [activeTab, setActiveTab] = useState<FilterTab>("mine");
   const growthPercentage = Math.min(100, Math.round((totalStitches / NEXT_LEVEL_STITCHES) * 100));
@@ -53,6 +56,9 @@ function KnitAchievementDashboard({
         yarnInventoryCount,
         marketplaceDownloads,
         finishedCount,
+        hasOfflineCheckin,
+        offlineCheckins,
+        currentProgressRow,
       }),
     [
       totalStitches,
@@ -66,6 +72,9 @@ function KnitAchievementDashboard({
       yarnInventoryCount,
       marketplaceDownloads,
       finishedCount,
+      hasOfflineCheckin,
+      offlineCheckins,
+      currentProgressRow,
     ],
   );
 
@@ -134,6 +143,18 @@ function KnitAchievementDashboard({
             <span className="font-sans text-xs font-medium text-stone-500">일 연속</span>
           </div>
         </div>
+      </div>
+
+      <div className="mb-8 rounded-2xl bg-[#FBF9F6] p-5">
+        <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-stone-400">
+          오프라인 참여 증적
+        </p>
+        <p className="mt-2 font-sans text-sm font-bold text-stone-900">
+          QR 입장 {offlineCheckins}회 · 진행 단 {currentProgressRow}단 보존
+        </p>
+        <p className="mt-1 font-seoyun text-xs text-stone-500">
+          행사 신청 시 참여자 인덱스가 기록되고, 에디터 진행 단은 체크인 후에도 유지됩니다.
+        </p>
       </div>
 
       <div className="mb-8 rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">

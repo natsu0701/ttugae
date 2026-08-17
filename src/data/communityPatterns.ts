@@ -11,7 +11,7 @@ function filledBoolGrid(rows: number, cols: number): boolean[][] {
   return Array.from({ length: rows }, () => Array.from({ length: cols }, () => true));
 }
 
-export type CommunityCategory = "all" | "best" | "qa" | "showcase";
+export type CommunityCategory = "all" | "best" | "qa" | "showcase" | "offline";
 
 export type FinishedDetail = {
   yarn: string;
@@ -26,7 +26,7 @@ export type CommunityPattern = {
   author: string;
   likes: number;
   scraps: number;
-  category: Exclude<CommunityCategory, "all" | "qa">;
+  category: Exclude<CommunityCategory, "all" | "qa" | "offline">;
   gridCols: number;
   gridRows: number;
   grid: boolean[][];
@@ -382,6 +382,7 @@ export const COMMUNITY_TABS: { id: CommunityCategory }[] = [
   { id: "best" },
   { id: "qa" },
   { id: "showcase" },
+  { id: "offline" },
 ];
 
 export function getCommunityPattern(id: string) {

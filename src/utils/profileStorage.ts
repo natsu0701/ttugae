@@ -5,6 +5,7 @@ export type ProfileData = {
   nickname?: string;
   handle?: string;
   email?: string;
+  region?: string;
 };
 
 export const DEFAULT_NICKNAME = "뜨개러";
@@ -34,8 +35,12 @@ export function clearProfileAvatar(): void {
   writeProfile(rest);
 }
 
-export function saveProfileAccount(patch: Pick<ProfileData, "nickname" | "handle" | "email">): void {
+export function saveProfileAccount(patch: Pick<ProfileData, "nickname" | "handle" | "email" | "region">): void {
   writeProfile({ ...loadProfile(), ...patch });
+}
+
+export function saveProfileRegion(region: string): void {
+  writeProfile({ ...loadProfile(), region });
 }
 
 export function clearProfile(): void {

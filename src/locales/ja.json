@@ -82,7 +82,8 @@
       "all": "すべて",
       "best": "人気の編み図",
       "qa": "Q&A",
-      "showcase": "完成作品ショーケース"
+      "showcase": "完成作品ショーケース",
+      "offline": "オフラインイベント"
     },
     "feedPattern": "編み図",
     "feedFinished": "完成作品",

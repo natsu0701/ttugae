@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PatternCard from "./components/community/PatternCard.tsx";
 import MyPatternsPanel from "./components/mypage/MyPatternsPanel.tsx";
+import MyMeetupsPanel from "./components/mypage/MyMeetupsPanel.tsx";
 import FinishedWorksGallery from "./components/mypage/FinishedWorksGallery.tsx";
 import SettingsPanel from "./components/mypage/SettingsPanel.tsx";
 import ProfileBadgeCustomizer from "./components/ui/ProfileBadgeCustomizer.tsx";
@@ -28,6 +29,12 @@ import {
   loadGaugeProfile,
   saveGaugeProfile,
 } from "./utils/personalizationStorage.ts";
+import {
+  loadActivityRegion,
+  saveActivityArea,
+  saveActivityRegion,
+} from "./utils/offlineActivityStorage.ts";
+import { ACTIVITY_AREAS, parseActivityRegion } from "./data/offlineCommunity.ts";
 import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
 import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
 import {
@@ -39,6 +46,7 @@ import {
   StatsFillIcon,
   SettingsFillIcon,
   DashboardFillIcon,
+  PinFillIcon,
   AccountFillIcon,
   UserPlusFillIcon,
   LogoutFillIcon,
@@ -48,6 +56,7 @@ import {
 export type MyPageTab =
   | "profile"
   | "summary"
+  | "meetups"
   | "patterns"
   | "finished"
   | "liked"
@@ -58,6 +67,7 @@ export type MyPageTab =
 const NAV_TABS: { id: MyPageTab; Icon: typeof ProfileFillIcon; label: string }[] = [
   { id: "profile", Icon: ProfileFillIcon, label: "내 정보" },
   { id: "summary", Icon: DashboardFillIcon, label: "활동 요약" },
+  { id: "meetups", Icon: PinFillIcon, label: "내가 예약한 뜨개 모임" },
   { id: "patterns", Icon: PatternsFillIcon, label: "내 도안" },
   { id: "finished", Icon: ImageFillIcon, label: "완성작" },
   { id: "liked", Icon: HeartFillIcon, label: "좋아요" },
@@ -138,6 +148,7 @@ function ProfileInfoPanel({
   const stored = loadProfile();
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(() => stored.avatarUrl);
   const [gauge, setGauge] = useState(loadCompactGauge);
+  const [activityRegion, setActivityRegion] = useState(loadActivityRegion);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const achievementStats = useMemo(() => computeAchievementStats(patterns), [patterns]);
   const badgeUnlocks = useMemo(() => buildBadgeUnlocks(achievementStats), [achievementStats]);
@@ -184,6 +195,39 @@ function ProfileInfoPanel({
             clearProfileAvatar();
           }}
         />
+
+        <div className="mt-8 space-y-3 border-t border-stone-100 pt-6">
+          <div>
+            <h3 className="font-sans text-sm font-bold text-gray-900">활동 지역</h3>
+            <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
+              구/동 단위로 저장하면 라운지 지도와 소모임 피드가 거주지 근처부터 정렬됩니다.
+            </p>
+          </div>
+          <SmoothInput
+            label="구 / 동"
+            value={activityRegion}
+            onChange={(e) => {
+              setActivityRegion(e.target.value);
+              saveActivityRegion(e.target.value);
+            }}
+            placeholder="서울시 마포구 망원동"
+          />
+          <div className="flex flex-wrap gap-2">
+            {ACTIVITY_AREAS.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => {
+                  saveActivityArea(item);
+                  setActivityRegion(loadActivityRegion());
+                }}
+                className={`${tabButtonBase} ${tabButtonClass(parseActivityRegion(activityRegion).area === item)}`}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="mt-8 space-y-4 border-t border-stone-100 pt-6">
           <div>
@@ -377,8 +421,13 @@ export default function MyPage({
               yarnInventoryCount={achievementStats.yarnInventoryCount}
               marketplaceDownloads={achievementStats.marketplaceDownloads}
               finishedCount={achievementStats.finishedCount}
+              hasOfflineCheckin={achievementStats.hasOfflineCheckin}
+              offlineCheckins={achievementStats.offlineCheckins}
+              currentProgressRow={achievementStats.currentProgressRow}
             />
           ) : null}
+
+          {activeTab === "meetups" ? <MyMeetupsPanel /> : null}
 
           {activeTab === "patterns" ? (
             <MyPatternsPanel

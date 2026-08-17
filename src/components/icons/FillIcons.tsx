@@ -18,13 +18,53 @@ export function UserFillIcon({ className = "h-6 w-6" }: IconProps) {
 }
 
 export function ProfileFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return <UserFillIcon className={className} />;
+}
+
+export function PinFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <circle cx="12" cy="9" r="4" fill="currentColor" />
       <path
-        d="M4 20.5c.6-3.2 3.6-5.5 8-5.5s7.4 2.3 8 5.5"
         fill="currentColor"
+        d="M12 2.4c3.5 0 6.4 2.7 6.4 6.1 0 4.6-6.4 13.1-6.4 13.1S5.6 13.1 5.6 8.5C5.6 5.1 8.5 2.4 12 2.4zm0 4a2.3 2.3 0 100 4.6 2.3 2.3 0 000-4.6z"
       />
+    </svg>
+  );
+}
+
+export function CalendarFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="5" width="18" height="16" rx="3" fill="currentColor" />
+      <rect x="3" y="5" width="18" height="5" rx="3" fill="currentColor" />
+      <rect x="7" y="12" width="3" height="3" rx="0.6" fill="white" />
+      <rect x="10.5" y="12" width="3" height="3" rx="0.6" fill="white" />
+      <rect x="14" y="12" width="3" height="3" rx="0.6" fill="white" />
+    </svg>
+  );
+}
+
+export function QrFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor" />
+      <rect x="14" y="14" width="3" height="3" rx="0.6" fill="currentColor" />
+      <rect x="18" y="14" width="3" height="3" rx="0.6" fill="currentColor" />
+      <rect x="14" y="18" width="3" height="3" rx="0.6" fill="currentColor" />
+      <rect x="18" y="18" width="3" height="3" rx="0.6" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function CompassFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="12" cy="12" r="9" fill="currentColor" />
+      <path d="M12 5.2l2.2 6.2 6.2 2.2-6.2 2.2L12 21.8l-2.2-6.2L3.6 13.4l6.2-2.2L12 5.2z" fill="white" opacity="0.15" />
+      <path d="M12 6.4l1.6 5.1 5.1 1.5-5.1 1.5L12 19.6l-1.6-5.1-5.1-1.5 5.1-1.5L12 6.4z" fill="white" />
+      <circle cx="12" cy="13" r="1.35" fill="currentColor" />
     </svg>
   );
 }

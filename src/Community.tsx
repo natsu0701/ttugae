@@ -7,6 +7,7 @@ import QaList from "./components/community/QaList.tsx";
 import QaDetail from "./components/community/QaDetail.tsx";
 import FinishedWorkDetail from "./components/community/FinishedWorkDetail.tsx";
 import CommunityFilterBar from "./components/ui/CommunityFilterBar.tsx";
+import KnitOfflineHub from "./components/community/KnitOfflineHub.tsx";
 import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
 import {
   COMMUNITY_PATTERNS,
@@ -40,6 +41,7 @@ type CommunityProps = {
   onImportToEditor: (pattern: CommunityPattern) => void;
   onSharePattern: () => void;
   onEditPost: (pattern: CommunityPattern) => void;
+  onGoEditor: () => void;
 };
 
 function qaIdFromPath(pathname: string): string | null {
@@ -63,6 +65,7 @@ export default function Community({
   onImportToEditor,
   onSharePattern,
   onEditPost,
+  onGoEditor,
 }: CommunityProps) {
   const { t } = useTranslation();
   const initialPath = syncFromPath(window.location.pathname);
@@ -153,7 +156,7 @@ export default function Community({
   };
 
   const filtered = useMemo(() => {
-    if (activeTab === "qa") return [];
+    if (activeTab === "qa" || activeTab === "offline") return [];
     let ranked: CommunityPattern[];
     if (activeTab === "best") {
       ranked = [...allPatterns]
@@ -241,6 +244,8 @@ export default function Community({
       <section className="mx-auto max-w-6xl px-5 py-8 md:px-8">
         {activeTab === "qa" ? (
           <QaList posts={QA_POSTS} onSelect={openQa} />
+        ) : activeTab === "offline" ? (
+          <KnitOfflineHub onGoEditor={onGoEditor} />
         ) : (
           <>
             <div className="mb-6">
@@ -309,6 +314,7 @@ export default function Community({
         )}
       </section>
 
+      {activeTab !== "offline" ? (
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
         <span className="rounded-full bg-gray-100 px-3 py-1.5 font-sans text-xs font-normal text-gray-600">
           {t("community.shareFabLabel")}
@@ -322,6 +328,7 @@ export default function Community({
           +
         </button>
       </div>
+      ) : null}
     </div>
   );
 }

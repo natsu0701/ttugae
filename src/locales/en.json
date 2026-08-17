@@ -82,7 +82,8 @@
       "all": "All",
       "best": "Top Patterns",
       "qa": "Q&A",
-      "showcase": "Showcase"
+      "showcase": "Showcase",
+      "offline": "Offline events"
     },
     "feedPattern": "Patterns",
     "feedFinished": "Finished projects",

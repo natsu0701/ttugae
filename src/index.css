@@ -112,3 +112,15 @@ body.yarn-trail-active {
   border-radius: 999px;
   background: rgba(252, 95, 83, 0.35);
 }
+
+/* Leaflet: Tailwind preflight 타일 왜곡 차단 + 브랜드 핀 배경 제거 */
+.leaflet-container img {
+  max-width: none;
+}
+.leaflet-container .leaflet-marker-icon {
+  max-width: none;
+}
+.custom-leaflet-marker.leaflet-div-icon {
+  background: transparent;
+  border: none;
+}
