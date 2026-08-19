@@ -1,5 +1,6 @@
 import { memo, type MouseEvent } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import { playWelcomeKnitSound } from "../../utils/audioEffects.ts";
 import { landingSection } from "./landingStyles.ts";
@@ -11,9 +12,10 @@ type HeroSectionProps = {
   onOpenEditor: () => void;
 };
 
-const HERO_SLOGAN_LINES = ["뜨개질에만", "집중하세요!"] as const;
+const HERO_SLOGAN_KEYS = ["landing.heroLine1", "landing.heroLine2"] as const;
 
 function HeroSection({ onOpenEditor }: HeroSectionProps) {
+  const { t } = useTranslation();
   const handleCharMove = (e: MouseEvent<HTMLSpanElement>) => {
     const el = e.currentTarget;
     const rect = el.getBoundingClientRect();
@@ -25,7 +27,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
     <section className={`${landingSection.hero} relative isolate overflow-hidden`}>
       <video
         src="/web_back.mp4"
-        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover transform-gpu will-change-transform"
+        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
         autoPlay
         loop
         muted
@@ -35,15 +37,10 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
 
       {/* 웰컴 그라데이션 오버레이 필터 (따스한 분위기 연출 및 6px 최적화 블러 적용) */}
       <motion.div
-        className="pointer-events-none absolute inset-0 z-0 transform-gpu"
-        initial={{
-          backgroundColor: "rgba(244, 164, 184, 0.45)",
-          backdropFilter: "blur(4px)",
-        }}
-        animate={{
-          backgroundColor: "rgba(247, 245, 240, 0.2)",
-          backdropFilter: "blur(6px)",
-        }}
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{ backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}
+        initial={{ backgroundColor: "rgba(244, 164, 184, 0.45)" }}
+        animate={{ backgroundColor: "rgba(247, 245, 240, 0.2)" }}
         transition={{
           duration: 1.8,
           ease: "easeOut",
@@ -54,13 +51,13 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
       <HeroDecorations />
 
       {/* 텍스트 컨테이너 여백 (레이스 아래 안전지대 확보) */}
-      <div className="relative z-10 mx-auto w-full max-w-none text-center pt-28 sm:pt-36 md:pt-44">
+      <div className="relative z-10 mx-auto w-full shrink-0 max-w-none text-center pt-28 sm:pt-36 md:pt-44">
         <div className="mx-auto max-w-4xl px-6 py-4">
           <Reveal delay={0.4}>
             <h1 className="break-keep">
               {/* 1줄 리드 카피 - 슬림하고 세련된 고딕 */}
               <span className="block font-sans text-lg font-semibold leading-relaxed tracking-[0.04em] text-white/80 [text-shadow:0_1px_3px_rgba(0,0,0,0.12),0_6px_24px_rgba(0,0,0,0.18)] sm:text-xl md:text-2xl">
-                복잡한 도안은 뜨니에게 맡기고,
+                {t("landing.heroLead")}
               </span>
 
               {/*
@@ -71,11 +68,13 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
                 className="interactive-gradient-text mt-3 flex cursor-pointer flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] sm:text-5xl md:mt-4 md:gap-1 md:text-6xl lg:text-7xl"
                 style={{ fontFamily: "Mungyeong-Gamhong-Apple, sans-serif" }}
               >
-                {HERO_SLOGAN_LINES.map((line) => (
-                  <span key={line} className="block overflow-visible py-0.5">
+                {HERO_SLOGAN_KEYS.map((key) => {
+                  const line = t(key);
+                  return (
+                  <span key={key} className="block overflow-visible py-0.5">
                     {line.split("").map((char, index) => (
                       <span
-                        key={`${line}-${char}-${index}`}
+                        key={`${key}-${char}-${index}`}
                         className="interactive-gradient-char"
                         onMouseMove={handleCharMove}
                       >
@@ -83,7 +82,8 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
                       </span>
                     ))}
                   </span>
-                ))}
+                  );
+                })}
               </span>
             </h1>
           </Reveal>
@@ -92,8 +92,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
         {/* 3줄 서브 설명 */}
         <Reveal delay={0.75}>
           <p className="mx-auto mt-0.5 max-w-xl font-seoyun text-lg font-light leading-tight tracking-[0.05em] text-white/60 [text-shadow:0_1px_2px_rgba(0,0,0,0.14),0_4px_16px_rgba(0,0,0,0.16)] sm:text-xl md:mt-1 md:text-[1.3rem]">
-            에디터부터 AI 챗봇, 커뮤니티까지 
-            뜨개질의 모든 순간을 한곳에서.
+            {t("landing.heroSub")}
           </p>
         </Reveal>
 
@@ -108,7 +107,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
             }}
             className="relative z-10 px-8 py-4 text-base font-extrabold shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-all duration-300 hover:shadow-[0_10px_28px_rgba(252,95,83,0.18)] sm:px-10 sm:text-lg"
           >
-            도안 그리기
+            {t("landing.startDrawing")}
           </Button>
         </Reveal>
       </div>

@@ -34,12 +34,13 @@ type YarnStitchTrailProps = {
 function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
   const [isTouchDevice] = useState(detectTouchDevice);
   const [prefEnabled, setPrefEnabled] = useState(loadYarnTrailEnabled);
-  const [points, setPoints] = useState<Point[]>([]);
 
   const pointsRef = useRef<Point[]>([]);
   const cursorRef = useRef<HTMLDivElement>(null);
+  const segmentsRef = useRef<SVGGElement>(null);
   const rafIdRef = useRef<number | null>(null);
   const lastRecordRef = useRef(0);
+  const lastMarkupRef = useRef("");
   const inactive = disabled || !prefEnabled;
 
   useEffect(() => subscribeYarnTrail(setPrefEnabled), []);
@@ -47,7 +48,8 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
   useEffect(() => {
     if (inactive) {
       pointsRef.current = [];
-      setPoints([]);
+      lastMarkupRef.current = "";
+      if (segmentsRef.current) segmentsRef.current.replaceChildren();
       return;
     }
     if (isTouchDevice) return;
@@ -80,7 +82,24 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       const now = Date.now();
       const validPoints = pointsRef.current.filter((p) => now - p.time < POINT_LIFETIME);
       pointsRef.current = validPoints;
-      setPoints(validPoints);
+
+      const g = segmentsRef.current;
+      if (g) {
+        let markup = "";
+        for (let index = 1; index < validPoints.length; index += 1) {
+          const point = validPoints[index];
+          const prevPoint = validPoints[index - 1];
+          const ratio = index / validPoints.length;
+          const opacity = Math.max(0, ratio * MAX_OPACITY);
+          const strokeWidth = 1.2 + ratio * 4.0;
+          markup += `<g><line class="yarn-segment" x1="${prevPoint.x}" y1="${prevPoint.y}" x2="${point.x}" y2="${point.y}" stroke="${BASE_COLOR}" stroke-width="${strokeWidth}" opacity="${opacity}" /><line class="yarn-segment" x1="${prevPoint.x}" y1="${prevPoint.y}" x2="${point.x}" y2="${point.y}" stroke="${HALO_COLOR}" stroke-width="${strokeWidth * 1.4}" opacity="${opacity * 0.4}" /></g>`;
+        }
+        if (markup !== lastMarkupRef.current) {
+          lastMarkupRef.current = markup;
+          g.innerHTML = markup;
+        }
+      }
+
       rafIdRef.current = requestAnimationFrame(updateTrail);
     };
 
@@ -95,7 +114,8 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       rafIdRef.current = null;
       document.body.classList.remove("yarn-trail-active");
       pointsRef.current = [];
-      setPoints([]);
+      lastMarkupRef.current = "";
+      if (segmentsRef.current) segmentsRef.current.replaceChildren();
     };
   }, [inactive, isTouchDevice]);
 
@@ -105,49 +125,20 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-[9998] h-full w-full overflow-hidden transform-gpu will-change-transform"
+      className="pointer-events-none fixed inset-0 z-[9998] h-full w-full overflow-hidden"
       aria-hidden
     >
       <svg
-        className="yarn-trail-svg pointer-events-none h-full w-full transform-gpu will-change-transform"
+        className="yarn-trail-svg pointer-events-none h-full w-full"
         style={{ mixBlendMode: "normal" }}
         aria-hidden
       >
-        <g fill="none" strokeLinecap="round" strokeLinejoin="round">
-          {points.map((point, index) => {
-            if (index === 0) return null;
-            const prevPoint = points[index - 1];
-            const ratio = index / points.length;
-            const segmentOpacity = ratio * MAX_OPACITY;
-            const opacity = Math.max(0, segmentOpacity);
-            const strokeWidth = 1.2 + ratio * 4.0;
-
-            return (
-              <g key={`${prevPoint.time}-${point.time}-${index}`}>
-                <line
-                  className="yarn-segment"
-                  x1={prevPoint.x}
-                  y1={prevPoint.y}
-                  x2={point.x}
-                  y2={point.y}
-                  stroke={BASE_COLOR}
-                  strokeWidth={strokeWidth}
-                  opacity={opacity}
-                />
-                <line
-                  className="yarn-segment"
-                  x1={prevPoint.x}
-                  y1={prevPoint.y}
-                  x2={point.x}
-                  y2={point.y}
-                  stroke={HALO_COLOR}
-                  strokeWidth={strokeWidth * 1.4}
-                  opacity={opacity * 0.4}
-                />
-              </g>
-            );
-          })}
-        </g>
+        <g
+          ref={segmentsRef}
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
 
       <div

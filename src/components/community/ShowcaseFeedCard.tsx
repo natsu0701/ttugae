@@ -1,4 +1,5 @@
 import { memo, useState, type MouseEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { BookmarkFillIcon, ChatFillIcon, HeartFillIcon } from "../icons/FillIcons.tsx";
 import {
   finishedImageUrl,
@@ -12,6 +13,7 @@ import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
 import NeedleBadge from "./NeedleBadge.tsx";
 import PatternChartGrid from "./PatternChartGrid.tsx";
 import { getLoungeMeta } from "../../data/loungeFilters.ts";
+import { localizedPattern } from "../../utils/i18nContent.ts";
 
 type ShowcaseFeedCardProps = {
   pattern: CommunityPattern;
@@ -19,11 +21,11 @@ type ShowcaseFeedCardProps = {
   onOpenFinished?: (pattern: CommunityPattern) => void;
 };
 
-function skillBadge(pattern: CommunityPattern): string {
+function skillBadgeKey(pattern: CommunityPattern): string {
   const level = getLoungeMeta(pattern).level;
-  if (level === "beginner") return "초급";
-  if (level === "intermediate") return "중급";
-  return "고급";
+  if (level === "beginner") return "community.skillBeginner";
+  if (level === "intermediate") return "community.skillIntermediate";
+  return "community.skillAdvanced";
 }
 
 function PatternOverlay({ pattern }: { pattern: CommunityPattern }) {
@@ -52,6 +54,8 @@ function ShowcaseFeedCard({
   onImport,
   onOpenFinished,
 }: ShowcaseFeedCardProps) {
+  const { t } = useTranslation();
+  const view = localizedPattern(t, pattern);
   const [imageFailed, setImageFailed] = useState(false);
   const { isLiked, isSaved, getLikeCount, getSaveCount, toggleLike, toggleSave } =
     useCommunityActions();
@@ -63,8 +67,8 @@ function ShowcaseFeedCard({
   const commentCount = getCommentsForPattern(pattern.id).length;
   const href = communityPostPath(pattern.id);
   const photoSrc = finishedImageUrl(pattern.finishedImage);
-  const body = pattern.finishedDetail.review || pattern.finishedCaption;
-  const badge = skillBadge(pattern);
+  const body = view.finishedDetail.review || view.finishedCaption;
+  const badge = t(skillBadgeKey(pattern));
 
   const openDetail = (e: MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
@@ -98,17 +102,17 @@ function ShowcaseFeedCard({
         href={href}
         onClick={openDetail}
         className="group relative block overflow-hidden rounded-2xl"
-        aria-label={pattern.title}
+        aria-label={view.title}
       >
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-stone-100">
           {imageFailed ? (
             <div className="flex h-full items-center justify-center font-sans text-sm text-stone-400">
-              완성작 사진을 불러오지 못했어요
+              {t("community.photoFail")}
             </div>
           ) : (
             <img
               src={photoSrc}
-              alt={`${pattern.title} 완성작`}
+              alt={t("community.finishedAltOf", { title: view.title })}
               className="h-full w-full object-cover"
               loading="lazy"
               decoding="async"
@@ -129,7 +133,7 @@ function ShowcaseFeedCard({
                   }}
                   className="rounded-2xl bg-white px-5 py-3 font-sans text-xs font-bold text-stone-950 shadow-md transition-colors hover:bg-stone-100"
                 >
-                  도안 에디터로 복제하기
+                  {t("community.importToEditor")}
                 </button>
               </div>
             ) : null}
@@ -145,7 +149,7 @@ function ShowcaseFeedCard({
       <div className="mt-4 flex items-end justify-between gap-4">
         <div className="min-w-0 flex-1">
           <h3 className="font-sans text-base font-bold text-stone-900">
-            {pattern.title}
+            {view.title}
           </h3>
           <p className="mt-2 font-sans text-sm font-light leading-relaxed text-stone-500">
             {body}
@@ -159,7 +163,7 @@ function ShowcaseFeedCard({
               liked ? "font-semibold text-coral" : "text-stone-400 hover:text-stone-600"
             }`}
             aria-pressed={liked}
-            aria-label="좋아요"
+            aria-label={t("community.like")}
           >
             <HeartFillIcon className="h-4 w-4" filled={liked} />
             <span>{likeCount}</span>
@@ -171,7 +175,7 @@ function ShowcaseFeedCard({
               saved ? "font-semibold text-stone-800" : "text-stone-400 hover:text-stone-600"
             }`}
             aria-pressed={saved}
-            aria-label="저장"
+            aria-label={t("community.save")}
           >
             <BookmarkFillIcon className="h-4 w-4" filled={saved} />
             <span>{saveCount}</span>
@@ -180,7 +184,7 @@ function ShowcaseFeedCard({
             type="button"
             onClick={() => onOpenFinished?.(pattern)}
             className="flex items-center gap-1 text-xs text-stone-400 transition-colors hover:text-stone-600"
-            aria-label="댓글"
+            aria-label={t("community.comment")}
           >
             <ChatFillIcon className="h-4 w-4" />
             <span>{commentCount}</span>

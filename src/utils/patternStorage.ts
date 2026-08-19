@@ -1,4 +1,4 @@
-import type { StoredPattern } from "../Dashboard.tsx";
+import type { StoredPattern } from "../types/storedPattern.ts";
 
 const STORAGE_KEY = "ttugae.patterns.v1";
 

@@ -1,17 +1,25 @@
 import { useMemo } from "react";
-import type { StoredPattern } from "../../Dashboard.tsx";
+import { useTranslation } from "react-i18next";
+import type { StoredPattern } from "../../types/storedPattern.ts";
 import { softShadow } from "../ui/tabButtonStyles.ts";
 import KnitAchievementDashboard from "./KnitAchievementDashboard.tsx";
 import { computeAchievementStats } from "./achievementStats.ts";
 
-const MONTH_LABELS = ["1월", "2월", "3월", "4월", "5월", "6월"];
+const MONTH_KEYS = [
+  "mypage.month1",
+  "mypage.month2",
+  "mypage.month3",
+  "mypage.month4",
+  "mypage.month5",
+  "mypage.month6",
+] as const;
 
 const DEMO_COLOR_USAGE = [
-  { name: "코랄", hex: "#FC5F53", percent: 32 },
-  { name: "베이지", hex: "#E8DCC8", percent: 24 },
-  { name: "네이비", hex: "#1E3A5F", percent: 18 },
-  { name: "그레이", hex: "#E5E7EB", percent: 14 },
-  { name: "기타", hex: "#9CA3AF", percent: 12 },
+  { nameKey: "mypage.colorCoral", hex: "#FC5F53", percent: 32 },
+  { nameKey: "mypage.colorBeige", hex: "#E8DCC8", percent: 24 },
+  { nameKey: "mypage.colorNavy", hex: "#1E3A5F", percent: 18 },
+  { nameKey: "mypage.colorGray", hex: "#E5E7EB", percent: 14 },
+  { nameKey: "mypage.colorOther", hex: "#9CA3AF", percent: 12 },
 ];
 
 type StatsDetailPanelProps = {
@@ -55,19 +63,20 @@ export default function StatsDetailPanel({
   likedCount,
   savedCount,
 }: StatsDetailPanelProps) {
+  const { t } = useTranslation();
   const monthlyData = useMemo(() => {
     const now = new Date();
-    return MONTH_LABELS.map((label, i) => {
-      const monthIndex = now.getMonth() - (MONTH_LABELS.length - 1 - i);
+    return MONTH_KEYS.map((key, i) => {
+      const monthIndex = now.getMonth() - (MONTH_KEYS.length - 1 - i);
       const adjusted = new Date(now.getFullYear(), monthIndex, 1);
       const count = patterns.filter((p) => {
         const d = new Date(p.updatedAt);
         return d.getMonth() === adjusted.getMonth() && d.getFullYear() === adjusted.getFullYear();
       }).length;
       const demo = [2, 4, 1, 6, 3, patterns.length || 5][i] ?? 1;
-      return { label, value: count > 0 ? count : demo };
+      return { label: t(key), value: count > 0 ? count : demo };
     });
-  }, [patterns]);
+  }, [patterns, t]);
 
   const maxMonthly = Math.max(...monthlyData.map((d) => d.value), 1);
 
@@ -76,9 +85,9 @@ export default function StatsDetailPanel({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="font-sans text-2xl font-bold text-gray-900">통계</h2>
+        <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.statsPageTitle")}</h2>
         <p className="mt-1 font-sans text-sm font-normal text-gray-600">
-          나의 뜨개 활동을 그래프로 확인해요.
+          {t("mypage.statsPageHint")}
         </p>
       </div>
 
@@ -94,28 +103,28 @@ export default function StatsDetailPanel({
       />
 
       <div className={`rounded-2xl bg-white p-6 ${softShadow}`}>
-        <h3 className="font-sans text-base font-bold text-gray-900">월별 도안 생성 추이</h3>
+        <h3 className="font-sans text-base font-bold text-gray-900">{t("mypage.statsMonthly")}</h3>
         <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
-          최근 6개월 기준
+          {t("mypage.statsMonthlyHint")}
         </p>
         <BarChart data={monthlyData} maxValue={maxMonthly} />
       </div>
 
       <div className={`rounded-2xl bg-white p-6 ${softShadow}`}>
-        <h3 className="font-sans text-base font-bold text-gray-900">가장 많이 사용한 색상</h3>
+        <h3 className="font-sans text-base font-bold text-gray-900">{t("mypage.statsColors")}</h3>
         <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
-          전체 도안 기준 비율
+          {t("mypage.statsColorsHint")}
         </p>
         <ul className="mt-6 space-y-4">
           {DEMO_COLOR_USAGE.map((color) => (
-            <li key={color.name}>
+            <li key={color.nameKey}>
               <div className="mb-1.5 flex items-center justify-between">
                 <span className="flex items-center gap-2 font-sans text-sm font-normal text-gray-800">
                   <span
                     className="h-4 w-4 rounded-full shadow-sm shadow-gray-200/50"
                     style={{ backgroundColor: color.hex }}
                   />
-                  {color.name}
+                  {t(color.nameKey)}
                 </span>
                 <span className="font-sans text-sm font-bold text-coral">{color.percent}%</span>
               </div>
@@ -132,10 +141,10 @@ export default function StatsDetailPanel({
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
-          { label: "작성 도안", value: patterns.length },
-          { label: "좋아요", value: likedCount },
-          { label: "저장", value: savedCount },
-          { label: "완성작", value: 3 },
+          { label: t("mypage.statsMade"), value: patterns.length },
+          { label: t("mypage.statsLikes"), value: likedCount },
+          { label: t("mypage.statsSaves"), value: savedCount },
+          { label: t("mypage.statsFinished"), value: 3 },
         ].map((s) => (
           <div key={s.label} className={`rounded-2xl bg-gray-50 p-4 text-center ${softShadow}`}>
             <p className="font-sans text-xs font-normal text-gray-500">{s.label}</p>

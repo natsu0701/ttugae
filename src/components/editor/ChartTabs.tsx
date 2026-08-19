@@ -5,6 +5,7 @@ import {
   CHART_PART_LABELS,
   visibleEditorCharts,
 } from "../../types/knittingProject.ts";
+import { chartPartLabel } from "../../utils/i18nContent.ts";
 import { editorChromeTone } from "../ui/tabButtonStyles.ts";
 
 type ChartTabsProps = {
@@ -71,7 +72,7 @@ export default function ChartTabs({
             className={`max-w-[7.5rem] shrink-0 truncate rounded-full px-2.5 py-1 font-sans text-[11px] font-normal ${
               active ? "border border-coral bg-coral text-white" : editorChromeTone
             }`}
-            title={`${chart.name} · ${CHART_PART_LABELS[chart.targetPart]}`}
+            title={`${chart.name} · ${chartPartLabel(t, chart.targetPart, CHART_PART_LABELS[chart.targetPart])}`}
           >
             {chart.name}
           </button>

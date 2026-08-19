@@ -15,12 +15,22 @@ export default defineConfig({
       "framer-motion",
       "i18next",
       "react-i18next",
-      "html2canvas",
-      // 3D 스택 — 최초 진입 시 대기 없이 사전 번들링
-      "three",
-      "@react-three/fiber",
-      "@react-three/drei",
     ],
+  },
+
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/three") || id.includes("node_modules/@react-three")) {
+            return "three";
+          }
+          if (id.includes("node_modules/framer-motion")) {
+            return "motion";
+          }
+        },
+      },
+    },
   },
 
   server: {

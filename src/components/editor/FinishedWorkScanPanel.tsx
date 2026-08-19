@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   CheckFillIcon,
   ImageFillIcon,
@@ -24,9 +25,10 @@ export default function FinishedWorkScanPanel({
   colorMap,
   onApply,
 }: FinishedWorkScanPanelProps) {
+  const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
   const [source, setSource] = useState<string | null>(null);
-  const [sourceLabel, setSourceLabel] = useState("사진 없음");
+  const [sourceLabel, setSourceLabel] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<FinishedWorkScanResult | null>(null);
@@ -49,7 +51,7 @@ export default function FinishedWorkScanPanel({
 
   const runScan = async () => {
     if (!source) {
-      setError("먼저 실물 완성작 사진을 선택해 주세요.");
+      setError(t("editor.scanNeedPhoto"));
       return;
     }
     setBusy(true);
@@ -59,7 +61,7 @@ export default function FinishedWorkScanPanel({
       setResult(next);
     } catch (err) {
       setResult(null);
-      setError(err instanceof Error ? err.message : "분석에 실패했습니다.");
+      setError(err instanceof Error ? err.message : t("editor.scanFail"));
     } finally {
       setBusy(false);
     }
@@ -76,15 +78,15 @@ export default function FinishedWorkScanPanel({
       ...result,
       colorMismatches: [],
       stitchMismatches: [],
-      messages: ["실물 사진의 배색과 기호 흐름에 맞춰 도안을 보정했습니다."],
+      messages: [t("editor.scanOk")],
     });
   };
 
   return (
     <div className={`${editorPanel} p-4`}>
-      <p className="mb-1 font-sans text-sm font-bold text-white">실물 사진 교차 검증</p>
+      <p className="mb-1 font-sans text-sm font-bold text-white">{t("editor.scanTitle")}</p>
       <p className="mb-3 font-seoyun text-[11px] font-normal leading-snug text-stone-400">
-        완성작 사진의 코·단 배치, 배색, 겉뜨기/안뜨기 흐름을 지금 격자 도안과 맞춰 봅니다.
+        {t("editor.scanHint")}
       </p>
 
       <input
@@ -120,7 +122,7 @@ export default function FinishedWorkScanPanel({
           className={`${editorChromeBtn} flex flex-1 items-center justify-center gap-1.5 px-3 py-2 font-sans text-[11px]`}
         >
           <ImageFillIcon className="h-3.5 w-3.5" />
-          사진 올리기
+          {t("common.photoUpload")}
         </button>
         <button
           type="button"
@@ -129,11 +131,13 @@ export default function FinishedWorkScanPanel({
           className={`${editorChromeBtnActive} flex flex-1 items-center justify-center gap-1.5 px-3 py-2 font-sans text-[11px] disabled:opacity-60`}
         >
           {busy ? <SpinnerFillIcon className="h-3.5 w-3.5 animate-spin" /> : null}
-          {busy ? "분석 중" : "교차 분석"}
+          {busy ? t("editor.scanBusy") : t("editor.scanRun")}
         </button>
       </div>
 
-      <p className="mt-2 truncate font-sans text-[10px] text-stone-400">{sourceLabel}</p>
+      <p className="mt-2 truncate font-sans text-[10px] text-stone-400">
+        {sourceLabel || t("editor.scanNoPhoto")}
+      </p>
 
       {error ? (
         <p className="mt-3 font-seoyun text-[11px] leading-snug text-stone-300">{error}</p>
@@ -156,7 +160,7 @@ export default function FinishedWorkScanPanel({
               className={`${editorChromeBtnActive} mt-1 flex w-full items-center justify-center gap-1.5 px-3 py-2 font-sans text-[11px]`}
             >
               <CheckFillIcon className="h-3.5 w-3.5" />
-              사진에 맞춰 자동 보정
+              {t("editor.scanAutoFix")}
             </button>
           ) : null}
         </div>

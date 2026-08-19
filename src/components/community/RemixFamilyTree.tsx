@@ -1,5 +1,7 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import type { RemixLineageNode } from "../../data/patternRemixLineage.ts";
+import { loc } from "../../utils/i18nContent.ts";
 
 function CurvedArrow() {
   return (
@@ -27,7 +29,9 @@ function CurvedArrow() {
 }
 
 function RemixNodeCard({ node }: { node: RemixLineageNode }) {
+  const { t } = useTranslation();
   const initial = node.author.slice(0, 1);
+  const title = loc(t, `content.patterns.${node.patternId}.title`, node.title);
 
   return (
     <div
@@ -49,7 +53,7 @@ function RemixNodeCard({ node }: { node: RemixLineageNode }) {
               node.isCurrent ? "text-white" : "text-gray-900"
             }`}
           >
-            {node.title}
+            {title}
           </p>
           <p
             className={`truncate font-sans text-xs font-normal ${
@@ -76,13 +80,14 @@ type RemixFamilyTreeProps = {
 };
 
 function RemixFamilyTree({ nodes }: RemixFamilyTreeProps) {
+  const { t } = useTranslation();
   if (nodes.length === 0) return null;
 
   return (
     <section className="mt-14 rounded-2xl bg-gray-50 p-6 md:p-8">
-      <h2 className="font-sans text-xl font-bold text-gray-900">이 도안의 리믹스 계보</h2>
+      <h2 className="font-sans text-xl font-bold text-gray-900">{t("community.remixTitle")}</h2>
       <p className="mt-2 font-seoyun text-sm font-normal text-gray-600">
-        원본부터 현재 작품까지, 포크(Fork)와 변형이 이어진 흐름이에요.
+        {t("community.remixHint")}
       </p>
 
       <div className="mt-6 -mx-2 overflow-x-auto px-2 pb-2">

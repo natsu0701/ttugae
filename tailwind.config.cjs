@@ -13,8 +13,6 @@ module.exports = {
       },
       fontFamily: {
         sans: ['"Noto Sans KR"', "system-ui", "sans-serif"],
-        rounded: ["Jua", "sans-serif"],
-        han: ['"Black Han Sans"', "sans-serif"],
         gamhong: ["Mungyeong-Gamhong-Apple", "sans-serif"],
         seoyun: ["LeeSeoyun", "sans-serif"],
       },

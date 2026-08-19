@@ -1,4 +1,5 @@
 import { memo, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 
 type GiftPackagingAnimationProps = {
@@ -38,6 +39,7 @@ function GiftPackagingAnimation({
   patternTitle,
   onGoVault,
 }: GiftPackagingAnimationProps) {
+  const { t } = useTranslation();
   const [packed, setPacked] = useState(false);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ function GiftPackagingAnimation({
     return () => window.clearTimeout(timer);
   }, [isOpen]);
 
-  const displayTitle = patternTitle.trim() || "새 도안";
+  const displayTitle = patternTitle.trim() || t("gift.untitled");
 
   return (
     <AnimatePresence>
@@ -93,8 +95,8 @@ function GiftPackagingAnimation({
 
               <motion.div
                 className="absolute left-1/2 top-1/2 h-11 w-44 rounded-t-xl bg-[#E45A50]"
-                initial={{ x: "-50%", y: "-118%", opacity: 0, rotateX: 40 }}
-                animate={{ x: "-50%", y: "-92%", opacity: 1, rotateX: 0 }}
+                initial={{ x: "-50%", y: "-340%", opacity: 0, rotateX: 40 }}
+                animate={{ x: "-50%", y: "-200%", opacity: 1, rotateX: 0 }}
                 transition={{ delay: 0.35, duration: 0.55, ease: BOX_EASE }}
               >
                 <span className="absolute left-1/2 top-0 h-full w-5 -translate-x-1/2 bg-[#F7F5F0]/90" />
@@ -102,8 +104,8 @@ function GiftPackagingAnimation({
 
               <motion.div
                 className="absolute left-1/2 top-1/2"
-                initial={{ x: "-50%", y: "-128%", scale: 0, opacity: 0 }}
-                animate={{ x: "-50%", y: "-118%", scale: 1, opacity: 1 }}
+                initial={{ x: "-50%", y: "-360%", scale: 0, opacity: 0 }}
+                animate={{ x: "-50%", y: "-250%", scale: 1, opacity: 1 }}
                 transition={{ delay: 0.85, type: "spring", stiffness: 320, damping: 18 }}
               >
                 <RibbonBow />
@@ -119,7 +121,7 @@ function GiftPackagingAnimation({
                 Pattern packed
               </p>
               <h2 className="mt-2 font-sans text-xl font-bold text-stone-950">
-                도안 포장이 완료되었어요
+                {t("gift.done")}
               </h2>
               <p className="mt-2 line-clamp-2 font-sans text-sm font-normal text-stone-500">
                 {displayTitle}
@@ -131,14 +133,14 @@ function GiftPackagingAnimation({
                   onClick={onGoVault}
                   className="h-11 rounded-xl bg-stone-950 px-5 font-sans text-sm font-semibold text-white transition-colors hover:bg-coral"
                 >
-                  보관함으로 가기
+                  {t("gift.toVault")}
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
                   className="h-11 rounded-xl border border-stone-200 bg-white px-5 font-sans text-sm font-medium text-stone-600 transition-colors hover:bg-stone-50"
                 >
-                  에디터로 돌아가기
+                  {t("gift.backEditor")}
                 </button>
               </div>
             </motion.div>

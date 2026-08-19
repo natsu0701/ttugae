@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 import { loadYarnInventory } from "../../utils/personalizationStorage.ts";
 import SmoothInput from "../ui/SmoothInput.tsx";
@@ -16,6 +17,7 @@ type TteuniChatbotProps = {
 };
 
 export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
@@ -33,7 +35,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
     ]);
     setInput("");
     let reply = onUserMessage(text);
-    const askedInventory = /보관함|재고|내 실|바늘|모카|그램/.test(text);
+    const askedInventory = /보관함|재고|내 실|바늘|모카|그램|stash|inventory|yarn|needle|gram|保管|在庫/.test(text);
     if (askedInventory) {
       const stock = loadYarnInventory();
       if (stock.length > 0) {
@@ -45,9 +47,9 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
             return bits.join(" ");
           })
           .join(", ");
-        reply = `${reply}\n\n보관함에 등록된 실은 ${list}입니다. 이 재고를 기준으로 가늠해 봤어요.`;
+        reply = `${reply}\n\n${t("editor.tteuniInventory", { list })}`;
       } else {
-        reply = `${reply}\n\n아직 실 장고 보관함이 비어 있어요. 마이페이지 설정에서 잔량을 등록하면 더 정확히 가늠할 수 있어요.`;
+        reply = `${reply}\n\n${t("editor.tteuniInventoryEmpty")}`;
       }
     }
     window.setTimeout(() => {
@@ -67,7 +69,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
 
   return (
     <div className={`${editorPanel} p-4`}>
-      <p className="mb-3 font-sans text-sm font-bold text-white">뜨니 AI</p>
+      <p className="mb-3 font-sans text-sm font-bold text-white">{t("editor.tteuniAi")}</p>
 
       <div
         ref={listRef}
@@ -77,12 +79,12 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
           <div className="flex gap-2.5">
             <img
               src={TTEUNI_IMAGES.chatProfile}
-              alt="뜨니"
+              alt={t("editor.tteuniName")}
               className="h-10 w-10 shrink-0 object-contain"
             />
             <div className="rounded-2xl rounded-tl-sm border border-stone-600/80 bg-stone-700 px-3 py-2.5">
               <p className="font-seoyun text-sm font-normal leading-relaxed text-stone-100">
-                가을용 가디건 도안 생성해줘, 라고 말해보세요!
+                {t("editor.tteuniHint")}
               </p>
             </div>
           </div>
@@ -127,14 +129,14 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="뜨니에게 요청하기..."
+          placeholder={t("editor.tteuniPlaceholder")}
           className="min-w-0 flex-1 rounded-xl border-stone-700/80 px-3 py-2.5 text-sm"
         />
         <button
           type="button"
           onClick={submit}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral text-white transition-colors hover:bg-black"
-          aria-label="전송"
+          aria-label={t("common.send")}
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
             <path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.28 1.28L5.7 12 2.12 19.12a1 1 0 001.28 1.28z" />

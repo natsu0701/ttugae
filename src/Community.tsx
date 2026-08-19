@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import PatternCard, { communityPostPath } from "./components/community/PatternCard.tsx";
@@ -7,7 +7,6 @@ import QaList from "./components/community/QaList.tsx";
 import QaDetail from "./components/community/QaDetail.tsx";
 import FinishedWorkDetail from "./components/community/FinishedWorkDetail.tsx";
 import CommunityFilterBar from "./components/ui/CommunityFilterBar.tsx";
-import KnitOfflineHub from "./components/community/KnitOfflineHub.tsx";
 import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
 import {
   COMMUNITY_PATTERNS,
@@ -24,7 +23,7 @@ import { getQaPost, QA_POSTS } from "./data/qaPosts.ts";
 import { getPatternEditorGrid } from "./data/patternThumbnails.ts";
 import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
 import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
-import { COMMUNITY_TAB_EVENT } from "./CreatePostPage.tsx";
+import { COMMUNITY_TAB_EVENT } from "./utils/communityTabEvent.ts";
 import { deleteSharedCommunityPattern } from "./utils/communityShare.ts";
 import { deleteMyFinishedWork } from "./utils/myFinishedWorksStore.ts";
 import {
@@ -36,6 +35,8 @@ import {
   DEFAULT_LOUNGE_FILTERS,
   type LoungeFilters,
 } from "./data/loungeFilters.ts";
+
+const KnitOfflineHub = lazy(() => import("./components/community/KnitOfflineHub.tsx"));
 
 type CommunityProps = {
   onImportToEditor: (pattern: CommunityPattern) => void;
@@ -202,7 +203,7 @@ export default function Community({
         onDelete={
           isMine
             ? () => {
-                if (!window.confirm("이 게시물을 삭제할까요?")) return;
+                if (!window.confirm(t("community.deleteConfirm"))) return;
                 deleteSharedCommunityPattern(selectedWork.id);
                 deleteMyFinishedWork(`fw-${selectedWork.id}`);
                 closeWork();
@@ -245,7 +246,9 @@ export default function Community({
         {activeTab === "qa" ? (
           <QaList posts={QA_POSTS} onSelect={openQa} />
         ) : activeTab === "offline" ? (
-          <KnitOfflineHub onGoEditor={onGoEditor} />
+          <Suspense fallback={<div className="min-h-[480px] rounded-2xl bg-gray-50" aria-busy="true" />}>
+            <KnitOfflineHub onGoEditor={onGoEditor} />
+          </Suspense>
         ) : (
           <>
             <div className="mb-6">
@@ -258,17 +261,17 @@ export default function Community({
             {filtered.length === 0 ? (
               <div className="rounded-2xl bg-gray-50 p-12 text-center">
                 <p className="font-sans text-xl font-bold text-gray-900">
-                  일치하는 뜨개 조건의 완성 도안이 아직 없습니다.
+                  {t("community.noMatchTitle")}
                 </p>
                 <p className="mt-2 font-seoyun text-sm font-normal text-gray-500">
-                  상단의 상세 필터를 끄거나 조건을 초기화해 더 넓은 작품을 살펴보세요.
+                  {t("community.noMatchDesc")}
                 </p>
               </div>
             ) : (
               <>
                 {activeTab === "all" && loadTasteProfile().styles.length > 0 ? (
                   <p className="mb-4 font-sans text-sm font-medium text-stone-600">
-                    설정한 취향에 맞춘 추천 도안을 먼저 보여드려요.
+                    {t("community.tasteHint")}
                   </p>
                 ) : null}
                 <div

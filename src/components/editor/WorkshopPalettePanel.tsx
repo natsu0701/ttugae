@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
 
 /** 전문 공방 매칭 내추럴 컬러 팔레트 (베이스 / 기호·포인트1 / 포인트2) */
@@ -40,10 +41,17 @@ export default function WorkshopPalettePanel({
   activePaletteId,
   onSelectPalette,
 }: WorkshopPalettePanelProps) {
+  const { t } = useTranslation();
+  const paletteTitle = (id: string, fallback: string) => {
+    if (id === "cherry-blossom") return t("editor.paletteCherry");
+    if (id === "nordic-jacquard") return t("editor.paletteNordic");
+    if (id === "classic-forest") return t("editor.paletteForest");
+    return fallback;
+  };
   return (
     <div className="mt-6 rounded-2xl border border-stone-600/80 bg-stone-700 p-4">
       <p className="mb-3 font-sans text-xs font-normal tracking-wide text-stone-300">
-        공방 추천 팔레트
+        {t("editor.workshopTitle")}
       </p>
 
       <div className="flex flex-col gap-1.5">
@@ -62,7 +70,7 @@ export default function WorkshopPalettePanel({
             >
               <span className="min-w-0">
                 <span className="block truncate font-sans text-[11px] font-normal text-inherit">
-                  {palette.name}
+                  {paletteTitle(palette.id, palette.name)}
                 </span>
                 <span
                   className={`block truncate font-sans text-[9px] font-normal uppercase tracking-wide ${

@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { EditorYarn } from "../../types/editorYarn.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
-import Knitting3DPreview, {
-  inferKnitItemType,
-  type KnitItemType,
-} from "./Knitting3DPreview.tsx";
+import { inferKnitItemType, type KnitItemType } from "../../utils/knitItemType.ts";
 import { editorChromeTone, editorPanel } from "../ui/tabButtonStyles.ts";
+import { SpinnerFillIcon } from "../icons/FillIcons.tsx";
+
+const Knitting3DPreview = lazy(() => import("./Knitting3DPreview.tsx"));
 
 type AiPreviewNavigatorProps = {
   title?: string;
@@ -21,12 +21,12 @@ type AiPreviewNavigatorProps = {
   yarnMeta?: EditorYarn[];
 };
 
-const ITEM_OPTIONS: { id: KnitItemType; label: string }[] = [
-  { id: "sweater", label: "스웨터" },
-  { id: "vest", label: "조끼" },
-  { id: "beanie", label: "모자" },
-  { id: "glove", label: "장갑" },
-  { id: "socks", label: "양말" },
+const ITEM_OPTIONS: { id: KnitItemType; labelKey: string }[] = [
+  { id: "sweater", labelKey: "editor.itemSweater" },
+  { id: "vest", labelKey: "editor.itemVest" },
+  { id: "beanie", labelKey: "editor.itemHat" },
+  { id: "glove", labelKey: "editor.itemGloves" },
+  { id: "socks", labelKey: "editor.itemSocks" },
 ];
 
 export default function AiPreviewNavigator({
@@ -80,24 +80,32 @@ export default function AiPreviewNavigator({
                 active ? "border border-coral bg-coral text-white" : editorChromeTone
               }`}
             >
-              {item.label}
+              {t(item.labelKey)}
             </button>
           );
         })}
       </div>
 
       <div className="relative w-full overflow-hidden rounded-lg">
-        <Knitting3DPreview
-          grid={frontGrid ?? grid}
-          gridData={frontGrid ?? grid}
-          backGrid={backGrid}
-          facesIndependent={facesIndependent}
-          charts={charts}
-          colorMap={colorMap}
-          stitchSymbols={stitchSymbols}
-          itemType={itemType}
-          yarnMeta={yarnMeta}
-        />
+        <Suspense
+          fallback={
+            <div className="flex h-[300px] min-h-[220px] items-center justify-center bg-stone-700">
+              <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
+            </div>
+          }
+        >
+          <Knitting3DPreview
+            grid={frontGrid ?? grid}
+            gridData={frontGrid ?? grid}
+            backGrid={backGrid}
+            facesIndependent={facesIndependent}
+            charts={charts}
+            colorMap={colorMap}
+            stitchSymbols={stitchSymbols}
+            itemType={itemType}
+            yarnMeta={yarnMeta}
+          />
+        </Suspense>
       </div>
       {facesIndependent ? (
         <p className="mt-2 font-seoyun text-[11px] font-normal leading-snug text-stone-300">

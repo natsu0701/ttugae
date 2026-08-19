@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
-import type { StoredPattern } from "../../Dashboard.tsx";
+import type { StoredPattern } from "../../types/storedPattern.ts";
 
 const COLOR_MAP: Record<string, string> = {
   coral: "#FC5F53",
@@ -56,7 +56,7 @@ export default function MyPatternsPanel({
   const { t } = useTranslation();
 
   const handleDelete = (id: string, title: string) => {
-    if (window.confirm(`"${title}" 도안을 삭제할까요?`)) {
+    if (window.confirm(t("common.deletePatternConfirm", { title }))) {
       onDelete(id);
     }
   };
@@ -121,7 +121,7 @@ export default function MyPatternsPanel({
                     className="flex-1 py-2 text-sm"
                     onClick={() => onOpen(pattern.id)}
                   >
-                    수정
+                    {t("common.edit")}
                   </Button>
                   <Button
                     type="button"
@@ -129,7 +129,7 @@ export default function MyPatternsPanel({
                     className="flex-1 py-2 text-sm text-gray-600"
                     onClick={() => handleDelete(pattern.id, pattern.title)}
                   >
-                    삭제
+                    {t("common.delete")}
                   </Button>
                 </div>
               </article>

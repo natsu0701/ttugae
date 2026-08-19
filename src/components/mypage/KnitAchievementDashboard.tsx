@@ -1,22 +1,24 @@
 import { memo, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 import { ACHIEVEMENT_BADGES } from "../../data/achievementBadges.ts";
 import {
   buildBadgeUnlocks,
   type KnitAchievementStats,
 } from "./achievementStats.ts";
+import { badgeDesc, badgeName } from "../../utils/i18nContent.ts";
 
 type FilterTab = "mine" | "all" | "beginner" | "intermediate" | "advanced";
 
 export type KnitAchievementDashboardProps = KnitAchievementStats;
 
 const NEXT_LEVEL_STITCHES = 20000;
-const FILTER_TABS: { id: FilterTab; label: string }[] = [
-  { id: "mine", label: "내 배지" },
-  { id: "all", label: "전체 배지" },
-  { id: "beginner", label: "초급 업적" },
-  { id: "intermediate", label: "중급 업적" },
-  { id: "advanced", label: "고급 업적" },
+const FILTER_TABS: { id: FilterTab; labelKey: string }[] = [
+  { id: "mine", labelKey: "mypage.badgesMine" },
+  { id: "all", labelKey: "mypage.badgesAll" },
+  { id: "beginner", labelKey: "mypage.badgesBeginner" },
+  { id: "intermediate", labelKey: "mypage.badgesMid" },
+  { id: "advanced", labelKey: "mypage.badgesAdv" },
 ];
 
 const LIST_EASE = { type: "spring" as const, stiffness: 320, damping: 28 };
@@ -38,6 +40,7 @@ function KnitAchievementDashboard({
   offlineCheckins = 0,
   currentProgressRow = 0,
 }: KnitAchievementDashboardProps) {
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<FilterTab>("mine");
   const growthPercentage = Math.min(100, Math.round((totalStitches / NEXT_LEVEL_STITCHES) * 100));
   const remaining = Math.max(0, NEXT_LEVEL_STITCHES - totalStitches);
@@ -75,6 +78,7 @@ function KnitAchievementDashboard({
       hasOfflineCheckin,
       offlineCheckins,
       currentProgressRow,
+      i18n.language,
     ],
   );
 
@@ -93,10 +97,10 @@ function KnitAchievementDashboard({
             Knitting Accomplishments
           </span>
           <h3 className="mt-2 font-sans text-xl font-black tracking-tight text-stone-900">
-            개인형 뜨개 업적 대시보드
+            {t("mypage.achTitle")}
           </h3>
           <p className="mt-1 break-keep font-sans text-xs font-light text-stone-500">
-            지금까지 수놓은 실과 기호 데이터를 바탕으로 성장 상태를 시각화합니다.
+            {t("mypage.achSubtitle")}
           </p>
         </div>
         <div className="flex flex-col justify-center rounded-2xl border border-stone-800 bg-stone-900 px-5 py-3.5 text-left text-stone-100 shadow-sm">
@@ -104,7 +108,7 @@ function KnitAchievementDashboard({
             Current Tier
           </span>
           <span className="mt-0.5 font-sans text-sm font-bold text-stone-100">
-            Level 3. 포근한 솜털 뜨개러
+            {t("mypage.achLevel")}
           </span>
         </div>
       </div>
@@ -112,55 +116,55 @@ function KnitAchievementDashboard({
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm transition-shadow duration-300 hover:shadow-md">
           <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-stone-400">
-            총 완성 콧수
+            {t("mypage.achStitches")}
           </span>
           <div className="mt-2 flex items-baseline gap-1">
             <span className="font-sans text-2xl font-black tracking-tight text-stone-900">
               {totalStitches.toLocaleString()}
             </span>
-            <span className="font-sans text-xs font-medium text-stone-500">코</span>
+            <span className="font-sans text-xs font-medium text-stone-500">{t("mypage.achStitchesUnit")}</span>
           </div>
         </div>
         <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm transition-shadow duration-300 hover:shadow-md">
           <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-stone-400">
-            작품 완성 개수
+            {t("mypage.achProjects")}
           </span>
           <div className="mt-2 flex items-baseline gap-1">
             <span className="font-sans text-2xl font-black tracking-tight text-stone-900">
               {completedProjects}
             </span>
-            <span className="font-sans text-xs font-medium text-stone-500">개 작품</span>
+            <span className="font-sans text-xs font-medium text-stone-500">{t("mypage.achProjectsUnit")}</span>
           </div>
         </div>
         <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm transition-shadow duration-300 hover:shadow-md">
           <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-stone-400">
-            연속 뜨개 기록 일수
+            {t("mypage.achStreak")}
           </span>
           <div className="mt-2 flex items-baseline gap-1">
             <span className="font-sans text-2xl font-black tracking-tight text-stone-900">
               {activeStreak}
             </span>
-            <span className="font-sans text-xs font-medium text-stone-500">일 연속</span>
+            <span className="font-sans text-xs font-medium text-stone-500">{t("mypage.achStreakUnit")}</span>
           </div>
         </div>
       </div>
 
       <div className="mb-8 rounded-2xl bg-[#FBF9F6] p-5">
         <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-stone-400">
-          오프라인 참여 증적
+          {t("mypage.achOffline")}
         </p>
         <p className="mt-2 font-sans text-sm font-bold text-stone-900">
-          QR 입장 {offlineCheckins}회 · 진행 단 {currentProgressRow}단 보존
+          {t("mypage.achOfflineMeta", { checkins: offlineCheckins, row: currentProgressRow })}
         </p>
         <p className="mt-1 font-seoyun text-xs text-stone-500">
-          행사 신청 시 참여자 인덱스가 기록되고, 에디터 진행 단은 체크인 후에도 유지됩니다.
+          {t("mypage.achOfflineHint")}
         </p>
       </div>
 
       <div className="mb-8 rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
         <div className="mb-3 flex items-center justify-between">
           <span className="font-sans text-xs font-bold text-stone-700">
-            다음 등급 (구름매듭 뜨개 장인) 달성 진척율
+            {t("mypage.achNextLevel")}
           </span>
           <span className="font-sans text-sm font-black tracking-tight text-coral">
             {growthPercentage}%
@@ -175,14 +179,14 @@ function KnitAchievementDashboard({
           />
         </div>
         <div className="mt-3 flex items-center justify-between font-sans text-[11px] font-medium text-stone-400">
-          <span>현재 {totalStitches.toLocaleString()}코 축적</span>
-          <span>다음 등급 승급까지 {remaining.toLocaleString()}코 남음</span>
+          <span>{t("mypage.achCurrentSts", { n: totalStitches.toLocaleString() })}</span>
+          <span>{t("mypage.achRemainingSts", { n: remaining.toLocaleString() })}</span>
         </div>
       </div>
 
       <div className="mb-6">
         <h4 className="mb-4 font-sans text-xs font-black uppercase tracking-wider text-stone-400">
-          뜨개 배지 현황
+          {t("mypage.achBadgeStatus")}
         </h4>
         <div className="flex flex-wrap gap-2 border-b border-stone-200/30 pb-4">
           {FILTER_TABS.map((tab) => {
@@ -200,7 +204,7 @@ function KnitAchievementDashboard({
                     : "bg-transparent text-stone-500 hover:bg-stone-100/60"
                 }`}
               >
-                {tab.label}
+                {t(tab.labelKey)}
               </button>
             );
           })}
@@ -211,12 +215,20 @@ function KnitAchievementDashboard({
         <AnimatePresence mode="popLayout">
           {filteredBadges.length === 0 ? (
             <p className="col-span-full py-8 text-center font-sans text-sm font-light text-stone-400">
-              아직 획득한 배지가 없습니다.
+              {t("mypage.achEmpty")}
             </p>
           ) : null}
           {filteredBadges.map((badge) => {
             const unlock = unlocks[badge.id];
             const isUnlocked = Boolean(unlock?.unlocked);
+            const name = badgeName(t, badge.id, badge.name);
+            const desc = badgeDesc(t, badge.id, badge.description);
+            const levelLabel =
+              badge.level === "beginner"
+                ? t("community.skillBeginner")
+                : badge.level === "intermediate"
+                  ? t("community.skillIntermediate")
+                  : t("community.skillAdvanced");
             return (
               <motion.div
                 key={badge.id}
@@ -241,7 +253,7 @@ function KnitAchievementDashboard({
                   {isUnlocked ? (
                     <img
                       src={badge.imageSrc}
-                      alt={badge.name}
+                      alt={name}
                       className="h-full w-full object-contain"
                     />
                   ) : (
@@ -259,14 +271,14 @@ function KnitAchievementDashboard({
                         isUnlocked ? "text-stone-900" : "text-stone-500"
                       }`}
                     >
-                      {badge.name}
+                      {name}
                     </h5>
                     <p className="mt-1 break-keep font-sans text-xs font-light leading-relaxed text-stone-400/90">
-                      {badge.description}
+                      {desc}
                     </p>
                     {!isUnlocked && unlock?.progressText ? (
                       <span className="mt-2 block font-sans text-[10px] font-bold text-stone-400">
-                        진행 요건: {unlock.progressText}
+                        {t("common.progressReq", { text: unlock.progressText })}
                       </span>
                     ) : null}
                   </div>
@@ -279,7 +291,7 @@ function KnitAchievementDashboard({
                           : "bg-purple-50 text-purple-500"
                     }`}
                   >
-                    {badge.levelLabel}
+                    {levelLabel}
                   </span>
                 </div>
               </motion.div>

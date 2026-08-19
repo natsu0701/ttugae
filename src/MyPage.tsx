@@ -16,7 +16,7 @@ import {
 } from "./components/mypage/achievementStats.ts";
 import { useCommunityActions } from "./context/CommunityActionsContext.tsx";
 import { getCommunityPattern } from "./data/communityPatterns.ts";
-import type { StoredPattern } from "./Dashboard.tsx";
+import type { StoredPattern } from "./types/storedPattern.ts";
 import type { CommunityPattern } from "./data/communityPatterns.ts";
 import {
   DEFAULT_HANDLE,
@@ -64,16 +64,16 @@ export type MyPageTab =
   | "stats"
   | "settings";
 
-const NAV_TABS: { id: MyPageTab; Icon: typeof ProfileFillIcon; label: string }[] = [
-  { id: "profile", Icon: ProfileFillIcon, label: "내 정보" },
-  { id: "summary", Icon: DashboardFillIcon, label: "활동 요약" },
-  { id: "meetups", Icon: PinFillIcon, label: "내가 예약한 뜨개 모임" },
-  { id: "patterns", Icon: PatternsFillIcon, label: "내 도안" },
-  { id: "finished", Icon: ImageFillIcon, label: "완성작" },
-  { id: "liked", Icon: HeartFillIcon, label: "좋아요" },
-  { id: "saved", Icon: BookmarkFillIcon, label: "저장" },
-  { id: "stats", Icon: StatsFillIcon, label: "상세 통계" },
-  { id: "settings", Icon: SettingsFillIcon, label: "환경 설정" },
+const NAV_TABS: { id: MyPageTab; Icon: typeof ProfileFillIcon; labelKey: string }[] = [
+  { id: "profile", Icon: ProfileFillIcon, labelKey: "mypage.tabs.profile" },
+  { id: "summary", Icon: DashboardFillIcon, labelKey: "mypage.tabs.summary" },
+  { id: "meetups", Icon: PinFillIcon, labelKey: "mypage.tabs.meetups" },
+  { id: "patterns", Icon: PatternsFillIcon, labelKey: "mypage.tabs.patterns" },
+  { id: "finished", Icon: ImageFillIcon, labelKey: "mypage.tabs.finished" },
+  { id: "liked", Icon: HeartFillIcon, labelKey: "mypage.tabs.liked" },
+  { id: "saved", Icon: BookmarkFillIcon, labelKey: "mypage.tabs.saved" },
+  { id: "stats", Icon: StatsFillIcon, labelKey: "mypage.tabs.statsDetail" },
+  { id: "settings", Icon: SettingsFillIcon, labelKey: "mypage.tabs.settings" },
 ];
 
 type MyPageProps = {
@@ -145,6 +145,7 @@ function ProfileInfoPanel({
 }: {
   patterns: StoredPattern[];
 }) {
+  const { t } = useTranslation();
   const stored = loadProfile();
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(() => stored.avatarUrl);
   const [gauge, setGauge] = useState(loadCompactGauge);
@@ -169,9 +170,9 @@ function ProfileInfoPanel({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-sans text-2xl font-bold text-gray-900">내 정보</h2>
+        <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.profile.title")}</h2>
         <p className="mt-1 font-seoyun text-sm font-normal text-stone-500">
-          프로필과 손땀 게이지를 관리해요.
+          {t("mypage.profile.profileHint")}
         </p>
       </div>
 
@@ -186,7 +187,7 @@ function ProfileInfoPanel({
         <ProfileBadgeCustomizer
           nickname={nickname}
           handle={handle}
-          subtitle="포근한 솜털 뜨개러 (Level 3)"
+          subtitle={t("mypage.profile.levelTitle")}
           avatarUrl={avatarUrl}
           unlocks={badgeUnlocks}
           onPickAvatar={() => avatarInputRef.current?.click()}
@@ -198,19 +199,19 @@ function ProfileInfoPanel({
 
         <div className="mt-8 space-y-3 border-t border-stone-100 pt-6">
           <div>
-            <h3 className="font-sans text-sm font-bold text-gray-900">활동 지역</h3>
+            <h3 className="font-sans text-sm font-bold text-gray-900">{t("mypage.profile.regionTitle")}</h3>
             <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
-              구/동 단위로 저장하면 라운지 지도와 소모임 피드가 거주지 근처부터 정렬됩니다.
+              {t("mypage.profile.regionHint")}
             </p>
           </div>
           <SmoothInput
-            label="구 / 동"
+            label={t("mypage.profile.regionLabel")}
             value={activityRegion}
             onChange={(e) => {
               setActivityRegion(e.target.value);
               saveActivityRegion(e.target.value);
             }}
-            placeholder="서울시 마포구 망원동"
+            placeholder={t("mypage.profile.regionPlaceholder")}
           />
           <div className="flex flex-wrap gap-2">
             {ACTIVITY_AREAS.map((item) => (
@@ -231,14 +232,14 @@ function ProfileInfoPanel({
 
         <div className="mt-8 space-y-4 border-t border-stone-100 pt-6">
           <div>
-            <h3 className="font-sans text-sm font-bold text-gray-900">내 게이지</h3>
+            <h3 className="font-sans text-sm font-bold text-gray-900">{t("mypage.profile.gaugeTitle")}</h3>
             <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
-              10x10cm 편물의 세탁 전후 코·단 수를 저장하면 에디터 시작 코 수에 연동됩니다.
+              {t("mypage.profile.gaugeHint")}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3.5">
             <SmoothInput
-              label="세탁 전 코"
+              label={t("mypage.profile.gaugeBeforeSts")}
               value={gauge.beforeSts}
               onChange={(e) => {
                 const next = { ...gauge, beforeSts: e.target.value };
@@ -249,7 +250,7 @@ function ProfileInfoPanel({
               className="h-9 rounded-lg px-3 py-1.5 text-xs"
             />
             <SmoothInput
-              label="세탁 전 단"
+              label={t("mypage.profile.gaugeBeforeRows")}
               value={gauge.beforeRows}
               onChange={(e) => {
                 const next = { ...gauge, beforeRows: e.target.value };
@@ -260,7 +261,7 @@ function ProfileInfoPanel({
               className="h-9 rounded-lg px-3 py-1.5 text-xs"
             />
             <SmoothInput
-              label="세탁 후 코"
+              label={t("mypage.profile.gaugeAfterSts")}
               value={gauge.afterSts}
               onChange={(e) => {
                 const next = { ...gauge, afterSts: e.target.value };
@@ -271,7 +272,7 @@ function ProfileInfoPanel({
               className="h-9 rounded-lg px-3 py-1.5 text-xs"
             />
             <SmoothInput
-              label="세탁 후 단"
+              label={t("mypage.profile.gaugeAfterRows")}
               value={gauge.afterRows}
               onChange={(e) => {
                 const next = { ...gauge, afterRows: e.target.value };
@@ -386,7 +387,7 @@ export default function MyPage({
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-8 md:flex-row md:px-8">
         <div className="flex shrink-0 flex-col md:w-56">
           <nav className="flex flex-row flex-wrap gap-2 md:flex-col">
-            {NAV_TABS.map(({ id, Icon, label }) => {
+            {NAV_TABS.map(({ id, Icon, labelKey }) => {
               const active = activeTab === id;
               return (
                 <button
@@ -396,7 +397,7 @@ export default function MyPage({
                   className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-sm font-normal md:w-full ${tabButtonBase} ${tabButtonClass(active)}`}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
-                  {label}
+                  {t(labelKey)}
                 </button>
               );
             })}

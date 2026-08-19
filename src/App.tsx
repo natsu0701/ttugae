@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import LandingPage from "./LandingPage.tsx";
 import LoginModal from "./components/LoginModal.tsx";
-import PatternEditor from "./PatternEditor.tsx";
-import MyPage from "./MyPage.tsx";
-import CreatePostPage from "./CreatePostPage.tsx";
-import { type StoredPattern } from "./Dashboard.tsx";
-import Community, { communityPatternToGrid } from "./Community.tsx";
+import { type StoredPattern } from "./types/storedPattern.ts";
+import { getPatternEditorGrid } from "./data/patternThumbnails.ts";
 import type { CommunityPattern } from "./data/communityPatterns.ts";
 import { CommunityActionsProvider } from "./context/CommunityActionsContext.tsx";
 import AppShell, { type AppNavPage } from "./components/layout/AppShell.tsx";
@@ -32,6 +30,26 @@ import {
   setNavReturn,
 } from "./utils/navReturn.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
+
+const PatternEditor = lazy(() => import("./PatternEditor.tsx"));
+const MyPage = lazy(() => import("./MyPage.tsx"));
+const CreatePostPage = lazy(() => import("./CreatePostPage.tsx"));
+const Community = lazy(() => import("./Community.tsx"));
+
+function RouteFallback({ dark = false }: { dark?: boolean }) {
+  return (
+    <div
+      className={`flex min-h-screen items-center justify-center ${
+        dark ? "bg-stone-800" : "bg-[#FFFBF7]"
+      }`}
+      aria-busy="true"
+    >
+      <div className="h-1.5 w-24 overflow-hidden rounded-full bg-coral/20">
+        <div className="h-full w-1/2 animate-pulse rounded-full bg-coral" />
+      </div>
+    </div>
+  );
+}
 
 type AppView = "landing" | "mypage" | "community" | "editor" | "create-post";
 
@@ -62,6 +80,7 @@ function commitPath(path: string, replace: boolean) {
 }
 
 function AppRoutes() {
+  const { t } = useTranslation();
   const [view, setView] = useState<AppView>(() =>
     viewFromPath(window.location.pathname),
   );
@@ -141,7 +160,7 @@ function AppRoutes() {
 
   const requestMypage = useCallback(() => {
     if (!isLoggedIn) {
-      showToast("로그인이 필요한 서비스입니다.");
+      showToast(t("toast.loginRequired"));
       setShowLogin(true);
       if (view === "mypage") {
         setView("landing");
@@ -150,7 +169,7 @@ function AppRoutes() {
       return;
     }
     navigate("mypage");
-  }, [isLoggedIn, navigate, showToast, view]);
+  }, [isLoggedIn, navigate, showToast, view, t]);
 
   const handleLogin = (e?: FormEvent) => {
     e?.preventDefault();
@@ -170,12 +189,12 @@ function AppRoutes() {
     clearProfile();
     setIsLoggedIn(false);
     navigate("landing");
-    showToast("계정이 탈퇴되었습니다.");
+    showToast(t("toast.accountDeleted"));
   };
 
   const importCommunityPattern = (pattern: CommunityPattern) => {
     forkPatternToWorkspace(pattern);
-    const grid = communityPatternToGrid(pattern);
+    const grid = getPatternEditorGrid(pattern);
     setIncomingShare({
       id: `import-${pattern.id}-${Date.now()}`,
       title: pattern.title,
@@ -228,7 +247,7 @@ function AppRoutes() {
     const onPopState = () => {
       const next = viewFromPath(window.location.pathname);
       if (next === "mypage" && !isLoggedIn) {
-        showToast("로그인이 필요한 서비스입니다.");
+        showToast(t("toast.loginRequired"));
         setShowLogin(true);
         setView("landing");
         window.history.replaceState({}, "", "/");
@@ -238,16 +257,16 @@ function AppRoutes() {
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, [isLoggedIn, showToast]);
+  }, [isLoggedIn, showToast, t]);
 
   useEffect(() => {
     if (view === "mypage" && !isLoggedIn) {
-      showToast("로그인이 필요한 서비스입니다.");
+      showToast(t("toast.loginRequired"));
       setShowLogin(true);
       setView("landing");
       window.history.replaceState({}, "", "/");
     }
-  }, [view, isLoggedIn, showToast]);
+  }, [view, isLoggedIn, showToast, t]);
 
   useEffect(() => {
     if (
@@ -276,7 +295,7 @@ function AppRoutes() {
         setIncomingShare({
           ...parsed,
           id: `shared-${crypto.randomUUID?.() ?? Date.now()}`,
-          title: parsed.title || "공유된 도안",
+          title: parsed.title || t("toast.sharedPattern"),
           updatedAt: Date.now(),
         });
         setView("editor");
@@ -305,21 +324,23 @@ function AppRoutes() {
     return (
       <>
         {yarnTrail}
-        <CreatePostPage
-          savedPatterns={patterns}
-          onCancel={leaveCreatePost}
-          onPublished={() => {
-            showToast("게시물이 업로드되었습니다!");
-            navigate("community", undefined, true);
-          }}
-          onSavePattern={(pattern) => {
-            const existing = patterns.slice();
-            const idx = existing.findIndex((p) => p.id === pattern.id);
-            if (idx >= 0) existing[idx] = pattern;
-            else existing.unshift(pattern);
-            persistPatterns(existing);
-          }}
-        />
+        <Suspense fallback={<RouteFallback />}>
+          <CreatePostPage
+            savedPatterns={patterns}
+            onCancel={leaveCreatePost}
+            onPublished={() => {
+              showToast(t("toast.postUploaded"));
+              navigate("community", undefined, true);
+            }}
+            onSavePattern={(pattern) => {
+              const existing = patterns.slice();
+              const idx = existing.findIndex((p) => p.id === pattern.id);
+              if (idx >= 0) existing[idx] = pattern;
+              else existing.unshift(pattern);
+              persistPatterns(existing);
+            }}
+          />
+        </Suspense>
         <Toast message={toastMessage ?? ""} visible={Boolean(toastMessage)} />
       </>
     );
@@ -338,26 +359,28 @@ function AppRoutes() {
     return (
       <>
         {yarnTrail}
-        <PatternEditor
-          initialPattern={initial}
-          onExit={leaveEditor}
-          onGoDashboard={() => {
-            setIncomingShare(null);
-            setActivePatternId(null);
-            consumeNavReturn();
-            requestMypage();
-          }}
-          onSave={(pattern) => {
-            const existing = patterns.slice();
-            const idx = existing.findIndex((p) => p.id === pattern.id);
-            if (idx >= 0) existing[idx] = pattern;
-            else existing.unshift(pattern);
-            persistPatterns(existing);
-            setActivePatternId(pattern.id);
-            showToast("도안이 저장되었습니다.");
-          }}
-          onShare={openCreatePostFromEditor}
-        />
+        <Suspense fallback={<RouteFallback dark />}>
+          <PatternEditor
+            initialPattern={initial}
+            onExit={leaveEditor}
+            onGoDashboard={() => {
+              setIncomingShare(null);
+              setActivePatternId(null);
+              consumeNavReturn();
+              requestMypage();
+            }}
+            onSave={(pattern) => {
+              const existing = patterns.slice();
+              const idx = existing.findIndex((p) => p.id === pattern.id);
+              if (idx >= 0) existing[idx] = pattern;
+              else existing.unshift(pattern);
+              persistPatterns(existing);
+              setActivePatternId(pattern.id);
+              showToast(t("toast.patternSaved"));
+            }}
+            onShare={openCreatePostFromEditor}
+          />
+        </Suspense>
         <Toast message={toastMessage ?? ""} visible={Boolean(toastMessage)} />
         {showLogin && (
           <LoginModal onClose={() => setShowLogin(false)} onLogin={handleLogin} />
@@ -379,41 +402,45 @@ function AppRoutes() {
         onLogin={() => setShowLogin(true)}
       >
         {view === "mypage" && isLoggedIn && (
-          <MyPage
-            patterns={patterns}
-            onLogout={handleLogout}
-            onAddAccount={() => setShowLogin(true)}
-            onDeleteAccount={handleDeleteAccount}
-            onCreateNew={() => openEditor({ patternId: null, share: null })}
-            onOpenPattern={(id) => openEditor({ patternId: id, share: null })}
-            onDeletePattern={(id) => {
-              persistPatterns(patterns.filter((p) => p.id !== id));
-              showToast("도안이 삭제되었습니다.");
-            }}
-            onEditCommunityPost={(pattern) => {
-              openCommunityPostForEdit(pattern, patterns);
-              setNavReturn({ view: "mypage", path: "/mypage" });
-              navigate("create-post");
-            }}
-            onImportCommunity={importCommunityPattern}
-          />
+          <Suspense fallback={<RouteFallback />}>
+            <MyPage
+              patterns={patterns}
+              onLogout={handleLogout}
+              onAddAccount={() => setShowLogin(true)}
+              onDeleteAccount={handleDeleteAccount}
+              onCreateNew={() => openEditor({ patternId: null, share: null })}
+              onOpenPattern={(id) => openEditor({ patternId: id, share: null })}
+              onDeletePattern={(id) => {
+                persistPatterns(patterns.filter((p) => p.id !== id));
+                showToast(t("toast.patternDeleted"));
+              }}
+              onEditCommunityPost={(pattern) => {
+                openCommunityPostForEdit(pattern, patterns);
+                setNavReturn({ view: "mypage", path: "/mypage" });
+                navigate("create-post");
+              }}
+              onImportCommunity={importCommunityPattern}
+            />
+          </Suspense>
         )}
         {view === "community" && (
-          <Community
-            onImportToEditor={importCommunityPattern}
-            onGoEditor={() => {
-              const data = readFreshWorkspaceGrid();
-              const share = data ? workspaceGridToStoredPattern(data) : null;
-              openEditor({ patternId: null, share });
-            }}
-            onSharePattern={openCreatePostFromCommunity}
-            onEditPost={(pattern) => {
-              if (pattern.author !== "나") return;
-              openCommunityPostForEdit(pattern, patterns);
-              setNavReturn({ view: "community", path: "/community" });
-              navigate("create-post");
-            }}
-          />
+          <Suspense fallback={<RouteFallback />}>
+            <Community
+              onImportToEditor={importCommunityPattern}
+              onGoEditor={() => {
+                const data = readFreshWorkspaceGrid();
+                const share = data ? workspaceGridToStoredPattern(data) : null;
+                openEditor({ patternId: null, share });
+              }}
+              onSharePattern={openCreatePostFromCommunity}
+              onEditPost={(pattern) => {
+                if (pattern.author !== "나") return;
+                openCommunityPostForEdit(pattern, patterns);
+                setNavReturn({ view: "community", path: "/community" });
+                navigate("create-post");
+              }}
+            />
+          </Suspense>
         )}
         {view === "landing" && (
           <LandingPage onOpenEditor={() => openEditor({ patternId: null, share: null })} />

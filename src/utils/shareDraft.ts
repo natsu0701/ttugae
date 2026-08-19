@@ -1,4 +1,4 @@
-import type { StoredPattern } from "../Dashboard.tsx";
+import type { StoredPattern } from "../types/storedPattern.ts";
 import type { EditorYarn } from "../types/editorYarn.ts";
 
 const DRAFT_KEY = "ttugae.share.draft.v1";

@@ -1,4 +1,6 @@
 import { memo, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Html, OrbitControls, useGLTF } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
@@ -7,41 +9,21 @@ import { RotateFillIcon, SpinnerFillIcon, ZoomInFillIcon, ZoomOutFillIcon } from
 import type { EditorYarn } from "../../types/editorYarn.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
+import { type KnitItemType } from "../../utils/knitItemType.ts";
 
-export type KnitItemType =
-  | "sweater"
-  | "vest"
-  | "beanie"
-  | "glove"
-  | "socks";
-
-const ITEM_TYPE_RULES: { type: KnitItemType; keywords: string[] }[] = [
-  { type: "glove", keywords: ["장갑", "글러브", "glove", "mitten", "미튼"] },
-  { type: "socks", keywords: ["양말", "삭스", "sock"] },
-  { type: "beanie", keywords: ["비니", "털모자", "모자", "beanie", "hat"] },
-  { type: "vest", keywords: ["조끼", "베스트", "vest"] },
-  { type: "sweater", keywords: ["스웨터", "가디건", "sweater", "cardigan", "풀오버"] },
-];
-
-const ITEM_LOADING_NAME: Record<KnitItemType, string> = {
-  sweater: "스웨터를",
-  vest: "조끼를",
-  beanie: "모자를",
-  glove: "장갑을",
-  socks: "양말을",
+const ITEM_ACC_KEYS: Record<KnitItemType, string> = {
+  sweater: "editor.itemAccSweater",
+  vest: "editor.itemAccVest",
+  beanie: "editor.itemAccBeanie",
+  glove: "editor.itemAccGlove",
+  socks: "editor.itemAccSocks",
 };
 
 /** 도안 제목·설명에서 3D 미리보기 종류를 고릅니다. */
-export function inferKnitItemType(...texts: Array<string | undefined>): KnitItemType {
-  const hay = texts.filter(Boolean).join(" ").toLowerCase();
-  for (const rule of ITEM_TYPE_RULES) {
-    if (rule.keywords.some((kw) => hay.includes(kw))) return rule.type;
-  }
-  return "sweater";
-}
+export { inferKnitItemType, type KnitItemType } from "../../utils/knitItemType.ts";
 
-function loadingCopy(itemType: KnitItemType) {
-  return `뜨니가 실시간 3D ${ITEM_LOADING_NAME[itemType]} 준비하고 있어요...`;
+function loadingCopy(t: TFunction, itemType: KnitItemType) {
+  return t("editor.loadingItem", { item: t(ITEM_ACC_KEYS[itemType]) });
 }
 
 export type KnitGauge = {
@@ -249,12 +231,13 @@ const TARGET_GARMENT_SIZE = 5.2;
 const SWEATER_FIT_SCALE: [number, number, number] = [1.15, 1.0, 0.52];
 
 function PreviewLoadingFallback({ itemType }: { itemType: KnitItemType }) {
+  const { t } = useTranslation();
   return (
     <Html center>
       <div className="flex flex-col items-center gap-3">
         <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
         <span className="whitespace-nowrap font-sans text-xs font-light text-stone-400">
-          {loadingCopy(itemType)}
+          {loadingCopy(t, itemType)}
         </span>
       </div>
     </Html>
@@ -514,6 +497,7 @@ function Knitting3DCanvas({
   itemType: KnitItemType;
   active: boolean;
 }) {
+  const { t } = useTranslation();
   const garment = GARMENT_MODELS[itemType];
   const orbitRef = useRef<OrbitControlsImpl>(null);
   const [normalTexture, setNormalTexture] = useState<THREE.CanvasTexture | null>(null);
@@ -592,7 +576,7 @@ function Knitting3DCanvas({
         </Canvas>
       ) : (
         <div className="flex h-full w-full items-center justify-center bg-stone-700 text-[11px] text-stone-300">
-          미리보기 일시 정지
+          {t("editor.pausePreview")}
         </div>
       )}
 
@@ -600,7 +584,7 @@ function Knitting3DCanvas({
         <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 bg-stone-700 text-stone-300">
           <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
           <span className="font-sans text-xs font-light">
-            {loadingCopy(itemType)}
+            {loadingCopy(t, itemType)}
           </span>
         </div>
       ) : null}
@@ -610,7 +594,7 @@ function Knitting3DCanvas({
           <button
             type="button"
             onClick={handleZoomIn}
-            title="확대"
+            title={t("editor.zoomInShort")}
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
             <ZoomInFillIcon className="h-5 w-5" />
@@ -618,7 +602,7 @@ function Knitting3DCanvas({
           <button
             type="button"
             onClick={handleZoomOut}
-            title="축소"
+            title={t("editor.zoomOutShort")}
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
             <ZoomOutFillIcon className="h-5 w-5" />
@@ -626,7 +610,7 @@ function Knitting3DCanvas({
           <button
             type="button"
             onClick={handleReset}
-            title="초기화"
+            title={t("editor.resetView")}
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
             <RotateFillIcon className="h-5 w-5" />
@@ -667,23 +651,37 @@ function Knitting3DPreview({
     return backGrid && backGrid.length > 0 ? backGrid : pattern;
   }, [splitFaces, backGrid, pattern]);
 
+  const pendingRef = useRef({
+    pattern,
+    backPattern,
+    splitFaces,
+    colorMap,
+    stitchSymbols,
+  });
+  pendingRef.current = { pattern, backPattern, splitFaces, colorMap, stitchSymbols };
+
+  const [stable, setStable] = useState(pendingRef.current);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      setStable(pendingRef.current);
+    }, 120);
+    return () => window.clearTimeout(id);
+  }, [pattern, backPattern, splitFaces, colorMap, stitchSymbols]);
+
   const chartKey = useMemo(
     () =>
-      `${splitFaces ? "split" : "same"}|${serializeGrid(pattern)}|${
-        backPattern ? serializeGrid(backPattern) : ""
-      }|${JSON.stringify(colorMap)}|${JSON.stringify(stitchSymbols)}`,
-    [pattern, backPattern, splitFaces, colorMap, stitchSymbols],
+      `${stable.splitFaces ? "split" : "same"}|${serializeGrid(stable.pattern)}|${
+        stable.backPattern ? serializeGrid(stable.backPattern) : ""
+      }|${JSON.stringify(stable.colorMap)}|${JSON.stringify(stable.stitchSymbols)}`,
+    [stable],
   );
 
   useEffect(() => {
     const el = hostRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        setInView(true);
-        io.disconnect();
-      },
+      ([entry]) => setInView(Boolean(entry?.isIntersecting)),
       { rootMargin: "120px" },
     );
     io.observe(el);
@@ -697,11 +695,11 @@ function Knitting3DPreview({
     >
       {inView ? (
         <Knitting3DCanvas
-          cells={pattern}
-          backCells={backPattern}
-          splitFaces={splitFaces}
-          colorMap={colorMap}
-          stitchSymbols={stitchSymbols}
+          cells={stable.pattern}
+          backCells={stable.backPattern}
+          splitFaces={stable.splitFaces}
+          colorMap={stable.colorMap}
+          stitchSymbols={stable.stitchSymbols}
           chartKey={chartKey}
           itemType={itemType}
           active={active}

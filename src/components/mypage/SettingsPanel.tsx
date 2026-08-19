@@ -4,10 +4,8 @@ import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import { softShadow } from "../ui/tabButtonStyles.ts";
 import type { AppLanguage } from "../../i18n.ts";
-import { SUPPORTED_LANGUAGES } from "../../i18n.ts";
+import { currentAppLanguage } from "../../i18n.ts";
 import {
-  SKILL_LABELS,
-  TASTE_STYLE_LABELS,
   loadNeedleInventory,
   loadTasteProfile,
   loadYarnInventory,
@@ -39,7 +37,19 @@ const LANG_OPTIONS: { id: AppLanguage; labelKey: string }[] = [
 ];
 
 const SKILL_OPTIONS: SkillLevel[] = ["beginner", "intermediate", "advanced"];
-const STYLE_OPTIONS = Object.keys(TASTE_STYLE_LABELS) as TasteStyle[];
+const STYLE_OPTIONS: TasteStyle[] = ["nordic", "aran", "colorwork", "amigurumi", "simple"];
+const SKILL_KEY: Record<SkillLevel, string> = {
+  beginner: "mypage.settings.skillBeginner",
+  intermediate: "mypage.settings.skillIntermediate",
+  advanced: "mypage.settings.skillAdvanced",
+};
+const STYLE_KEY: Record<TasteStyle, string> = {
+  nordic: "mypage.settings.styleNordic",
+  aran: "mypage.settings.styleAran",
+  colorwork: "mypage.settings.styleColorwork",
+  amigurumi: "mypage.settings.styleAmigurumi",
+  simple: "mypage.settings.styleSimple",
+};
 
 export type { AppLanguage };
 
@@ -63,10 +73,7 @@ function SettingsCard({
 
 export default function SettingsPanel() {
   const { t, i18n } = useTranslation();
-  const current =
-    SUPPORTED_LANGUAGES.includes(i18n.language as AppLanguage)
-      ? (i18n.language as AppLanguage)
-      : "ko";
+  const current = currentAppLanguage();
 
   const [isYarnTrailEnabled, setIsYarnTrailEnabled] = useState(loadYarnTrailEnabled);
   const [yarns, setYarns] = useState<YarnStock[]>(() => loadYarnInventory());
@@ -106,7 +113,7 @@ export default function SettingsPanel() {
     setYarns(next);
     saveYarnInventory(next);
     setYarnDraft({ name: "", grams: "", meters: "", needle: "" });
-    flash("실 장고에 추가했어요.");
+    flash(t("mypage.settings.yarnAdded"));
   };
 
   const removeYarn = (id: string) => {
@@ -125,7 +132,7 @@ export default function SettingsPanel() {
     setNeedles(next);
     saveNeedleInventory(next);
     setNeedleDraft(DEFAULT_NEEDLE);
-    flash("바늘 창고에 추가했어요.");
+    flash(t("mypage.settings.needleAdded"));
   };
 
   const removeNeedle = (id: string) => {
@@ -164,14 +171,14 @@ export default function SettingsPanel() {
       ) : null}
 
       <SettingsCard
-        title="플랫폼 환경 설정"
-        hint="마우스 궤적과 표시 언어 등 앱 전반의 환경을 조절해요."
+        title={t("mypage.settings.envTitle")}
+        hint={t("mypage.settings.envHint")}
       >
         <div className="flex items-center justify-between rounded-xl border border-stone-100 bg-stone-50 p-3.5">
           <div className="flex flex-col">
-            <span className="font-sans text-xs font-bold text-stone-700">마우스 털실 효과</span>
+            <span className="font-sans text-xs font-bold text-stone-700">{t("mypage.settings.yarnTrail")}</span>
             <span className="mt-0.5 text-[10px] text-stone-400">
-              마우스를 따라 흐르는 털실 궤적 켜기
+              {t("mypage.settings.yarnTrailHint")}
             </span>
           </div>
           <button
@@ -221,8 +228,8 @@ export default function SettingsPanel() {
       </SettingsCard>
 
       <SettingsCard
-        title="실 장고 보관함"
-        hint="보유 실의 잔량과 바늘을 등록하면 에디터 뜨니가 재고를 기준으로 답합니다."
+        title={t("mypage.settings.yarnStashTitle")}
+        hint={t("mypage.settings.yarnStashHint")}
       >
         {yarnRows.length > 0 ? (
           <ul className="mb-4 space-y-2">
@@ -246,54 +253,54 @@ export default function SettingsPanel() {
                   onClick={() => removeYarn(yarn.id)}
                   className="shrink-0 font-sans text-xs text-gray-400 transition-colors hover:text-coral"
                 >
-                  삭제
+                  {t("common.delete")}
                 </button>
               </li>
             ))}
           </ul>
         ) : (
           <p className="mb-4 font-seoyun text-xs font-normal text-gray-500">
-            아직 등록된 실이 없어요.
+            {t("mypage.settings.yarnEmpty")}
           </p>
         )}
         <div className="grid grid-cols-2 gap-3">
           <SmoothInput
-            label="실 이름"
+            label={t("mypage.settings.yarnName")}
             value={yarnDraft.name}
             onChange={(e) => setYarnDraft((d) => ({ ...d, name: e.target.value }))}
-            placeholder="모카 브라운 메리노"
+            placeholder={t("mypage.settings.yarnNamePh")}
             className="border-stone-200"
           />
           <SmoothInput
-            label="잔량 (g)"
+            label={t("mypage.settings.yarnGrams")}
             value={yarnDraft.grams}
             onChange={(e) => setYarnDraft((d) => ({ ...d, grams: e.target.value }))}
             inputMode="numeric"
             className="border-stone-200"
           />
           <SmoothInput
-            label="미터"
+            label={t("mypage.settings.yarnMeters")}
             value={yarnDraft.meters}
             onChange={(e) => setYarnDraft((d) => ({ ...d, meters: e.target.value }))}
             inputMode="numeric"
             className="border-stone-200"
           />
           <SmoothInput
-            label="바늘"
+            label={t("mypage.settings.yarnNeedle")}
             value={yarnDraft.needle}
             onChange={(e) => setYarnDraft((d) => ({ ...d, needle: e.target.value }))}
-            placeholder="4mm 대바늘"
+            placeholder={t("mypage.settings.yarnNeedlePh")}
             className="border-stone-200"
           />
         </div>
         <Button type="button" onClick={addYarn} className="mt-4 px-5 py-2.5 text-sm">
-          실 추가
+          {t("mypage.settings.yarnAdd")}
         </Button>
       </SettingsCard>
 
       <SettingsCard
-        title="바늘 창고"
-        hint="보유 바늘을 등록하면 커뮤니티에서 지금 바로 뜰 수 있는 도안만 걸러 볼 수 있어요."
+        title={t("mypage.settings.needleTitle")}
+        hint={t("mypage.settings.needleHint")}
       >
         {needles.length > 0 ? (
           <ul className="mb-4 space-y-2">
@@ -317,27 +324,27 @@ export default function SettingsPanel() {
                   onClick={() => removeNeedle(item.id)}
                   className="shrink-0 font-sans text-xs text-gray-400 transition-colors hover:text-coral"
                 >
-                  삭제
+                  {t("common.delete")}
                 </button>
               </li>
             ))}
           </ul>
         ) : (
           <p className="mb-4 font-seoyun text-xs font-normal text-gray-500">
-            아직 등록된 바늘이 없어요.
+            {t("mypage.settings.needleEmpty")}
           </p>
         )}
         <NeedleSpecFields value={needleDraft} onChange={setNeedleDraft} tone="light" />
         <Button type="button" onClick={addNeedle} className="mt-4 px-5 py-2.5 text-sm">
-          바늘 추가
+          {t("mypage.settings.needleAdd")}
         </Button>
       </SettingsCard>
 
       <SettingsCard
-        title="숙련도 및 취향"
-        hint="선택한 스타일은 커뮤니티 전체 탭 상단에 추천 도안으로 먼저 보여집니다."
+        title={t("mypage.settings.tasteTitle")}
+        hint={t("mypage.settings.tasteHint")}
       >
-        <p className="mb-2 font-sans text-xs font-medium text-gray-700">숙련도</p>
+        <p className="mb-2 font-sans text-xs font-medium text-gray-700">{t("mypage.settings.skillLabel")}</p>
         <div className="flex flex-wrap gap-2">
           {SKILL_OPTIONS.map((level) => (
             <button
@@ -350,11 +357,11 @@ export default function SettingsPanel() {
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              {SKILL_LABELS[level]}
+              {t(SKILL_KEY[level])}
             </button>
           ))}
         </div>
-        <p className="mb-2 mt-4 font-sans text-xs font-medium text-gray-700">선호 스타일</p>
+        <p className="mb-2 mt-4 font-sans text-xs font-medium text-gray-700">{t("mypage.settings.styleLabel")}</p>
         <div className="flex flex-wrap gap-2">
           {STYLE_OPTIONS.map((style) => {
             const on = taste.styles.includes(style);
@@ -367,7 +374,7 @@ export default function SettingsPanel() {
                   on ? "bg-stone-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
-                {TASTE_STYLE_LABELS[style]}
+                {t(STYLE_KEY[style])}
               </button>
             );
           })}

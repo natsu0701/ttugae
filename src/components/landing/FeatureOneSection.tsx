@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import EditorMockup from "./EditorMockup.tsx";
 import FeatureBadge from "./FeatureBadge.tsx";
@@ -10,24 +11,25 @@ type FeatureOneSectionProps = {
 };
 
 function FeatureOneSection({ onOpenEditor }: FeatureOneSectionProps) {
+  const { t } = useTranslation();
   return (
     <section id="features" className={landingSection.white}>
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
           <FeatureBadge>Feature 01</FeatureBadge>
           <h2 className={landingHeading.h2}>
-            <span>클릭 몇 번으로</span>
-            <span>완성되는 나만의 도안</span>
+            <span>{t("landing.feature1Line1")}</span>
+            <span>{t("landing.feature1Line2")}</span>
           </h2>
           <p className={`${landingHeading.body} font-seoyun`}>
-            격자 위에 기호와 색을 놓고, 실수는 뜨니가 체크해 줘요.
+            {t("landing.feature1Body")}
           </p>
           <Button
             variant="primary"
             onClick={onOpenEditor}
             className="mt-8 px-6 py-3 font-extrabold !shadow-[0_3px_8px_rgba(0,0,0,0.07)] transition-all duration-300 hover:!shadow-[0_4px_10px_rgba(252,95,83,0.14)]"
           >
-            도안 그리기
+            {t("landing.startDrawing")}
           </Button>
         </Reveal>
         <Reveal delay={0.12}>

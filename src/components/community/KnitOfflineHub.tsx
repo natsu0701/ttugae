@@ -1,4 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   CalendarFillIcon,
@@ -14,24 +15,18 @@ import {
 } from "../icons/FillIcons.tsx";
 import {
   issueTicket,
-  loadReservedMeetupIds,
   toggleReservedMeetup,
   type OfflineTicket,
 } from "../../utils/offlineActivityStorage.ts";
 import { writeHubPatternPayload } from "../../utils/workspaceGridStorage.ts";
 import { qrModules } from "../../utils/qrPattern.ts";
-
-export type HubMeetup = {
-  id: string;
-  title: string;
-  region: string;
-  date: string;
-  requiredNeedle: string;
-  requiredYarn: string;
-  maxCapacity: number;
-  currentMembers: number;
-  isJoined: boolean;
-};
+import { loc } from "../../utils/i18nContent.ts";
+import type { TFunction } from "i18next";
+import {
+  HUB_MEETUPS,
+  withReservationState,
+  type HubMeetup,
+} from "../../data/hubMeetups.ts";
 
 type OfflineEvent = {
   id: string;
@@ -161,42 +156,6 @@ const OFFLINE_EVENTS_DATA: OfflineEvent[] = [
   },
 ];
 
-export const HUB_MEETUPS: HubMeetup[] = [
-  {
-    id: "meetup_mangwon",
-    title: "망원동 북카페 대바늘 가디건 소소한 수다 모임",
-    region: "서울시 마포구 망원동",
-    date: "매주 토요일 오후 2시",
-    requiredNeedle: "대바늘 5.0mm",
-    requiredYarn: "낙양모사 시그니처 울",
-    maxCapacity: 6,
-    currentMembers: 4,
-    isJoined: false,
-  },
-  {
-    id: "meetup_gangnam",
-    title: "강남역 모여서 뜨는 인스타 크롭 가디건 번개",
-    region: "서울시 강남구 역삼동",
-    date: "2026.08.22 오후 7시",
-    requiredNeedle: "대바늘 4.5mm",
-    requiredYarn: "뽀송 메리노울",
-    maxCapacity: 4,
-    currentMembers: 3,
-    isJoined: false,
-  },
-  {
-    id: "meetup_hongdae",
-    title: "홍대 코바늘 자수 소품 및 입문 티코스터 모임",
-    region: "서울시 마포구 서교동",
-    date: "매주 목요일 오전 11시",
-    requiredNeedle: "코바늘 5호",
-    requiredYarn: "포근 오가닉 코튼",
-    maxCapacity: 8,
-    currentMembers: 2,
-    isJoined: false,
-  },
-];
-
 const OFFLINE_REVIEWS: OfflineReview[] = [
   {
     id: "review_1",
@@ -247,23 +206,46 @@ const OFFLINE_REVIEWS: OfflineReview[] = [
   },
 ];
 
-function withReservationState(list: HubMeetup[]): HubMeetup[] {
-  const reserved = new Set(loadReservedMeetupIds());
-  return list.map((meetup) => {
-    const isJoined = reserved.has(meetup.id);
-    return {
-      ...meetup,
-      isJoined,
-      currentMembers: Math.min(
-        meetup.maxCapacity,
-        meetup.currentMembers + (isJoined ? 1 : 0),
-      ),
-    };
-  });
+function eventTypeKey(type: OfflineEvent["type"]) {
+  if (type === "popup") return "offline.typePopup";
+  if (type === "exhibition") return "offline.typeExhibition";
+  return "offline.typeClass";
 }
 
-export function loadHubReservedMeetups(): HubMeetup[] {
-  return withReservationState(HUB_MEETUPS).filter((meetup) => meetup.isJoined);
+function localizedEvent(t: TFunction, ev: OfflineEvent): OfflineEvent {
+  const base = `content.events.${ev.id}`;
+  return {
+    ...ev,
+    title: loc(t, `${base}.title`, ev.title),
+    location: loc(t, `${base}.location`, ev.location),
+    description: loc(t, `${base}.description`, ev.description),
+    featuredYarn: loc(t, `${base}.yarn`, ev.featuredYarn),
+    featuredNeedle: loc(t, `${base}.needle`, ev.featuredNeedle),
+    typeLabel: t(eventTypeKey(ev.type)),
+  };
+}
+
+function localizedMeetup(t: TFunction, meet: HubMeetup): HubMeetup {
+  const base = `content.meetups.${meet.id}`;
+  return {
+    ...meet,
+    title: loc(t, `${base}.title`, meet.title),
+    region: loc(t, `${base}.region`, meet.region),
+    date: loc(t, `${base}.date`, meet.date),
+    requiredNeedle: loc(t, `${base}.needle`, meet.requiredNeedle),
+    requiredYarn: loc(t, `${base}.yarn`, meet.requiredYarn),
+  };
+}
+
+function localizedReview(t: TFunction, rev: OfflineReview): OfflineReview {
+  const base = `content.reviews.${rev.id}`;
+  return {
+    ...rev,
+    eventTitle: loc(t, `${base}.eventTitle`, rev.eventTitle),
+    content: loc(t, `${base}.content`, rev.content),
+    attachedPatternName: loc(t, `${base}.patternName`, rev.attachedPatternName),
+    attachedPatternDesc: loc(t, `${base}.patternDesc`, rev.attachedPatternDesc),
+  };
 }
 
 function loadLeafletFromCdn(): Promise<LeafletNS> {
@@ -315,6 +297,7 @@ type KnitOfflineHubProps = {
 };
 
 function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
+  const { t } = useTranslation();
   const [selectedEventId, setSelectedEventId] = useState("event_hongdae");
   const [meetups, setMeetups] = useState<HubMeetup[]>(() => withReservationState(HUB_MEETUPS));
   const [activeTab, setActiveTab] = useState<"map" | "meetup" | "reviews">("map");
@@ -391,8 +374,9 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
     map.flyTo(active.latLng, 15, { animate: true, duration: 1.05 });
   }, [selectedEventId]);
 
-  const selectedEvent =
+  const selectedEventRaw =
     OFFLINE_EVENTS_DATA.find((event) => event.id === selectedEventId) ?? OFFLINE_EVENTS_DATA[0];
+  const selectedEvent = localizedEvent(t, selectedEventRaw);
 
   const qrCells = useMemo(
     () => qrModules(issuedTicket?.payload || issuedTicket?.ticketCode || selectedEvent.id),
@@ -440,20 +424,20 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
             Offline Connection
           </span>
           <h3 className="mt-2 font-sans text-xl font-black tracking-tight text-stone-900">
-            오프라인 소식 및 모임
+            {t("offline.title")}
           </h3>
           <p className="mt-1 break-keep font-seoyun text-sm font-normal text-stone-500">
-            실시간 연동형 정밀 지도와 팝업 체크인으로 가로지르는 포근한 오프라인 연결 통로입니다.
+            {t("offline.subtitle")}
           </p>
         </div>
         <div className="flex rounded-2xl bg-stone-100 p-1">
           {(
             [
-              ["map", "행사 지도"],
-              ["meetup", "동네 소모임"],
-              ["reviews", "방문 후기 도안"],
+              ["map", "offline.tabMap"],
+              ["meetup", "offline.tabMeetup"],
+              ["reviews", "offline.tabReviews"],
             ] as const
-          ).map(([id, label]) => (
+          ).map(([id, labelKey]) => (
             <button
               key={id}
               type="button"
@@ -462,7 +446,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 activeTab === id ? "bg-white text-stone-900 shadow-sm" : "text-stone-500 hover:text-stone-800"
               }`}
             >
-              {label}
+              {t(labelKey)}
             </button>
           ))}
         </div>
@@ -473,7 +457,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
           <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
             <div className="flex h-auto w-full flex-col space-y-4 lg:col-span-8 lg:h-[560px]">
               <span className="block font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
-                실시간 연동형 정밀 지도 (서울 마포구/강남구 일대)
+                {t("offline.mapLabel")}
               </span>
               <div className="relative min-h-[320px] flex-1 overflow-hidden rounded-[32px] bg-[#ECE6DC] shadow-inner">
                 <div ref={mapContainerRef} className="absolute inset-0 z-10 h-full w-full" />
@@ -481,7 +465,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   <div className="absolute inset-0 z-20 flex flex-col items-center justify-center space-y-3 bg-stone-50">
                     <SpinnerFillIcon className="h-8 w-8 animate-spin text-coral" />
                     <span className="font-sans text-xs font-bold tracking-wide text-stone-400">
-                      실시간 지리 연동망 로드 중...
+                      {t("offline.mapLoading")}
                     </span>
                   </div>
                 ) : null}
@@ -491,7 +475,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     <input
                       type="text"
                       readOnly
-                      placeholder="마포구/강남구 실시간 연동 뜨개 팝업 검색 중..."
+                      placeholder={t("offline.mapSearchPh")}
                       className="w-full border-none bg-transparent font-sans text-[11px] font-medium text-stone-700 outline-none"
                     />
                   </div>
@@ -502,7 +486,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       type="button"
                       onClick={() => handleZoom("in")}
                       className="flex h-9 w-9 items-center justify-center border-b border-stone-100 font-sans text-base font-bold text-stone-600 hover:bg-stone-50"
-                      title="지도 확대"
+                      title={t("offline.zoomIn")}
                     >
                       +
                     </button>
@@ -510,7 +494,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       type="button"
                       onClick={() => handleZoom("out")}
                       className="flex h-9 w-9 items-center justify-center font-sans text-base font-bold text-stone-600 hover:bg-stone-50"
-                      title="지도 축소"
+                      title={t("offline.zoomOut")}
                     >
                       -
                     </button>
@@ -519,20 +503,20 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     type="button"
                     onClick={handleCompass}
                     className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-stone-500 shadow-md hover:text-coral"
-                    title="권역 전체 보기"
+                    title={t("offline.compass")}
                   >
                     <CompassFillIcon className="h-4 w-4" />
                   </button>
                 </div>
                 <div className="absolute bottom-3 left-4 z-20 rounded-lg bg-stone-900/60 px-2.5 py-1 font-sans text-[10px] tracking-tight text-stone-200">
-                  지도를 드래그하고 확대하여 팝업 위치를 확인하세요
+                  {t("offline.mapHint")}
                 </div>
               </div>
             </div>
 
             <div className="flex h-auto w-full flex-col space-y-4 lg:col-span-4 lg:h-[560px]">
               <span className="block font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
-                상세 오프라인 소식
+                {t("offline.detailLabel")}
               </span>
               <div className="flex flex-1 flex-col justify-between overflow-y-auto rounded-[32px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.01)]">
                 <div className="space-y-4">
@@ -548,7 +532,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                             : "bg-stone-100 text-stone-500 hover:bg-stone-200"
                         }`}
                       >
-                        {event.typeLabel}
+                        {t(eventTypeKey(event.type))}
                       </button>
                     ))}
                   </div>
@@ -564,14 +548,14 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     <div className="flex items-start gap-3 rounded-2xl bg-stone-50 p-4">
                       <CalendarFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                       <div className="font-sans">
-                        <span className="block text-[9px] font-bold uppercase text-stone-400">진행 기간</span>
+                        <span className="block text-[9px] font-bold uppercase text-stone-400">{t("offline.dateLabel")}</span>
                         <span className="text-xs font-semibold text-stone-700">{selectedEvent.date}</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 rounded-2xl bg-stone-50 p-4">
                       <PinFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                       <div className="min-w-0 font-sans">
-                        <span className="block text-[9px] font-bold uppercase text-stone-400">정확한 장소</span>
+                        <span className="block text-[9px] font-bold uppercase text-stone-400">{t("offline.placeLabel")}</span>
                         <span className="break-all text-xs font-semibold leading-normal text-stone-700">
                           {selectedEvent.location}
                         </span>
@@ -582,13 +566,13 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 <div className="mt-4 space-y-4 border-t border-stone-100 pt-4">
                   <div className="space-y-1.5 font-sans text-xs text-stone-500">
                     <div className="flex justify-between gap-2">
-                      <span className="text-stone-400">매칭용 권장 실</span>
+                      <span className="text-stone-400">{t("offline.yarnMatch")}</span>
                       <strong className="whitespace-normal break-all text-right text-stone-700">
                         {selectedEvent.featuredYarn}
                       </strong>
                     </div>
                     <div className="flex justify-between gap-2">
-                      <span className="text-stone-400">매칭용 권장 바늘</span>
+                      <span className="text-stone-400">{t("offline.needleMatch")}</span>
                       <strong className="text-stone-700">{selectedEvent.featuredNeedle}</strong>
                     </div>
                   </div>
@@ -598,12 +582,12 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-coral text-xs font-bold text-white shadow-[0_4px_12px_rgba(252,95,83,0.15)] transition-all hover:bg-coral/90"
                   >
                     <QrFillIcon className="h-4 w-4" />
-                    <span>티켓 발권받기</span>
+                    <span>{t("offline.ticket")}</span>
                   </button>
                 </div>
               </div>
               <div className="break-keep rounded-2xl bg-stone-50/60 p-4 font-seoyun text-[10px] leading-relaxed text-stone-500">
-                본 예약 패스로 오프라인 현장 체크인 완료 시, 마이페이지의 통계 코수 수치 및 성장 뱃지가 자동으로 언록되어 성취감을 높일 수 있습니다.
+                {t("offline.passHint")}
               </div>
             </div>
           </div>
@@ -613,12 +597,13 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <span className="font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
-                내 활동지역 기반 모집 중인 동네 뜨개 모임
+                {t("offline.meetupLabel")}
               </span>
-              <span className="font-sans text-xs text-stone-400">활동 권역: 서울시 마포구 일대</span>
+              <span className="font-sans text-xs text-stone-400">{t("offline.meetupRegion")}</span>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {meetups.map((meet) => {
+              {meetups.map((meetRaw) => {
+                const meet = localizedMeetup(t, meetRaw);
                 const isFull = meet.currentMembers >= meet.maxCapacity;
                 const percent = Math.min(
                   100,
@@ -641,24 +626,27 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     </div>
                     <div className="mt-4 space-y-1.5 border-t border-stone-100 pt-3 font-sans text-xs text-stone-500">
                       <div className="flex justify-between gap-2">
-                        <span className="text-[10px] text-stone-400">필요 바늘</span>
+                        <span className="text-[10px] text-stone-400">{t("offline.needleNeeded")}</span>
                         <span className="font-semibold text-stone-700">{meet.requiredNeedle}</span>
                       </div>
                       <div className="flex justify-between gap-2">
-                        <span className="text-[10px] text-stone-400">권장 실</span>
+                        <span className="text-[10px] text-stone-400">{t("offline.yarnRecommended")}</span>
                         <span className="whitespace-normal break-all text-right font-semibold leading-normal text-stone-700">
                           {meet.requiredYarn}
                         </span>
                       </div>
                       <div className="flex justify-between gap-2">
-                        <span className="text-[10px] text-stone-400">모임 주기</span>
+                        <span className="text-[10px] text-stone-400">{t("offline.meetupCycle")}</span>
                         <span className="font-semibold text-stone-700">{meet.date}</span>
                       </div>
                     </div>
                     <div className="mt-5 space-y-2">
                       <div className="flex justify-between font-sans text-[10px] font-bold text-stone-400">
                         <span>
-                          신청 정원 {meet.currentMembers} / {meet.maxCapacity}명
+                          {t("offline.capacity", {
+                            current: meet.currentMembers,
+                            max: meet.maxCapacity,
+                          })}
                         </span>
                         <span>{percent}%</span>
                       </div>
@@ -686,12 +674,12 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       {meet.isJoined ? (
                         <>
                           <CheckFillIcon className="h-3.5 w-3.5" />
-                          <span>참가 신청 취소</span>
+                          <span>{t("offline.cancelJoin")}</span>
                         </>
                       ) : isFull ? (
-                        <span>모집 마감</span>
+                        <span>{t("offline.closed")}</span>
                       ) : (
-                        <span>참가 신청하기</span>
+                        <span>{isFull ? t("offline.full") : t("offline.join")}</span>
                       )}
                     </button>
                   </div>
@@ -705,10 +693,10 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <span className="font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
-                오프라인 현장 방문 후기 및 수제 변형 도안 공유판
+                {t("offline.reviewLabel")}
               </span>
               <span className="font-sans text-xs text-stone-400">
-                총 {OFFLINE_REVIEWS.length}개의 가이드 패턴 등록됨
+                {t("offline.reviewCount", { count: OFFLINE_REVIEWS.length })}
               </span>
             </div>
             <AnimatePresence>
@@ -720,21 +708,23 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   className="flex flex-col items-start justify-between gap-3 rounded-2xl bg-stone-900 px-5 py-3 text-stone-100 shadow-lg sm:flex-row sm:items-center"
                 >
                   <span className="whitespace-normal break-all font-sans text-xs font-bold leading-normal">
-                    도안 복제 완료: {clonedSuccessMsg} 에셋이 로컬 편집 작업대에 세팅되었습니다. 도안 그리기 탭으로 즉시 이동하여 활용해 보세요.
+                    {t("offline.cloneDone", { name: clonedSuccessMsg })}
                   </span>
                   <button
                     type="button"
                     onClick={() => onGoEditor?.()}
                     className="flex shrink-0 items-center gap-1 rounded-lg bg-coral/10 px-3 py-1.5 font-sans text-[11px] font-black text-coral transition-colors hover:bg-coral/20"
                   >
-                    <span>이동하기</span>
+                    <span>{t("offline.goNow")}</span>
                     <ChevronRightFillIcon className="h-3.5 w-3.5" />
                   </button>
                 </motion.div>
               ) : null}
             </AnimatePresence>
             <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
-              {OFFLINE_REVIEWS.map((rev) => (
+              {OFFLINE_REVIEWS.map((revRaw) => {
+                const rev = localizedReview(t, revRaw);
+                return (
                 <div
                   key={rev.id}
                   className="relative flex h-auto flex-col justify-between overflow-hidden rounded-[24px] bg-white p-6 transition-shadow hover:shadow-md md:p-8"
@@ -746,10 +736,10 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                           {rev.eventTitle}
                         </span>
                         <h5 className="mt-1 font-sans text-xs font-bold text-stone-400">
-                          작성자: {rev.author}
+                          {t("offline.author", { name: rev.author })}
                         </h5>
                       </div>
-                      <div className="flex shrink-0 gap-0.5" aria-label={`별점 ${rev.rating}`}>
+                      <div className="flex shrink-0 gap-0.5" aria-label={t("common.rating", { n: rev.rating })}>
                         {Array.from({ length: 5 }, (_, index) => (
                           <span
                             key={index}
@@ -771,7 +761,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                           </div>
                           <div className="min-w-0 flex-1">
                             <span className="block font-sans text-[9px] font-bold uppercase tracking-wide text-stone-400">
-                              수제 복원 도안 첨부
+                              {t("offline.patternAttach")}
                             </span>
                             <span className="mt-0.5 block whitespace-normal break-all font-sans text-sm font-black leading-snug text-stone-900">
                               {rev.attachedPatternName}
@@ -786,7 +776,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                           onClick={() => handleForkPattern(rev)}
                           className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-xl bg-stone-950 px-5 py-3 font-sans text-[11px] font-bold text-stone-100 transition-all hover:bg-stone-800 md:w-auto"
                         >
-                          <span>에디터로 복제</span>
+                          <span>{t("offline.cloneEditor")}</span>
                           <ChevronRightFillIcon className="h-3.5 w-3.5" />
                         </button>
                       </div>
@@ -803,7 +793,8 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     </span>
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
           </div>
         ) : null}
@@ -830,10 +821,10 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   Mobile Entrance Pass
                 </span>
                 <h4 className="font-sans text-base font-black leading-snug text-stone-900">
-                  오프라인 모바일 입장 티켓
+                  {t("offline.ticketTitle")}
                 </h4>
                 <p className="mx-auto max-w-[240px] break-keep font-seoyun text-xs text-stone-400">
-                  신청이 승인되었습니다. 현장 부스에서 모바일 앱으로 아래 QR을 인식해 주세요.
+                  {t("offline.ticketBody")}
                 </p>
               </div>
               <div className="flex flex-col items-center justify-center space-y-4 rounded-2xl bg-[#FFFBF7] p-4">
@@ -849,7 +840,9 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   </svg>
                 </div>
                 <div className="font-sans text-xs leading-relaxed text-stone-600">
-                  <span className="block font-black text-stone-900">{activeModalTicket.title}</span>
+                  <span className="block font-black text-stone-900">
+                    {localizedEvent(t, activeModalTicket).title}
+                  </span>
                   <span className="mt-1 block break-all font-sans text-[10px] text-stone-400">
                     {issuedTicket?.ticketCode ?? "TTEU-PASS-2026"}
                   </span>
@@ -860,7 +853,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 onClick={() => setActiveModalTicket(null)}
                 className="h-11 w-full rounded-xl bg-stone-950 font-sans text-xs font-bold text-white transition-colors hover:bg-stone-800"
               >
-                닫기 및 저장
+                {t("offline.ticketClose")}
               </button>
             </motion.div>
           </div>

@@ -131,7 +131,7 @@ export default function EditorHeader({
               <Button
                 variant="primary"
                 fullWidth
-                className="mt-2 bg-coral py-2 text-sm text-white hover:bg-black"
+                className="mt-2 py-2 text-sm"
                 onClick={() => {
                   const w = parseInt(customW, 10);
                   const h = parseInt(customH, 10);

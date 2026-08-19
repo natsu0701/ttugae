@@ -36,8 +36,6 @@ import {
 import {
   buildPatternMetadata,
   DEFAULT_NEEDLE,
-  formatNeedleBadge,
-  needleDetailLabel,
   type NeedleSpec,
 } from "./data/knittingMetadataLibrary.ts";
 import {
@@ -50,6 +48,7 @@ import {
   type KnittingChart,
 } from "./types/knittingProject.ts";
 import { persistCurrentProgressRow } from "./utils/editorProgressStorage.ts";
+import { formatNeedleBadgeI18n } from "./utils/i18nContent.ts";
 
 const MAX_GRID = 50;
 const PALETTE_PRESET_SLOTS = 4;
@@ -524,22 +523,30 @@ export default function PatternEditor({
       patchActiveGrid((prev) => applyAiPatternFromMessage(prev, message, colorIds));
       const lower = message.toLowerCase();
       const untitled = t("editor.defaultTitle");
-      if (lower.includes("가디건") || lower.includes("cardigan")) {
-        setTitle((prev) => (prev === untitled ? "Cardigan" : prev));
-      } else if (lower.includes("가을") || lower.includes("autumn")) {
-        setTitle((prev) => (prev === untitled ? "Autumn" : prev));
+      if (lower.includes("가디건") || lower.includes("cardigan") || lower.includes("カーディガン")) {
+        setTitle((prev) => (prev === untitled ? t("editor.itemSweater") : prev));
+      } else if (lower.includes("가을") || lower.includes("autumn") || lower.includes("fall") || lower.includes("秋")) {
+        setTitle((prev) => (prev === untitled ? t("editor.titleAutumn") : prev));
       }
-      return getTteuniReply(message);
+      return getTteuniReply(message, t);
     },
     [paletteYarns, t, patchActiveGrid],
   );
 
   const patternText = useMemo(() => {
     const lines: string[] = [];
-    lines.push(`[뜨개러투게더 도안] ${gridCols}×${gridRows} 격자`);
-    lines.push(`사용 바늘: ${formatNeedleBadge(needle)}${needleDetailLabel(needle) ? ` · ${needleDetailLabel(needle)}` : ""}`);
     lines.push(
-      `사용 실: ${usedYarns.map((y) => `${y.label}(${y.fiberType})`).join(", ")}`,
+      t("editor.copyHeader", {
+        brand: t("nav.brand"),
+        cols: gridCols,
+        rows: gridRows,
+      }),
+    );
+    lines.push(t("editor.copyNeedle", { needle: formatNeedleBadgeI18n(t, needle) }));
+    lines.push(
+      t("editor.copyYarn", {
+        yarns: usedYarns.map((y) => `${y.label}(${y.fiberType})`).join(", "),
+      }),
     );
     lines.push("");
     grid.forEach((row, ri) => {
@@ -552,7 +559,7 @@ export default function PatternEditor({
       lines.push(`R${ri + 1}: ${rowText}`);
     });
     return lines.join("\n");
-  }, [grid, usedYarns, gridCols, gridRows, paletteYarns, needle]);
+  }, [grid, usedYarns, gridCols, gridRows, paletteYarns, needle, t]);
 
   const copyPatternText = useCallback(async () => {
     try {
@@ -848,9 +855,9 @@ export default function PatternEditor({
               <TteuniChatbot onUserMessage={handleAiMessage} />
             </div>
             <div className={`${editorPanel} p-4`}>
-              <p className="mb-1 font-sans text-sm font-bold text-white">바늘 사양 설정</p>
+              <p className="mb-1 font-sans text-sm font-bold text-white">{t("editor.needlePanelTitle")}</p>
               <p className="mb-3 font-seoyun text-[11px] font-normal text-stone-400">
-                코·단 수와 함께 도안에 묶이는 사용 바늘입니다.
+                {t("editor.needlePanelHint")}
               </p>
               <NeedleSpecFields value={needle} onChange={setNeedle} tone="dark" />
             </div>
@@ -871,8 +878,8 @@ export default function PatternEditor({
                   type="button"
                   onClick={() => void copyPatternText()}
                   className={`relative flex h-8 w-8 items-center justify-center rounded-full ${editorChromeTone}`}
-                  aria-label="서술형 텍스트 복사"
-                  title={patternCopyDone ? "복사 완료!" : "복사하기"}
+                  aria-label={t("editor.copyNarrative")}
+                  title={patternCopyDone ? t("editor.copied") : t("editor.copy")}
                 >
                   {patternCopyDone ? (
                     <CheckFillIcon className="h-3.5 w-3.5 text-coral" />
@@ -881,7 +888,7 @@ export default function PatternEditor({
                   )}
                   {patternCopyDone ? (
                     <span className="absolute -bottom-8 right-0 z-10 whitespace-nowrap rounded-full bg-stone-800 px-2.5 py-1 font-sans text-[10px] font-medium text-white shadow-md">
-                      복사 완료!
+                      {t("editor.copied")}
                     </span>
                   ) : null}
                 </button>

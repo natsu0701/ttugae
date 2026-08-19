@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import type { CommunityPattern } from "../../data/communityPatterns.ts";
 import {
@@ -28,6 +29,7 @@ function FinishedWorkCard({
   onDelete: () => void;
   canManage: boolean;
 }) {
+  const { t } = useTranslation();
   const [failed, setFailed] = useState(false);
   const src = work.image.startsWith("blob:") || work.image.startsWith("data:")
     ? work.image
@@ -38,13 +40,13 @@ function FinishedWorkCard({
       {failed ? (
         <div className="flex h-48 items-center justify-center bg-gray-100 p-4 text-center">
           <p className="font-sans text-xs font-normal text-gray-500">
-            {work.image}
+            {t("community.photoFail")}
           </p>
         </div>
       ) : (
         <img
           src={src}
-          alt={work.title}
+          alt={t("community.finishedAlt")}
           className="h-48 w-full object-cover"
           onError={() => setFailed(true)}
         />
@@ -66,7 +68,7 @@ function FinishedWorkCard({
                 className="flex-1 py-2 text-sm"
                 onClick={onEdit}
               >
-                수정
+                {t("common.edit")}
               </Button>
             )}
             <Button
@@ -75,7 +77,7 @@ function FinishedWorkCard({
               className="flex-1 py-2 text-sm text-gray-600"
               onClick={onDelete}
             >
-              삭제
+              {t("common.delete")}
             </Button>
           </div>
         )}
@@ -85,6 +87,7 @@ function FinishedWorkCard({
 }
 
 export default function FinishedWorksGallery({ onEditPost }: FinishedWorksGalleryProps) {
+  const { t } = useTranslation();
   const [works, setWorks] = useState<MyFinishedWork[]>(() => loadMyFinishedWorks());
 
   useEffect(() => {
@@ -94,7 +97,7 @@ export default function FinishedWorksGallery({ onEditPost }: FinishedWorksGaller
   }, []);
 
   const handleDelete = (work: MyFinishedWork) => {
-    if (!window.confirm(`"${work.title}" 완성작을 삭제할까요?`)) return;
+    if (!window.confirm(t("common.deleteFinishedConfirm", { title: work.title }))) return;
     deleteMyFinishedWork(work.id);
     if (work.id.startsWith("fw-user-")) {
       const communityId = work.id.replace(/^fw-/, "");
@@ -113,9 +116,9 @@ export default function FinishedWorksGallery({ onEditPost }: FinishedWorksGaller
   if (works.length === 0) {
     return (
       <div className="rounded-2xl bg-gray-50 p-10 text-center">
-        <p className="font-sans text-xl font-bold text-gray-900">완성한 작품이 없어요</p>
+        <p className="font-sans text-xl font-bold text-gray-900">{t("mypage.finishedEmptyTitle")}</p>
         <p className="mt-2 font-sans text-sm font-normal text-gray-500">
-          에디터에서 도안을 완성하고 사진을 올려 보세요.
+          {t("mypage.finishedEmptyDesc")}
         </p>
       </div>
     );

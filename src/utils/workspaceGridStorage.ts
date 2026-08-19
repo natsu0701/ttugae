@@ -1,5 +1,5 @@
 import type { AttachedPatternData } from "../data/offlineCommunity.ts";
-import type { StoredPattern } from "../Dashboard.tsx";
+import type { StoredPattern } from "../types/storedPattern.ts";
 import type { EditorCell } from "./patternGrid.ts";
 import { hexToColorId } from "./patternGrid.ts";
 import { parseNeedleFromText } from "../data/knittingMetadataLibrary.ts";

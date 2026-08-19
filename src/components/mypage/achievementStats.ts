@@ -1,4 +1,5 @@
-import type { StoredPattern } from "../../Dashboard.tsx";
+import i18n from "../../i18n.ts";
+import type { StoredPattern } from "../../types/storedPattern.ts";
 import type { AchievementBadgeId } from "../../data/achievementBadges.ts";
 import { loadMyFinishedWorks } from "../../utils/myFinishedWorksStore.ts";
 import { loadSharedCommunityPatterns } from "../../utils/communityShare.ts";
@@ -76,48 +77,52 @@ export function buildBadgeUnlocks(stats: KnitAchievementStats): BadgeUnlockMap {
   const yarns = stats.yarnInventoryCount ?? 0;
   const downloads = stats.marketplaceDownloads ?? 0;
   const finished = stats.finishedCount ?? stats.completedProjects;
+  const stsUnit = i18n.t("common.sts");
+  const doneUnit = i18n.t("common.done");
+  const progressOf = (current: string | number, goal: string | number, unit: string) =>
+    i18n.t("common.progressOf", { current, goal, unit });
 
   return {
     badge1: { unlocked: Boolean(stats.hasPackagedPattern) },
     badge2: {
       unlocked: stitches >= 5000,
-      progressText: stitches >= 5000 ? undefined : `${stitches.toLocaleString()} / 5,000 코`,
+      progressText: stitches >= 5000 ? undefined : progressOf(stitches.toLocaleString(), "5,000", stsUnit),
     },
     badge3: {
       unlocked: finished >= 1,
-      progressText: finished >= 1 ? undefined : `${finished} / 1 완료`,
+      progressText: finished >= 1 ? undefined : progressOf(finished, 1, doneUnit),
     },
     badge4: {
       unlocked: gauge >= 3,
-      progressText: gauge >= 3 ? undefined : `${gauge} / 3 완료`,
+      progressText: gauge >= 3 ? undefined : progressOf(gauge, 3, doneUnit),
     },
     badge5: {
       unlocked: palettes >= 3,
-      progressText: palettes >= 3 ? undefined : `${palettes} / 3 완료`,
+      progressText: palettes >= 3 ? undefined : progressOf(palettes, 3, doneUnit),
     },
     badge6: {
       unlocked: projects >= 3,
-      progressText: projects >= 3 ? undefined : `${projects} / 3 완료`,
+      progressText: projects >= 3 ? undefined : progressOf(projects, 3, doneUnit),
     },
     badge7: {
       unlocked: yarns >= 5,
-      progressText: yarns >= 5 ? undefined : `${yarns} / 5 완료`,
+      progressText: yarns >= 5 ? undefined : progressOf(yarns, 5, doneUnit),
     },
     badge8: { unlocked: Boolean(stats.hasSharedLoungePost) },
     badge9: {
       unlocked: chats >= 10,
-      progressText: chats >= 10 ? undefined : `${chats} / 10 완료`,
+      progressText: chats >= 10 ? undefined : progressOf(chats, 10, doneUnit),
     },
     badge10: {
       unlocked: downloads >= 1 || Boolean(stats.hasOfflineCheckin),
       progressText:
         downloads >= 1 || stats.hasOfflineCheckin
           ? undefined
-          : `${downloads} / 1 완료`,
+          : progressOf(downloads, 1, doneUnit),
     },
     badge11: {
       unlocked: stitches >= 30000,
-      progressText: stitches >= 30000 ? undefined : `${stitches.toLocaleString()} / 30,000코`,
+      progressText: stitches >= 30000 ? undefined : progressOf(stitches.toLocaleString(), "30,000", stsUnit),
     },
   };
 }

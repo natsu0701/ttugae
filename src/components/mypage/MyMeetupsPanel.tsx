@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   MEETUP_RESERVATION_EVENT,
   OFFLINE_UPDATED_EVENT,
@@ -7,10 +8,12 @@ import {
   loadTickets,
   meetupJoinedCount,
 } from "../../utils/offlineActivityStorage.ts";
-import { loadHubReservedMeetups } from "../community/KnitOfflineHub.tsx";
+import { loadHubReservedMeetups } from "../../data/hubMeetups.ts";
 import { loadCurrentProgressRow } from "../../utils/editorProgressStorage.ts";
+import { loc } from "../../utils/i18nContent.ts";
 
 export default function MyMeetupsPanel() {
+  const { t } = useTranslation();
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
@@ -34,28 +37,28 @@ export default function MyMeetupsPanel() {
 
   return (
     <div>
-      <h2 className="font-sans text-2xl font-bold text-gray-900">내가 예약한 뜨개 모임</h2>
+      <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.meetupsTitle")}</h2>
       <p className="mt-1 font-seoyun text-sm text-stone-500">
-        라운지에서 참가한 소모임이 새로고침 없이 여기에 바로 펼쳐집니다.
+        {t("mypage.meetupsSubtitle")}
       </p>
       {tickets.length > 0 ? (
         <div className="mt-6 rounded-[1.75rem] bg-[#FFFBF7] p-5">
-          <p className="font-sans text-sm font-bold text-gray-900">현장 참여 증적</p>
+          <p className="font-sans text-sm font-bold text-gray-900">{t("mypage.meetupsTickets")}</p>
           <p className="mt-1 font-seoyun text-xs text-stone-500">
-            QR 입장권 {tickets.length}장 · 진행 단 {progressRow ?? 0}단 세션 보존
+            {t("mypage.meetupsTicketMeta", { count: tickets.length, row: progressRow ?? 0 })}
           </p>
           {portfolio.length > 0 ? (
             <p className="mt-2 font-seoyun text-xs text-stone-500">
-              굿즈 포트폴리오: {portfolio.flatMap((item) => item.goods).join(", ")}
+              {t("mypage.meetupsGoods", { list: portfolio.flatMap((item) => item.goods).join(", ") })}
             </p>
           ) : null}
         </div>
       ) : null}
       {empty ? (
         <div className="mt-6 rounded-2xl bg-gray-50 p-10 text-center">
-          <p className="font-sans text-xl font-bold text-gray-900">아직 예약한 모임이 없어요</p>
+          <p className="font-sans text-xl font-bold text-gray-900">{t("mypage.meetupsEmptyTitle")}</p>
           <p className="mt-2 font-seoyun text-sm text-gray-500">
-            라운지의 오프라인 모임 및 행사 탭에서 참가 신청하기를 눌러 보세요.
+            {t("mypage.meetupsEmptyDesc")}
           </p>
         </div>
       ) : (
@@ -68,16 +71,23 @@ export default function MyMeetupsPanel() {
             return (
               <article key={meetup.id} className="rounded-[1.75rem] bg-stone-50 p-5">
                 <p className="font-sans text-[11px] font-medium tracking-wide text-stone-400">
-                  {meetup.region} · {meetup.date}
+                  {loc(t, `content.meetups.${meetup.id}.region`, meetup.region)} ·{" "}
+                  {loc(t, `content.meetups.${meetup.id}.date`, meetup.date)}
                 </p>
-                <h3 className="mt-1 font-sans text-lg font-bold text-gray-900">{meetup.title}</h3>
+                <h3 className="mt-1 font-sans text-lg font-bold text-gray-900">
+                  {loc(t, `content.meetups.${meetup.id}.title`, meetup.title)}
+                </h3>
                 <p className="mt-3 font-sans text-xs font-medium text-stone-700">
-                  {meetup.requiredNeedle} · {meetup.requiredYarn}
+                  {loc(t, `content.meetups.${meetup.id}.needle`, meetup.requiredNeedle)} ·{" "}
+                  {loc(t, `content.meetups.${meetup.id}.yarn`, meetup.requiredYarn)}
                 </p>
                 <div className="mt-4 space-y-2">
                   <div className="flex justify-between font-sans text-[10px] font-bold text-stone-400">
                     <span>
-                      신청 정원 {meetup.currentMembers} / {meetup.maxCapacity}명
+                      {t("mypage.meetupsCapacity", {
+                        current: meetup.currentMembers,
+                        max: meetup.maxCapacity,
+                      })}
                     </span>
                     <span>{percent}%</span>
                   </div>
@@ -96,15 +106,22 @@ export default function MyMeetupsPanel() {
             return (
               <article key={meetup.meetupId} className="rounded-[1.75rem] bg-stone-50 p-5">
                 <p className="font-sans text-[11px] font-medium tracking-wide text-stone-400">
-                  {meetup.region}
-                  {meetup.datetime ? ` · ${meetup.datetime}` : ""}
+                  {loc(t, `content.meetups.${meetup.meetupId}.region`, meetup.region)}
+                  {meetup.datetime
+                    ? ` · ${loc(t, `content.meetups.${meetup.meetupId}.date`, meetup.datetime)}`
+                    : ""}
                 </p>
-                <h3 className="mt-1 font-sans text-lg font-bold text-gray-900">{meetup.title}</h3>
+                <h3 className="mt-1 font-sans text-lg font-bold text-gray-900">
+                  {loc(t, `content.meetups.${meetup.meetupId}.title`, meetup.title)}
+                </h3>
                 {meetup.place ? (
-                  <p className="mt-2 font-seoyun text-sm text-stone-500">{meetup.place}</p>
+                  <p className="mt-2 font-seoyun text-sm text-stone-500">
+                    {loc(t, `content.meetups.${meetup.meetupId}.place`, meetup.place)}
+                  </p>
                 ) : null}
                 <p className="mt-3 font-sans text-xs font-medium text-stone-700">
-                  {meetup.requiredNeedle} · {meetup.requiredYarn}
+                  {loc(t, `content.meetups.${meetup.meetupId}.needle`, meetup.requiredNeedle)} ·{" "}
+                  {loc(t, `content.meetups.${meetup.meetupId}.yarn`, meetup.requiredYarn)}
                 </p>
                 <div className="mt-4 flex items-center gap-2">
                   <div className="flex gap-1" aria-hidden>
@@ -118,7 +135,7 @@ export default function MyMeetupsPanel() {
                     ))}
                   </div>
                   <p className="font-seoyun text-xs text-stone-500">
-                    정원 {meetup.maxCapacity}명 중 {joined}명 참여 중
+                    {t("mypage.meetupsJoined", { max: meetup.maxCapacity, joined })}
                   </p>
                 </div>
               </article>

@@ -1,4 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ACHIEVEMENT_BADGES,
@@ -18,20 +19,28 @@ import {
   saveEquippedBadgeId,
 } from "../../utils/equippedBadgeStorage.ts";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
+import i18n from "../../i18n.ts";
+import { badgeDesc, badgeName } from "../../utils/i18nContent.ts";
 
-const DEFAULT_UNLOCKS: BadgeUnlockMap = {
-  badge1: { unlocked: true },
-  badge2: { unlocked: true },
-  badge3: { unlocked: true },
-  badge4: { unlocked: true },
-  badge5: { unlocked: false, progressText: "2 / 3 완료" },
-  badge6: { unlocked: true },
-  badge7: { unlocked: false, progressText: "4 / 5 완료" },
-  badge8: { unlocked: true },
-  badge9: { unlocked: false, progressText: "6 / 10 완료" },
-  badge10: { unlocked: false, progressText: "0 / 1 완료" },
-  badge11: { unlocked: false, progressText: "12,450 / 30,000코" },
-};
+function defaultUnlocks(): BadgeUnlockMap {
+  const done = i18n.t("common.done");
+  const sts = i18n.t("common.sts");
+  const progressOf = (current: string | number, goal: string | number, unit: string) =>
+    i18n.t("common.progressOf", { current, goal, unit });
+  return {
+    badge1: { unlocked: true },
+    badge2: { unlocked: true },
+    badge3: { unlocked: true },
+    badge4: { unlocked: true },
+    badge5: { unlocked: false, progressText: progressOf(2, 3, done) },
+    badge6: { unlocked: true },
+    badge7: { unlocked: false, progressText: progressOf(4, 5, done) },
+    badge8: { unlocked: true },
+    badge9: { unlocked: false, progressText: progressOf(6, 10, done) },
+    badge10: { unlocked: false, progressText: progressOf(0, 1, done) },
+    badge11: { unlocked: false, progressText: progressOf("12,450", "30,000", sts) },
+  };
+}
 
 export type ProfileBadgeCustomizerProps = {
   nickname?: string;
@@ -50,14 +59,17 @@ function isUnlocked(unlocks: BadgeUnlockMap, id: AchievementBadgeId): boolean {
 }
 
 function ProfileBadgeCustomizer({
-  nickname = "뜨개러",
-  handle = "뜨개러",
-  subtitle = "포근한 솜털 뜨개러 (Level 3)",
+  nickname,
+  handle,
+  subtitle,
   avatarUrl,
-  unlocks = DEFAULT_UNLOCKS,
+  unlocks: unlocksProp,
   onPickAvatar,
   onResetAvatar,
 }: ProfileBadgeCustomizerProps) {
+  const { t } = useTranslation();
+  const unlocks = unlocksProp ?? defaultUnlocks();
+  const displaySubtitle = subtitle ?? t("mypage.profile.levelTitle");
   const [equippedBadgeId, setEquippedBadgeId] = useState<string | null>(() =>
     loadEquippedBadgeId() ?? "badge1",
   );
@@ -107,7 +119,7 @@ function ProfileBadgeCustomizer({
     setIsAvatarMenuOpen((open) => !open);
   };
 
-  const displayHandle = `@${handle.replace(/^@/, "")}`;
+  const displayHandle = `@${(handle ?? "").replace(/^@/, "")}`;
 
   return (
     <div className="relative flex w-full flex-col items-center" ref={dropdownRef}>
@@ -116,7 +128,7 @@ function ProfileBadgeCustomizer({
           type="button"
           onClick={openAvatarMenu}
           className="flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-stone-200 bg-stone-100 transition-colors hover:border-coral"
-          aria-label="프로필 이미지 변경"
+          aria-label={t("mypage.profile.changeAvatar")}
           aria-expanded={isAvatarMenuOpen}
         >
           <img
@@ -148,7 +160,7 @@ function ProfileBadgeCustomizer({
                 className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-xs font-bold text-stone-700 transition-colors hover:bg-stone-50"
               >
                 <ImageFillIcon className="h-4 w-4 shrink-0 text-stone-500" />
-                사진 변경
+                {t("common.photoChange")}
               </button>
               <button
                 type="button"
@@ -161,7 +173,7 @@ function ProfileBadgeCustomizer({
                 className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-xs font-bold text-stone-700 transition-colors hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ProfileFillIcon className="h-4 w-4 shrink-0 text-stone-500" />
-                기본 프로필로 바꾸기
+                {t("common.photoDefault")}
               </button>
             </motion.div>
           ) : null}
@@ -181,13 +193,13 @@ function ProfileBadgeCustomizer({
                 openBadgePicker();
               }}
               className={`absolute -bottom-2 -right-2 z-10 flex ${BADGE_TILE} items-center justify-center rounded-full border border-stone-100 bg-white p-1.5 shadow-md`}
-              title={equippedBadge.name}
-              aria-label="배지 변경"
+              title={badgeName(t, equippedBadge.id, equippedBadge.name)}
+              aria-label={t("common.changeBadge")}
               aria-expanded={isDropdownOpen}
             >
               <img
                 src={equippedBadge.imageSrc}
-                alt={equippedBadge.name}
+                alt={badgeName(t, equippedBadge.id, equippedBadge.name)}
                 className="h-full w-full object-contain"
               />
             </motion.button>
@@ -199,9 +211,9 @@ function ProfileBadgeCustomizer({
                 openBadgePicker();
               }}
               className={`absolute -bottom-2 -right-2 z-10 flex ${BADGE_TILE} items-center justify-center rounded-full border border-dashed border-stone-200 bg-white text-[10px] font-bold text-stone-400 shadow-md`}
-              aria-label="배지 변경"
+              aria-label={t("common.changeBadge")}
             >
-              배지
+              {t("common.badge")}
             </button>
           )}
         </AnimatePresence>
@@ -215,15 +227,15 @@ function ProfileBadgeCustomizer({
           className="inline-flex items-center gap-1 rounded-full border border-stone-200/50 bg-stone-100 px-2.5 py-1 text-[10px] font-bold text-stone-600 transition-colors hover:bg-stone-200/80"
         >
           {equippedBadge ? (
-            <span className="text-coral">{equippedBadge.name}</span>
+            <span className="text-coral">{badgeName(t, equippedBadge.id, equippedBadge.name)}</span>
           ) : (
-            <span>배지 장착하기</span>
+            <span>{t("common.equipBadge")}</span>
           )}
           <ChevronFillIcon className="h-3 w-3" open={isDropdownOpen} />
         </button>
       </div>
       <p className="mt-1 font-sans text-xs font-medium text-stone-500">{displayHandle}</p>
-      <p className="mt-1 font-sans text-[11px] text-stone-400">{subtitle}</p>
+      <p className="mt-1 font-sans text-[11px] text-stone-400">{displaySubtitle}</p>
 
       <AnimatePresence>
         {isDropdownOpen ? (
@@ -236,7 +248,7 @@ function ProfileBadgeCustomizer({
           >
             <div className="mb-2.5 border-b border-stone-100 pb-2.5 text-center">
               <h4 className="font-sans text-xs font-black tracking-widest text-stone-400">
-                나의 업적
+                {t("common.myAchievements")}
               </h4>
             </div>
 
@@ -245,6 +257,8 @@ function ProfileBadgeCustomizer({
                 const unlocked = isUnlocked(unlocks, item.id);
                 const isEquipped = equippedBadgeId === item.id && unlocked;
                 const progressText = unlocks[item.id]?.progressText;
+                const name = badgeName(t, item.id, item.name);
+                const desc = badgeDesc(t, item.id, item.description);
 
                 return (
                   <button
@@ -264,7 +278,7 @@ function ProfileBadgeCustomizer({
                       {unlocked ? (
                         <img
                           src={item.imageSrc}
-                          alt={item.name}
+                          alt={name}
                           className="h-full w-full object-contain"
                         />
                       ) : (
@@ -274,10 +288,10 @@ function ProfileBadgeCustomizer({
 
                     <div className="min-w-0 flex-1 pr-8">
                       <span className="block truncate font-sans text-xs font-bold text-stone-900">
-                        {item.name}
+                        {name}
                       </span>
                       <p className="mt-0.5 line-clamp-1 font-sans text-[10px] text-stone-400">
-                        {unlocked ? item.description : progressText ?? "잠금 상태"}
+                        {unlocked ? desc : progressText ?? t("common.locked")}
                       </p>
                     </div>
 

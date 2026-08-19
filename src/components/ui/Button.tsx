@@ -9,15 +9,15 @@ type ButtonProps = {
   children: ReactNode;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-const base = `inline-flex items-center justify-center gap-2 rounded-full font-sans font-semibold transition-colors duration-200 focus:outline-none disabled:opacity-50 bg-white text-gray-700 hover:bg-black hover:text-white active:bg-coral active:text-white ${softShadow}`;
+const base = `inline-flex items-center justify-center gap-2 rounded-full font-sans font-semibold transition-colors duration-200 focus:outline-none disabled:opacity-50 bg-white !text-gray-900 hover:bg-black hover:!text-white active:bg-coral active:!text-white ${softShadow}`;
 
 const variantExtra: Partial<Record<Variant, string>> = {
   kakao:
     `!bg-[#FEE500] !text-gray-900 hover:!bg-black hover:!text-white active:!bg-coral ${softShadow}`,
   ghost:
-    `!bg-white !text-gray-600 hover:!bg-black hover:!text-white active:!bg-coral active:!text-white ${softShadow}`,
+    `!bg-white !text-gray-900 hover:!bg-black hover:!text-white active:!bg-coral active:!text-white ${softShadow}`,
   secondary:
-    `border border-gray-300 bg-white text-gray-700 hover:bg-black hover:text-white hover:border-black active:bg-coral active:border-coral active:text-white ${softShadow}`,
+    `border border-gray-300 bg-white !text-gray-900 hover:bg-black hover:!text-white hover:border-black active:bg-coral active:border-coral active:!text-white ${softShadow}`,
 };
 
 export default function Button({

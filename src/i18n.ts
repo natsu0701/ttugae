@@ -47,4 +47,11 @@ i18n.on("languageChanged", (lng) => {
 
 document.documentElement.lang = initialLanguage;
 
+export function currentAppLanguage(): AppLanguage {
+  const raw = i18n.resolvedLanguage || i18n.language || "ko";
+  const base = raw.split("-")[0];
+  if (base === "ko" || base === "en" || base === "ja") return base;
+  return "ko";
+}
+
 export default i18n;

@@ -6,6 +6,7 @@ import {
   type RefObject,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
 
@@ -29,9 +30,11 @@ function measureRect(el: HTMLElement | null): Rect | null {
 function SpotlightDimPanels({
   hole,
   onBackdropClick,
+  skipLabel,
 }: {
   hole: Rect;
   onBackdropClick: () => void;
+  skipLabel: string;
 }) {
   const bottom = hole.top + hole.height;
   const right = hole.left + hole.width;
@@ -67,7 +70,7 @@ function SpotlightDimPanels({
         <button
           key={i}
           type="button"
-          aria-label="튜토리얼 건너뛰기"
+          aria-label={skipLabel}
           className={`absolute bg-black/60 pointer-events-auto ${panel.className}`}
           style={panel.style}
           onClick={onBackdropClick}
@@ -86,6 +89,7 @@ export default function EditorOnboardingSpotlight({
   toolbarRef,
   chatbotRef,
 }: EditorOnboardingSpotlightProps) {
+  const { t } = useTranslation();
   const [completed, setCompleted] = useLocalStorage(STORAGE_KEY, false);
   const [step, setStep] = useState<1 | 2>(1);
   const [spot, setSpot] = useState<Rect | null>(null);
@@ -156,11 +160,11 @@ export default function EditorOnboardingSpotlight({
       className="fixed inset-0 z-[200] pointer-events-none"
       role="dialog"
       aria-modal
-      aria-label="에디터 사용 안내"
+      aria-label={t("editor.onboardTitle")}
     >
       {hole ? (
         <>
-          <SpotlightDimPanels hole={hole} onBackdropClick={finish} />
+          <SpotlightDimPanels hole={hole} onBackdropClick={finish} skipLabel={t("editor.onboardSkip")} />
           <div
             className="absolute rounded-2xl ring-2 ring-coral pointer-events-none"
             style={{
@@ -190,8 +194,8 @@ export default function EditorOnboardingSpotlight({
               aria-hidden
             />
             {step === 1
-              ? "원하는 도구와 색상을 골라보세요"
-              : "어려울 땐 뜨니에게 채팅으로 부탁해 보세요!"}
+              ? t("editor.onboardStep1")
+              : t("editor.onboardStep2")}
           </p>
           <div className="mt-4 flex justify-end gap-2">
             <Button
@@ -200,7 +204,7 @@ export default function EditorOnboardingSpotlight({
               className="px-3 py-2 text-sm"
               onClick={finish}
             >
-              건너뛰기
+              {t("editor.onboardSkipShort")}
             </Button>
             {step === 1 ? (
               <Button
@@ -208,11 +212,11 @@ export default function EditorOnboardingSpotlight({
                 className="px-4 py-2 text-sm"
                 onClick={() => setStep(2)}
               >
-                다음
+                {t("editor.onboardNext")}
               </Button>
             ) : (
               <Button type="button" className="px-4 py-2 text-sm" onClick={finish}>
-                시작하기
+                {t("editor.onboardStart")}
               </Button>
             )}
           </div>

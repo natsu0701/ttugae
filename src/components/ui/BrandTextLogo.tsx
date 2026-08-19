@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 type BrandTextLogoProps = {
   className?: string;
 };
@@ -6,10 +8,11 @@ type BrandTextLogoProps = {
 export default function BrandTextLogo({
   className = "h-6 w-auto object-contain",
 }: BrandTextLogoProps) {
+  const { t } = useTranslation();
   return (
     <img
       src="/images/text_logo.png"
-      alt="뜨개러투게더"
+      alt={t("nav.brand")}
       className={className}
     />
   );

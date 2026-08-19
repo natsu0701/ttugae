@@ -146,22 +146,36 @@ export function applyAiPatternFromMessage(
   return generateDefault(rows, cols, colorIds);
 }
 
-export function getTteuniReply(message: string): string {
+export function getTteuniReply(message: string, t: (key: string) => string): string {
   const text = message.toLowerCase();
-  if (text.includes("가디건") || text.includes("cardigan")) {
-    return "가디건 도안을 그렸어요! 몸판은 겉뜨기(—), 넥라인·단은 코줄임(∧)과 안뜨기(∪)로 표시했어요 🧶";
+  if (
+    text.includes("가디건") ||
+    text.includes("cardigan") ||
+    text.includes("カーディガン")
+  ) {
+    return t("editor.tteuniReplyCardigan");
   }
-  if (text.includes("스카프") || text.includes("목도리")) {
-    return "목도리 도안이에요. 테두리는 안뜨기, 가운데는 겉뜨기로 채웠어요!";
+  if (
+    text.includes("스카프") ||
+    text.includes("목도리") ||
+    text.includes("scarf") ||
+    text.includes("マフラー")
+  ) {
+    return t("editor.tteuniReplyScarf");
   }
-  if (text.includes("체리") || text.includes("키링")) {
-    return "체리 모양 도안! 가운데 겉뜨기, 줄기는 안뜨기 기호로 넣었어요 🍒";
+  if (
+    text.includes("체리") ||
+    text.includes("키링") ||
+    text.includes("cherry") ||
+    text.includes("さくらんぼ")
+  ) {
+    return t("editor.tteuniReplyCherry");
   }
-  if (text.includes("줄무늬")) {
-    return "가로 줄무늬 도안이에요. 색마다 겉뜨기·안뜨기를 번갈아 넣었답니다.";
+  if (text.includes("줄무늬") || text.includes("stripe") || text.includes("縞")) {
+    return t("editor.tteuniReplyStripe");
   }
-  if (text.includes("가을")) {
-    return "가을 느낌 도안을 적용했어요. 리브와 겉뜨기 기호를 섞어 넣었어요 🍂";
+  if (text.includes("가을") || text.includes("autumn") || text.includes("fall") || text.includes("秋")) {
+    return t("editor.tteuniReplyAutumn");
   }
-  return "요청하신 도안에 맞게 뜨개 기호를 격자에 채웠어요! 저장해 보세요 ✨";
+  return t("editor.tteuniReplyDefault");
 }

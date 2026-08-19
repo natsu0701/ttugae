@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { EditorYarn } from "../../types/editorYarn.ts";
 
 type ColorChipMenuProps = {
@@ -18,6 +19,7 @@ export default function ColorChipMenu({
   onDeleteFromCanvas,
   variant = "palette",
 }: ColorChipMenuProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const colorInputRef = useRef<HTMLInputElement>(null);
@@ -68,7 +70,7 @@ export default function ColorChipMenu({
       {variant === "selection" ? (
         <input
           type="color"
-          aria-label={`${yarn.label} 색 변경`}
+          aria-label={`${yarn.label} ${t("common.change")}`}
           className="absolute inset-0 cursor-pointer opacity-0"
           value={hexValue}
           onChange={(e) => onChangeColor(yarn.id, e.target.value)}
@@ -83,7 +85,7 @@ export default function ColorChipMenu({
             className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-stone-200 transition-colors hover:bg-stone-800 hover:text-white"
             onClick={() => colorInputRef.current?.click()}
           >
-            변경
+            {t("common.change")}
           </button>
           <button
             type="button"
@@ -93,7 +95,7 @@ export default function ColorChipMenu({
               setOpen(false);
             }}
           >
-            삭제
+            {t("common.delete")}
           </button>
         </div>
       )}

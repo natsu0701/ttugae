@@ -18,7 +18,10 @@
       "liked": "Liked Patterns",
       "saved": "Saved Patterns",
       "stats": "Statistics",
-      "settings": "Settings"
+      "settings": "Settings",
+      "summary": "Activity",
+      "meetups": "My meetups",
+      "statsDetail": "Detailed stats"
     },
     "account": {
       "section": "Account",
@@ -48,7 +51,19 @@
       "statSaved": "Saved patterns",
       "unitPatterns": "",
       "unitHearts": "",
-      "unitFinished": ""
+      "unitFinished": "",
+      "regionTitle": "Activity area",
+      "regionHint": "Saving your district sorts the lounge map and meetups near you.",
+      "regionLabel": "District",
+      "regionPlaceholder": "Mangwon-dong, Mapo-gu, Seoul",
+      "gaugeTitle": "My gauge",
+      "gaugeHint": "Stitches and rows in 10×10cm before and after washing, used for cast-on.",
+      "gaugeBeforeSts": "Before-wash sts",
+      "gaugeBeforeRows": "Before-wash rows",
+      "gaugeAfterSts": "After-wash sts",
+      "gaugeAfterRows": "After-wash rows",
+      "levelTitle": "Cozy fluff knitter (Level 3)",
+      "profileHint": "Manage your profile and personal gauge."
     },
     "patterns": {
       "title": "My Patterns",
@@ -72,8 +87,102 @@
       "appliedHint": "Your language updates instantly.",
       "langKo": "한국어",
       "langEn": "English",
-      "langJa": "日本語"
-    }
+      "langJa": "日本語",
+      "envTitle": "App preferences",
+      "envHint": "Yarn trail, display language, and other app-wide options.",
+      "yarnTrail": "Yarn cursor trail",
+      "yarnTrailHint": "A yarn strand that follows the mouse",
+      "yarnStashTitle": "Yarn stash",
+      "yarnStashHint": "Register leftover yarn so Tteuni can answer from your inventory.",
+      "yarnEmpty": "No yarn registered yet.",
+      "yarnName": "Yarn name",
+      "yarnNamePh": "Mocha brown merino",
+      "yarnGrams": "Left (g)",
+      "yarnMeters": "Meters",
+      "yarnNeedle": "Needle",
+      "yarnNeedlePh": "4mm knitting needles",
+      "yarnAdd": "Add yarn",
+      "yarnAdded": "Added to your yarn stash.",
+      "needleTitle": "Needle drawer",
+      "needleHint": "Register needles to filter community charts you can knit right now.",
+      "needleEmpty": "No needles registered yet.",
+      "needleAdd": "Add needle",
+      "needleAdded": "Added to your needle drawer.",
+      "tasteTitle": "Skill and taste",
+      "tasteHint": "Chosen styles show first as recommendations on the All tab.",
+      "skillLabel": "Skill level",
+      "styleLabel": "Favorite styles",
+      "skillBeginner": "Beginner",
+      "skillIntermediate": "Intermediate",
+      "skillAdvanced": "Advanced",
+      "styleNordic": "Nordic colorwork",
+      "styleAran": "Aran cables",
+      "styleColorwork": "Colorwork",
+      "styleAmigurumi": "Amigurumi",
+      "styleSimple": "Simple daily"
+    },
+    "meetupsTitle": "Meetups I booked",
+    "meetupsSubtitle": "Groups you joined in the lounge appear here right away.",
+    "meetupsEmptyTitle": "No booked meetups yet",
+    "meetupsEmptyDesc": "Open Offline events in the lounge and tap join.",
+    "meetupsTickets": "On-site check-in",
+    "meetupsTicketMeta": "{{count}} QR tickets · row {{row}} session saved",
+    "meetupsGoods": "Goods portfolio: {{list}}",
+    "meetupsCapacity": "Spots {{current}} / {{max}}",
+    "meetupsJoined": "{{joined}} of {{max}} joined",
+    "badgesMine": "My badges",
+    "badgesAll": "All badges",
+    "badgesBeginner": "Beginner",
+    "badgesMid": "Intermediate",
+    "badgesAdv": "Advanced",
+    "finishedEmptyTitle": "No finished projects yet",
+    "finishedEmptyDesc": "Finish a chart in the editor and upload a photo.",
+    "achTitle": "Personal knitting achievements",
+    "achSubtitle": "Growth based on the stitches and symbols you’ve made so far.",
+    "achLevel": "Level 3. Cozy fluff knitter",
+    "achStitches": "Total stitches",
+    "achStitchesUnit": "sts",
+    "achProjects": "Finished projects",
+    "achProjectsUnit": "projects",
+    "achStreak": "Knitting streak",
+    "achStreakUnit": "days",
+    "achOffline": "Offline check-ins",
+    "achOfflineMeta": "{{checkins}} QR check-ins · row {{row}} saved",
+    "achOfflineHint": "Joining an event records your index, and editor row progress stays after check-in.",
+    "achNextLevel": "Progress to next rank (Cloud-knot artisan)",
+    "achCurrentSts": "{{n}} stitches so far",
+    "achRemainingSts": "{{n}} stitches to the next rank",
+    "achBadgeStatus": "Badge collection",
+    "achEmpty": "No badges unlocked yet.",
+    "statsPageTitle": "Statistics",
+    "statsPageHint": "See your knitting activity as charts.",
+    "statsMonthly": "Patterns by month",
+    "statsMonthlyHint": "Last 6 months",
+    "statsColors": "Most used colors",
+    "statsColorsHint": "Share across all charts",
+    "statsMade": "Charts made",
+    "statsLikes": "Likes",
+    "statsSaves": "Saves",
+    "statsFinished": "Finished",
+    "month1": "Jan",
+    "month2": "Feb",
+    "month3": "Mar",
+    "month4": "Apr",
+    "month5": "May",
+    "month6": "Jun",
+    "colorCoral": "Coral",
+    "colorBeige": "Beige",
+    "colorNavy": "Navy",
+    "colorGray": "Gray",
+    "colorOther": "Other",
+    "titlesTitle": "My knitting titles",
+    "titlesHint": "Badges unlock as you knit",
+    "titleFirst": "First chart done",
+    "titleFirstDesc": "Save at least 1 pattern",
+    "title100": "100 stitches",
+    "title100Desc": "Knit 100 stitches in total",
+    "titlePopular": "Popular knitter",
+    "titlePopularDesc": "Get 3 or more likes"
   },
   "community": {
     "heroTitle": "A library of knitting inspiration",
@@ -101,7 +210,71 @@
     "rank": "#{{rank}}",
     "qaEmptyTitle": "No questions yet",
     "qaEmptyDesc": "Post your knitting questions to the community.",
-    "commentCount": "{{count}} replies"
+    "commentCount": "{{count}} replies",
+    "noMatchTitle": "No finished charts match these knitting filters yet.",
+    "noMatchDesc": "Turn off a filter or reset to browse a wider set.",
+    "deleteConfirm": "Delete this post?",
+    "qaPage": "Q&A page",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "like": "Like",
+    "save": "Save",
+    "comment": "Comments",
+    "skillBeginner": "Beginner",
+    "skillIntermediate": "Intermediate",
+    "skillAdvanced": "Advanced",
+    "finishedAltOf": "{{title}} finished piece",
+    "aiPreview": "AI preview",
+    "commentPlaceholder": "Leave a kind note",
+    "qaReplyPlaceholder": "Leave a helpful answer",
+    "filterSearch": "Search charts",
+    "filterAria": "Filters",
+    "filterLevel": "Skill level",
+    "filterTool": "Tools (needles / hook)",
+    "filterCategory": "Project type",
+    "filterMaterial": "Yarn fiber",
+    "filterLevelAll": "All levels",
+    "filterLevelBeginner": "Beginner",
+    "filterLevelMid": "Intermediate",
+    "filterLevelAdv": "Advanced",
+    "filterToolAll": "All tools",
+    "filterToolKnit": "Knitting needles",
+    "filterToolCrochet": "Crochet hook",
+    "filterCatAll": "All categories",
+    "filterCatClothes": "Garments (sweater / cardigan)",
+    "filterCatAcc": "Accessories (beanie / muffler / keyring)",
+    "filterCatHome": "Home (mat / coaster)",
+    "filterMatAll": "All fibers",
+    "filterMatMerino": "Merino wool",
+    "filterMatCotton": "Organic cotton",
+    "filterMatMohair": "Mohair",
+    "filterMatAcrylic": "Acrylic",
+    "filterBagEmpty": "Add yarn and needles in My Page settings for a closer match.",
+    "filterBagHint": "Matching {{yarns}} yarns and {{needles}} needles from your stash.",
+    "filterHardware": "Match my yarn & needles",
+    "filterBagToggle": "Match my knitting bag",
+    "filterReset": "Reset",
+    "filterResultCount": "{{count}} results",
+    "tasteHint": "Recommended charts matching your taste are shown first.",
+    "photoFail": "Couldn’t load the finished photo",
+    "backToCommunity": "← Community",
+    "backQa": "← Q&A list",
+    "yarnUsed": "Yarn",
+    "needleSize": "Needles",
+    "duration": "Time to make",
+    "reviewTitle": "Maker notes",
+    "attachedPattern": "Chart used",
+    "attachedHint": "{{cols}}×{{rows}} grid · open it in the editor",
+    "aiAnalyzed": "AI preview of the chart / finish",
+    "noPatternOnlyPhoto": "This post has a photo only — no attached chart.",
+    "writeComment": "Leave a comment",
+    "submitComment": "Post",
+    "answersCount": "{{count}} answers",
+    "writeAnswer": "Write an answer",
+    "remixTitle": "Remix family of this chart",
+    "remixHint": "From the original to this piece, forks and twists along the way.",
+    "shareToCommunity": "Share to community",
+    "patternPreview": "Chart preview"
   },
   "editor": {
     "defaultTitle": "Untitled pattern",
@@ -217,6 +390,642 @@
       "midnight-sky": "Midnight sky",
       "peach-sorbet": "Peach sorbet",
       "sage-garden": "Sage garden"
+    },
+    "copyNarrative": "Copy written pattern",
+    "copied": "Copied!",
+    "copy": "Copy",
+    "tteuniPlaceholder": "Ask Tteuni…",
+    "tteuniName": "Tteuni",
+    "onboardSkip": "Skip tutorial",
+    "onboardTitle": "Editor tour",
+    "onboardStep1": "Pick a tool and a color",
+    "onboardStep2": "Stuck? Ask Tteuni in chat.",
+    "onboardNext": "Next",
+    "onboardStart": "Start",
+    "sidebarOpen": "Open sidebar",
+    "sidebarClose": "Close sidebar",
+    "sidebarResize": "Resize sidebar",
+    "scanNoPhoto": "No photo",
+    "scanNeedPhoto": "Choose a photo of the finished piece first.",
+    "scanFail": "Analysis failed.",
+    "scanOk": "The chart was adjusted to the photo’s colors and stitch flow.",
+    "scanBusy": "Analyzing",
+    "scanRun": "Cross-check",
+    "scanTitle": "Photo cross-check",
+    "yarnSearch": "Search yarn",
+    "yarnSearchPh": "e.g. merino, mohair",
+    "inPalette": " · already in palette",
+    "itemSweater": "Sweater",
+    "itemVest": "Vest",
+    "itemHat": "Hat",
+    "itemGloves": "Gloves",
+    "itemSocks": "Socks",
+    "itemBlanket": "Blanket",
+    "itemBeanie": "Beanie",
+    "stsCount": "Stitches",
+    "rowCount": "Rows",
+    "itemSelect": "Choose item",
+    "zoomInShort": "Zoom in",
+    "zoomOutShort": "Zoom out",
+    "resetView": "Reset",
+    "needleSizePhKnit": "e.g. 5.5mm",
+    "needleSizePhCrochet": "e.g. size 4",
+    "needlePanelTitle": "Needle settings",
+    "needlePanelHint": "Needles saved with this chart, along with stitch and row counts.",
+    "needleKind": "Needle type",
+    "needleDetailLabel": "Needle style",
+    "needleSizeLabel": "Needle size",
+    "knitting": "Knitting needles",
+    "crochet": "Crochet hook",
+    "detailStraight": "Straight (flat)",
+    "detailCircular": "Circular (tube or flat)",
+    "detailDpn": "DPNs (tube)",
+    "detailCable": "Cable needle",
+    "detailStandard": "Standard hook",
+    "detailTunisian": "Tunisian hook",
+    "detailSteel": "Steel lace hook",
+    "crochetSize": "size {{n}}",
+    "copyHeader": "[{{brand}} chart] {{cols}}×{{rows}} grid",
+    "copyNeedle": "Needles: {{needle}}",
+    "copyYarn": "Yarn: {{yarns}}",
+    "tteuniAi": "Tteuni AI",
+    "tteuniHint": "Try: “Make an autumn cardigan chart for me.”",
+    "tteuniInventory": "Yarn in your stash: {{list}}. I used that stock for this guess.",
+    "tteuniInventoryEmpty": "Your yarn stash is empty. Add leftovers in Settings for a closer guess.",
+    "tteuniReplyCardigan": "I drew a cardigan chart! Body in knit (—), neck and hem with decreases (∧) and purl (∪).",
+    "tteuniReplyScarf": "Here’s a scarf chart. Purl on the edges, knit in the middle.",
+    "tteuniReplyCherry": "A cherry motif! Knit in the center, purl for the stem.",
+    "tteuniReplyStripe": "A horizontal stripe chart. Knit and purl swap with each color.",
+    "tteuniReplyAutumn": "An autumn chart with rib and knit symbols mixed in.",
+    "tteuniReplyDefault": "I filled the grid with stitch symbols for your request. Save it when you’re ready.",
+    "scanHint": "We match stitch/row layout, colors, and knit/purl flow from the photo to this grid.",
+    "scanAutoFix": "Auto-correct to the photo",
+    "yarnSearchHint": "Try a brand or fiber (merino, mohair…)",
+    "yarnSearchEmpty": "No matches. Try another keyword.",
+    "workshopTitle": "Studio palettes",
+    "paletteCherry": "Cherry bubblegum",
+    "paletteNordic": "Nordic jacquard",
+    "paletteForest": "Classic vintage forest",
+    "pausePreview": "Preview paused",
+    "loadingItem": "Tteuni is preparing a live 3D {{item}}…",
+    "itemAccSweater": "sweater",
+    "itemAccVest": "vest",
+    "itemAccBeanie": "hat",
+    "itemAccGlove": "gloves",
+    "itemAccSocks": "socks",
+    "shufflePattern": "Shuffle test chart",
+    "onboardSkipShort": "Skip",
+    "titleAutumn": "Autumn",
+    "partBody": "Front",
+    "partBack": "Back",
+    "partSleeveLeft": "Left sleeve",
+    "partSleeveRight": "Right sleeve",
+    "partCollar": "Collar"
+  },
+  "common": {
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "me": "Me",
+    "back": "Back",
+    "send": "Send",
+    "sts": "sts",
+    "rows": "rows",
+    "edit": "Edit",
+    "submit": "Post",
+    "open": "Open →",
+    "homeBack": "← Home",
+    "lastEdited": "Last edited: {{date}}",
+    "deletePatternConfirm": "Delete “{{title}}”?",
+    "deleteFinishedConfirm": "Delete finished work “{{title}}”?",
+    "photoUpload": "Upload photo",
+    "photoChange": "Change photo",
+    "photoDefault": "Use default profile",
+    "rating": "Rating {{n}}",
+    "wireframe": "Wireframe",
+    "locked": "Locked",
+    "achieved": "Unlocked!",
+    "progressReq": "Need: {{text}}",
+    "customInput": "Custom",
+    "skip": "Skip",
+    "change": "Change",
+    "done": "done",
+    "badge": "Badge",
+    "equipBadge": "Equip a badge",
+    "changeBadge": "Change badge",
+    "myAchievements": "My achievements",
+    "progressOf": "{{current}} / {{goal}} {{unit}}"
+  },
+  "toast": {
+    "loginRequired": "Please log in to continue.",
+    "accountDeleted": "Your account has been deleted.",
+    "sharedPattern": "Shared pattern",
+    "postUploaded": "Your post was published.",
+    "patternSaved": "Pattern saved.",
+    "patternDeleted": "Pattern deleted."
+  },
+  "login": {
+    "title": "Get started",
+    "subtitle": "Log in to save and share your patterns.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Log in",
+    "orSocial": "Or continue with",
+    "kakao": "Continue with Kakao",
+    "google": "Continue with Google",
+    "apple": "Continue with Apple"
+  },
+  "landing": {
+    "heroLead": "Leave the tricky charts to Tteuni,",
+    "heroLine1": "Just focus",
+    "heroLine2": "on knitting!",
+    "heroSub": "Editor, AI chat, and community — every knitting moment in one place.",
+    "startDrawing": "Draw pattern",
+    "feature1Line1": "Your own chart,",
+    "feature1Line2": "ready in a few clicks",
+    "feature1Body": "Place stitches and colors on the grid — Tteuni catches the mistakes.",
+    "feature2Title": "An editor-first smart knitting platform",
+    "feature2Body": "Skip the fiddly prep math. The web editor and community keep you in the flow of making.",
+    "promoLine1": "Knit in real life with Tteuni",
+    "promoLine2": "AR navigation app",
+    "promoBody1": "Sync charts from the web to the app.",
+    "promoBody2": "Point the camera and get the next stitch.",
+    "promoAria": "App promo mockups",
+    "promoPrev": "Previous mockup",
+    "promoNext": "Next mockup",
+    "promoAlt": "Tteuni AR app mockup {{n}}",
+    "footerTag": "One more stitch, together",
+    "scrollHint": "Scroll to stitch the lettering",
+    "tabEditorTitle": "Pattern editor",
+    "tabEditorSub": "2D grid editor",
+    "tabEditorDesc": "Draw stitch by stitch with touch or mouse. The canvas scales to your needle size and yarn so beginners and experts can design original charts.",
+    "tabChatTitle": "AI chatbot",
+    "tabChatSub": "Smart knitting coach",
+    "tabChatDesc": "Tteuni spots mistakes as you edit and suggests fixes. Ask in chat and techniques land on the canvas as stitches and symbols.",
+    "tabConvertTitle": "Written pattern",
+    "tabConvertSub": "Plain-language chart",
+    "tabConvertDesc": "Skip reading a dense grid. The editor turns symbols into a written pattern like “Row 1: knit 2, purl 1” in a second.",
+    "tabCommunityTitle": "Community",
+    "tabCommunitySub": "Lounge pattern sharing",
+    "tabCommunityDesc": "Wrap your finished chart and share it in the lounge. Peek at others’ photos and one click pulls a chart into your editor."
+  },
+  "createPost": {
+    "editTitle": "Edit post",
+    "writeTitle": "New post",
+    "noDraft": "No chart attached. Load a saved pattern or go back.",
+    "loadMine": "Load my pattern",
+    "back": "← Back",
+    "attached": "Attached chart",
+    "title": "Title",
+    "titlePh": "e.g. Beige cardigan, done!",
+    "yarnNeedle": "Yarn / needle",
+    "yarnNeedlePh": "e.g. 100% merino, 4.5mm hook",
+    "review": "Story (review)",
+    "reviewPh": "Notes, tips, time it took…",
+    "previewAlt": "Finished preview",
+    "publish": "Publish",
+    "saveDraft": "Save draft",
+    "photo": "Finished photo (optional)",
+    "photoUpload": "Upload photo",
+    "upload": "Upload",
+    "loadMineHint": "Pick a chart to attach",
+    "loadMineEmpty": "No saved charts. Save one in the editor and try again."
+  },
+  "gift": {
+    "untitled": "Untitled pattern",
+    "done": "Your pattern is wrapped",
+    "toVault": "Go to vault",
+    "backEditor": "Back to editor"
+  },
+  "offline": {
+    "title": "Offline news and meetups",
+    "subtitle": "A cozy offline path with a live map and popup check-in.",
+    "tabMap": "Event map",
+    "tabMeetup": "Local meetups",
+    "tabReviews": "Visit reviews",
+    "mapLabel": "Live map (Mapo & Gangnam, Seoul)",
+    "mapLoading": "Loading the live map…",
+    "mapSearchPh": "Searching Mapo / Gangnam knitting pop-ups…",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "compass": "Show whole area",
+    "mapHint": "Drag and zoom the map to find pop-ups",
+    "detailLabel": "Event details",
+    "dateLabel": "Dates",
+    "placeLabel": "Place",
+    "yarnMatch": "Suggested yarn",
+    "needleMatch": "Suggested needles",
+    "ticket": "Get a ticket",
+    "passHint": "Check in on site with this pass to unlock stitch stats and growth badges on My Page.",
+    "meetupLabel": "Neighborhood knitting groups near you",
+    "meetupRegion": "Area: Mapo-gu, Seoul",
+    "join": "Join",
+    "joined": "Joined",
+    "cancelJoin": "Cancel join",
+    "reviewLabel": "Visit reviews and handmade chart shares",
+    "reviewCount": "{{count}} guide patterns listed",
+    "cloneDone": "Copied: {{name}} is on your local workbench. Open Draw pattern to use it.",
+    "goNow": "Go now",
+    "author": "By {{name}}",
+    "patternAttach": "Attached handmade chart",
+    "cloneEditor": "Copy to editor",
+    "ticketTitle": "Mobile entry ticket",
+    "ticketBody": "You’re in. Scan this QR at the booth with the mobile app.",
+    "ticketClose": "Close and save",
+    "yarnRecommended": "Yarn",
+    "meetupCycle": "Schedule",
+    "capacity": "Spots {{current}} / {{max}}",
+    "full": "Full",
+    "needleNeeded": "Needles",
+    "closed": "Closed",
+    "typePopup": "Brand popup",
+    "typeExhibition": "Exhibition",
+    "typeClass": "One-day class"
+  },
+  "dashboard": {
+    "title": "Pattern vault"
+  },
+  "content": {
+    "badges": {
+      "badge1": {
+        "name": "First-needle thrill",
+        "desc": "You packaged your first chart in the editor and started the knitting journey."
+      },
+      "badge2": {
+        "name": "Frogging survivor",
+        "desc": "You ripped back and kept going through 5,000+ stitches."
+      },
+      "badge3": {
+        "name": "Bind-off complete",
+        "desc": "You neatly closed the last stitches with a tidy bind-off."
+      },
+      "badge4": {
+        "name": "Gauge fairy",
+        "desc": "You converted stitch counts with your own gauge at least 3 times."
+      },
+      "badge5": {
+        "name": "Colorwork collector",
+        "desc": "You applied recommended palettes to charts 3 or more times."
+      },
+      "badge6": {
+        "name": "Many-WIPs knitter",
+        "desc": "You kept 3 or more projects going at once."
+      },
+      "badge7": {
+        "name": "Stash master",
+        "desc": "You logged leftover yarn and needles in the stash 5 or more times."
+      },
+      "badge8": {
+        "name": "Warm lounge lead",
+        "desc": "You shared a finished story and chart in the community feed."
+      },
+      "badge9": {
+        "name": "Tteuni’s soulmate",
+        "desc": "You refined charts with Tteuni chat 10 or more times."
+      },
+      "badge10": {
+        "name": "Studio block captain",
+        "desc": "You published a packaged chart to the market and got a download."
+      },
+      "badge11": {
+        "name": "One-stitch artist",
+        "desc": "You completed 30,000+ stitches with symbols and colorwork in the editor."
+      }
+    },
+    "patterns": {
+      "cp-1": {
+        "title": "Beginner cherry keyring",
+        "caption": "Yarn: 4-ply cotton, 3.0mm hook. Watch the ring — it can be done in a day!",
+        "yarn": "4-ply cotton (red & green)",
+        "needle": "3.0mm crochet hook",
+        "duration": "About 4 hours",
+        "review": "I worked the ring stitches tight in single crochet. Made three more as gifts."
+      },
+      "cp-2": {
+        "title": "Pastel rainbow scarf",
+        "caption": "Yarn: 100% merino, 4.5mm needles. Took about two weeks!",
+        "yarn": "100% merino (6 pastels)",
+        "needle": "4.5mm knitting needles",
+        "duration": "2 weeks",
+        "review": "Color changes were a little fussy for stitch count, but finishing felt great. Knit extra length after wrapping it around your neck."
+      },
+      "cp-3": {
+        "title": "Teddy body chart",
+        "caption": "After stuffing, I joined the body and head with a stitch bind.",
+        "yarn": "Alpaca wool beige & brown",
+        "needle": "4.0mm crochet hook",
+        "duration": "10 days",
+        "review": "Eye buttons are sewn on. Stuff lightly so the silhouette stays cute. Perfect as a kid gift!"
+      },
+      "cp-4": {
+        "title": "Basic winter beanie",
+        "caption": "Yarn: gray acrylic, 5.0mm circulars. A 20×20 all-knit basic.",
+        "yarn": "Gray acrylic",
+        "needle": "5.0mm knitting needles",
+        "duration": "3 days",
+        "review": "All knit in the round, beginner-friendly. Circular needles mean no seam."
+      },
+      "cp-5": {
+        "title": "Mini heart coaster",
+        "caption": "I made a set of four and shared them with friends.",
+        "yarn": "3-ply cotton (coral & white)",
+        "needle": "4.0mm crochet hook",
+        "duration": "1 day",
+        "review": "Looks adorable on the table. Follow the heart chart and it won’t fail."
+      },
+      "cp-6": {
+        "title": "Done! Beige cardigan",
+        "caption": "Yarn: 100% merino, 4.5mm needles. Took about two weeks!",
+        "yarn": "100% merino (beige)",
+        "needle": "4.5mm knitting needles",
+        "duration": "2 weeks",
+        "review": "Sleeve decreases were confusing until Tteuni helped. Keep the body easy; add 14 rows on the sleeves for a better length."
+      },
+      "cp-7": {
+        "title": "Cozy white gloves",
+        "caption": "Yarn: white merino, 3.5mm DPNs. Simple stockinette on the back of the hand.",
+        "yarn": "100% merino (white)",
+        "needle": "3.5mm knitting needles",
+        "duration": "4 days",
+        "review": "Go slow on the finger split and beginners can follow. 2×2 rib at the wrist keeps them snug."
+      },
+      "cp-8": {
+        "title": "Pink star coaster",
+        "caption": "Yarn: 3-ply pink cotton, 4.0mm hook. About one dinner’s worth of knitting.",
+        "yarn": "3-ply cotton (pink)",
+        "needle": "4.0mm crochet hook",
+        "duration": "3 hours",
+        "review": "Pinch star points in single crochet for a crisp shape. Pair with the heart coaster on the table."
+      },
+      "cp-9": {
+        "title": "Cozy pink socks",
+        "caption": "Yarn: pink sock wool, 2.5mm DPNs. Heel turned with short rows.",
+        "yarn": "Sock wool (pink)",
+        "needle": "2.5mm knitting needles",
+        "duration": "5 days",
+        "review": "Match instep gauge and length is easy to tweak. Write down stitch counts after the first sock so the pair matches."
+      },
+      "cp-10": {
+        "title": "Yellow beanie",
+        "caption": "Yarn: bulky yellow acrylic, 5.5mm circulars. Same basic as the gray beanie.",
+        "yarn": "Bulky acrylic (yellow)",
+        "needle": "5.5mm knitting needles",
+        "duration": "2 days",
+        "review": "I only changed the color from the gray basic. About 8 brim rib rows roll nicely. Take the crown decreases slowly."
+      }
+    },
+    "qa": {
+      "qa-1": {
+        "title": "How do I keep stitch count on a magic ring?",
+        "excerpt": "Following the beginner cherry keyring, the ring always opens into a hole…",
+        "body": "Hi! Every time I work the ring on round 3 of the cherry keyring, a hole opens up.\n\nI’m using 4-ply yarn and a 3.5mm hook. The chart says 6 single crochet, but mine always feels more like 8.\n\nAm I holding the stitches too loosely? Tips from anyone who’s been there!"
+      },
+      "qa-2": {
+        "title": "How to lengthen beige cardigan sleeves",
+        "excerpt": "It’s the cardigan from the showcase — I want the sleeves about 5cm longer.",
+        "body": "I’m knitting the beige cardigan from the showcase, and the arms feel short.\n\nIf I keep the body as-is, how many extra sleeve rows do I need? Gauge is about 22 sts / 28 rows in 10cm."
+      },
+      "qa-3": {
+        "title": "When yarn color doesn’t match the chart",
+        "excerpt": "I bought coral yarn and it’s much redder than on screen. Looking for a swap.",
+        "body": "The community preview looks like a soft coral, but in real life it’s closer to #FC5F53 and too loud.\n\nAny similar-tone substitutes, or a way to tone the color down?"
+      },
+      "qa-4": {
+        "title": "Grid won’t load in the pattern editor",
+        "excerpt": "I tapped import from a community card and only got an empty grid.",
+        "body": "Tried in Chrome, and I’m logged in. Only one chart (cp-3) does this, even after refresh.\n\nCould it be local storage space?"
+      },
+      "qa-5": {
+        "title": "Seam line when knitting a beanie in the round",
+        "excerpt": "20×20 gray all-knit basic — even on circulars the start of the round tilts.",
+        "body": "I’m knitting the basic winter beanie in the round on 5.0mm circulars.\n\nIt’s all knit, but the start of each round slowly slants like a seam. Should I move the marker, or jog the start by one stitch?"
+      },
+      "qa-6": {
+        "title": "Confused about splitting glove fingers",
+        "excerpt": "The back of the hand is fine — I don’t know when to split the thumb and fingers.",
+        "body": "Following the cozy white gloves. Wrist rib is 2 knit / 2 purl, then stockinette on the hand.\n\nHow do I divide leftover stitches for the fingers? Where should stitch markers go? Using 3.5mm DPNs."
+      },
+      "qa-7": {
+        "title": "A hole appeared while turning a pink sock heel",
+        "excerpt": "One sock is done but the heel corner is gappy. I want to fix it before sock two.",
+        "body": "I finished the first cozy pink sock. Instep gauge is fine, but short-row heel turns left a hole.\n\nI saw the note about writing stitch counts — how do I close the hole? Should I pick up extra stitches?"
+      },
+      "qa-8": {
+        "title": "Can heart and star coasters share the same stitch count?",
+        "excerpt": "I want them as a table set and worry they’ll end up different sizes.",
+        "body": "The mini heart coaster is 12×12, and the pink star coaster is 12×12 too.\n\nSame 3-ply cotton and 4.0mm hook — will they match in real size? If I pinch the star points in single crochet, will they look like a set with the heart?"
+      },
+      "qa-9": {
+        "title": "The rainbow scarf has no chart — how do I follow it?",
+        "excerpt": "There’s only a photo, no grid. Is the stripe order enough?",
+        "body": "The pastel rainbow scarf post says no attached chart. I only see the AI preview.\n\nDo I just repeat the stripe colors? Can I knit it flat on 4.5mm circulars, or should it be in the round?"
+      },
+      "qa-10": {
+        "title": "Are the yellow beanie and gray hat really the same chart?",
+        "excerpt": "I want to swap only the color and need to confirm stitch and row counts.",
+        "body": "The yellow beanie notes say it’s the same chart as the gray basic.\n\nAre both 20×20? Yellow looks like 5.5mm circulars and gray 5.0mm — will the shape still match with different needles? How many brim rib rows work well?"
+      }
+    },
+    "answers": {
+      "ans-1": "Twist the hook a little as you work the ring and the hole shrinks. Keep round 1 tight, then don’t let round 2 loosen.",
+      "ans-2": "Mark stitch counts with scrap yarn so growth shows immediately. If the target is 6, knit 5 and check before the last one.",
+      "ans-3": "At that gauge, 5cm is about 14 extra rows. Finish the last two sleeve rows with a snugger stitch.",
+      "ans-4": "Measure the showcase beige cardigan photo against your wrist — that makes the extra-row math easier.",
+      "ans-5": "Cotton coral reads louder than on screen. Blend a beige row, or go up a needle size for a softer look.",
+      "ans-6": "The teddy chart does import. If you get an empty grid, tap Import to editor again from the community card.",
+      "ans-7": "In-the-round stockinette jogs one stitch each round. Park a marker at the start, and if it leans, change rounds one stitch earlier.",
+      "ans-8": "Split the hand stitches into four, then pick the thumb from the side. Hang scrap markers in four spots before the split.",
+      "ans-9": "Pick up the neighboring stitch at the turning corner to close the hole. Keep sock one’s counts beside you for sock two.",
+      "ans-10": "Same yarn and hook size, they’ll nearly match. Shorten the star points a little and they sit well with the heart.",
+      "ans-11": "There’s no chart — use the stripe order. Flat on circulars is fine; in the round has no seam.",
+      "ans-12": "Both grids are 20×20 all knit. 0.5mm thicker needles make it a bit bigger, so aim for about 8 brim rib rows."
+    },
+    "comments": {
+      "fc-1": "The color is gorgeous! If you’re lengthening sleeves, about 14 extra rows should do it.",
+      "fc-2": "I followed the chart as written and the size was perfect. Thank you!",
+      "fc-3": "When you add the teddy ears, use only a little stuffing. Too much and they look mashed.",
+      "fc-4": "I added a bit of wrist rib and the gloves stay on. Finger splits are easier with scrap markers.",
+      "fc-5": "I made these with the heart coaster. Pinching star points in single crochet keeps the shape.",
+      "fc-6": "Heel turning was new so I fussed, but writing counts after sock one made sock two match.",
+      "fc-7": "Same chart as the gray basic so it was quick. Yellow looks great for spring."
+    },
+    "events": {
+      "event_hongdae": {
+        "title": "Knit Together capstone booth & goods popup",
+        "location": "Hongdae Atelier 2F, Wausan-ro, Mapo-gu, Seoul",
+        "description": "Tteuni mascot goods and a live knit AR chart-scan experience",
+        "yarn": "Nagyangmosa signature wool",
+        "needle": "5.0mm knitting needles"
+      },
+      "event_garosu": {
+        "title": "Mist-cloud mohair autumn exhibition",
+        "location": "Gallery Maison, Garosu-gil, Sinsa-dong, Gangnam-gu, Seoul",
+        "description": "A physical showcase of premium mohair and Knit Together exclusive palettes",
+        "yarn": "Mist-cloud mohair",
+        "needle": "3.5mm knitting needles"
+      },
+      "event_mangwon": {
+        "title": "Beginner crochet magic-ring one-day class",
+        "location": "Mangwon rest knitting cafe, Mapo-gu, Seoul",
+        "description": "Chart-literacy clinic: magic-ring twists and personal-gauge correction",
+        "yarn": "Cozy organic cotton",
+        "needle": "4.0mm crochet hook"
+      }
+    },
+    "meetups": {
+      "meetup_mangwon": {
+        "title": "Mangwon book-cafe cardigan knit night",
+        "region": "Mangwon-dong, Mapo-gu, Seoul",
+        "date": "Saturdays 2:00 PM",
+        "needle": "5.0mm knitting needles",
+        "yarn": "Nagyangmosa signature wool"
+      },
+      "meetup_gangnam": {
+        "title": "Gangnam Station insta crop-cardigan pop-up knit",
+        "region": "Yeoksam-dong, Gangnam-gu, Seoul",
+        "date": "Aug 22, 2026, 7:00 PM",
+        "needle": "4.5mm knitting needles",
+        "yarn": "Fluffy merino"
+      },
+      "meetup_hongdae": {
+        "title": "Hongdae crochet embroidery & beginner coaster meetup",
+        "region": "Seogyo-dong, Mapo-gu, Seoul",
+        "date": "Thursdays 11:00 AM",
+        "needle": "5.0mm crochet hook",
+        "yarn": "Cozy organic cotton"
+      },
+      "mt-hapjeong-cardigan": {
+        "title": "Crop cardigan knit at a Hapjeong cafe",
+        "region": "Hapjeong-dong, Mapo-gu, Seoul",
+        "date": "Aug 23, 2:00 PM",
+        "needle": "5.0mm knitting needles",
+        "yarn": "1 ball aran weight",
+        "place": "Window cafe near Hapjeong Exit 2"
+      },
+      "mt-magic-ring": {
+        "title": "Beginner crochet magic-ring meetup",
+        "region": "Seogyo-dong, Mapo-gu, Seoul",
+        "date": "Aug 24, 7:00 PM",
+        "needle": "3.0mm crochet hook",
+        "yarn": "1 ball 4-ply cotton",
+        "place": "Hongdae community table"
+      },
+      "mt-mangwon-bookcafe": {
+        "title": "Mangwon dessert-cafe crop cardigan knit",
+        "region": "Mangwon-dong, Mapo-gu, Seoul",
+        "date": "Aug 30, 3:00 PM",
+        "needle": "4.5mm knitting needles",
+        "yarn": "1 ball Wool and the Gang merino",
+        "place": "Mangwon book cafe, 2F"
+      },
+      "mt-garosu-beanie": {
+        "title": "Finish a summer beanie on Garosu-gil",
+        "region": "Sinsa-dong, Gangnam-gu, Seoul",
+        "date": "Aug 21, 1:00 PM",
+        "needle": "4.0mm knitting needles",
+        "yarn": "1 ball cotton blend",
+        "place": "Sinsa knit cafe"
+      },
+      "mt-seongsu-socks": {
+        "title": "Sock-heel clinic in Seongsu",
+        "region": "Seongsu-dong, Seongdong-gu, Seoul",
+        "date": "Aug 26, 7:00 PM",
+        "needle": "2.5mm knitting needles",
+        "yarn": "1 ball fingering sock yarn",
+        "place": "Seongsu Loop Studio"
+      }
+    },
+    "reviews": {
+      "review_1": {
+        "eventTitle": "Knit Together capstone booth & goods popup",
+        "content": "I scanned a real cardigan at the Hongdae atelier popup — it turned into stitch symbols right away. Sharing the converted chart matched to the Nagyangmosa wool I bought on site.",
+        "patternName": "Done! Beige cardigan",
+        "patternDesc": "You can bring the attached grid chart straight into the editor"
+      },
+      "review_2": {
+        "eventTitle": "Mist-cloud mohair collab autumn exhibition",
+        "content": "I picked up a mohair package at the Garosu-gil autumn show and left a lace shawl chart that’s easy to remix in the web editor.",
+        "patternName": "Autumn special mohair shawl",
+        "patternDesc": "Move the exhibition bonus mohair chart into the editor and remix it"
+      }
+    },
+    "yarns": {
+      "merino-cream": {
+        "name": "Merino wool cream",
+        "brand": "Fine Wool",
+        "fiber": "Merino"
+      },
+      "merino-navy": {
+        "name": "Merino wool navy",
+        "brand": "Fine Wool",
+        "fiber": "Merino"
+      },
+      "mohair-pink": {
+        "name": "Mohair pink",
+        "brand": "Monde",
+        "fiber": "Mohair"
+      },
+      "mohair-lavender": {
+        "name": "Mohair lavender",
+        "brand": "Monde",
+        "fiber": "Mohair"
+      },
+      "cotton-white": {
+        "name": "Cotton white",
+        "brand": "Cozy Cotton",
+        "fiber": "Cotton"
+      },
+      "cotton-coral": {
+        "name": "Cotton coral",
+        "brand": "Cozy Cotton",
+        "fiber": "Cotton"
+      },
+      "alpaca-beige": {
+        "name": "Alpaca beige",
+        "brand": "Alpa House",
+        "fiber": "Alpaca"
+      },
+      "cashmere-gray": {
+        "name": "Cashmere gray",
+        "brand": "Luxury Yarn",
+        "fiber": "Cashmere"
+      },
+      "acrylic-sky": {
+        "name": "Acrylic sky blue",
+        "brand": "Daily Yarn",
+        "fiber": "Acrylic"
+      },
+      "wool-charcoal": {
+        "name": "Wool charcoal",
+        "brand": "Wool Story",
+        "fiber": "Wool"
+      },
+      "linen-natural": {
+        "name": "Linen natural",
+        "brand": "Linen Room",
+        "fiber": "Linen"
+      },
+      "bamboo-mint": {
+        "name": "Bamboo mint",
+        "brand": "Eco Sil",
+        "fiber": "Bamboo"
+      },
+      "angora-white": {
+        "name": "Angora white",
+        "brand": "Fluffy",
+        "fiber": "Angora"
+      },
+      "silk-gold": {
+        "name": "Silk gold",
+        "brand": "Silk Way",
+        "fiber": "Silk"
+      },
+      "blend-rainbow": {
+        "name": "Blend rainbow",
+        "brand": "Color Pop",
+        "fiber": "Wool-acrylic blend"
+      }
     }
   }
 }

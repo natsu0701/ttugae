@@ -1,31 +1,32 @@
 import { memo, useMemo } from "react";
-import type { StoredPattern } from "../../Dashboard.tsx";
+import { useTranslation } from "react-i18next";
+import type { StoredPattern } from "../../types/storedPattern.ts";
 import { softShadow } from "../ui/tabButtonStyles.ts";
 
 type BadgeDef = {
   id: string;
-  label: string;
-  description: string;
+  labelKey: string;
+  descKey: string;
   icon: string;
 };
 
 const BADGES: BadgeDef[] = [
   {
     id: "first-pattern",
-    label: "첫 도안 완성",
-    description: "도안 1개 이상 저장",
+    labelKey: "mypage.titleFirst",
+    descKey: "mypage.titleFirstDesc",
     icon: "🧶",
   },
   {
     id: "stitches-100",
-    label: "100코 달성",
-    description: "누적 100코 이상",
+    labelKey: "mypage.title100",
+    descKey: "mypage.title100Desc",
     icon: "🏅",
   },
   {
     id: "popular",
-    label: "인기 뜨개러",
-    description: "좋아요 3개 이상",
+    labelKey: "mypage.titlePopular",
+    descKey: "mypage.titlePopularDesc",
     icon: "⭐",
   },
 ];
@@ -44,6 +45,7 @@ type KnittingBadgesSectionProps = {
 };
 
 function KnittingBadgesSection({ patterns, likedCount }: KnittingBadgesSectionProps) {
+  const { t } = useTranslation();
   const totalStitches = useMemo(() => countTotalStitches(patterns), [patterns]);
 
   const unlocked = useMemo(
@@ -57,9 +59,9 @@ function KnittingBadgesSection({ patterns, likedCount }: KnittingBadgesSectionPr
 
   return (
     <section className={`rounded-2xl bg-white p-6 ${softShadow}`}>
-      <h3 className="font-sans text-base font-bold text-gray-900">나의 뜨개 칭호</h3>
+      <h3 className="font-sans text-base font-bold text-gray-900">{t("mypage.titlesTitle")}</h3>
       <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
-        활동에 따라 뱃지가 잠금 해제돼요
+        {t("mypage.titlesHint")}
       </p>
 
       <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -80,13 +82,13 @@ function KnittingBadgesSection({ patterns, likedCount }: KnittingBadgesSectionPr
               >
                 {badge.icon}
               </span>
-              <p className="mt-3 font-sans text-sm font-bold">{badge.label}</p>
+              <p className="mt-3 font-sans text-sm font-bold">{t(badge.labelKey)}</p>
               <p
                 className={`mt-1 font-seoyun text-[11px] font-normal ${
                   isOn ? "text-white/85" : "text-gray-400"
                 }`}
               >
-                {isOn ? "달성!" : badge.description}
+                {isOn ? t("common.achieved") : t(badge.descKey)}
               </p>
             </li>
           );

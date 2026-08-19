@@ -1,4 +1,5 @@
 import { type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import BrandTextLogo from "./ui/BrandTextLogo.tsx";
 import Button from "./ui/Button.tsx";
@@ -52,6 +53,7 @@ function AppleIcon() {
 }
 
 export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
+  const { t } = useTranslation();
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     onLogin(e);
@@ -63,7 +65,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
         type="button"
         className="absolute inset-0 bg-white/80 backdrop-blur-md"
         onClick={onClose}
-        aria-label="닫기"
+        aria-label={t("common.close")}
       />
 
       <motion.div
@@ -79,36 +81,36 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           type="button"
           onClick={onClose}
           className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 font-sans text-lg text-gray-600 transition-colors hover:bg-coral hover:text-white"
-          aria-label="닫기"
+          aria-label={t("common.close")}
         >
           ×
         </button>
 
         <h2 id="login-title" className="flex flex-wrap items-center gap-2 font-sans text-2xl font-bold text-gray-900">
           <BrandTextLogo className="h-7 w-auto object-contain" />
-          시작하기
+          {t("login.title")}
         </h2>
         <p className="mt-2 font-seoyun text-sm text-gray-600">
-          로그인하고 도안을 저장하고 공유해 보세요.
+          {t("login.subtitle")}
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <SmoothInput
-            label="이메일"
+            label={t("login.email")}
             type="email"
             placeholder="you@example.com"
             className="border-stone-200"
             required
           />
           <SmoothInput
-            label="비밀번호"
+            label={t("login.password")}
             type="password"
             placeholder="••••••••"
             className="border-stone-200"
             required
           />
           <Button type="submit" variant="primary" fullWidth className="mt-2 py-3.5">
-            로그인
+            {t("login.submit")}
           </Button>
         </form>
 
@@ -117,7 +119,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
             <div className="h-px w-full bg-gray-200" />
           </div>
           <p className="relative mx-auto w-fit bg-gray-50 px-4 font-seoyun text-sm text-gray-500">
-            또는 간편 로그인
+            {t("login.orSocial")}
           </p>
         </div>
 
@@ -126,8 +128,8 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
             type="button"
             onClick={() => onLogin()}
             className={`${socialBtnBase} bg-[#FEE500] hover:bg-[#f5dc00]`}
-            aria-label="카카오로 시작하기"
-            title="카카오로 시작하기"
+            aria-label={t("login.kakao")}
+            title={t("login.kakao")}
           >
             <KakaoIcon />
           </button>
@@ -135,8 +137,8 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
             type="button"
             onClick={() => onLogin()}
             className={`${socialBtnBase} border border-gray-300 bg-white hover:bg-gray-50`}
-            aria-label="구글로 시작하기"
-            title="구글로 시작하기"
+            aria-label={t("login.google")}
+            title={t("login.google")}
           >
             <GoogleIcon />
           </button>
@@ -144,8 +146,8 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
             type="button"
             onClick={() => onLogin()}
             className={`${socialBtnBase} border border-gray-300 bg-black text-white hover:bg-gray-800`}
-            aria-label="애플로 시작하기"
-            title="애플로 시작하기"
+            aria-label={t("login.apple")}
+            title={t("login.apple")}
           >
             <AppleIcon />
           </button>

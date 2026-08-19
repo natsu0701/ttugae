@@ -3,11 +3,13 @@ import { motion, useAnimation } from "framer-motion";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 
 /**
- * 히어로 하단 안착 위치 (px) — 값이 작을수록 뜨니가 텍스트 쪽으로 올라옴.
- * 이미지 비율(705×776, 세로≈가로×1.10) 기준으로 래퍼 높이가
- * "이미지 폭 × 1.10 + (진폭 − REST_Y)" 이상이면 머리가 잘리지 않는다.
+ * 뜨니 SVG(705×776)에서 눈은 세로 약 43~51% 지점, 바늘·잎사귀는 그 위에 있다.
+ * 래퍼가 남은 뷰포트만 차지하고, 이미지는 상단(머리)을 기준으로 약 167% 키워
+ * 보이는 구간이 항상 "눈 + 그 위"가 되도록 자른다. 다리는 하단에서만 잘린다.
  */
-const TTEUNI_REST_Y = 12;
+const FACE_CROP_HEIGHT = "167%";
+
+const TTEUNI_REST_Y = 8;
 
 const ENTRANCE_SPRING = {
   type: "spring" as const,
@@ -16,8 +18,7 @@ const ENTRANCE_SPRING = {
   mass: 0.9,
 };
 
-/** 부유 진폭 — 래퍼 천장(overflow-hidden)에 머리가 닿지 않는 범위로 제한 */
-const FLOAT_AMPLITUDE = 8;
+const FLOAT_AMPLITUDE = 6;
 
 const FLOAT_KEYFRAMES = [
   TTEUNI_REST_Y,
@@ -62,16 +63,16 @@ function TteuniHeroPeek() {
 
   return (
     <div
-      className="pointer-events-none relative z-10 mx-auto mt-auto flex h-[20rem] w-full shrink-0 items-end justify-center overflow-hidden sm:h-[25rem] md:h-[29rem] [@media(max-height:750px)]:h-[17rem]"
+      className="pointer-events-none relative z-10 mx-auto mt-auto flex min-h-0 w-full min-w-0 flex-1 basis-0 items-start justify-center overflow-hidden"
       aria-hidden
     >
       <motion.img
         src={TTEUNI_IMAGES.hero}
         alt=""
-        className="relative h-auto w-[18rem] max-w-none object-contain object-bottom sm:w-[22rem] md:w-[26rem] [@media(max-height:750px)]:w-[15rem]"
-        initial={{ y: 96 }}
+        className="relative w-auto max-w-none origin-top object-cover object-top"
+        initial={{ y: 72 }}
         animate={controls}
-        style={{ position: "relative" }}
+        style={{ height: FACE_CROP_HEIGHT, position: "relative" }}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
-import type { StoredPattern } from "../../Dashboard.tsx";
+import { useTranslation } from "react-i18next";
+import type { StoredPattern } from "../../types/storedPattern.ts";
 import { softShadow } from "../ui/tabButtonStyles.ts";
 
 const COLOR_MAP: Record<string, string> = {
@@ -53,6 +54,7 @@ export default function LoadMyPatternModal({
   onClose,
   onSelect,
 }: LoadMyPatternModalProps) {
+  const { t } = useTranslation();
   const sorted = patterns.slice().sort((a, b) => b.updatedAt - a.updatedAt);
 
   return (
@@ -80,17 +82,17 @@ export default function LoadMyPatternModal({
                 id="load-pattern-title"
                 className="font-sans text-lg font-bold text-gray-900"
               >
-                내 도안 불러오기
+                {t("createPost.loadMine")}
               </h2>
               <p className="mt-1 font-sans text-sm font-normal text-gray-500">
-                첨부할 도안을 선택하세요
+                {t("createPost.loadMineHint")}
               </p>
             </div>
 
             <ul className="max-h-[min(60vh,24rem)] overflow-y-auto px-3 py-3">
               {sorted.length === 0 ? (
                 <li className="px-3 py-8 text-center font-sans text-sm text-gray-500">
-                  저장된 도안이 없습니다. 에디터에서 도안을 저장한 뒤 다시 시도해 주세요.
+                  {t("createPost.loadMineEmpty")}
                 </li>
               ) : (
                 sorted.map((pattern) => (
@@ -125,7 +127,7 @@ export default function LoadMyPatternModal({
                 onClick={onClose}
                 className="w-full rounded-full py-2.5 font-sans text-sm font-normal text-gray-600 transition-colors hover:bg-gray-100"
               >
-                닫기
+                {t("common.close")}
               </button>
             </div>
           </motion.div>

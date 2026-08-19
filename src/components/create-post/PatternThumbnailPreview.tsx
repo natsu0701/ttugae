@@ -1,5 +1,6 @@
 import PatternChartGrid from "../community/PatternChartGrid.tsx";
 import { EDITOR_COLOR_HEX, type EditorCell } from "../../utils/patternGrid.ts";
+import { useTranslation } from "react-i18next";
 
 type PatternThumbnailPreviewProps = {
   grid: EditorCell[][];
@@ -14,6 +15,7 @@ export default function PatternThumbnailPreview({
   photoUrl,
   title,
 }: PatternThumbnailPreviewProps) {
+  const { t } = useTranslation();
   const mergedColorMap = { ...EDITOR_COLOR_HEX, ...colorMap };
 
   return (
@@ -21,13 +23,13 @@ export default function PatternThumbnailPreview({
       {photoUrl ? (
         <img
           src={photoUrl}
-          alt={title ? `${title} 완성작` : "완성작 미리보기"}
+          alt={title ? t("community.finishedAltOf", { title }) : t("createPost.previewAlt")}
           className="h-52 w-full object-cover"
         />
       ) : (
         <div className="p-4">
           <p className="mb-3 font-sans text-xs font-normal text-gray-500">
-            도안 미리보기
+            {t("community.patternPreview")}
           </p>
           <div className="mx-auto max-w-xs overflow-hidden rounded-xl bg-gray-200 p-1">
             <PatternChartGrid

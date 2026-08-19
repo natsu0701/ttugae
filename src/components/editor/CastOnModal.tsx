@@ -12,6 +12,7 @@ import {
 import { loadGaugeProfile, saveGaugeProfile } from "../../utils/personalizationStorage.ts";
 import NeedleSpecFields from "./NeedleSpecFields.tsx";
 import { DEFAULT_NEEDLE, type NeedleSpec } from "../../data/knittingMetadataLibrary.ts";
+import { chartPartLabel } from "../../utils/i18nContent.ts";
 
 export type CastOnMode = "replace" | "add" | "gauge";
 
@@ -96,7 +97,7 @@ export default function CastOnModal({
     const rows = parseInt(h, 10);
     if (!Number.isFinite(cols) || !Number.isFinite(rows)) return;
     if (isAdd && onAddChart) {
-      const label = name.trim() || CHART_PART_LABELS[targetPart];
+      const label = name.trim() || chartPartLabel(t, targetPart, CHART_PART_LABELS[targetPart]);
       onAddChart({ cols, rows, name: label, targetPart });
     } else {
       onApply(cols, rows);
@@ -157,7 +158,7 @@ export default function CastOnModal({
                   <SmoothInput
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={CHART_PART_LABELS[targetPart]}
+                    placeholder={chartPartLabel(t, targetPart, CHART_PART_LABELS[targetPart])}
                     className="border-stone-200 bg-white py-2 text-sm"
                   />
                 </div>
@@ -174,7 +175,7 @@ export default function CastOnModal({
                   >
                     {PARTS.map((part) => (
                       <option key={part} value={part}>
-                        {CHART_PART_LABELS[part]}
+                        {chartPartLabel(t, part, CHART_PART_LABELS[part])}
                       </option>
                     ))}
                   </select>
@@ -194,7 +195,7 @@ export default function CastOnModal({
                       value={beforeSts}
                       onChange={(e) => setBeforeSts(e.target.value)}
                       inputMode="numeric"
-                      placeholder="코"
+          placeholder={t("common.sts")}
                       className="border-stone-200 bg-white py-1.5 text-sm"
                       aria-label={t("editor.castOn.gaugeSts")}
                     />
@@ -202,7 +203,7 @@ export default function CastOnModal({
                       value={beforeRows}
                       onChange={(e) => setBeforeRows(e.target.value)}
                       inputMode="numeric"
-                      placeholder="단"
+                      placeholder={t("common.rows")}
                       className="border-stone-200 bg-white py-1.5 text-sm"
                       aria-label={t("editor.castOn.gaugeRows")}
                     />
@@ -217,7 +218,7 @@ export default function CastOnModal({
                       value={afterSts}
                       onChange={(e) => setAfterSts(e.target.value)}
                       inputMode="numeric"
-                      placeholder="코"
+          placeholder={t("common.sts")}
                       className="border-stone-200 bg-white py-1.5 text-sm"
                       aria-label={t("editor.castOn.gaugeSts")}
                     />
@@ -225,7 +226,7 @@ export default function CastOnModal({
                       value={afterRows}
                       onChange={(e) => setAfterRows(e.target.value)}
                       inputMode="numeric"
-                      placeholder="단"
+                      placeholder={t("common.rows")}
                       className="border-stone-200 bg-white py-1.5 text-sm"
                       aria-label={t("editor.castOn.gaugeRows")}
                     />
@@ -256,7 +257,7 @@ export default function CastOnModal({
               <button
                 type="button"
                 onClick={applyRecommended}
-                className="mt-2 w-full rounded-full bg-white px-3 py-2 font-sans text-xs font-normal text-gray-700 transition-colors hover:bg-black hover:text-white"
+                className="mt-2 w-full rounded-full bg-white px-3 py-2 font-sans text-xs font-normal text-gray-900 transition-colors hover:bg-black hover:text-white"
               >
                 {t("editor.castOn.applyRecommended")}
               </button>
@@ -314,7 +315,7 @@ export default function CastOnModal({
               <Button type="button" variant="ghost" onClick={onClose} className="flex-1 py-2.5">
                 {t("editor.castOn.cancel")}
               </Button>
-              <Button type="button" onClick={handleApply} className="flex-1 bg-coral py-2.5 text-white hover:bg-black">
+              <Button type="button" onClick={handleApply} className="flex-1 py-2.5">
                 {isGauge
                   ? t("editor.castOn.gaugeSave")
                   : isAdd

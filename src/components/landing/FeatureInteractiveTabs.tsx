@@ -1,5 +1,6 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import SafePublicImage from "./SafePublicImage.tsx";
 import { ChevronFillIcon } from "../icons/FillIcons.tsx";
 import { FEATURE_TABS } from "./featureTabsData.tsx";
@@ -7,7 +8,31 @@ import { FEATURE_TABS } from "./featureTabsData.tsx";
 const PANEL_EASE = [0.16, 1, 0.3, 1] as const;
 const ACCORDION_SPRING = { type: "spring" as const, stiffness: 360, damping: 24, mass: 0.75 };
 
+const TAB_COPY: Record<string, { title: string; sub: string; desc: string }> = {
+  editor: {
+    title: "landing.tabEditorTitle",
+    sub: "landing.tabEditorSub",
+    desc: "landing.tabEditorDesc",
+  },
+  chatbot: {
+    title: "landing.tabChatTitle",
+    sub: "landing.tabChatSub",
+    desc: "landing.tabChatDesc",
+  },
+  converter: {
+    title: "landing.tabConvertTitle",
+    sub: "landing.tabConvertSub",
+    desc: "landing.tabConvertDesc",
+  },
+  community: {
+    title: "landing.tabCommunityTitle",
+    sub: "landing.tabCommunitySub",
+    desc: "landing.tabCommunityDesc",
+  },
+};
+
 function FeatureInteractiveTabs() {
+  const { t } = useTranslation();
   const [activeId, setActiveId] = useState(FEATURE_TABS[0].id);
 
   const active = useMemo(
@@ -32,7 +57,7 @@ function FeatureInteractiveTabs() {
             >
               <SafePublicImage
                 src={encodeURI(active.imagePath)}
-                alt={active.title}
+                alt={t(TAB_COPY[active.id]?.title ?? "landing.tabEditorTitle")}
                 className="h-auto max-h-full w-auto max-w-full rounded-[2.75rem] object-contain"
                 fallbackLabel={active.imagePath}
               />
@@ -72,10 +97,10 @@ function FeatureInteractiveTabs() {
                         isActive ? "text-stone-900" : "text-stone-600 group-hover:text-stone-900"
                       }`}
                     >
-                      {item.title}
+                      {t(TAB_COPY[item.id]?.title ?? item.title)}
                     </span>
                     <span className="mt-0.5 block font-sans text-[10px] font-light text-stone-400">
-                      {item.subtitle}
+                      {t(TAB_COPY[item.id]?.sub ?? item.subtitle)}
                     </span>
                   </div>
                 </div>
@@ -96,7 +121,7 @@ function FeatureInteractiveTabs() {
                     className="overflow-hidden"
                   >
                     <p className="mt-3 break-keep font-seoyun text-base font-normal leading-relaxed text-stone-500">
-                      {item.description}
+                      {t(TAB_COPY[item.id]?.desc ?? item.description)}
                     </p>
                   </motion.div>
                 ) : null}

@@ -1,4 +1,5 @@
 import { memo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   CheckFillIcon,
@@ -15,34 +16,34 @@ import {
   loadYarnInventory,
 } from "../../utils/personalizationStorage.ts";
 
-type FilterOption = { id: string; label: string };
+type FilterOption = { id: string; labelKey: string };
 
 const LEVEL_FILTERS: FilterOption[] = [
-  { id: "all", label: "모든 숙련도" },
-  { id: "beginner", label: "초급 (쉬운 난이도)" },
-  { id: "intermediate", label: "중급 (보통 난이도)" },
-  { id: "advanced", label: "고급 (어려운 난이도)" },
+  { id: "all", labelKey: "community.filterLevelAll" },
+  { id: "beginner", labelKey: "community.filterLevelBeginner" },
+  { id: "intermediate", labelKey: "community.filterLevelMid" },
+  { id: "advanced", labelKey: "community.filterLevelAdv" },
 ];
 
 const TOOL_FILTERS: FilterOption[] = [
-  { id: "all", label: "모든 도구" },
-  { id: "knitting", label: "대바늘 소품/의류" },
-  { id: "crochet", label: "코바늘 소품/의류" },
+  { id: "all", labelKey: "community.filterToolAll" },
+  { id: "knitting", labelKey: "community.filterToolKnit" },
+  { id: "crochet", labelKey: "community.filterToolCrochet" },
 ];
 
 const CATEGORY_FILTERS: FilterOption[] = [
-  { id: "all", label: "모든 카테고리" },
-  { id: "clothing", label: "의류 (스웨터/가디건)" },
-  { id: "accessory", label: "소품 (비니/머플러/키링)" },
-  { id: "household", label: "생활 용품 (매트/코스터)" },
+  { id: "all", labelKey: "community.filterCatAll" },
+  { id: "clothing", labelKey: "community.filterCatClothes" },
+  { id: "accessory", labelKey: "community.filterCatAcc" },
+  { id: "household", labelKey: "community.filterCatHome" },
 ];
 
 const MATERIAL_FILTERS: FilterOption[] = [
-  { id: "all", label: "모든 실 소재" },
-  { id: "merino", label: "메리노울" },
-  { id: "cotton", label: "오가닉 코튼" },
-  { id: "mohair", label: "안개 모헤어" },
-  { id: "acrylic", label: "아크릴" },
+  { id: "all", labelKey: "community.filterMatAll" },
+  { id: "merino", labelKey: "community.filterMatMerino" },
+  { id: "cotton", labelKey: "community.filterMatCotton" },
+  { id: "mohair", labelKey: "community.filterMatMohair" },
+  { id: "acrylic", labelKey: "community.filterMatAcrylic" },
 ];
 
 type CommunityFilterBarProps = {
@@ -62,6 +63,7 @@ function FilterColumn({
   value: string;
   onSelect: (id: string) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-2">
       <p className="block font-sans text-[11px] font-medium uppercase tracking-wider text-gray-400">
@@ -81,7 +83,7 @@ function FilterColumn({
                   : "bg-transparent font-normal text-gray-600 hover:bg-gray-50"
               }`}
             >
-              <span>{opt.label}</span>
+              <span>{t(opt.labelKey)}</span>
               {active ? <CheckFillIcon className="h-3 w-3 text-white" /> : null}
             </button>
           );
@@ -96,6 +98,7 @@ function CommunityFilterBar({
   resultCount,
   onChange,
 }: CommunityFilterBarProps) {
+  const { t } = useTranslation();
   const [panelOpen, setPanelOpen] = useState(false);
   const hasActive =
     filters.level !== "all" ||
@@ -108,9 +111,9 @@ function CommunityFilterBar({
     const yarns = loadYarnInventory().length;
     const needles = loadNeedleInventory().length;
     if (yarns === 0 && needles === 0) {
-      return "마이페이지 설정에 실 장고와 바늘 창고를 등록하면 더 정확히 맞춰 드려요.";
+      return t("community.filterBagEmpty");
     }
-    return `실 장고 ${yarns}개, 바늘 창고 ${needles}개를 기준으로 맞춥니다.`;
+    return t("community.filterBagHint", { yarns, needles });
   };
 
   const patch = (partial: Partial<LoungeFilters>) => {
@@ -129,12 +132,12 @@ function CommunityFilterBar({
     <div className="w-full select-none">
       <div className="flex items-center gap-2">
         <label className="flex h-11 min-w-0 flex-1 items-center rounded-full border border-gray-200 bg-white px-4">
-          <span className="sr-only">도안 검색</span>
+          <span className="sr-only">{t("community.filterSearch")}</span>
           <input
             type="search"
             value={filters.query}
             onChange={(e) => patch({ query: e.target.value })}
-            placeholder="도안 검색"
+            placeholder={t("community.filterSearch")}
             className="w-full bg-transparent font-sans text-sm font-normal text-gray-800 outline-none placeholder:text-gray-400"
           />
         </label>
@@ -142,7 +145,7 @@ function CommunityFilterBar({
           type="button"
           onClick={() => setPanelOpen((open) => !open)}
           aria-expanded={panelOpen}
-          aria-label="필터"
+          aria-label={t("community.filterAria")}
           className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors ${
             panelOpen || hasActive
               ? "border-gray-900 bg-gray-900 text-white"
@@ -182,7 +185,7 @@ function CommunityFilterBar({
                   >
                     <CheckFillIcon className="h-2 w-2" />
                   </span>
-                  내 뜨개가방으로 맞춤
+                  {t("community.filterBagToggle")}
                 </button>
                 {hasActive ? (
                   <button
@@ -193,7 +196,7 @@ function CommunityFilterBar({
                     className="flex items-center gap-1 rounded-full px-3 py-2 font-sans text-xs font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
                   >
                     <RefreshFillIcon className="h-3 w-3" />
-                    초기화
+                    {t("community.filterReset")}
                   </button>
                 ) : null}
               </div>
@@ -206,32 +209,32 @@ function CommunityFilterBar({
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 <FilterColumn
-                  label="나의 뜨개 실력"
+                  label={t("community.filterLevel")}
                   options={LEVEL_FILTERS}
                   value={filters.level}
                   onSelect={(id) => patch({ level: id as LoungeFilters["level"] })}
                 />
                 <FilterColumn
-                  label="사용 도구 (대바늘/코바늘)"
+                  label={t("community.filterTool")}
                   options={TOOL_FILTERS}
                   value={filters.tool}
                   onSelect={(id) => patch({ tool: id as LoungeFilters["tool"] })}
                 />
                 <FilterColumn
-                  label="남아있는 실 소재"
+                  label={t("community.filterMaterial")}
                   options={MATERIAL_FILTERS}
                   value={filters.material}
                   onSelect={(id) => patch({ material: id as LoungeFilters["material"] })}
                 />
                 <FilterColumn
-                  label="제작 품목 카테고리"
+                  label={t("community.filterCategory")}
                   options={CATEGORY_FILTERS}
                   value={filters.itemKind}
                   onSelect={(id) => patch({ itemKind: id as LoungeFilters["itemKind"] })}
                 />
               </div>
               <p className="mt-4 font-sans text-[11px] font-normal text-gray-400">
-                {resultCount}개
+                {t("community.filterResultCount", { count: resultCount })}
               </p>
             </div>
           </motion.div>

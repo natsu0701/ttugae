@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import {
@@ -6,6 +7,11 @@ import {
   type QaAnswer,
   type QaPost,
 } from "../../data/qaPosts.ts";
+import {
+  displayAuthor,
+  localizedQaAnswer,
+  localizedQaPost,
+} from "../../utils/i18nContent.ts";
 
 const LOCAL_AUTHOR = "나";
 
@@ -19,6 +25,7 @@ type QaDetailProps = {
 };
 
 export default function QaDetail({ post, onBack }: QaDetailProps) {
+  const { t } = useTranslation();
   const [answers, setAnswers] = useState<QaAnswer[]>(() =>
     getAnswersForPost(post.id),
   );
@@ -67,6 +74,8 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
     }
   };
 
+  const displayPost = localizedQaPost(t, post);
+
   return (
     <div className="min-h-screen bg-white pb-16 font-sans text-gray-900">
       <header className="relative z-10 bg-white">
@@ -76,7 +85,7 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
             onClick={onBack}
             className="font-sans text-sm font-normal text-gray-700 transition-colors hover:text-coral"
           >
-            ← Q&A 목록
+            {t("community.backQa")}
           </button>
         </div>
       </header>
@@ -84,25 +93,26 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
       <article className="mx-auto max-w-3xl px-5 md:px-8">
         <section className="rounded-2xl bg-gray-50 p-6 md:p-8">
           <h1 className="font-sans text-2xl font-bold leading-snug text-gray-900 md:text-3xl">
-            {post.title}
+            {displayPost.title}
           </h1>
           <div className="mt-4 flex flex-wrap gap-3 font-sans text-sm font-normal text-gray-500">
-            <span>@{post.author}</span>
+            <span>@{displayAuthor(t, post.author)}</span>
             <span>{post.createdAt}</span>
           </div>
           <p className="mt-6 whitespace-pre-wrap font-sans text-base font-normal leading-relaxed text-gray-700">
-            {post.body}
+            {displayPost.body}
           </p>
         </section>
 
         <section className="mt-10">
           <h2 className="font-sans text-lg font-bold text-gray-900">
-            답변 {answers.length}개
+            {t("community.answersCount", { count: answers.length })}
           </h2>
           <ul className="mt-4 flex flex-col gap-3">
             {answers.map((ans) => {
               const own = isOwnAnswer(ans);
               const editing = editingId === ans.id;
+              const displayAns = localizedQaAnswer(t, ans);
 
               return (
                 <li
@@ -116,20 +126,20 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
                         onClick={() => startEdit(ans)}
                         className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
                       >
-                        수정
+                        {t("common.edit")}
                       </button>
                       <button
                         type="button"
                         onClick={() => deleteAnswer(ans.id)}
                         className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
                       >
-                        삭제
+                        {t("common.delete")}
                       </button>
                     </div>
                   )}
 
                   <div className="flex flex-wrap items-center gap-2 pr-20 font-sans text-xs font-normal text-gray-500">
-                    <span className="font-normal text-gray-700">@{ans.author}</span>
+                    <span className="font-normal text-gray-700">@{displayAuthor(t, ans.author)}</span>
                     <span>{ans.createdAt}</span>
                   </div>
 
@@ -148,7 +158,7 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
                           className="px-4 py-2 text-sm"
                           onClick={() => saveEdit(ans.id)}
                         >
-                          저장
+                          {t("common.save")}
                         </Button>
                         <Button
                           type="button"
@@ -159,13 +169,13 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
                             setEditDraft("");
                           }}
                         >
-                          취소
+                          {t("common.cancel")}
                         </Button>
                       </div>
                     </div>
                   ) : (
                     <p className="mt-3 whitespace-pre-wrap font-sans text-sm font-normal leading-relaxed text-gray-700">
-                      {ans.body}
+                      {displayAns.body}
                     </p>
                   )}
                 </li>
@@ -178,17 +188,17 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
             className="mt-8 rounded-2xl bg-gray-50 p-5"
           >
             <label className="font-sans text-sm font-normal text-gray-700">
-              답변 작성
+              {t("community.writeAnswer")}
             </label>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
               <SmoothInput
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
-                placeholder="도움이 되는 답변을 남겨 주세요"
+                placeholder={t("community.qaReplyPlaceholder")}
                 className="flex-1 border-stone-200"
               />
               <Button type="submit" variant="primary" className="shrink-0 px-4 py-2">
-                등록
+                {t("community.submitComment")}
               </Button>
             </div>
           </form>

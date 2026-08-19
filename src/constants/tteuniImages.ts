@@ -3,7 +3,7 @@
  * 동일 파일명의 SVG를 넣으면 앱 전역에 바로 반영됩니다.
  */
 export const TTEUNI_IMAGES = {
-  /** 홈 Hero — 하단에서 반신만 보이는 큰 뜨니 */
+  /** 홈 Hero — 하단에서 빼꼼, 눈과 그 위 얼굴은 항상 보이게 */
   hero: "/뜨니_메인반신.svg",
   /** 에디터 AI 챗봇 아바타 */
   chatProfile: "/뜨니_챗봇프로필.svg",

@@ -1,5 +1,5 @@
-import type { StoredPattern } from "../Dashboard.tsx";
-import { communityPatternToGrid } from "../Community.tsx";
+import type { StoredPattern } from "../types/storedPattern.ts";
+import { getPatternEditorGrid } from "../data/patternThumbnails.ts";
 import type { CommunityPattern } from "../data/communityPatterns.ts";
 import { saveShareDraft } from "./shareDraft.ts";
 
@@ -14,7 +14,7 @@ export function resolveStoredPatternFromCommunity(
       title: pattern.title,
       updatedAt: Date.now(),
       gridSize: Math.max(pattern.gridRows, pattern.gridCols),
-      grid: communityPatternToGrid(pattern),
+      grid: getPatternEditorGrid(pattern),
       colorMap: pattern.colorMap,
       needle: pattern.needle,
     }

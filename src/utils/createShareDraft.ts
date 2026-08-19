@@ -1,4 +1,4 @@
-import type { StoredPattern } from "../Dashboard.tsx";
+import type { StoredPattern } from "../types/storedPattern.ts";
 import { BASE_EDITOR_YARNS } from "../data/baseEditorYarns.ts";
 import { emptyGrid } from "./patternGrid.ts";
 import { saveShareDraft, type ShareDraftPayload } from "./shareDraft.ts";

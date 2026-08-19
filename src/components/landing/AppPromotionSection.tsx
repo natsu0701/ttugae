@@ -1,4 +1,5 @@
 import { memo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectCreative } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper";
@@ -10,19 +11,10 @@ import "swiper/css/effect-creative";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 
-const SLIDES = [
-  {
-    src: "/images/App_mockup_1.png",
-    alt: "뜨니 AR 앱 모바일 목업 1",
-  },
-  {
-    src: "/images/App_mockup_2.png",
-    alt: "뜨니 AR 앱 모바일 목업 2",
-  },
-  {
-    src: "/images/App_mockup_3.png",
-    alt: "뜨니 AR 앱 모바일 목업 3",
-  },
+const SLIDE_SRCS = [
+  "/images/App_mockup_1.png",
+  "/images/App_mockup_2.png",
+  "/images/App_mockup_3.png",
 ] as const;
 
 const css = `
@@ -57,6 +49,7 @@ const ARROW_BTN =
   "pointer-events-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-stone-200 bg-white/90 text-stone-600 shadow-sm backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:border-stone-300 hover:text-coral";
 
 function AppPromotionSection() {
+  const { t } = useTranslation();
   const swiperRef = useRef<SwiperClass | null>(null);
 
   const slideBy = (direction: 1 | -1) => {
@@ -72,14 +65,14 @@ function AppPromotionSection() {
         <div
           className="app-promo-swiper relative w-full"
           aria-roledescription="carousel"
-          aria-label="앱 홍보 목업"
+          aria-label={t("landing.promoAria")}
         >
           <div className="relative w-full">
             <button
               type="button"
               onClick={() => slideBy(-1)}
               className={`${ARROW_BTN} absolute left-4 top-1/2 z-20 -translate-y-1/2 md:left-8`}
-              aria-label="이전 목업"
+              aria-label={t("landing.promoPrev")}
             >
               <ChevronLeftFillIcon className="h-5 w-5" />
             </button>
@@ -116,11 +109,11 @@ function AppPromotionSection() {
               }}
               className="w-full"
             >
-              {SLIDES.map((slide) => (
-                <SwiperSlide key={slide.src}>
+              {SLIDE_SRCS.map((src, index) => (
+                <SwiperSlide key={src}>
                   <img
-                    src={slide.src}
-                    alt={slide.alt}
+                    src={src}
+                    alt={t("landing.promoAlt", { n: index + 1 })}
                     className="pointer-events-none select-none"
                   />
                 </SwiperSlide>
@@ -131,7 +124,7 @@ function AppPromotionSection() {
               type="button"
               onClick={() => slideBy(1)}
               className={`${ARROW_BTN} absolute right-4 top-1/2 z-20 -translate-y-1/2 md:right-8`}
-              aria-label="다음 목업"
+              aria-label={t("landing.promoNext")}
             >
               <ChevronRightFillIcon className="h-5 w-5" />
             </button>
@@ -142,13 +135,13 @@ function AppPromotionSection() {
 
         <div className="mx-auto mt-20 max-w-3xl px-5 text-center md:mt-28 md:px-8">
           <h2 className="flex flex-col gap-2 font-sans text-2xl font-bold leading-none text-black sm:text-3xl md:gap-2.5 md:text-4xl">
-            <span>실전 뜨개질은 뜨니와 함께!</span>
-            <span>AR 내비게이션 앱</span>
+            <span>{t("landing.promoLine1")}</span>
+            <span>{t("landing.promoLine2")}</span>
           </h2>
           <p className="mt-5 font-seoyun text-[1.5rem] font-normal leading-tight text-gray-700 md:text-[1.7rem]">
-            웹에서 그린 도안을 앱으로 연동해 보세요.
+            {t("landing.promoBody1")}
             <br />
-            카메라로 비추면 다음 코를 안내해 줍니다.
+            {t("landing.promoBody2")}
           </p>
           <div className="flex flex-wrap justify-center gap-3 pt-6">
             <a

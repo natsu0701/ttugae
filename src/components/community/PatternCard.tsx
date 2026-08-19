@@ -10,6 +10,7 @@ import { getPatternPreviewModel } from "../../data/patternThumbnails.ts";
 import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
 import NeedleBadge from "./NeedleBadge.tsx";
 import PatternChartGrid from "./PatternChartGrid.tsx";
+import { displayAuthor, localizedPattern } from "../../utils/i18nContent.ts";
 
 export function communityPostPath(patternId: string) {
   return `/community/post/${patternId}`;
@@ -37,6 +38,8 @@ function PatternGridPreview({ pattern }: { pattern: CommunityPattern }) {
 }
 
 function FinishedHoverLayer({ pattern }: { pattern: CommunityPattern }) {
+  const { t } = useTranslation();
+  const view = localizedPattern(t, pattern);
   const [failed, setFailed] = useState(false);
   const src = finishedImageUrl(pattern.finishedImage);
 
@@ -45,7 +48,7 @@ function FinishedHoverLayer({ pattern }: { pattern: CommunityPattern }) {
   return (
     <img
       src={src}
-      alt={`${pattern.title} 완성작`}
+      alt={t("community.finishedAltOf", { title: view.title })}
       className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
       loading="lazy"
       decoding="async"
@@ -70,6 +73,7 @@ function PatternCard({
   showImportOverlay = true,
 }: PatternCardProps) {
   const { t } = useTranslation();
+  const view = localizedPattern(t, pattern);
   const { isLiked, isSaved, getLikeCount, getSaveCount, toggleLike, toggleSave } =
     useCommunityActions();
 
@@ -106,7 +110,7 @@ function PatternCard({
         href={href}
         onClick={openDetail}
         className="block"
-        aria-label={pattern.title}
+        aria-label={view.title}
       >
         <div className="relative aspect-square w-full overflow-hidden bg-stone-50">
           <PatternGridPreview pattern={pattern} />
@@ -152,17 +156,17 @@ function PatternCard({
           )}
           <NeedleBadge
             spec={pattern.needle}
-            needleText={pattern.finishedDetail.needle}
+            needleText={view.finishedDetail.needle}
             className="pointer-events-none absolute bottom-3.5 right-3.5 z-[2] shadow-sm"
           />
         </div>
 
         <div className="bg-white p-4">
           <h3 className="line-clamp-1 font-sans text-sm font-bold text-stone-900 transition-colors group-hover:text-coral">
-            {pattern.title}
+            {view.title}
           </h3>
           <p className="mt-2 flex items-center gap-1.5 font-sans text-xs font-medium text-stone-500">
-            @{pattern.author}
+            @{displayAuthor(t, pattern.author)}
             <EquippedAuthorChip author={pattern.author} />
           </p>
         </div>

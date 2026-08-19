@@ -18,7 +18,10 @@
       "liked": "いいねした編み図",
       "saved": "保存した編み図",
       "stats": "統計",
-      "settings": "設定"
+      "settings": "設定",
+      "summary": "アクティビティ",
+      "meetups": "予約した集まり",
+      "statsDetail": "詳細統計"
     },
     "account": {
       "section": "アカウント",
@@ -48,7 +51,19 @@
       "statSaved": "保存した編み図",
       "unitPatterns": "件",
       "unitHearts": "回",
-      "unitFinished": "点"
+      "unitFinished": "点",
+      "regionTitle": "活動エリア",
+      "regionHint": "区・洞を保存するとラウンジ地図と集まりが近くから並びます。",
+      "regionLabel": "区 / 洞",
+      "regionPlaceholder": "ソウル市麻浦区望遠洞",
+      "gaugeTitle": "マイゲージ",
+      "gaugeHint": "10×10cmの洗い前後の目・段数を保存すると作り目に使います。",
+      "gaugeBeforeSts": "洗い前の目",
+      "gaugeBeforeRows": "洗い前の段",
+      "gaugeAfterSts": "洗い後の目",
+      "gaugeAfterRows": "洗い後の段",
+      "levelTitle": "ふわふわニッター (Level 3)",
+      "profileHint": "プロフィールと手編みゲージを管理します。"
     },
     "patterns": {
       "title": "マイ編み図",
@@ -72,8 +87,102 @@
       "appliedHint": "選択した言語がすぐに反映されます。",
       "langKo": "한국어",
       "langEn": "English",
-      "langJa": "日本語"
-    }
+      "langJa": "日本語",
+      "envTitle": "アプリ環境設定",
+      "envHint": "毛糸カーソルや表示言語など、アプリ全体の設定です。",
+      "yarnTrail": "毛糸カーソル",
+      "yarnTrailHint": "マウスを追う毛糸の軌跡をオン",
+      "yarnStashTitle": "毛糸のストック",
+      "yarnStashHint": "残りの毛糸と針を登録すると、トゥニが在庫を見て答えます。",
+      "yarnEmpty": "まだ毛糸がありません。",
+      "yarnName": "毛糸名",
+      "yarnNamePh": "モカブラウンメリノ",
+      "yarnGrams": "残り (g)",
+      "yarnMeters": "メートル",
+      "yarnNeedle": "針",
+      "yarnNeedlePh": "4mm棒針",
+      "yarnAdd": "毛糸を追加",
+      "yarnAdded": "毛糸ストックに追加しました。",
+      "needleTitle": "針の引き出し",
+      "needleHint": "持っている針を登録すると、今すぐ編める編み図だけを絞れます。",
+      "needleEmpty": "まだ針がありません。",
+      "needleAdd": "針を追加",
+      "needleAdded": "針の引き出しに追加しました。",
+      "tasteTitle": "熟練度と好み",
+      "tasteHint": "選んだスタイルはコミュニティのすべてタブの上に先に出ます。",
+      "skillLabel": "熟練度",
+      "styleLabel": "好きなスタイル",
+      "skillBeginner": "入門",
+      "skillIntermediate": "中級",
+      "skillAdvanced": "上級",
+      "styleNordic": "ノルディック配色",
+      "styleAran": "アラン模様",
+      "styleColorwork": "カラーワーク",
+      "styleAmigurumi": "アミグルミ",
+      "styleSimple": "シンプルデイリー"
+    },
+    "meetupsTitle": "予約した集まり",
+    "meetupsSubtitle": "ラウンジで参加した集まりがすぐにここに出ます。",
+    "meetupsEmptyTitle": "まだ予約した集まりはありません",
+    "meetupsEmptyDesc": "ラウンジのオフラインイベントタブで参加してみましょう。",
+    "meetupsTickets": "現地チェックイン",
+    "meetupsTicketMeta": "QRチケット{{count}}枚 · {{row}}段セッション保存",
+    "meetupsGoods": "グッズポートフォリオ: {{list}}",
+    "meetupsCapacity": "定員 {{current}} / {{max}}人",
+    "meetupsJoined": "定員{{max}}人中{{joined}}人参加",
+    "badgesMine": "マイバッジ",
+    "badgesAll": "すべてのバッジ",
+    "badgesBeginner": "初級実績",
+    "badgesMid": "中級実績",
+    "badgesAdv": "上級実績",
+    "finishedEmptyTitle": "完成作品がまだありません",
+    "finishedEmptyDesc": "エディターで編み図を完成させて写真を上げてみてください。",
+    "achTitle": "パーソナル編み物実績",
+    "achSubtitle": "これまで編んできた目と記号のデータから成長を可視化します。",
+    "achLevel": "レベル3. ふわふわニッター",
+    "achStitches": "累計目数",
+    "achStitchesUnit": "目",
+    "achProjects": "完成作品数",
+    "achProjectsUnit": "作品",
+    "achStreak": "連続編み物日数",
+    "achStreakUnit": "日連続",
+    "achOffline": "オフライン参加記録",
+    "achOfflineMeta": "QR入場 {{checkins}}回 · 進行段 {{row}}段を保存",
+    "achOfflineHint": "イベント申込で参加インデックスが記録され、エディターの進行段はチェックイン後も残ります。",
+    "achNextLevel": "次の等級（雲結び職人）への進捗",
+    "achCurrentSts": "現在 {{n}}目",
+    "achRemainingSts": "次の等級まであと {{n}}目",
+    "achBadgeStatus": "バッジ状況",
+    "achEmpty": "まだ獲得したバッジがありません。",
+    "statsPageTitle": "統計",
+    "statsPageHint": "編み物の活動をグラフで確認します。",
+    "statsMonthly": "月別の編み図作成",
+    "statsMonthlyHint": "直近6か月",
+    "statsColors": "よく使った色",
+    "statsColorsHint": "全編み図の割合",
+    "statsMade": "作成した編み図",
+    "statsLikes": "いいね",
+    "statsSaves": "保存",
+    "statsFinished": "完成",
+    "month1": "1月",
+    "month2": "2月",
+    "month3": "3月",
+    "month4": "4月",
+    "month5": "5月",
+    "month6": "6月",
+    "colorCoral": "コーラル",
+    "colorBeige": "ベージュ",
+    "colorNavy": "ネイビー",
+    "colorGray": "グレー",
+    "colorOther": "その他",
+    "titlesTitle": "わたしの編み物称号",
+    "titlesHint": "活動に応じてバッジが解除されます",
+    "titleFirst": "初めての編み図完成",
+    "titleFirstDesc": "編み図を1つ以上保存",
+    "title100": "100目達成",
+    "title100Desc": "累計100目以上",
+    "titlePopular": "人気ニッター",
+    "titlePopularDesc": "いいね3つ以上"
   },
   "community": {
     "heroTitle": "編み物好きのインスピレーション庫",
@@ -101,7 +210,71 @@
     "rank": "第{{rank}}位",
     "qaEmptyTitle": "質問はまだありません",
     "qaEmptyDesc": "編み物の疑問をコミュニティに投稿してみましょう。",
-    "commentCount": "返信 {{count}}件"
+    "commentCount": "返信 {{count}}件",
+    "noMatchTitle": "この条件に合う完成編み図はまだありません。",
+    "noMatchDesc": "フィルターを外すか初期化して、もっと広い作品を見てみましょう。",
+    "deleteConfirm": "この投稿を削除しますか？",
+    "qaPage": "Q&Aページ",
+    "prevPage": "前のページ",
+    "nextPage": "次のページ",
+    "like": "いいね",
+    "save": "保存",
+    "comment": "コメント",
+    "skillBeginner": "初級",
+    "skillIntermediate": "中級",
+    "skillAdvanced": "上級",
+    "finishedAltOf": "{{title}}の完成作品",
+    "aiPreview": "AIプレビュー",
+    "commentPlaceholder": "応援の言葉を残してください",
+    "qaReplyPlaceholder": "役立つ返信を残してください",
+    "filterSearch": "編み図を検索",
+    "filterAria": "フィルター",
+    "filterLevel": "編み物の実力",
+    "filterTool": "道具（棒針 / かぎ針）",
+    "filterCategory": "作品カテゴリ",
+    "filterMaterial": "残りの糸素材",
+    "filterLevelAll": "すべてのレベル",
+    "filterLevelBeginner": "初級（やさしい）",
+    "filterLevelMid": "中級（ふつう）",
+    "filterLevelAdv": "上級（むずかしい）",
+    "filterToolAll": "すべての道具",
+    "filterToolKnit": "棒針の小物・衣服",
+    "filterToolCrochet": "かぎ針の小物・衣服",
+    "filterCatAll": "すべてのカテゴリ",
+    "filterCatClothes": "衣服（セーター / カーディガン）",
+    "filterCatAcc": "小物（ビーニー / マフラー / キーホルダー）",
+    "filterCatHome": "生活用品（マット / コースター）",
+    "filterMatAll": "すべての糸",
+    "filterMatMerino": "メリノウール",
+    "filterMatCotton": "オーガニックコットン",
+    "filterMatMohair": "モヘア",
+    "filterMatAcrylic": "アクリル",
+    "filterBagEmpty": "マイページ設定に毛糸と針を登録すると、より正確に合わせます。",
+    "filterBagHint": "毛糸{{yarns}}点、針{{needles}}本を基準に合わせます。",
+    "filterHardware": "自分の糸・針に合わせる",
+    "filterBagToggle": "マイ編み物バッグに合わせる",
+    "filterReset": "リセット",
+    "filterResultCount": "{{count}}件",
+    "tasteHint": "設定した好みに合うおすすめ編み図を先に表示します。",
+    "photoFail": "完成写真を読み込めませんでした",
+    "backToCommunity": "← コミュニティ",
+    "backQa": "← Q&A一覧",
+    "yarnUsed": "使った糸",
+    "needleSize": "針サイズ",
+    "duration": "制作期間",
+    "reviewTitle": "編みレビュー",
+    "attachedPattern": "使った編み図",
+    "attachedHint": "{{cols}}×{{rows}} 格子 · エディターで開けます",
+    "aiAnalyzed": "AIが分析した予想編み図／完成",
+    "noPatternOnlyPhoto": "編み図なしで完成写真だけの投稿です。",
+    "writeComment": "コメントを書く",
+    "submitComment": "投稿",
+    "answersCount": "回答 {{count}}件",
+    "writeAnswer": "回答を書く",
+    "remixTitle": "この編み図のリミックス系譜",
+    "remixHint": "オリジナルから今の作品まで、フォークとアレンジの流れです。",
+    "shareToCommunity": "コミュニティにシェア",
+    "patternPreview": "編み図プレビュー"
   },
   "editor": {
     "defaultTitle": "新しい編み図",
@@ -217,6 +390,642 @@
       "midnight-sky": "ミッドナイトスカイ",
       "peach-sorbet": "ピーチソルベ",
       "sage-garden": "セージガーデン"
+    },
+    "copyNarrative": "文章編み図をコピー",
+    "copied": "コピーしました！",
+    "copy": "コピー",
+    "tteuniPlaceholder": "トゥニに頼む…",
+    "tteuniName": "トゥニ",
+    "onboardSkip": "チュートリアルをスキップ",
+    "onboardTitle": "エディターの使い方",
+    "onboardStep1": "ツールと色を選んでみましょう",
+    "onboardStep2": "困ったらチャットでトゥニに頼んでみてください！",
+    "onboardNext": "次へ",
+    "onboardStart": "はじめる",
+    "sidebarOpen": "サイドバーを開く",
+    "sidebarClose": "サイドバーを閉じる",
+    "sidebarResize": "サイドバー幅を調整",
+    "scanNoPhoto": "写真なし",
+    "scanNeedPhoto": "先に実物の完成写真を選んでください。",
+    "scanFail": "分析に失敗しました。",
+    "scanOk": "実物写真の配色と記号の流れに合わせて編み図を補正しました。",
+    "scanBusy": "分析中",
+    "scanRun": "交差分析",
+    "scanTitle": "実物写真の交差検証",
+    "yarnSearch": "毛糸を検索",
+    "yarnSearchPh": "例: メリノウール、モヘア",
+    "inPalette": " · パレットにあり",
+    "itemSweater": "セーター",
+    "itemVest": "ベスト",
+    "itemHat": "帽子",
+    "itemGloves": "手袋",
+    "itemSocks": "靴下",
+    "itemBlanket": "ブランケット",
+    "itemBeanie": "ビーニー",
+    "stsCount": "目数",
+    "rowCount": "段数",
+    "itemSelect": "アイテム選択",
+    "zoomInShort": "拡大",
+    "zoomOutShort": "縮小",
+    "resetView": "リセット",
+    "needleSizePhKnit": "例: 5.5mm",
+    "needleSizePhCrochet": "例: 4号",
+    "needlePanelTitle": "針の仕様",
+    "needlePanelHint": "目数・段数と一緒に編み図へ紐づく使用針です。",
+    "needleKind": "針の種類",
+    "needleDetailLabel": "針のタイプ",
+    "needleSizeLabel": "針サイズ",
+    "knitting": "棒針",
+    "crochet": "かぎ針",
+    "detailStraight": "ストレート（平面）",
+    "detailCircular": "輪針（筒・平面）",
+    "detailDpn": "4本針 · DPNs（筒）",
+    "detailCable": "ケーブル針",
+    "detailStandard": "通常のかぎ針",
+    "detailTunisian": "チュニジアンかぎ針",
+    "detailSteel": "レースかぎ針",
+    "crochetSize": "{{n}}号",
+    "copyHeader": "[{{brand}} 編み図] {{cols}}×{{rows}} 格子",
+    "copyNeedle": "使用針: {{needle}}",
+    "copyYarn": "使用糸: {{yarns}}",
+    "tteuniAi": "トゥニ AI",
+    "tteuniHint": "「秋用カーディガンの編み図を作って」と言ってみてください！",
+    "tteuniInventory": "保管庫の糸は {{list}} です。この在庫を基準に見積もりました。",
+    "tteuniInventoryEmpty": "糸保管庫がまだ空です。マイページ設定で残量を登録すると、より正確に見積もれます。",
+    "tteuniReplyCardigan": "カーディガンの編み図を描きました！身頃は表編み(—)、ネックと裾は減らし目(∧)とうら編み(∪)です。",
+    "tteuniReplyScarf": "マフラーの編み図です。縁はうら編み、中央は表編みで埋めました！",
+    "tteuniReplyCherry": "さくらんぼモチーフ！中央は表編み、茎はうら編み記号です。",
+    "tteuniReplyStripe": "横縞の編み図です。色ごとに表編みとうら編みを交互に入れました。",
+    "tteuniReplyAutumn": "秋らしい編み図を適用しました。リブと表編み記号を混ぜています。",
+    "tteuniReplyDefault": "ご依頼に合わせて編み記号を格子に入れました！保存してみてください。",
+    "scanHint": "完成写真の目・段、配色、表編み／うら編みの流れを今の格子と合わせます。",
+    "scanAutoFix": "写真に合わせて自動補正",
+    "yarnSearchHint": "ブランドや種類（メリノウール、モヘアなど）を入力してみてください",
+    "yarnSearchEmpty": "検索結果がありません。別のキーワードを試してください。",
+    "workshopTitle": "工房おすすめパレット",
+    "paletteCherry": "チェリーバブルガム",
+    "paletteNordic": "ノルディックジャカード",
+    "paletteForest": "クラシックヴィンテージフォレスト",
+    "pausePreview": "プレビュー一時停止",
+    "loadingItem": "トゥニがリアルタイム3D {{item}} を準備しています…",
+    "itemAccSweater": "セーターを",
+    "itemAccVest": "ベストを",
+    "itemAccBeanie": "帽子を",
+    "itemAccGlove": "手袋を",
+    "itemAccSocks": "靴下を",
+    "shufflePattern": "テスト用編み図をランダム変更",
+    "onboardSkipShort": "スキップ",
+    "titleAutumn": "秋",
+    "partBody": "前",
+    "partBack": "後ろ",
+    "partSleeveLeft": "左袖",
+    "partSleeveRight": "右袖",
+    "partCollar": "衿"
+  },
+  "common": {
+    "delete": "削除",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "save": "保存",
+    "me": "自分",
+    "back": "戻る",
+    "send": "送信",
+    "sts": "目",
+    "rows": "段",
+    "edit": "編集",
+    "submit": "投稿",
+    "open": "開く →",
+    "homeBack": "← ホーム",
+    "lastEdited": "最終更新: {{date}}",
+    "deletePatternConfirm": "「{{title}}」を削除しますか？",
+    "deleteFinishedConfirm": "完成作品「{{title}}」を削除しますか？",
+    "photoUpload": "写真を上げる",
+    "photoChange": "写真を変更",
+    "photoDefault": "デフォルトのプロフィールに戻す",
+    "rating": "評価 {{n}}",
+    "wireframe": "ワイヤーフレーム",
+    "locked": "ロック中",
+    "achieved": "達成！",
+    "progressReq": "条件: {{text}}",
+    "customInput": "直接入力",
+    "skip": "スキップ",
+    "change": "変更",
+    "done": "完了",
+    "badge": "バッジ",
+    "equipBadge": "バッジを付ける",
+    "changeBadge": "バッジを変更",
+    "myAchievements": "マイ実績",
+    "progressOf": "{{current}} / {{goal}} {{unit}}"
+  },
+  "toast": {
+    "loginRequired": "ログインが必要です。",
+    "accountDeleted": "アカウントを削除しました。",
+    "sharedPattern": "共有された編み図",
+    "postUploaded": "投稿を公開しました。",
+    "patternSaved": "編み図を保存しました。",
+    "patternDeleted": "編み図を削除しました。"
+  },
+  "login": {
+    "title": "はじめる",
+    "subtitle": "ログインして編み図を保存・共有しましょう。",
+    "email": "メール",
+    "password": "パスワード",
+    "submit": "ログイン",
+    "orSocial": "またはかんたんログイン",
+    "kakao": "Kakaoではじめる",
+    "google": "Googleではじめる",
+    "apple": "Appleではじめる"
+  },
+  "landing": {
+    "heroLead": "複雑な編み図はトゥニにまかせて、",
+    "heroLine1": "編み物だけに",
+    "heroLine2": "集中しましょう！",
+    "heroSub": "エディター、AIチャット、コミュニティまで。編み物のすべてがここに。",
+    "startDrawing": "編み図を描く",
+    "feature1Line1": "クリック数回で",
+    "feature1Line2": "完成する自分だけの編み図",
+    "feature1Body": "マスに記号と色を置き、ミスはトゥニがチェックします。",
+    "feature2Title": "エディター中心のスマート編み物プラットフォーム",
+    "feature2Body": "手計算だらけの準備をウェブエディターとコミュニティにまとめ、創作に没頭できます。",
+    "promoLine1": "本番の編み物はトゥニと一緒に！",
+    "promoLine2": "ARナビゲーションアプリ",
+    "promoBody1": "ウェブで描いた編み図をアプリに連携。",
+    "promoBody2": "カメラを向けると次の目を案内します。",
+    "promoAria": "アプリ紹介モックアップ",
+    "promoPrev": "前のモックアップ",
+    "promoNext": "次のモックアップ",
+    "promoAlt": "トゥニARアプリのモックアップ{{n}}",
+    "footerTag": "今日も一目、いっしょに",
+    "scrollHint": "スクロールして文字を縫ってみてください",
+    "tabEditorTitle": "編み図エディター",
+    "tabEditorSub": "2Dグリッドエディター",
+    "tabEditorDesc": "タッチやドラッグで一目ずつ丁寧に描けます。針の号数と糸の太さに合わせてキャンバスを変えられるので、初心者から上級者まで自分だけの模様を設計できます。",
+    "tabChatTitle": "AIチャット",
+    "tabChatSub": "スマート編みコーチ",
+    "tabChatDesc": "AIトゥニが編集中のミスを検知して直し方を提案します。チャットで聞くと技法が編み図データになり、キャンバスに記号として並びます。",
+    "tabConvertTitle": "文章変換",
+    "tabConvertSub": "自然言語の編み図",
+    "tabConvertDesc": "マス目を読む負担を減らすため、記号レイアウトを「1段：表2目、裏1目」のような文章編み図へすぐ変換します。",
+    "tabCommunityTitle": "コミュニティ",
+    "tabCommunitySub": "ラウンジで編み図シェア",
+    "tabCommunityDesc": "仕上げた編み図カードを包んでラウンジに自慢しましょう。実物写真を見て、クリック1つで自分のエディターに取り込み、直して公開できます。"
+  },
+  "createPost": {
+    "editTitle": "投稿を編集",
+    "writeTitle": "投稿を作成",
+    "noDraft": "添付する編み図がありません。保存した編み図を読み込むか戻ってください。",
+    "loadMine": "マイ編み図を読み込む",
+    "back": "← 戻る",
+    "attached": "添付の編み図",
+    "title": "タイトル",
+    "titlePh": "例: ベージュカーディガン完成！",
+    "yarnNeedle": "使った糸 / 針",
+    "yarnNeedlePh": "例: メリノウール100%、かぎ針4.5mm",
+    "review": "本文（レビュー）",
+    "reviewPh": "編んだ感想、コツ、かかった時間などを書いてください。",
+    "previewAlt": "完成プレビュー",
+    "publish": "公開する",
+    "saveDraft": "下書き保存",
+    "photo": "完成写真（任意）",
+    "photoUpload": "写真を上げる",
+    "upload": "アップロード",
+    "loadMineHint": "添付する編み図を選んでください",
+    "loadMineEmpty": "保存された編み図がありません。エディターで保存してから再度お試しください。"
+  },
+  "gift": {
+    "untitled": "新しい編み図",
+    "done": "編み図の包装が完了しました",
+    "toVault": "保管庫へ",
+    "backEditor": "エディターに戻る"
+  },
+  "offline": {
+    "title": "オフラインニュースと集まり",
+    "subtitle": "ライブ地図とポップアップチェックインでつながる、あたたかいオフラインの道です。",
+    "tabMap": "イベント地図",
+    "tabMeetup": "近所の集まり",
+    "tabReviews": "訪問レビュー",
+    "mapLabel": "ライブ地図（ソウル麻浦区・江南区）",
+    "mapLoading": "地図を読み込み中…",
+    "mapSearchPh": "麻浦区・江南区の編み物ポップアップを検索中…",
+    "zoomIn": "拡大",
+    "zoomOut": "縮小",
+    "compass": "エリア全体を見る",
+    "mapHint": "地図をドラッグ・拡大してポップアップを探してください",
+    "detailLabel": "イベント詳細",
+    "dateLabel": "期間",
+    "placeLabel": "場所",
+    "yarnMatch": "おすすめの糸",
+    "needleMatch": "おすすめの針",
+    "ticket": "チケットを発行",
+    "passHint": "このパスで現地チェックインすると、マイページの目数統計と成長バッジが解除されます。",
+    "meetupLabel": "活動エリア近くの募集中集まり",
+    "meetupRegion": "活動圏: ソウル市麻浦区",
+    "join": "参加する",
+    "joined": "参加済み",
+    "cancelJoin": "参加を取り消す",
+    "reviewLabel": "現地レビューと手づくり編み図の共有",
+    "reviewCount": "ガイドパターン {{count}}件",
+    "cloneDone": "複製完了: {{name}} を作業台に置きました。編み図を描くタブへどうぞ。",
+    "goNow": "移動する",
+    "author": "投稿者: {{name}}",
+    "patternAttach": "手づくり復元編み図",
+    "cloneEditor": "エディターに複製",
+    "ticketTitle": "オフライン入場チケット",
+    "ticketBody": "申し込みが承認されました。会場ブースで下のQRをアプリで読み取ってください。",
+    "ticketClose": "閉じて保存",
+    "yarnRecommended": "おすすめの糸",
+    "meetupCycle": "開催",
+    "capacity": "定員 {{current}} / {{max}}人",
+    "full": "満員",
+    "needleNeeded": "必要な針",
+    "closed": "募集終了",
+    "typePopup": "ブランドポップアップ",
+    "typeExhibition": "オフライン企画展",
+    "typeClass": "ワンデイクラス"
+  },
+  "dashboard": {
+    "title": "マイ編み図保管庫"
+  },
+  "content": {
+    "badges": {
+      "badge1": {
+        "name": "初めての針のときめき",
+        "desc": "編み物エディターで最初の編み図パッケージを完了し、旅を始めました。"
+      },
+      "badge2": {
+        "name": "ほどき克服者",
+        "desc": "失敗を恐れず5,000目以上の編地をほどいて乗り越えました。"
+      },
+      "badge3": {
+        "name": "伏せ目完成",
+        "desc": "作品の最後の目をきちんと閉じて伏せ目を終えました。"
+      },
+      "badge4": {
+        "name": "ゲージ計算の妖精",
+        "desc": "自分の手加減をゲージ計算に入れて目数を3回以上変換しました。"
+      },
+      "badge5": {
+        "name": "配色カーディガンコレクター",
+        "desc": "おすすめカラーパレットを3回以上作品に連動して描きました。"
+      },
+      "badge6": {
+        "name": "同時進行ニッター",
+        "desc": "3つ以上のプロジェクトを同時に進める情熱を見せました。"
+      },
+      "badge7": {
+        "name": "糸保管マスター",
+        "desc": "所持糸の残量と針を保管庫に5回以上記録しました。"
+      },
+      "badge8": {
+        "name": "あたたかいラウンジリーダー",
+        "desc": "コミュニティ自慢フィードに制作ノートと編み図をシェアしました。"
+      },
+      "badge9": {
+        "name": "トゥニのソウルメイト",
+        "desc": "AIトゥニチャットで編み図を10回以上精密に直しました。"
+      },
+      "badge10": {
+        "name": "工房横丁キャプテン",
+        "desc": "パッケージした編み図をマーケットに公開し、1回以上ダウンロードされました。"
+      },
+      "badge11": {
+        "name": "一目の芸術家",
+        "desc": "エディターで記号と配色をこなして累計30,000目以上を編みました。"
+      }
+    },
+    "patterns": {
+      "cp-1": {
+        "title": "初心者向けさくらんぼキーホルダー",
+        "caption": "糸: コットン4本撚り、針3.0mm。リング部分だけ注意すれば1日で完成！",
+        "yarn": "コットン4本撚り（赤・緑）",
+        "needle": "かぎ針3号",
+        "duration": "約4時間",
+        "review": "リングの目は細編みでしっかり締めました。プレゼント用に3つ追加で編みました。"
+      },
+      "cp-2": {
+        "title": "パステル虹マフラー",
+        "caption": "糸: メリノウール100%、針4.5mm。2週間かかりました！",
+        "yarn": "メリノウール100%（パステル6色）",
+        "needle": "棒針4.5mm",
+        "duration": "2週間",
+        "review": "色替え区間の目数が少し迷いましたが、完成してとても達成感があります。首に巻いてから好きな長さまで足してください。"
+      },
+      "cp-3": {
+        "title": "くまぬいぐるみ胴体の編み図",
+        "caption": "綿を入れて胴体と頭を目でつなぎました。",
+        "yarn": "アルパカウール ベージュ・ブラウン",
+        "needle": "かぎ針4号",
+        "duration": "10日",
+        "review": "目のボタンは縫い付けました。綿は控えめがかわいいシルエットになります。子どもへの贈り物に最適！"
+      },
+      "cp-4": {
+        "title": "冬ニット帽の基本形",
+        "caption": "糸: グレー（アクリル）、棒針5.0mm輪針。20×20表編みだけの基本形です。",
+        "yarn": "グレー（アクリル）",
+        "needle": "棒針5.0mm",
+        "duration": "3日",
+        "review": "表編みだけなので初心者も追いやすいです。輪針で筒編みするとつなぎ目がありません。"
+      },
+      "cp-5": {
+        "title": "ミニハートコースター",
+        "caption": "コースター4枚セットを編んで友達に配りました。",
+        "yarn": "綿糸3本撚り（コーラル・白）",
+        "needle": "かぎ針4号",
+        "duration": "1日",
+        "review": "テーブルに置くとかわいいです。ハート形は編み図どおりで失敗しません！"
+      },
+      "cp-6": {
+        "title": "完成！ベージュカーディガン",
+        "caption": "糸: メリノウール100%、針4.5mm。2週間かかりました！",
+        "yarn": "メリノウール100%（ベージュ）",
+        "needle": "棒針4.5mm",
+        "duration": "2週間",
+        "review": "袖の減らし目で迷いましたがトゥニのコーチで完成。身頃はゆったり、袖は14段足すと長さがちょうどいいです。"
+      },
+      "cp-7": {
+        "title": "ふんわり白い手袋",
+        "caption": "糸: メリノウール白、4本針3.5mm。手の甲は表編みだけでシンプルに。",
+        "yarn": "メリノウール100%（白）",
+        "needle": "棒針3.5mm",
+        "duration": "4日",
+        "review": "指分けだけゆっくりすれば初心者も追いやすいです。手首リブは2目表・2目うらでしっかり。"
+      },
+      "cp-8": {
+        "title": "ピンクの星コースター",
+        "caption": "糸: コットン3本撚りピンク、かぎ針4号。1枚は夕ご飯1回分くらい。",
+        "yarn": "綿糸3本撚り（ピンク）",
+        "needle": "かぎ針4号",
+        "duration": "3時間",
+        "review": "星の先端は細編みで角を取ると形がはっきりします。ハートコースターとセットでテーブルが華やかです。"
+      },
+      "cp-9": {
+        "title": "ふんわりピンク靴下",
+        "caption": "糸: 靴下用ウールピンク、4本針2.5mm。かかとは短い段で回しました。",
+        "yarn": "靴下用ウール（ピンク）",
+        "needle": "棒針2.5mm",
+        "duration": "5日",
+        "review": "甲のゲージさえ合えば長さ調整は簡単です。1足編んだら目数を書いておくとペアがずれません。"
+      },
+      "cp-10": {
+        "title": "黄色いビーニー",
+        "caption": "糸: バルキーアクリル黄、輪針5.5mm。グレーのビーニーと同じ基本形です。",
+        "yarn": "バルキーアクリル（黄）",
+        "needle": "棒針5.5mm",
+        "duration": "2日",
+        "review": "グレーの基本形から色だけ変えました。ブリムリブを8段ほどにすると巻きがきれいです。頭頂のまとめ目はゆっくりで大丈夫。"
+      }
+    },
+    "qa": {
+      "qa-1": {
+        "title": "マジックリングの目数はどう揃えますか？",
+        "excerpt": "初心者さくらんぼキーホルダーを追っていると、リング部分がいつも穴になります…",
+        "body": "こんにちは！さくらんぼキーホルダーの3段でリングを編むたびに穴が開きます。\n\n糸は4本撚り、かぎ針は3.5mmです。編み図は「細編み6目」なのに、いつも8目くらいに増えた感じです。\n\n目をゆるく取りすぎでしょうか？経験者のコツをお願いします！"
+      },
+      "qa-2": {
+        "title": "ベージュカーディガンの袖丈の伸ばし方",
+        "excerpt": "完成自慢のカーディガンで、袖だけ5cmほど長く編みたいです。",
+        "body": "完成自慢のベージュカーディガンを参考に編んでいますが、腕が短く感じます。\n\n身頃はそのままで袖の段だけ足すなら何段必要ですか？ゲージは10cmで22目28段くらいです。"
+      },
+      "qa-3": {
+        "title": "糸色が編み図と違うとき",
+        "excerpt": "コーラルの糸を買ったら画面よりずっと赤く出ます。代替糸を探しています。",
+        "body": "コミュニティのプレビューは柔らかいコーラルなのに、実物は#FC5F53に近くて派手です。\n\n似たトーンの代替ブランドや、色を落ち着かせる方法はありますか？"
+      },
+      "qa-4": {
+        "title": "エディターで格子が読み込めないとき",
+        "excerpt": "コミュニティカードから読み込みを押すと空の格子だけ出ます。",
+        "body": "Chromeで試し、ログインもしています。特定の編み図(cp-3)だけで、再読み込みしても同じです。\n\nローカル保存容量の問題でしょうか？"
+      },
+      "qa-5": {
+        "title": "冬ニット帽を輪針の筒編みにするとつなぎ目が出ます",
+        "excerpt": "20×20グレー表編みの基本形なのに、輪針でも段の始まりが少し斜めになります。",
+        "body": "冬ニット帽の基本形を輪針5.0mmで筒編みしています。\n\n表編みだけなのに、段の始まりが少しずつ傾いてつなぎ目のように見えます。マーカーを移しながら編むべきですか？それとも段の始まりを1目ずつずらしますか？"
+      },
+      "qa-6": {
+        "title": "白い手袋の指分けの順番がわかりません",
+        "excerpt": "手の甲までは編めたのに、親指とその他を分けるタイミングがわかりません。",
+        "body": "ふんわり白い手袋を追っています。手首リブは2目表・2目うらで終わり、手の甲も表編みです。\n\n指を分けるとき残りの目はどう配分しますか？しるし糸はどこに置くと迷いませんか？4本針3.5mmです。"
+      },
+      "qa-7": {
+        "title": "ピンク靴下のかかとを回したら穴が開きました",
+        "excerpt": "1足は完成しましたがかかとの角が粗いです。2足目の前に直したいです。",
+        "body": "ふんわりピンク靴下の1足目を編みました。甲ゲージは合っていますが、短い段でかかとを回す区間に穴が残ります。\n\n目数を書けというレビューは見ましたが、穴はどう埋めますか？拾い目を入れるべきですか？"
+      },
+      "qa-8": {
+        "title": "ハートと星のコースター、目数を揃えてもいいですか？",
+        "excerpt": "食卓にセットで置きたいのですが、大きさが違うのが心配です。",
+        "body": "ミニハートコースターは12×12、ピンク星コースターも12×12です。\n\n同じ綿糸3本撚り・かぎ針4号なら実寸も近くなりますか？星の先端だけ細編みで押さえればハートとセットになりますか？"
+      },
+      "qa-9": {
+        "title": "虹マフラーに編み図がないのですが、どう追いますか？",
+        "excerpt": "完成写真だけで格子が見えず、配色順だけで足りるか知りたいです。",
+        "body": "パステル虹マフラーの投稿に添付編み図がないと出ています。AI予想画像だけです。\n\n縞の配色を繰り返せばよいですか？棒針4.5mm輪針で平面でもいいですか、それとも筒が正しいですか？"
+      },
+      "qa-10": {
+        "title": "黄色いビーニーと灰色ニット帽は本当に同じ編み図ですか？",
+        "excerpt": "色だけ変えて編みたいので、目・段数が同じか確認したいです。",
+        "body": "黄色いビーニーのレビューに灰色の基本形と同じ編み図だとあります。\n\nどちらも20×20ですか？黄は輪針5.5mm、灰は5.0mmに見えますが、針が違っても形は同じになりますか？ブリムリブは何段が適当かも教えてください。"
+      }
+    },
+    "answers": {
+      "ans-1": "細編みのリングはかぎ針を少しひねって入れると穴が減ります。1段目はしっかり、2段目からゆるまないように。",
+      "ans-2": "しるし糸で目数を付けると増えがすぐわかります。6目が目標なら5目編んでから最後を確認する習慣も良いです。",
+      "ans-3": "そのゲージなら5cmは約14段追加です。袖先2段は弾力のある細編みで締めてください。",
+      "ans-4": "完成自慢のベージュカーディガン写真の長さを測り、手首まで届くか比べると段数計算がしやすいです。",
+      "ans-5": "同じコーラルでも綿糸は画面より鮮やかです。ベージュを1段混ぜるか、1号太い針でゆるく編むとトーンが下がります。",
+      "ans-6": "くまの編み図は読み込めます。空の格子ならコミュニティからもう一度「エディターに読み込む」を押してください。",
+      "ans-7": "筒の表編みは段ごとに始まりが1目ずれます。マーカーを段の始まりに置き、傾いたら1目前で段を変えてください。",
+      "ans-8": "手の甲の目を4つに分け、親指は横から別に取ります。分け直前にしるし糸を4か所にかけると順番が混ざりません。",
+      "ans-9": "回す角で隣の目も一緒に拾うと穴が減ります。2足目は1足目の目数を横に置いて同じ段で折ってください。",
+      "ans-10": "同じ糸・同じ号数なら大きさはほぼ同じです。星の先端だけ短くするとハートとセットしやすいです。",
+      "ans-11": "編み図なしの投稿なので配色順だけ参考にします。輪針で平面の往復でも、筒ならつなぎ目がありません。",
+      "ans-12": "格子はどちらも20×20表編みの基本形です。針が0.5mm太いと少し大きくなるので、ブリムリブは8段くらいに合わせてください。"
+    },
+    "comments": {
+      "fc-1": "色味が本当にきれい！袖を伸ばす人は14段足すと良さそうです。",
+      "fc-2": "編み図どおりに編んだらサイズぴったりでした。ありがとうございます！",
+      "fc-3": "くまの耳を付けるときは綿を少しだけ。多いと潰れて見えます。",
+      "fc-4": "手首リブを少し足したら手袋が抜けにくくなりました。指分けはしるし糸があると楽です。",
+      "fc-5": "ハートコースターとセットで編みました。星の先端を細編みで押さえると形が生きます。",
+      "fc-6": "かかと回しが初めてで迷いましたが、1足編んで目数を書いたら2足目が合いました。",
+      "fc-7": "灰色の基本形と同じ編み図なのですぐ追えました。黄色は春に似合います。"
+    },
+    "events": {
+      "event_hongdae": {
+        "title": "ニットTogether キャップストーンブース＆グッズポップアップ",
+        "location": "ソウル市麻浦区ワウサン路 ホンデアトリエ2階",
+        "description": "トゥニオフラインマスコットグッズ販売と実物編地AR編み図スキャン体験",
+        "yarn": "ナギャンモサ シグネチャーウール",
+        "needle": "棒針5.0mm"
+      },
+      "event_garosu": {
+        "title": "霧雲モヘア秋企画展",
+        "location": "ソウル市江南区新沙洞カロスキル ギャラリーメゾン",
+        "description": "プレミアムモヘア糸ブランドとニットTogetherの独占配色パレット実物ショーケース",
+        "yarn": "霧雲モヘア",
+        "needle": "棒針3.5mm"
+      },
+      "event_mangwon": {
+        "title": "超初心者かぎ針マジックリング1日突破クラス",
+        "location": "ソウル市麻浦区マンウォン休憩編み物カフェ",
+        "description": "編み図読めない卒業プロジェクト。マジックリングのねじれ目解釈と手加減補正1:1クリニック",
+        "yarn": "ほっこりオーガニックコットン",
+        "needle": "かぎ針4号"
+      }
+    },
+    "meetups": {
+      "meetup_mangwon": {
+        "title": "マンウォン洞ブックカフェ棒針カーディガンおしゃべり会",
+        "region": "ソウル市麻浦区マンウォン洞",
+        "date": "毎週土曜午後2時",
+        "needle": "棒針5.0mm",
+        "yarn": "ナギャンモサ シグネチャーウール"
+      },
+      "meetup_gangnam": {
+        "title": "江南駅で編むインスタクロップカーディガン即席会",
+        "region": "ソウル市江南区駅三洞",
+        "date": "2026.08.22 午後7時",
+        "needle": "棒針4.5mm",
+        "yarn": "ぽんわりメリノウール"
+      },
+      "meetup_hongdae": {
+        "title": "ホンデかぎ針刺しゅう小物＆入門ティーコースター会",
+        "region": "ソウル市麻浦区西橋洞",
+        "date": "毎週木曜午前11時",
+        "needle": "かぎ針5号",
+        "yarn": "ほっこりオーガニックコットン"
+      },
+      "mt-hapjeong-cardigan": {
+        "title": "合井駅カフェでクロップカーディガンを一緒に",
+        "region": "ソウル市麻浦区合井洞",
+        "date": "8月23日午後2時",
+        "needle": "棒針5.0mm",
+        "yarn": "アラン1玉",
+        "place": "合井駅2番出口近くの窓際カフェ"
+      },
+      "mt-magic-ring": {
+        "title": "かぎ針基礎マジックリング克服会",
+        "region": "ソウル市麻浦区西橋洞",
+        "date": "8月24日午後7時",
+        "needle": "かぎ針3号",
+        "yarn": "コットン4本撚り1玉",
+        "place": "ホンデコミュニティテーブル"
+      },
+      "mt-mangwon-bookcafe": {
+        "title": "マンウォン洞デザートカフェのクロップカーディガン会",
+        "region": "ソウル市麻浦区マンウォン洞",
+        "date": "8月30日午後3時",
+        "needle": "棒針4.5mm",
+        "yarn": "ウールアンドザギャング メリノ1玉",
+        "place": "マンウォン洞ブックカフェ2階"
+      },
+      "mt-garosu-beanie": {
+        "title": "カロスキルで夏ビーニーを1枚仕上げる",
+        "region": "ソウル市江南区新沙洞",
+        "date": "8月21日午後1時",
+        "needle": "棒針4.0mm",
+        "yarn": "コットンブレンド1玉",
+        "place": "新沙洞ニットカフェ"
+      },
+      "mt-seongsu-socks": {
+        "title": "聖水で靴下かかとだけ一緒に見る",
+        "region": "ソウル市城東区聖水洞",
+        "date": "8月26日夜7時",
+        "needle": "棒針2.5mm",
+        "yarn": "フィンガリング靴下糸1玉",
+        "place": "聖水ループスタジオ"
+      }
+    },
+    "reviews": {
+      "review_1": {
+        "eventTitle": "ニットTogether キャップストーンブース＆グッズポップアップ",
+        "content": "ホンデアトリエのポップアップで実物カーディガンをスキャンしたら編み記号ですぐ分析され、現場で買ったナギャンモサウールに合わせた変換編み図を共有します。",
+        "patternName": "完成！ベージュカーディガン",
+        "patternDesc": "レビューに付いた格子編み図をエディターへそのまま持っていけます"
+      },
+      "review_2": {
+        "eventTitle": "霧雲モヘアコラボ秋企画展",
+        "content": "カロスキルの秋企画展でモヘアパッケージを受け取り、ウェブエディターでリミックスしやすいレースショールの編み図を残します。",
+        "patternName": "秋スペシャルモヘアショール",
+        "patternDesc": "現場で一目一目編んだ企画展特典モヘア編み図をエディターに移してリミックスしてください"
+      }
+    },
+    "yarns": {
+      "merino-cream": {
+        "name": "メリノウールクリーム",
+        "brand": "ファインウール",
+        "fiber": "メリノウール"
+      },
+      "merino-navy": {
+        "name": "メリノウールネイビー",
+        "brand": "ファインウール",
+        "fiber": "メリノウール"
+      },
+      "mohair-pink": {
+        "name": "モヘアピンク",
+        "brand": "モンド",
+        "fiber": "モヘア"
+      },
+      "mohair-lavender": {
+        "name": "モヘアラベンダー",
+        "brand": "モンド",
+        "fiber": "モヘア"
+      },
+      "cotton-white": {
+        "name": "コットンホワイト",
+        "brand": "コジーコットン",
+        "fiber": "綿"
+      },
+      "cotton-coral": {
+        "name": "コットンコーラル",
+        "brand": "コジーコットン",
+        "fiber": "綿"
+      },
+      "alpaca-beige": {
+        "name": "アルパカベージュ",
+        "brand": "アルパハウス",
+        "fiber": "アルパカ"
+      },
+      "cashmere-gray": {
+        "name": "カシミアグレー",
+        "brand": "ラグジュアリーヤーン",
+        "fiber": "カシミア"
+      },
+      "acrylic-sky": {
+        "name": "アクリルスカイブルー",
+        "brand": "デイリーヤーン",
+        "fiber": "アクリル"
+      },
+      "wool-charcoal": {
+        "name": "ウールチャコール",
+        "brand": "ウールストーリー",
+        "fiber": "ウール"
+      },
+      "linen-natural": {
+        "name": "リネンナチュラル",
+        "brand": "リネンルーム",
+        "fiber": "リネン"
+      },
+      "bamboo-mint": {
+        "name": "バンブーミント",
+        "brand": "エコシル",
+        "fiber": "竹繊維"
+      },
+      "angora-white": {
+        "name": "アンゴラホワイト",
+        "brand": "フラッフィー",
+        "fiber": "アンゴラ"
+      },
+      "silk-gold": {
+        "name": "シルクゴールド",
+        "brand": "シルクウェイ",
+        "fiber": "シルク"
+      },
+      "blend-rainbow": {
+        "name": "ブレンド虹",
+        "brand": "カラーポップ",
+        "fiber": "ウール・アクリル混紡"
+      }
     }
   }
 }

@@ -18,7 +18,10 @@
       "liked": "좋아요 누른 도안",
       "saved": "저장한 도안",
       "stats": "통계",
-      "settings": "설정"
+      "settings": "설정",
+      "summary": "활동 요약",
+      "meetups": "내가 예약한 뜨개 모임",
+      "statsDetail": "상세 통계"
     },
     "account": {
       "section": "계정",
@@ -48,7 +51,19 @@
       "statSaved": "저장한 도안",
       "unitPatterns": "개",
       "unitHearts": "회",
-      "unitFinished": "점"
+      "unitFinished": "점",
+      "regionTitle": "활동 지역",
+      "regionHint": "구/동 단위로 저장하면 라운지 지도와 소모임 피드가 거주지 근처부터 정렬됩니다.",
+      "regionLabel": "구 / 동",
+      "regionPlaceholder": "서울시 마포구 망원동",
+      "gaugeTitle": "내 게이지",
+      "gaugeHint": "10x10cm 편물의 세탁 전후 코·단 수를 저장하면 에디터 시작 코 수에 연동됩니다.",
+      "gaugeBeforeSts": "세탁 전 코",
+      "gaugeBeforeRows": "세탁 전 단",
+      "gaugeAfterSts": "세탁 후 코",
+      "gaugeAfterRows": "세탁 후 단",
+      "levelTitle": "포근한 솜털 뜨개러 (Level 3)",
+      "profileHint": "프로필과 손땀 게이지를 관리해요."
     },
     "patterns": {
       "title": "내 도안",
@@ -72,8 +87,102 @@
       "appliedHint": "선택한 언어가 즉시 적용됩니다.",
       "langKo": "한국어",
       "langEn": "English",
-      "langJa": "日本語"
-    }
+      "langJa": "日本語",
+      "envTitle": "플랫폼 환경 설정",
+      "envHint": "마우스 궤적과 표시 언어 등 앱 전반의 환경을 조절해요.",
+      "yarnTrail": "마우스 털실 효과",
+      "yarnTrailHint": "마우스를 따라 흐르는 털실 궤적 켜기",
+      "yarnStashTitle": "실 장고 보관함",
+      "yarnStashHint": "보유 실의 잔량과 바늘을 등록하면 에디터 뜨니가 재고를 기준으로 답합니다.",
+      "yarnEmpty": "아직 등록된 실이 없어요.",
+      "yarnName": "실 이름",
+      "yarnNamePh": "모카 브라운 메리노",
+      "yarnGrams": "잔량 (g)",
+      "yarnMeters": "미터",
+      "yarnNeedle": "바늘",
+      "yarnNeedlePh": "4mm 대바늘",
+      "yarnAdd": "실 추가",
+      "yarnAdded": "실 장고에 추가했어요.",
+      "needleTitle": "바늘 창고",
+      "needleHint": "보유 바늘을 등록하면 커뮤니티에서 지금 바로 뜰 수 있는 도안만 걸러 볼 수 있어요.",
+      "needleEmpty": "아직 등록된 바늘이 없어요.",
+      "needleAdd": "바늘 추가",
+      "needleAdded": "바늘 창고에 추가했어요.",
+      "tasteTitle": "숙련도 및 취향",
+      "tasteHint": "선택한 스타일은 커뮤니티 전체 탭 상단에 추천 도안으로 먼저 보여집니다.",
+      "skillLabel": "숙련도",
+      "styleLabel": "선호 스타일",
+      "skillBeginner": "입문",
+      "skillIntermediate": "중급",
+      "skillAdvanced": "숙련",
+      "styleNordic": "노르딕 배색",
+      "styleAran": "아란 자수",
+      "styleColorwork": "컬러워크",
+      "styleAmigurumi": "아미구루미",
+      "styleSimple": "심플 데일리"
+    },
+    "meetupsTitle": "내가 예약한 뜨개 모임",
+    "meetupsSubtitle": "라운지에서 참가한 소모임이 새로고침 없이 여기에 바로 펼쳐집니다.",
+    "meetupsEmptyTitle": "아직 예약한 모임이 없어요",
+    "meetupsEmptyDesc": "라운지의 오프라인 모임 및 행사 탭에서 참가 신청하기를 눌러 보세요.",
+    "meetupsTickets": "현장 참여 증적",
+    "meetupsTicketMeta": "QR 입장권 {{count}}장 · 진행 단 {{row}}단 세션 보존",
+    "meetupsGoods": "굿즈 포트폴리오: {{list}}",
+    "meetupsCapacity": "신청 정원 {{current}} / {{max}}명",
+    "meetupsJoined": "정원 {{max}}명 중 {{joined}}명 참여 중",
+    "badgesMine": "내 배지",
+    "badgesAll": "전체 배지",
+    "badgesBeginner": "초급 업적",
+    "badgesMid": "중급 업적",
+    "badgesAdv": "고급 업적",
+    "finishedEmptyTitle": "완성한 작품이 없어요",
+    "finishedEmptyDesc": "에디터에서 도안을 완성하고 사진을 올려 보세요.",
+    "achTitle": "개인형 뜨개 업적 대시보드",
+    "achSubtitle": "지금까지 수놓은 실과 기호 데이터를 바탕으로 성장 상태를 시각화합니다.",
+    "achLevel": "Level 3. 포근한 솜털 뜨개러",
+    "achStitches": "총 완성 콧수",
+    "achStitchesUnit": "코",
+    "achProjects": "작품 완성 개수",
+    "achProjectsUnit": "개 작품",
+    "achStreak": "연속 뜨개 기록 일수",
+    "achStreakUnit": "일 연속",
+    "achOffline": "오프라인 참여 증적",
+    "achOfflineMeta": "QR 입장 {{checkins}}회 · 진행 단 {{row}}단 보존",
+    "achOfflineHint": "행사 신청 시 참여자 인덱스가 기록되고, 에디터 진행 단은 체크인 후에도 유지됩니다.",
+    "achNextLevel": "다음 등급 (구름매듭 뜨개 장인) 달성 진척율",
+    "achCurrentSts": "현재 {{n}}코 축적",
+    "achRemainingSts": "다음 등급 승급까지 {{n}}코 남음",
+    "achBadgeStatus": "뜨개 배지 현황",
+    "achEmpty": "아직 획득한 배지가 없습니다.",
+    "statsPageTitle": "통계",
+    "statsPageHint": "나의 뜨개 활동을 그래프로 확인해요.",
+    "statsMonthly": "월별 도안 생성 추이",
+    "statsMonthlyHint": "최근 6개월 기준",
+    "statsColors": "가장 많이 사용한 색상",
+    "statsColorsHint": "전체 도안 기준 비율",
+    "statsMade": "작성 도안",
+    "statsLikes": "좋아요",
+    "statsSaves": "저장",
+    "statsFinished": "완성작",
+    "month1": "1월",
+    "month2": "2월",
+    "month3": "3월",
+    "month4": "4월",
+    "month5": "5월",
+    "month6": "6월",
+    "colorCoral": "코랄",
+    "colorBeige": "베이지",
+    "colorNavy": "네이비",
+    "colorGray": "그레이",
+    "colorOther": "기타",
+    "titlesTitle": "나의 뜨개 칭호",
+    "titlesHint": "활동에 따라 뱃지가 잠금 해제돼요",
+    "titleFirst": "첫 도안 완성",
+    "titleFirstDesc": "도안 1개 이상 저장",
+    "title100": "100코 달성",
+    "title100Desc": "누적 100코 이상",
+    "titlePopular": "인기 뜨개러",
+    "titlePopularDesc": "좋아요 3개 이상"
   },
   "community": {
     "heroTitle": "뜨개러들의 영감 보관소",
@@ -101,7 +210,71 @@
     "rank": "{{rank}}위",
     "qaEmptyTitle": "등록된 질문이 없어요",
     "qaEmptyDesc": "궁금한 점을 커뮤니티에 올려 보세요.",
-    "commentCount": "댓글 {{count}}"
+    "commentCount": "댓글 {{count}}",
+    "noMatchTitle": "일치하는 뜨개 조건의 완성 도안이 아직 없습니다.",
+    "noMatchDesc": "상단의 상세 필터를 끄거나 조건을 초기화해 더 넓은 작품을 살펴보세요.",
+    "deleteConfirm": "이 게시물을 삭제할까요?",
+    "qaPage": "Q&A 페이지",
+    "prevPage": "이전 페이지",
+    "nextPage": "다음 페이지",
+    "like": "좋아요",
+    "save": "저장",
+    "comment": "댓글",
+    "skillBeginner": "초급",
+    "skillIntermediate": "중급",
+    "skillAdvanced": "고급",
+    "finishedAltOf": "{{title}} 완성작",
+    "aiPreview": "AI 예상 이미지",
+    "commentPlaceholder": "응원의 말을 남겨 주세요",
+    "qaReplyPlaceholder": "도움이 되는 답변을 남겨 주세요",
+    "filterSearch": "도안 검색",
+    "filterAria": "필터",
+    "filterLevel": "나의 뜨개 실력",
+    "filterTool": "사용 도구 (대바늘/코바늘)",
+    "filterCategory": "제작 품목 카테고리",
+    "filterMaterial": "남아있는 실 소재",
+    "filterLevelAll": "모든 숙련도",
+    "filterLevelBeginner": "초급 (쉬운 난이도)",
+    "filterLevelMid": "중급 (보통 난이도)",
+    "filterLevelAdv": "고급 (어려운 난이도)",
+    "filterToolAll": "모든 도구",
+    "filterToolKnit": "대바늘 소품/의류",
+    "filterToolCrochet": "코바늘 소품/의류",
+    "filterCatAll": "모든 카테고리",
+    "filterCatClothes": "의류 (스웨터/가디건)",
+    "filterCatAcc": "소품 (비니/머플러/키링)",
+    "filterCatHome": "생활 용품 (매트/코스터)",
+    "filterMatAll": "모든 실 소재",
+    "filterMatMerino": "메리노울",
+    "filterMatCotton": "오가닉 코튼",
+    "filterMatMohair": "안개 모헤어",
+    "filterMatAcrylic": "아크릴",
+    "filterBagEmpty": "마이페이지 설정에 실 장고와 바늘 창고를 등록하면 더 정확히 맞춰 드려요.",
+    "filterBagHint": "실 장고 {{yarns}}개, 바늘 창고 {{needles}}개를 기준으로 맞춥니다.",
+    "filterHardware": "내 실·바늘에 맞추기",
+    "filterBagToggle": "내 뜨개가방으로 맞춤",
+    "filterReset": "초기화",
+    "filterResultCount": "{{count}}개",
+    "tasteHint": "설정한 취향에 맞춘 추천 도안을 먼저 보여드려요.",
+    "photoFail": "완성작 사진을 불러오지 못했어요",
+    "backToCommunity": "← 커뮤니티로",
+    "backQa": "← Q&A 목록",
+    "yarnUsed": "사용 실",
+    "needleSize": "바늘 호수",
+    "duration": "제작 기간",
+    "reviewTitle": "뜨개 후기",
+    "attachedPattern": "사용한 도안",
+    "attachedHint": "{{cols}}×{{rows}} 격자 · 에디터에서 불러올 수 있어요",
+    "aiAnalyzed": "AI가 분석한 예상 도안/완성작",
+    "noPatternOnlyPhoto": "등록된 도안 없이 완성작만 올린 게시글입니다.",
+    "writeComment": "댓글 남기기",
+    "submitComment": "등록",
+    "answersCount": "답변 {{count}}개",
+    "writeAnswer": "답변 작성",
+    "remixTitle": "이 도안의 리믹스 계보",
+    "remixHint": "원본부터 현재 작품까지, 포크(Fork)와 변형이 이어진 흐름이에요.",
+    "shareToCommunity": "커뮤니티에 공유하기",
+    "patternPreview": "도안 미리보기"
   },
   "editor": {
     "defaultTitle": "새 도안",
@@ -217,6 +390,642 @@
       "midnight-sky": "미드나잇 스카이",
       "peach-sorbet": "피치 소르베",
       "sage-garden": "세이지 가든"
+    },
+    "copyNarrative": "서술형 텍스트 복사",
+    "copied": "복사 완료!",
+    "copy": "복사하기",
+    "tteuniPlaceholder": "뜨니에게 요청하기...",
+    "tteuniName": "뜨니",
+    "onboardSkip": "튜토리얼 건너뛰기",
+    "onboardTitle": "에디터 사용 안내",
+    "onboardStep1": "원하는 도구와 색상을 골라보세요",
+    "onboardStep2": "어려울 땐 뜨니에게 채팅으로 부탁해 보세요!",
+    "onboardNext": "다음",
+    "onboardStart": "시작하기",
+    "sidebarOpen": "사이드바 열기",
+    "sidebarClose": "사이드바 닫기",
+    "sidebarResize": "사이드바 너비 조절",
+    "scanNoPhoto": "사진 없음",
+    "scanNeedPhoto": "먼저 실물 완성작 사진을 선택해 주세요.",
+    "scanFail": "분석에 실패했습니다.",
+    "scanOk": "실물 사진의 배색과 기호 흐름에 맞춰 도안을 보정했습니다.",
+    "scanBusy": "분석 중",
+    "scanRun": "교차 분석",
+    "scanTitle": "실물 사진 교차 검증",
+    "yarnSearch": "실 검색",
+    "yarnSearchPh": "예: 메리노울, 모헤어",
+    "inPalette": " · 팔레트에 있음",
+    "itemSweater": "스웨터",
+    "itemVest": "조끼",
+    "itemHat": "모자",
+    "itemGloves": "장갑",
+    "itemSocks": "양말",
+    "itemBlanket": "블랭킷",
+    "itemBeanie": "비니",
+    "stsCount": "코 수",
+    "rowCount": "단 수",
+    "itemSelect": "아이템 선택",
+    "zoomInShort": "확대",
+    "zoomOutShort": "축소",
+    "resetView": "초기화",
+    "needleSizePhKnit": "예: 5.5mm",
+    "needleSizePhCrochet": "예: 4호",
+    "needlePanelTitle": "바늘 사양 설정",
+    "needlePanelHint": "코·단 수와 함께 도안에 묶이는 사용 바늘입니다.",
+    "needleKind": "바늘 종류",
+    "needleDetailLabel": "바늘 세부 타입",
+    "needleSizeLabel": "바늘 사이즈",
+    "knitting": "대바늘",
+    "crochet": "코바늘",
+    "detailStraight": "곧은바늘 (평면)",
+    "detailCircular": "줄바늘 (원통·평면)",
+    "detailDpn": "장갑바늘 · DPNs (원통)",
+    "detailCable": "케이블바늘",
+    "detailStandard": "일반 코바늘",
+    "detailTunisian": "튜니지안 코바늘",
+    "detailSteel": "레이스 코바늘",
+    "crochetSize": "{{n}}호",
+    "copyHeader": "[{{brand}} 도안] {{cols}}×{{rows}} 격자",
+    "copyNeedle": "사용 바늘: {{needle}}",
+    "copyYarn": "사용 실: {{yarns}}",
+    "tteuniAi": "뜨니 AI",
+    "tteuniHint": "가을용 가디건 도안 생성해줘, 라고 말해보세요!",
+    "tteuniInventory": "보관함에 등록된 실은 {{list}}입니다. 이 재고를 기준으로 가늠해 봤어요.",
+    "tteuniInventoryEmpty": "아직 실 장고 보관함이 비어 있어요. 마이페이지 설정에서 잔량을 등록하면 더 정확히 가늠할 수 있어요.",
+    "tteuniReplyCardigan": "가디건 도안을 그렸어요! 몸판은 겉뜨기(—), 넥라인·단은 코줄임(∧)과 안뜨기(∪)로 표시했어요.",
+    "tteuniReplyScarf": "목도리 도안이에요. 테두리는 안뜨기, 가운데는 겉뜨기로 채웠어요!",
+    "tteuniReplyCherry": "체리 모양 도안! 가운데 겉뜨기, 줄기는 안뜨기 기호로 넣었어요.",
+    "tteuniReplyStripe": "가로 줄무늬 도안이에요. 색마다 겉뜨기·안뜨기를 번갈아 넣었답니다.",
+    "tteuniReplyAutumn": "가을 느낌 도안을 적용했어요. 리브와 겉뜨기 기호를 섞어 넣었어요.",
+    "tteuniReplyDefault": "요청하신 도안에 맞게 뜨개 기호를 격자에 채웠어요! 저장해 보세요.",
+    "scanHint": "완성작 사진의 코·단 배치, 배색, 겉뜨기/안뜨기 흐름을 지금 격자 도안과 맞춰 봅니다.",
+    "scanAutoFix": "사진에 맞춰 자동 보정",
+    "yarnSearchHint": "브랜드·종류(메리노울, 모헤어 등)를 입력해 보세요",
+    "yarnSearchEmpty": "검색 결과가 없어요. 다른 키워드를 입력해 보세요.",
+    "workshopTitle": "공방 추천 팔레트",
+    "paletteCherry": "체리 버블검",
+    "paletteNordic": "노르딕 자카드",
+    "paletteForest": "클래식 빈티지 포레스트",
+    "pausePreview": "미리보기 일시 정지",
+    "loadingItem": "뜨니가 실시간 3D {{item}} 준비하고 있어요...",
+    "itemAccSweater": "스웨터를",
+    "itemAccVest": "조끼를",
+    "itemAccBeanie": "모자를",
+    "itemAccGlove": "장갑을",
+    "itemAccSocks": "양말을",
+    "shufflePattern": "테스트용 도안 변경 (랜덤)",
+    "onboardSkipShort": "건너뛰기",
+    "titleAutumn": "가을",
+    "partBody": "앞면",
+    "partBack": "뒷면",
+    "partSleeveLeft": "왼소매",
+    "partSleeveRight": "오른소매",
+    "partCollar": "목둘레"
+  },
+  "common": {
+    "delete": "삭제",
+    "cancel": "취소",
+    "close": "닫기",
+    "save": "저장",
+    "me": "나",
+    "back": "돌아가기",
+    "send": "전송",
+    "sts": "코",
+    "rows": "단",
+    "edit": "수정",
+    "submit": "등록",
+    "open": "열기 →",
+    "homeBack": "← 홈으로",
+    "lastEdited": "마지막 수정: {{date}}",
+    "deletePatternConfirm": "\"{{title}}\" 도안을 삭제할까요?",
+    "deleteFinishedConfirm": "\"{{title}}\" 완성작을 삭제할까요?",
+    "photoUpload": "사진 올리기",
+    "photoChange": "사진 변경",
+    "photoDefault": "기본 프로필로 바꾸기",
+    "rating": "별점 {{n}}",
+    "wireframe": "와이어프레임",
+    "locked": "잠금 상태",
+    "achieved": "달성!",
+    "progressReq": "진행 요건: {{text}}",
+    "customInput": "직접 입력",
+    "skip": "건너뛰기",
+    "change": "변경",
+    "done": "완료",
+    "badge": "배지",
+    "equipBadge": "배지 장착하기",
+    "changeBadge": "배지 변경",
+    "myAchievements": "나의 업적",
+    "progressOf": "{{current}} / {{goal}} {{unit}}"
+  },
+  "toast": {
+    "loginRequired": "로그인이 필요한 서비스입니다.",
+    "accountDeleted": "계정이 탈퇴되었습니다.",
+    "sharedPattern": "공유된 도안",
+    "postUploaded": "게시물이 업로드되었습니다!",
+    "patternSaved": "도안이 저장되었습니다.",
+    "patternDeleted": "도안이 삭제되었습니다."
+  },
+  "login": {
+    "title": "시작하기",
+    "subtitle": "로그인하고 도안을 저장하고 공유해 보세요.",
+    "email": "이메일",
+    "password": "비밀번호",
+    "submit": "로그인",
+    "orSocial": "또는 간편 로그인",
+    "kakao": "카카오로 시작하기",
+    "google": "구글로 시작하기",
+    "apple": "애플로 시작하기"
+  },
+  "landing": {
+    "heroLead": "복잡한 도안은 뜨니에게 맡기고,",
+    "heroLine1": "뜨개질에만",
+    "heroLine2": "집중하세요!",
+    "heroSub": "에디터부터 AI 챗봇, 커뮤니티까지 뜨개질의 모든 순간을 한곳에서.",
+    "startDrawing": "도안 그리기",
+    "feature1Line1": "클릭 몇 번으로",
+    "feature1Line2": "완성되는 나만의 도안",
+    "feature1Body": "격자 위에 기호와 색을 놓고, 실수는 뜨니가 체크해 줘요.",
+    "feature2Title": "에디터 중심의 지능형 뜨개 통합 플랫폼",
+    "feature2Body": "수작업으로 복잡하게 계산하던 준비 과정을 웹 스마트 에디터와 커뮤니티로 통합하여, 창작의 몰입감과 즐거움을 극대화합니다.",
+    "promoLine1": "실전 뜨개질은 뜨니와 함께!",
+    "promoLine2": "AR 내비게이션 앱",
+    "promoBody1": "웹에서 그린 도안을 앱으로 연동해 보세요.",
+    "promoBody2": "카메라로 비추면 다음 코를 안내해 줍니다.",
+    "promoAria": "앱 홍보 목업",
+    "promoPrev": "이전 목업",
+    "promoNext": "다음 목업",
+    "promoAlt": "뜨니 AR 앱 모바일 목업 {{n}}",
+    "footerTag": "오늘도 한 땀, 함께해요",
+    "scrollHint": "스크롤하여 글씨를 꿰매 보세요",
+    "tabEditorTitle": "도안 에디터",
+    "tabEditorSub": "2D 격자 에디터",
+    "tabEditorDesc": "터치와 마우스 드래그로 한 코, 한 코 정교하게 도안을 그릴 수 있습니다. 사용자의 뜨개 바늘 규격과 실의 두께에 따라 캔버스 크기를 유연하게 설정할 수 있어 입문자부터 마스터까지 자신만의 독창적인 패턴을 설계할 수 있습니다.",
+    "tabChatTitle": "AI 챗봇",
+    "tabChatSub": "지능형 뜨개 코칭",
+    "tabChatDesc": "인공지능 뜨니가 도안 에디팅 중 실시간으로 오류를 감지하고 보정안을 제시합니다. 대화창에 필요한 가이드를 질문하면 뜨개질 기법을 도안 데이터로 변환하여 캔버스 위에 한 땀씩 한글 또는 기호로 자동 배치해 줍니다.",
+    "tabConvertTitle": "서술형 변환",
+    "tabConvertSub": "자연어 도안 생성",
+    "tabConvertDesc": "복잡한 격자 그림 도안을 읽는 피로감을 해소하기 위해, 에디터에 그려진 기호 레이아웃을 '1단: 겉뜨기 2코, 안뜨기 1코'와 같이 자연스러운 서술형 한글 텍스트 도안으로 1초 만에 자동 번역하여 출력합니다.",
+    "tabCommunityTitle": "커뮤니티",
+    "tabCommunitySub": "라운지 도안 공유",
+    "tabCommunityDesc": "내가 설계하고 완성한 정성 어린 도안 카드를 포장하여 라운지 피드에 자랑해 보세요. 다른 유저들이 올린 완성작 실물 사진을 마우스로 확인하고, 클릭 한 번으로 내 도안 작업실 에디터 창으로 즉시 가져와 수정 및 배포할 수 있습니다."
+  },
+  "createPost": {
+    "editTitle": "게시물 수정",
+    "writeTitle": "게시물 작성",
+    "noDraft": "첨부할 도안이 없습니다. 저장된 도안을 불러오거나 돌아가 주세요.",
+    "loadMine": "내 도안 불러오기",
+    "back": "← 돌아가기",
+    "attached": "첨부 도안",
+    "title": "제목",
+    "titlePh": "예: 베이지 가디건 완성!",
+    "yarnNeedle": "사용 실 / 바늘 정보",
+    "yarnNeedlePh": "예: 메리노 울 100%, 코바늘 4.5mm",
+    "review": "내용 (후기)",
+    "reviewPh": "뜨면서 느낀 점, 팁, 소요 시간 등을 적어 주세요.",
+    "previewAlt": "완성작 미리보기",
+    "publish": "게시하기",
+    "saveDraft": "임시 저장",
+    "photo": "완성작 사진 (선택)",
+    "photoUpload": "사진 올리기",
+    "upload": "업로드",
+    "loadMineHint": "첨부할 도안을 선택하세요",
+    "loadMineEmpty": "저장된 도안이 없습니다. 에디터에서 도안을 저장한 뒤 다시 시도해 주세요."
+  },
+  "gift": {
+    "untitled": "새 도안",
+    "done": "도안 포장이 완료되었어요",
+    "toVault": "보관함으로 가기",
+    "backEditor": "에디터로 돌아가기"
+  },
+  "offline": {
+    "title": "오프라인 소식 및 모임",
+    "subtitle": "실시간 연동형 정밀 지도와 팝업 체크인으로 가로지르는 포근한 오프라인 연결 통로입니다.",
+    "tabMap": "행사 지도",
+    "tabMeetup": "동네 소모임",
+    "tabReviews": "방문 후기 도안",
+    "mapLabel": "실시간 연동형 정밀 지도 (서울 마포구/강남구 일대)",
+    "mapLoading": "실시간 지리 연동망 로드 중...",
+    "mapSearchPh": "마포구/강남구 실시간 연동 뜨개 팝업 검색 중...",
+    "zoomIn": "지도 확대",
+    "zoomOut": "지도 축소",
+    "compass": "권역 전체 보기",
+    "mapHint": "지도를 드래그하고 확대하여 팝업 위치를 확인하세요",
+    "detailLabel": "상세 오프라인 소식",
+    "dateLabel": "진행 기간",
+    "placeLabel": "정확한 장소",
+    "yarnMatch": "매칭용 권장 실",
+    "needleMatch": "매칭용 권장 바늘",
+    "ticket": "티켓 발권받기",
+    "passHint": "본 예약 패스로 오프라인 현장 체크인 완료 시, 마이페이지의 통계 코수 수치 및 성장 뱃지가 자동으로 언록되어 성취감을 높일 수 있습니다.",
+    "meetupLabel": "내 활동지역 기반 모집 중인 동네 뜨개 모임",
+    "meetupRegion": "활동 권역: 서울시 마포구 일대",
+    "join": "참가 신청하기",
+    "joined": "신청 완료",
+    "cancelJoin": "신청 취소",
+    "reviewLabel": "오프라인 현장 방문 후기 및 수제 변형 도안 공유판",
+    "reviewCount": "총 {{count}}개의 가이드 패턴 등록됨",
+    "cloneDone": "도안 복제 완료: {{name}} 에셋이 로컬 편집 작업대에 세팅되었습니다. 도안 그리기 탭으로 즉시 이동하여 활용해 보세요.",
+    "goNow": "이동하기",
+    "author": "작성자: {{name}}",
+    "patternAttach": "수제 복원 도안 첨부",
+    "cloneEditor": "에디터로 복제",
+    "ticketTitle": "오프라인 모바일 입장 티켓",
+    "ticketBody": "신청이 승인되었습니다. 현장 부스에서 모바일 앱으로 아래 QR을 인식해 주세요.",
+    "ticketClose": "닫기 및 저장",
+    "yarnRecommended": "권장 실",
+    "meetupCycle": "모임 주기",
+    "capacity": "신청 정원 {{current}} / {{max}}명",
+    "full": "정원 마감",
+    "needleNeeded": "필요 바늘",
+    "closed": "모집 마감",
+    "typePopup": "브랜드 팝업",
+    "typeExhibition": "오프라인 기획전",
+    "typeClass": "원데이 클래스"
+  },
+  "dashboard": {
+    "title": "내 도안 보관함"
+  },
+  "content": {
+    "badges": {
+      "badge1": {
+        "name": "첫 바늘의 설렘",
+        "desc": "뜨개 에디터에서 첫 번째 도안 패키징을 완료하여 수고한 뜨개 여행을 시작했습니다."
+      },
+      "badge2": {
+        "name": "푸르시오 극복가",
+        "desc": "실수를 두려워하지 않고 5,000코 이상의 편물을 풀어내 이겨냈습니다."
+      },
+      "badge3": {
+        "name": "꼬막음 완성",
+        "desc": "작품의 마지막 코를 단정하게 오므려 마감하는 꼬막음을 무사히 마쳤습니다."
+      },
+      "badge4": {
+        "name": "게이지 계산요정",
+        "desc": "게이지 계산기 수식에 내 손땀을 대입해 콧수를 3회 이상 똑똑하게 변환했습니다."
+      },
+      "badge5": {
+        "name": "배색 가디건 컬렉터",
+        "desc": "추천 컬러 조합 팔레트를 3회 이상 작품에 연동해 도안을 그렸습니다."
+      },
+      "badge6": {
+        "name": "문어발 뜨개질러",
+        "desc": "동시에 3개 이상의 다중 프로젝트 가방을 등록해 진행하는 열정을 뽐냈습니다."
+      },
+      "badge7": {
+        "name": "실 보관 마스터",
+        "desc": "소장 중인 실의 잔량과 바늘을 실 장고 보관함에 5회 이상 성실히 기록했습니다."
+      },
+      "badge8": {
+        "name": "따뜻한 라운지 리더",
+        "desc": "커뮤니티 자랑 피드에 정성 어린 제작 수기와 도안을 공유해 많은 이들에게 영감을 주었습니다."
+      },
+      "badge9": {
+        "name": "뜨니의 소울메이트",
+        "desc": "대화형 프롬프트를 활용해 AI 뜨니 챗과 대화하며 도안을 10회 이상 정밀 수정했습니다."
+      },
+      "badge10": {
+        "name": "공방 골목대장",
+        "desc": "직접 창작하고 패키징한 도안을 도안 장터에 배포하여 1회 이상 내려받기를 획득했습니다."
+      },
+      "badge11": {
+        "name": "한 땀의 예술가",
+        "desc": "에디터 플랫폼에서 기호와 배색을 완벽히 소화하여 누적 30,000코 이상을 떴습니다."
+      }
+    },
+    "patterns": {
+      "cp-1": {
+        "title": "초보자용 체리 키링",
+        "caption": "사용 실: 코튼 4합, 바늘 3.0mm. 키링 고리 부분만 조심하면 하루 만에 끝나요!",
+        "yarn": "코튼 4합 (빨강·초록)",
+        "needle": "코바늘 3호",
+        "duration": "약 4시간",
+        "review": "키링 고리 코 부분만 짧은 뜨기로 촘촘하게 마무리했어요. 선물용으로 3개 더 떴습니다."
+      },
+      "cp-2": {
+        "title": "파스텔 무지개 스카프",
+        "caption": "사용 실: 메리노 울 100%, 바늘: 4.5mm. 뜨는 데 2주 걸렸어요!",
+        "yarn": "메리노 울 100% (파스텔 6색)",
+        "needle": "대바늘 4.5mm",
+        "duration": "2주",
+        "review": "색 변경 구간에서 코 수 맞추기가 조금 헷갈렸는데, 완성하니 너무 뿌듯해요. 길이는 목에 두른 뒤 원하는 만큼 더 뜨면 됩니다."
+      },
+      "cp-3": {
+        "title": "곰돌이 인형 몸통 도안",
+        "caption": "솜 충전 후 몸통과 머리를 코묶음으로 연결했습니다.",
+        "yarn": "알파카 울 베이지·브라운",
+        "needle": "코바늘 4호",
+        "duration": "10일",
+        "review": "눈 단추는 바느질로 고정했어요. 솜은 적당히만 넣어야 귀여운 실루엣이 나옵니다. 아이 선물로 최고!"
+      },
+      "cp-4": {
+        "title": "겨울 털모자 기본형",
+        "caption": "사용 실: 그레이(아크릴), 대바늘 5.0mm 줄바늘. 20×20 겉뜨기만으로 뜬 기본형이에요.",
+        "yarn": "그레이(아크릴)",
+        "needle": "대바늘 5.0mm",
+        "duration": "3일",
+        "review": "겉뜨기만 이어서 뜨는 기본형이라 초보도 따라 하기 쉬워요. 줄바늘로 원통으로 뜨면 이음선이 없습니다."
+      },
+      "cp-5": {
+        "title": "미니 하트 코스터",
+        "caption": "코스터 4장 세트로 떠서 친구들에게 나눠줬어요.",
+        "yarn": "면 실 3합 (코랄·화이트)",
+        "needle": "코바늘 4호",
+        "duration": "1일",
+        "review": "테이블 위에 올려두니 너무 귀엽네요. 하트 모양은 도안 그대로 따라 하면 실패 없어요!"
+      },
+      "cp-6": {
+        "title": "완성! 베이지 가디건",
+        "caption": "사용 실: 메리노 울 100%, 바늘: 4.5mm. 뜨는 데 2주 걸렸어요!",
+        "yarn": "메리노 울 100% (베이지)",
+        "needle": "대바늘 4.5mm",
+        "duration": "2주",
+        "review": "소매 부분 코줄임이 헷갈렸는데 뜨니 코칭 덕분에 완성했네요. 몸판은 여유 있게, 소매는 14단 더 늘리면 길이감이 딱 좋아요."
+      },
+      "cp-7": {
+        "title": "포근한 화이트 장갑",
+        "caption": "사용 실: 메리노 울 화이트, 장갑바늘 3.5mm. 손등만 겉뜨기로 단순하게 떴어요.",
+        "yarn": "메리노 울 100% (화이트)",
+        "needle": "대바늘 3.5mm",
+        "duration": "4일",
+        "review": "손가락 가르기만 천천히 하면 초보도 따라 하기 쉬워요. 손목 리브는 2코 겉·2코 안으로 탄탄하게 잡아 주세요."
+      },
+      "cp-8": {
+        "title": "분홍 별 코스터",
+        "caption": "사용 실: 코튼 3합 핑크, 코바늘 4호. 코스터 한 장에 저녁 한 끼 분량이에요.",
+        "yarn": "면 실 3합 (핑크)",
+        "needle": "코바늘 4호",
+        "duration": "3시간",
+        "review": "별 꼭짓점은 짧은 뜨기로 모서리를 잡아 주면 모양이 또렷해져요. 하트 코스터와 세트로 두면 식탁이 화사합니다."
+      },
+      "cp-9": {
+        "title": "포근한 분홍 양말",
+        "caption": "사용 실: 양말 전용 울 핑크, 장갑바늘 2.5mm. 뒤꿈치는 짧은 줄기로 돌려 떴어요.",
+        "yarn": "양말용 울 (핑크)",
+        "needle": "대바늘 2.5mm",
+        "duration": "5일",
+        "review": "발등 게이지만 맞춰 두면 길이 조절이 쉽습니다. 한 짝 뜨고 나서 코 수를 적어 두면 짝이 안 맞을 일이 없어요."
+      },
+      "cp-10": {
+        "title": "노란 비니 모자",
+        "caption": "사용 실: 벌키 아크릴 옐로, 줄바늘 5.5mm. 회색 비니와 같은 기본형이에요.",
+        "yarn": "벌키 아크릴 (옐로)",
+        "needle": "대바늘 5.5mm",
+        "duration": "2일",
+        "review": "회색 기본형에서 색만 바꿨어요. 챙 리브를 8단 정도 두면 말림이 예쁩니다. 꼭대기 모아 뜨기만 천천히 하면 됩니다."
+      }
+    },
+    "qa": {
+      "qa-1": {
+        "title": "코 고리 뜨개 시 코 수를 어떻게 잡나요?",
+        "excerpt": "초보자용 체리 키링 도안을 따라 하는데, 코 고리 부분에서 항상 구멍이 벌어져요…",
+        "body": "안녕하세요! 체리 키링 도안 3단에서 코 고리를 뜰 때마다 구멍이 벌어집니다.\n\n사용 실은 4합사이고, 코바늘은 3.5mm입니다. 도안에는 '짧은 뜨기 6코'라고 되어 있는데, 제 뜨개는 항상 8코 정도로 늘어나는 느낌이에요.\n\n혹시 코를 너무 느슨하게 잡는 걸까요? 경험 있으신 분들의 팁 부탁드려요!"
+      },
+      "qa-2": {
+        "title": "베이지 가디건 소매 길이 조절 방법",
+        "excerpt": "완성작 자랑에 올라온 가디건 도안인데, 소매만 5cm 정도 더 길게 뜨고 싶어요.",
+        "body": "완성작 자랑의 베이지 가디건을 참고해서 뜨고 있는데, 팔 길이가 짧게 느껴집니다.\n\n몸통 도안은 그대로 두고 소매 단만 늘리려면 몇 단을 더 떠야 할까요? 게이지는 10cm에 22코 28단 정도 나옵니다."
+      },
+      "qa-3": {
+        "title": "실 색상이 도안과 다르게 나올 때",
+        "excerpt": "코랄 실을 샀는데 화면에서 보던 것보다 훨씬 붉게 나와요. 교체 실 추천 받고 싶어요.",
+        "body": "커뮤니티 도안 미리보기에서는 부드러운 코랄인데, 실제 뜨니 #FC5F53에 가깝지만 너무 쨍해 보입니다.\n\n비슷한 톤의 대체 실 브랜드나, 색을 톤 다운하는 방법이 있을까요?"
+      },
+      "qa-4": {
+        "title": "도안 에디터에서 격자 불러오기가 안 될 때",
+        "excerpt": "커뮤니티 카드에서 에디터로 불러오기를 눌렀는데 빈 격자만 나와요.",
+        "body": "크롬에서 시도했고, 로그인은 되어 있습니다. 특정 도안(cp-3)만 그런데 새로고침해도 같아요.\n\n혹시 로컬 저장 용량 문제일 수도 있을까요?"
+      },
+      "qa-5": {
+        "title": "겨울 털모자, 줄바늘로 원통 뜰 때 이음선이 생겨요",
+        "excerpt": "20×20 그레이 겉뜨기 기본형인데, 줄바늘로 떠도 시작 코 쪽이 살짝 비뚤어집니다.",
+        "body": "겨울 털모자 기본형을 줄바늘 5.0mm로 원통 뜨기 하고 있어요.\n\n겉뜨기만 이어서 뜨는데, 매 단 시작 지점이 조금씩 기울면서 이음선처럼 보여요. 마커를 옮겨 가며 뜨는 게 맞을까요? 아니면 단 시작을 한 코씩 밀어 줘야 하나요?"
+      },
+      "qa-6": {
+        "title": "화이트 장갑 손가락 가르기 순서가 헷갈려요",
+        "excerpt": "손등까지는 잘 떴는데, 엄지랑 나머지 손가락을 나누는 타이밍을 모르겠어요.",
+        "body": "포근한 화이트 장갑 도안을 따라 뜨는 중입니다. 손목 리브는 2코 겉·2코 안으로 끝났고, 손등도 겉뜨기로 올렸어요.\n\n손가락을 가를 때 남은 코를 어떻게 배분하나요? 표시실을 어디에 두면 안 헷갈릴까요? 장갑바늘 3.5mm 사용 중입니다."
+      },
+      "qa-7": {
+        "title": "분홍 양말 뒤꿈치를 돌리다가 구멍이 생겼어요",
+        "excerpt": "한 짝은 완성했는데 뒤꿈치 모서리가 성깁니다. 둘째 짝 뜨기 전에 잡고 싶어요.",
+        "body": "포근한 분홍 양말 도안으로 첫 짝을 떴습니다. 발등 게이지는 맞는데, 뒤꿈치를 짧은 줄기로 돌리는 구간에서 구멍이 남아요.\n\n코 수를 적어 두라는 후기는 봤는데, 구멍은 어떻게 메우나요? 집기 뜨기를 넣어야 할까요?"
+      },
+      "qa-8": {
+        "title": "하트 코스터랑 별 코스터, 코 수를 같이 맞춰도 되나요?",
+        "excerpt": "식탁에 세트로 두고 싶은데 크기가 달라질까 봐 걱정입니다.",
+        "body": "미니 하트 코스터는 12×12이고, 분홍 별 코스터도 12×12로 되어 있어요.\n\n같은 면 실 3합·코바늘 4호로 뜨면 실제 크기도 비슷하게 나올까요? 별 꼭짓점만 짧은 뜨기로 잡아 주면 하트랑 세트가 될까요?"
+      },
+      "qa-9": {
+        "title": "무지개 스카프는 도안이 없다는데 어떻게 따라 뜨나요?",
+        "excerpt": "완성작 사진만 있고 격자가 안 보여서, 배색 순서만 알면 될지 궁금합니다.",
+        "body": "파스텔 무지개 스카프 게시글에 첨부 도안이 없다고 나와 있어요. AI 예상 이미지만 보입니다.\n\n줄무늬 배색만 반복하면 되는 걸까요? 대바늘 4.5mm 줄바늘로 평면으로 떠도 될까요, 아니면 원통이 맞나요?"
+      },
+      "qa-10": {
+        "title": "노란 비니랑 회색 털모자, 도안이 정말 같나요?",
+        "excerpt": "색만 바꿔서 뜨고 싶은데 코·단 수가 같은지 확인하고 싶어요.",
+        "body": "노란 비니 모자 후기에 회색 기본형과 같은 도안이라고 되어 있습니다.\n\n둘 다 20×20인가요? 노란 쪽은 줄바늘 5.5mm, 회색은 5.0mm로 보이는데 바늘이 달라도 형태는 같게 나오나요? 챙 리브는 몇 단이 적당한지도 알려 주세요."
+      }
+    },
+    "answers": {
+      "ans-1": "짧은 뜨기 코 고리는 코바늘을 살짝 비틀어 넣으면 구멍이 줄어요. 첫 단은 꽉 잡고, 두 번째 단부터 느슨해지지 않게 해보세요!",
+      "ans-2": "마커 실로 코 수를 표시해 두면 늘어나는 걸 바로 잡을 수 있어요. 6코가 목표면 5코만 뜨고 한 코 더 확인하는 습관도 좋습니다.",
+      "ans-3": "게이지 기준으로 5cm면 약 14단 추가하시면 됩니다. 소매 끝 2단은 탄성 있게 짧은 뜨기로 마무리해 주세요.",
+      "ans-4": "완성작 자랑의 베이지 가디건 사진 길이를 재 보시고, 손목까지 오는지 비교해 보시면 단 수 계산이 쉬워요.",
+      "ans-5": "같은 코랄이라도 면 실은 화면보다 선명하게 나와요. 베이지를 한 줄 섞거나, 한 호수 굵은 바늘로 느슨하게 뜨면 톤이 내려갑니다.",
+      "ans-6": "곰돌이 도안은 불러오기가 됩니다. 빈 격자로 열리면 커뮤니티에서 다시 한 번 ‘에디터로 불러오기’를 눌러 보세요.",
+      "ans-7": "원통 겉뜨기는 단마다 시작 코가 한 칸씩 밀립니다. 마커를 단 시작에 두고, 기울임이 보이면 한 코 앞에서 단을 바꿔 주세요.",
+      "ans-8": "손등 코를 넷으로 나눈 뒤 엄지는 옆에서 따로 빼요. 가르기 직전에 표시실을 네 곳에 걸어 두면 순서가 안 섞입니다.",
+      "ans-9": "돌리는 모서리에서 옆 코를 같이 집어 뜨면 구멍이 줄어들어요. 둘째 짝은 첫 짝 코 수를 옆에 두고 같은 단에서 접어 주세요.",
+      "ans-10": "같은 실·같은 호수면 크기가 거의 같아요. 별 꼭짓점만 짧게 잡아 주면 하트랑 세트로 두기 좋습니다.",
+      "ans-11": "도안 없이 올린 글이라 배색 순서만 참고하면 됩니다. 줄바늘로 평면 왕복 뜨기 해도 되고, 원통이면 이음선이 없어요.",
+      "ans-12": "격자는 둘 다 20×20 겉뜨기 기본형이에요. 바늘이 0.5mm 굵으면 조금 커지니, 챙 리브는 8단 정도로 맞춰 보세요."
+    },
+    "comments": {
+      "fc-1": "색감이 진짜 예뻐요! 소매 늘리신 분들은 14단 더 뜨시면 될 것 같아요.",
+      "fc-2": "도안 그대로 따라 했는데 사이즈 딱 맞았어요. 감사합니다!",
+      "fc-3": "곰돌이 귀 달 때 솜 조금만 넣으세요. 너무 많으면 떡져 보여요.",
+      "fc-4": "손목 리브 길이만 조금 늘렸더니 장갑이 잘 안 빠져요. 손가락 가르기는 표시실 두고 뜨면 편합니다.",
+      "fc-5": "하트 코스터랑 세트로 떴어요. 별 꼭짓점은 짧은 뜨기로 잡아 주니 모양이 살아납니다.",
+      "fc-6": "뒤꿈치 돌리기가 처음이라 헤맸는데, 한 짝 뜨고 코 수를 적어두니 둘째 짝이 맞았어요.",
+      "fc-7": "회색 기본형이랑 같은 도안이라 금방 따라 했어요. 노란 색이 봄에 잘 어울려요."
+    },
+    "events": {
+      "event_hongdae": {
+        "title": "뜨개러투게더 캡스톤 부스 및 굿즈 팝업",
+        "location": "서울시 마포구 와우산로 홍대 아틀리에 2층",
+        "description": "뜨니 오프라인 마스코트 굿즈 판매 및 실물 편물 AR 도안 인식 스캔 체험전",
+        "yarn": "낙양모사 시그니처 울",
+        "needle": "대바늘 5.0mm"
+      },
+      "event_garosu": {
+        "title": "안개 구름 모헤어 가을 기획전",
+        "location": "서울시 강남구 신사동 가로수길 갤러리 메종",
+        "description": "프리미엄 모헤어 실 브랜드와 뜨개더의 독점 컬러 배색 팔레트 실물 쇼케이스",
+        "yarn": "안개 구름 모헤어",
+        "needle": "대바늘 3.5mm"
+      },
+      "event_mangwon": {
+        "title": "왕초보 코바늘 매직링 1일 격파 클래스",
+        "location": "서울시 마포구 망원 쉼터 뜨개 카페",
+        "description": "도안 까막눈 탈출 프로젝트. 매직링 꼬임 코 해석 및 손땀 보정 1:1 클리닉",
+        "yarn": "포근 오가닉 코튼",
+        "needle": "코바늘 4호"
+      }
+    },
+    "meetups": {
+      "meetup_mangwon": {
+        "title": "망원동 북카페 대바늘 가디건 소소한 수다 모임",
+        "region": "서울시 마포구 망원동",
+        "date": "매주 토요일 오후 2시",
+        "needle": "대바늘 5.0mm",
+        "yarn": "낙양모사 시그니처 울"
+      },
+      "meetup_gangnam": {
+        "title": "강남역 모여서 뜨는 인스타 크롭 가디건 번개",
+        "region": "서울시 강남구 역삼동",
+        "date": "2026.08.22 오후 7시",
+        "needle": "대바늘 4.5mm",
+        "yarn": "뽀송 메리노울"
+      },
+      "meetup_hongdae": {
+        "title": "홍대 코바늘 자수 소품 및 입문 티코스터 모임",
+        "region": "서울시 마포구 서교동",
+        "date": "매주 목요일 오전 11시",
+        "needle": "코바늘 5호",
+        "yarn": "포근 오가닉 코튼"
+      },
+      "mt-hapjeong-cardigan": {
+        "title": "합정역 카페에서 크롭 가디건 같이 떠요",
+        "region": "서울시 마포구 합정동",
+        "date": "8월 23일 오후 2시",
+        "needle": "대바늘 5.0mm",
+        "yarn": "아란 굵기 1볼",
+        "place": "합정역 2번 출구 인근 창가 카페"
+      },
+      "mt-magic-ring": {
+        "title": "코바늘 기초 매직링 타파 모임",
+        "region": "서울시 마포구 서교동",
+        "date": "8월 24일 오후 7시",
+        "needle": "코바늘 3호",
+        "yarn": "코튼 4합 1볼",
+        "place": "홍대입구 커뮤니티 테이블"
+      },
+      "mt-mangwon-bookcafe": {
+        "title": "망원동 디저트 카페 크롭 가디건 뜨개 모임",
+        "region": "서울시 마포구 망원동",
+        "date": "8월 30일 오후 3시",
+        "needle": "대바늘 4.5mm",
+        "yarn": "울앤더갱 메리노울 1볼",
+        "place": "망원동 북카페 2층"
+      },
+      "mt-garosu-beanie": {
+        "title": "가로수길에서 여름 비니 한 장 끝내기",
+        "region": "서울시 강남구 신사동",
+        "date": "8월 21일 오후 1시",
+        "needle": "대바늘 4.0mm",
+        "yarn": "코튼 블렌드 1볼",
+        "place": "신사동 니트 카페"
+      },
+      "mt-seongsu-socks": {
+        "title": "성수에서 양말 뒤축만 같이 보기",
+        "region": "서울시 성동구 성수동",
+        "date": "8월 26일 저녁 7시",
+        "needle": "대바늘 2.5mm",
+        "yarn": "핑거링 양말실 1볼",
+        "place": "성수 루프 스튜디오"
+      }
+    },
+    "reviews": {
+      "review_1": {
+        "eventTitle": "뜨개러투게더 캡스톤 부스 및 굿즈 팝업",
+        "content": "홍대 아틀리에 팝업에서 실물 가디건을 스캔해 보니 도안 기호로 바로 분석되고, 현장에서 산 낙양모사 울에 맞춘 변환 도안을 공유합니다.",
+        "patternName": "완성! 베이지 가디건",
+        "patternDesc": "후기에 붙은 격자 도안을 에디터로 그대로 가져갈 수 있어요"
+      },
+      "review_2": {
+        "eventTitle": "안개 구름 모헤어 콜라보 가을 기획전",
+        "content": "가로수길 가을 기획전에서 모헤어 패키지를 받고, 웹 에디터로 불러와 리믹스하기 좋은 레이스 숄 도안을 남깁니다.",
+        "patternName": "가을 스페셜 모헤어 숄",
+        "patternDesc": "현장에서 한땀 한땀 뜬 기획전 특전 모헤어 도안을 에디터에 그대로 옮겨서 리믹스하세요"
+      }
+    },
+    "yarns": {
+      "merino-cream": {
+        "name": "메리노 울 크림",
+        "brand": "파인울",
+        "fiber": "메리노울"
+      },
+      "merino-navy": {
+        "name": "메리노 울 네이비",
+        "brand": "파인울",
+        "fiber": "메리노울"
+      },
+      "mohair-pink": {
+        "name": "모헤어 핑크",
+        "brand": "몽드",
+        "fiber": "모헤어"
+      },
+      "mohair-lavender": {
+        "name": "모헤어 라벤더",
+        "brand": "몽드",
+        "fiber": "모헤어"
+      },
+      "cotton-white": {
+        "name": "코튼 화이트",
+        "brand": "코지코튼",
+        "fiber": "면"
+      },
+      "cotton-coral": {
+        "name": "코튼 코랄",
+        "brand": "코지코튼",
+        "fiber": "면"
+      },
+      "alpaca-beige": {
+        "name": "알파카 베이지",
+        "brand": "알파하우스",
+        "fiber": "알파카"
+      },
+      "cashmere-gray": {
+        "name": "캐시미어 그레이",
+        "brand": "럭셔리얀",
+        "fiber": "캐시미어"
+      },
+      "acrylic-sky": {
+        "name": "아크릴 스카이블루",
+        "brand": "데일리얀",
+        "fiber": "아크릴"
+      },
+      "wool-charcoal": {
+        "name": "울 차콜",
+        "brand": "울스토리",
+        "fiber": "울"
+      },
+      "linen-natural": {
+        "name": "리넨 내추럴",
+        "brand": "리넨룸",
+        "fiber": "리넨"
+      },
+      "bamboo-mint": {
+        "name": "대나무 민트",
+        "brand": "에코실",
+        "fiber": "대나무섬유"
+      },
+      "angora-white": {
+        "name": "앙고라 화이트",
+        "brand": "플러피",
+        "fiber": "앙고라"
+      },
+      "silk-gold": {
+        "name": "실크 골드",
+        "brand": "실크웨이",
+        "fiber": "실크"
+      },
+      "blend-rainbow": {
+        "name": "블렌드 무지개",
+        "brand": "컬러팝",
+        "fiber": "울·아크릴 혼방"
+      }
     }
   }
 }

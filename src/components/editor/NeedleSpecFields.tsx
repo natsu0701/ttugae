@@ -1,15 +1,20 @@
 import { useEffect, useId, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   CROCHET_SIZE_OPTIONS,
   CUSTOM_SIZE_VALUE,
   KNITTING_SIZE_OPTIONS,
-  NEEDLE_TYPE_LABELS,
   defaultNeedleForType,
   needleDetailOptions,
   needleSizeOptions,
   type NeedleSpec,
   type NeedleType,
 } from "../../data/knittingMetadataLibrary.ts";
+import {
+  formatNeedleDetailI18n,
+  formatNeedleSizeI18n,
+  formatNeedleTypeI18n,
+} from "../../utils/i18nContent.ts";
 
 type NeedleSpecFieldsProps = {
   value: NeedleSpec;
@@ -34,6 +39,7 @@ export default function NeedleSpecFields({
   onChange,
   tone = "light",
 }: NeedleSpecFieldsProps) {
+  const { t } = useTranslation();
   const uid = useId();
   const sizes = needleSizeOptions(value.needleType);
   const sizeInList = (sizes as readonly string[]).includes(value.needleSize);
@@ -58,7 +64,7 @@ export default function NeedleSpecFields({
   return (
     <div className="space-y-3">
       <div>
-        <p className={label}>바늘 종류</p>
+        <p className={label}>{t("editor.needleKind")}</p>
         <div className="grid grid-cols-2 gap-2">
           {(["knitting", "crochet"] as const).map((type) => {
             const active = value.needleType === type;
@@ -75,7 +81,7 @@ export default function NeedleSpecFields({
                       : "bg-white text-gray-600 hover:bg-black hover:text-white"
                 }`}
               >
-                {NEEDLE_TYPE_LABELS[type]}
+                {formatNeedleTypeI18n(t, type)}
               </button>
             );
           })}
@@ -84,7 +90,7 @@ export default function NeedleSpecFields({
 
       <div>
         <label className={label} htmlFor={`needle-detail-${uid}`}>
-          바늘 세부 타입
+          {t("editor.needleDetailLabel")}
         </label>
         <select
           id={`needle-detail-${uid}`}
@@ -99,7 +105,7 @@ export default function NeedleSpecFields({
         >
           {details.map((opt) => (
             <option key={opt.id} value={opt.id}>
-              {opt.label}
+              {formatNeedleDetailI18n(t, opt.id) ?? opt.label}
             </option>
           ))}
         </select>
@@ -107,7 +113,7 @@ export default function NeedleSpecFields({
 
       <div>
         <label className={label} htmlFor={`needle-size-${uid}`}>
-          바늘 사이즈
+          {t("editor.needleSizeLabel")}
         </label>
         <select
           id={`needle-size-${uid}`}
@@ -126,18 +132,22 @@ export default function NeedleSpecFields({
           {(value.needleType === "knitting" ? KNITTING_SIZE_OPTIONS : CROCHET_SIZE_OPTIONS).map(
             (size) => (
               <option key={size} value={size}>
-                {size}
+                {formatNeedleSizeI18n(t, size)}
               </option>
             ),
           )}
-          <option value={CUSTOM_SIZE_VALUE}>직접 입력</option>
+          <option value={CUSTOM_SIZE_VALUE}>{t("common.customInput")}</option>
         </select>
         {customOpen || !sizeInList ? (
           <input
             type="text"
             value={value.needleSize}
             onChange={(e) => onChange({ ...value, needleSize: e.target.value })}
-            placeholder={value.needleType === "crochet" ? "예: 4호" : "예: 5.5mm"}
+            placeholder={
+              value.needleType === "crochet"
+                ? t("editor.needleSizePhCrochet")
+                : t("editor.needleSizePhKnit")
+            }
             className={`mt-2 ${field}`}
           />
         ) : null}

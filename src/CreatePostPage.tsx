@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { FolderFillIcon } from "./components/icons/FillIcons.tsx";
 import LandingFooter from "./components/landing/LandingFooter.tsx";
 import Button from "./components/ui/Button.tsx";
@@ -7,7 +8,7 @@ import Textarea from "./components/ui/Textarea.tsx";
 import PatternThumbnailPreview from "./components/create-post/PatternThumbnailPreview.tsx";
 import LoadMyPatternModal from "./components/create-post/LoadMyPatternModal.tsx";
 import { softShadow } from "./components/ui/tabButtonStyles.ts";
-import type { StoredPattern } from "./Dashboard.tsx";
+import type { StoredPattern } from "./types/storedPattern.ts";
 import {
   clearShareDraft,
   loadShareDraft,
@@ -21,13 +22,12 @@ import {
   publishPatternToCommunity,
 } from "./utils/communityShare.ts";
 import { upsertMyFinishedWork } from "./utils/myFinishedWorksStore.ts";
+import { COMMUNITY_TAB_EVENT } from "./utils/communityTabEvent.ts";
 
 function formatTodayLocal() {
   const d = new Date();
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
 }
-
-export const COMMUNITY_TAB_EVENT = "ttugae:community-tab";
 
 type CreatePostPageProps = {
   savedPatterns: StoredPattern[];
@@ -79,6 +79,7 @@ export default function CreatePostPage({
   onPublished,
   onSavePattern,
 }: CreatePostPageProps) {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState<ShareDraftPayload | null>(() => loadShareDraft());
   const [title, setTitle] = useState("");
   const [yarnNeedle, setYarnNeedle] = useState("");
@@ -173,7 +174,7 @@ export default function CreatePostPage({
       <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900">
         <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6">
           <p className="text-center text-sm text-gray-600">
-            첨부할 도안이 없습니다. 저장된 도안을 불러오거나 돌아가 주세요.
+            {t("createPost.noDraft")}
           </p>
           <Button
             type="button"
@@ -182,14 +183,14 @@ export default function CreatePostPage({
             onClick={() => setPatternModalOpen(true)}
           >
             <FolderFillIcon className="mr-2 inline h-4 w-4" />
-            내 도안 불러오기
+            {t("createPost.loadMine")}
           </Button>
           <button
             type="button"
             onClick={onCancel}
             className="text-sm text-gray-500 hover:text-coral"
           >
-            ← 돌아가기
+            {t("createPost.back")}
           </button>
         </div>
         <LoadMyPatternModal
@@ -214,10 +215,10 @@ export default function CreatePostPage({
             onClick={onCancel}
             className="font-sans text-sm font-normal text-gray-600 transition-colors hover:text-coral"
           >
-            ← 돌아가기
+            {t("createPost.back")}
           </button>
           <h1 className="font-sans text-lg font-bold text-gray-900">
-            {isEdit ? "게시물 수정" : "게시물 작성"}
+            {isEdit ? t("createPost.editTitle") : t("createPost.writeTitle")}
           </h1>
           <span className="w-16" aria-hidden />
         </div>
@@ -228,7 +229,7 @@ export default function CreatePostPage({
         className="mx-auto max-w-2xl space-y-8 px-5 py-8 md:px-8"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-sans text-sm font-normal text-gray-600">첨부 도안</p>
+          <p className="font-sans text-sm font-normal text-gray-600">{t("createPost.attached")}</p>
           <Button
             type="button"
             variant="secondary"
@@ -236,7 +237,7 @@ export default function CreatePostPage({
             onClick={() => setPatternModalOpen(true)}
           >
             <FolderFillIcon className="mr-1.5 inline h-4 w-4" />
-            내 도안 불러오기
+            {t("createPost.loadMine")}
           </Button>
         </div>
 
@@ -249,7 +250,7 @@ export default function CreatePostPage({
 
         <div>
           <p className="mb-2 font-sans text-sm font-normal text-gray-600">
-            완성작 사진 (선택)
+            {t("createPost.photo")}
           </p>
           <input
             ref={photoInputRef}
@@ -264,36 +265,36 @@ export default function CreatePostPage({
             className="px-4 py-2 text-sm"
             onClick={() => photoInputRef.current?.click()}
           >
-            사진 올리기
+            {t("createPost.photoUpload")}
           </Button>
         </div>
 
         <SmoothInput
-          label="제목"
+          label={t("createPost.title")}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="예: 베이지 가디건 완성!"
+          placeholder={t("createPost.titlePh")}
           className="border-stone-200"
           required
         />
 
         <SmoothInput
-          label="사용 실 / 바늘 정보"
+          label={t("createPost.yarnNeedle")}
           value={yarnNeedle}
           onChange={(e) => setYarnNeedle(e.target.value)}
-          placeholder="예: 메리노 울 100%, 코바늘 4.5mm"
+          placeholder={t("createPost.yarnNeedlePh")}
           className="border-stone-200"
         />
 
         <Textarea
-          label="내용 (후기)"
+          label={t("createPost.review")}
           value={review}
           onChange={(e) => setReview(e.target.value)}
-          placeholder="뜨면서 느낀 점, 팁, 소요 시간 등을 적어 주세요."
+          placeholder={t("createPost.reviewPh")}
         />
 
         <Button type="submit" variant="primary" fullWidth className="py-4 text-base">
-          업로드
+          {t("createPost.upload")}
         </Button>
       </form>
 
