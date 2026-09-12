@@ -1,3 +1,5 @@
+import { assetUrl } from "../utils/appPath.ts";
+
 export type MyFinishedWork = {
   id: string;
   title: string;
@@ -34,5 +36,5 @@ export const MY_FINISHED_WORKS: MyFinishedWork[] = [
 ];
 
 export function finishedWorkImageUrl(filename: string) {
-  return `/images/${encodeURI(filename)}`;
+  return assetUrl(`/images/${encodeURI(filename)}`);
 }

@@ -13,6 +13,7 @@ import {
 } from "../../utils/scanFinishedWork.ts";
 import { paletteYarnsForGrid, type EditorCell } from "../../utils/patternGrid.ts";
 import type { EditorYarn } from "../../types/editorYarn.ts";
+import { assetUrl } from "../../utils/appPath.ts";
 
 type FinishedWorkScanPanelProps = {
   grid: EditorCell[][];
@@ -34,7 +35,7 @@ export default function FinishedWorkScanPanel({
   const [result, setResult] = useState<FinishedWorkScanResult | null>(null);
 
   const pickProjectPhoto = (file: string, label: string) => {
-    setSource(`/images/${encodeURI(file)}`);
+    setSource(assetUrl(`/images/${encodeURI(file)}`));
     setSourceLabel(label);
     setResult(null);
     setError(null);

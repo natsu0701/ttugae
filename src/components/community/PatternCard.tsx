@@ -11,9 +11,10 @@ import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
 import NeedleBadge from "./NeedleBadge.tsx";
 import PatternChartGrid from "./PatternChartGrid.tsx";
 import { displayAuthor, localizedPattern } from "../../utils/i18nContent.ts";
+import { appPath } from "../../utils/appPath.ts";
 
 export function communityPostPath(patternId: string) {
-  return `/community/post/${patternId}`;
+  return appPath(`/community/post/${patternId}`);
 }
 
 function PatternGridPreview({ pattern }: { pattern: CommunityPattern }) {

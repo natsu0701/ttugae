@@ -1,3 +1,5 @@
+import { routePath } from "./appPath.ts";
+
 const RETURN_KEY = "ttugae.nav.return.v1";
 
 export type NavReturnView =
@@ -46,23 +48,24 @@ export function consumeNavReturn(): NavReturn | null {
 
 /** 브라우저 히스토리 없이도 안전하게 돌아갈 기본 목적지 */
 export function resolvePathFallback(pathname: string): NavReturn {
+  const path = routePath(pathname);
   if (
-    pathname.startsWith("/community/qa/") ||
-    pathname.startsWith("/community/work/") ||
-    pathname.startsWith("/community/post/")
+    path.startsWith("/community/qa/") ||
+    path.startsWith("/community/work/") ||
+    path.startsWith("/community/post/")
   ) {
     return { view: "community", path: "/community" };
   }
-  if (pathname.startsWith("/create-post")) {
+  if (path.startsWith("/create-post")) {
     return { view: "community", path: "/community" };
   }
-  if (pathname.startsWith("/editor")) {
+  if (path.startsWith("/editor")) {
     return { view: "landing", path: "/" };
   }
-  if (pathname.startsWith("/community")) {
+  if (path.startsWith("/community")) {
     return { view: "community", path: "/community" };
   }
-  if (pathname.startsWith("/mypage") || pathname.startsWith("/dashboard")) {
+  if (path.startsWith("/mypage") || path.startsWith("/dashboard")) {
     return { view: "mypage", path: "/mypage" };
   }
   return { view: "landing", path: "/" };

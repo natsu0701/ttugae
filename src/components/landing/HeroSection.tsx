@@ -7,6 +7,7 @@ import { landingSection } from "./landingStyles.ts";
 import HeroDecorations from "./HeroDecorations.tsx";
 import Reveal from "./Reveal.tsx";
 import TteuniHeroPeek from "./TteuniHeroPeek.tsx";
+import { assetUrl } from "../../utils/appPath.ts";
 
 type HeroSectionProps = {
   onOpenEditor: () => void;
@@ -26,7 +27,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
   return (
     <section className={`${landingSection.hero} relative isolate overflow-hidden`}>
       <video
-        src="/web_back.mp4"
+        src={assetUrl("/web_back.mp4")}
         className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
         autoPlay
         loop

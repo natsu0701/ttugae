@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { assetUrl } from "../../utils/appPath.ts";
 
 type BrandTextLogoProps = {
   className?: string;
@@ -11,7 +12,7 @@ export default function BrandTextLogo({
   const { t } = useTranslation();
   return (
     <img
-      src="/images/text_logo.png"
+      src={assetUrl("/images/text_logo.png")}
       alt={t("nav.brand")}
       className={className}
     />

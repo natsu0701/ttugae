@@ -1,5 +1,6 @@
 import { memo, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { assetUrl } from "../../utils/appPath.ts";
 
 type Floater = {
   src: string;
@@ -11,7 +12,7 @@ type Floater = {
 };
 
 function asset(name: string) {
-  return `/images/${encodeURIComponent(name)}`;
+  return assetUrl(`/images/${encodeURIComponent(name)}`);
 }
 
 const FLOATERS: Floater[] = [

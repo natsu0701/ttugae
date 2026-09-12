@@ -1,5 +1,6 @@
 import type { EditorCell } from "../utils/patternGrid.ts";
 import type { NeedleSpec } from "./knittingMetadataLibrary.ts";
+import { assetUrl } from "../utils/appPath.ts";
 
 function solidKnitGrid(rows: number, cols: number, colorId: string): EditorCell[][] {
   return Array.from({ length: rows }, () =>
@@ -51,7 +52,7 @@ export function finishedImageUrl(filename: string) {
   ) {
     return filename;
   }
-  return `/images/${encodeURI(filename)}`;
+  return assetUrl(`/images/${encodeURI(filename)}`);
 }
 
 export const COMMUNITY_PATTERNS: CommunityPattern[] = [

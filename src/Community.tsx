@@ -35,6 +35,7 @@ import {
   DEFAULT_LOUNGE_FILTERS,
   type LoungeFilters,
 } from "./data/loungeFilters.ts";
+import { appPath, routePath } from "./utils/appPath.ts";
 
 const KnitOfflineHub = lazy(() => import("./components/community/KnitOfflineHub.tsx"));
 
@@ -46,12 +47,12 @@ type CommunityProps = {
 };
 
 function qaIdFromPath(pathname: string): string | null {
-  const m = pathname.match(/^\/community\/qa\/([^/]+)/);
+  const m = routePath(pathname).match(/^\/community\/qa\/([^/]+)/);
   return m?.[1] ?? null;
 }
 
 function workIdFromPath(pathname: string): string | null {
-  const m = pathname.match(/^\/community\/(?:post|work)\/([^/]+)/);
+  const m = routePath(pathname).match(/^\/community\/(?:post|work)\/([^/]+)/);
   return m?.[1] ?? null;
 }
 
@@ -95,7 +96,7 @@ export default function Community({
         setActiveTab("showcase");
         setSelectedQaId(null);
         setSelectedWorkId(null);
-        window.history.replaceState({}, "", "/community");
+        window.history.replaceState({}, "", appPath("/community"));
       }
     };
     window.addEventListener(COMMUNITY_TAB_EVENT, onTabNavigate);
@@ -122,7 +123,7 @@ export default function Community({
     setSelectedQaId(postId);
     setSelectedWorkId(null);
     setActiveTab("qa");
-    window.history.pushState({}, "", `/community/qa/${postId}`);
+    window.history.pushState({}, "", appPath(`/community/qa/${postId}`));
   };
 
   const closeQa = () => {
@@ -151,8 +152,8 @@ export default function Community({
     setActiveTab(tabId);
     setSelectedQaId(null);
     setSelectedWorkId(null);
-    if (window.location.pathname !== "/community") {
-      window.history.replaceState({}, "", "/community");
+    if (routePath(window.location.pathname) !== "/community") {
+      window.history.replaceState({}, "", appPath("/community"));
     }
   };
 

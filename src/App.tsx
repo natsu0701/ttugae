@@ -29,6 +29,7 @@ import {
   resolvePathFallback,
   setNavReturn,
 } from "./utils/navReturn.ts";
+import { appPath, currentRouteHref, routePath } from "./utils/appPath.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
 
 const PatternEditor = lazy(() => import("./PatternEditor.tsx"));
@@ -54,12 +55,13 @@ function RouteFallback({ dark = false }: { dark?: boolean }) {
 type AppView = "landing" | "mypage" | "community" | "editor" | "create-post";
 
 function viewFromPath(pathname: string): AppView {
-  if (pathname.startsWith("/create-post")) return "create-post";
-  if (pathname.startsWith("/community")) return "community";
-  if (pathname.startsWith("/mypage") || pathname.startsWith("/dashboard")) {
+  const path = routePath(pathname);
+  if (path.startsWith("/create-post")) return "create-post";
+  if (path.startsWith("/community")) return "community";
+  if (path.startsWith("/mypage") || path.startsWith("/dashboard")) {
     return "mypage";
   }
-  if (pathname.startsWith("/editor")) return "editor";
+  if (path.startsWith("/editor")) return "editor";
   return "landing";
 }
 
@@ -72,10 +74,11 @@ function pathFromView(view: AppView): string {
 }
 
 function commitPath(path: string, replace: boolean) {
+  const url = appPath(path);
   const current = `${window.location.pathname}${window.location.search}`;
-  if (current === path) return;
-  if (replace) window.history.replaceState({}, "", path);
-  else window.history.pushState({}, "", path);
+  if (current === url) return;
+  if (replace) window.history.replaceState({}, "", url);
+  else window.history.pushState({}, "", url);
   window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
@@ -113,7 +116,7 @@ function AppRoutes() {
   const rememberReturn = useCallback(() => {
     setNavReturn({
       view,
-      path: `${window.location.pathname}${window.location.search}` || pathFromView(view),
+      path: currentRouteHref() || pathFromView(view),
     });
   }, [view]);
 
@@ -164,7 +167,7 @@ function AppRoutes() {
       setShowLogin(true);
       if (view === "mypage") {
         setView("landing");
-        window.history.replaceState({}, "", "/");
+        window.history.replaceState({}, "", appPath("/"));
       }
       return;
     }
@@ -250,7 +253,7 @@ function AppRoutes() {
         showToast(t("toast.loginRequired"));
         setShowLogin(true);
         setView("landing");
-        window.history.replaceState({}, "", "/");
+        window.history.replaceState({}, "", appPath("/"));
         return;
       }
       setView(next);
@@ -264,16 +267,16 @@ function AppRoutes() {
       showToast(t("toast.loginRequired"));
       setShowLogin(true);
       setView("landing");
-      window.history.replaceState({}, "", "/");
+      window.history.replaceState({}, "", appPath("/"));
     }
   }, [view, isLoggedIn, showToast, t]);
 
   useEffect(() => {
     if (
-      window.location.pathname.startsWith("/dashboard") &&
+      routePath(window.location.pathname).startsWith("/dashboard") &&
       view === "mypage"
     ) {
-      window.history.replaceState({}, "", "/mypage");
+      window.history.replaceState({}, "", appPath("/mypage"));
     }
   }, [view]);
 
@@ -299,7 +302,7 @@ function AppRoutes() {
           updatedAt: Date.now(),
         });
         setView("editor");
-        window.history.replaceState({}, "", "/editor");
+        window.history.replaceState({}, "", appPath("/editor"));
       }
     } catch {
       // ignore

@@ -5,6 +5,7 @@ import { Autoplay, Pagination, EffectCreative } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper";
 import { ChevronLeftFillIcon, ChevronRightFillIcon } from "../icons/FillIcons.tsx";
 import Reveal from "./Reveal.tsx";
+import { assetUrl } from "../../utils/appPath.ts";
 
 import "swiper/css";
 import "swiper/css/effect-creative";
@@ -12,9 +13,9 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 
 const SLIDE_SRCS = [
-  "/images/App_mockup_1.png",
-  "/images/App_mockup_2.png",
-  "/images/App_mockup_3.png",
+  assetUrl("/images/App_mockup_1.png"),
+  assetUrl("/images/App_mockup_2.png"),
+  assetUrl("/images/App_mockup_3.png"),
 ] as const;
 
 const css = `

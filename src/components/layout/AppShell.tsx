@@ -14,6 +14,7 @@ import BrandTextLogo from "../ui/BrandTextLogo.tsx";
 import Button from "../ui/Button.tsx";
 import { UserFillIcon } from "../icons/FillIcons.tsx";
 import { softShadow } from "../ui/tabButtonStyles.ts";
+import { assetUrl } from "../../utils/appPath.ts";
 
 export type AppNavPage = "landing" | "community" | "mypage";
 
@@ -259,7 +260,8 @@ export default function AppShell({
         {/* 뜨개 레이스 무늬(3278×297) — 천장에 1px 틈 없이 밀착, 클릭 이벤트는 통과 */}
         <div
           aria-hidden
-          className="pointer-events-none absolute left-0 top-[-20px] z-0 h-[170px] w-full bg-[url('/images/nav_lace.png')] bg-[length:auto_170px] bg-top bg-repeat-x"
+          className="pointer-events-none absolute left-0 top-[-20px] z-0 h-[170px] w-full bg-[length:auto_170px] bg-top bg-repeat-x"
+          style={{ backgroundImage: `url(${assetUrl("/images/nav_lace.png")})` }}
         />
         {/* 내비 콘텐츠 — 레이스보다 위 레이어(z-10)라 클릭·호버 모두 정상 동작 */}
         <div className="relative z-10 mx-auto flex h-20 max-w-6xl items-center justify-between px-5 md:h-24 md:px-8">

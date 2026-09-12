@@ -10,6 +10,7 @@ import type { EditorYarn } from "../../types/editorYarn.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
 import { type KnitItemType } from "../../utils/knitItemType.ts";
+import { assetUrl } from "../../utils/appPath.ts";
 
 const ITEM_ACC_KEYS: Record<KnitItemType, string> = {
   sweater: "editor.itemAccSweater",
@@ -220,11 +221,11 @@ function paintSymbolChart(
 }
 
 const GARMENT_MODELS: Record<KnitItemType, { url: string }> = {
-  sweater: { url: "/models/sweater.glb" },
-  vest: { url: "/models/vest.glb" },
-  beanie: { url: "/models/beanie.glb" },
-  glove: { url: "/models/glove.glb" },
-  socks: { url: "/models/sock.glb" },
+  sweater: { url: assetUrl("/models/sweater.glb") },
+  vest: { url: assetUrl("/models/vest.glb") },
+  beanie: { url: assetUrl("/models/beanie.glb") },
+  glove: { url: assetUrl("/models/glove.glb") },
+  socks: { url: assetUrl("/models/sock.glb") },
 };
 
 const TARGET_GARMENT_SIZE = 5.2;
