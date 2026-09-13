@@ -243,7 +243,9 @@
       "diaryHint": "After the meetup, add a photo and a short note.",
       "diaryPhoto": "Add photo",
       "diaryBodyPh": "Write what happened at the meetup.",
-      "diarySave": "Save note"
+      "diarySave": "Save note",
+      "openHost": "Open host check-in QR",
+      "openGuest": "Open to check in"
     }
   },
   "community": {

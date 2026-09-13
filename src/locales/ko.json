@@ -190,7 +190,9 @@
       "diaryHint": "모임이 끝난 뒤 사진과 글을 뜨개 일기처럼 남겨 보세요.",
       "diaryPhoto": "사진 추가",
       "diaryBodyPh": "모임에서 있었던 일을 적어 주세요.",
-      "diarySave": "기록 남기기"
+      "diarySave": "기록 남기기",
+      "openHost": "눌러서 참가자 인증 QR 보기",
+      "openGuest": "눌러서 출석 인증하기"
     },
     "badgesAll": "전체 배지",
     "badgesBeginner": "초급 업적",

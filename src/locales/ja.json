@@ -241,8 +241,11 @@
       "checkedIn": "出席済み",
       "diaryTitle": "集まりの活動記録",
       "diaryHint": "集まりのあと、写真と文章を日記のように残せます。",
+      "diaryPhoto": "写真を追加",
       "diaryBodyPh": "集まりであったことを書いてください。",
-      "diarySave": "記録する"
+      "diarySave": "記録する",
+      "openHost": "主催者QRを見る",
+      "openGuest": "出席認証を開く"
     }
   },
   "community": {

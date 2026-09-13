@@ -132,12 +132,15 @@ export default function MyMeetupsPanel() {
                   setActiveId(meetup.meetupId);
                   resetDiary();
                 }}
-                className="rounded-xl bg-stone-50 p-5 text-left"
+                className="rounded-xl border border-stone-200 bg-stone-50 p-5 text-left hover:border-coral/40 hover:bg-white"
               >
                 <p className="font-sans text-[11px] leading-4 text-stone-400">{meetup.region}</p>
                 <h3 className="mt-1.5 font-sans text-lg font-bold leading-7">{meetup.title}</h3>
                 <p className="mt-3 font-seoyun text-xs leading-5 text-stone-500">
                   {t("mypage.meetupsJoined", { max: meetup.maxCapacity ?? 0, joined })}
+                </p>
+                <p className="mt-2 font-sans text-xs font-medium text-coral">
+                  {isMeetupHost(meetup, handle) ? t("mypage.meetups.openHost") : t("mypage.meetups.openGuest")}
                 </p>
               </button>
             );
