@@ -17,7 +17,7 @@ import {
   localizedComment,
   localizedPattern,
 } from "../../utils/i18nContent.ts";
-import { BookmarkFillIcon, FlagFillIcon, HeartFillIcon } from "../icons/FillIcons.tsx";
+import { BookmarkFillIcon, HeartFillIcon } from "../icons/FillIcons.tsx";
 import { useCommunityActions } from "../../context/CommunityActionsContext.tsx";
 import {
   addComment,
@@ -150,9 +150,8 @@ export default function FinishedWorkDetail({
               <button
                 type="button"
                 onClick={() => setReportTarget({ type: "post", id: pattern.id })}
-                className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-coral"
+                className="rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-coral"
               >
-                <FlagFillIcon className="h-4 w-4" />
                 {t("report.action")}
               </button>
             </div>
@@ -270,10 +269,9 @@ export default function FinishedWorkDetail({
                     <span>{c.createdAt}</span>
                     <button
                       type="button"
-                      className="ml-auto inline-flex items-center gap-1 hover:text-coral"
+                      className="ml-auto hover:text-coral"
                       onClick={() => setReportTarget({ type: "comment", id: c.id })}
                     >
-                      <FlagFillIcon className="h-3 w-3" />
                       {t("report.action")}
                     </button>
                   </div>

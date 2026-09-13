@@ -7,7 +7,7 @@ import {
 import { useTranslation } from "react-i18next";
 import LandingFooter from "../landing/LandingFooter.tsx";
 import BrandTextLogo from "../ui/BrandTextLogo.tsx";
-import { UserFillIcon, LogoutFillIcon, UserPlusFillIcon, SwitchFillIcon } from "../icons/FillIcons.tsx";
+import { LogoutFillIcon, UserPlusFillIcon, SwitchFillIcon } from "../icons/FillIcons.tsx";
 import { assetUrl } from "../../utils/appPath.ts";
 import { useUnsavedChanges } from "../../context/UnsavedChangesContext.tsx";
 import type { UserAccount } from "../../utils/accountStorage.ts";
@@ -36,11 +36,13 @@ function NavTextItem({
   label,
   active = false,
   overlay = false,
+  className = "",
   onClick,
 }: {
   label: string;
   active?: boolean;
   overlay?: boolean;
+  className?: string;
   onClick: () => void;
 }) {
   return (
@@ -48,18 +50,12 @@ function NavTextItem({
       type="button"
       onClick={onClick}
       className={[
-        "relative inline-flex items-center py-1 font-sans text-sm font-normal outline-none",
-        "transition-colors duration-200 ease-out",
-        "focus:outline-none focus-visible:outline-none",
-        "[-webkit-tap-highlight-color:transparent]",
-        active ? "text-coral -translate-y-px" : overlay
+        "nav-text-item",
+        active ? "is-active text-coral" : overlay
           ? "text-stone-800 hover:text-coral"
           : "text-gray-600 hover:text-coral",
         overlay ? "[text-shadow:0_1px_6px_rgba(255,255,255,0.9)]" : "",
-        "after:pointer-events-none after:absolute after:-bottom-0.5 after:left-0",
-        "after:h-[2px] after:w-full after:origin-left after:rounded-full after:bg-coral",
-        "after:transition-transform after:duration-200 after:ease-out",
-        active ? "after:scale-x-100" : "after:scale-x-0",
+        className,
       ].join(" ")}
     >
       <span className="relative z-10">{label}</span>
@@ -92,6 +88,7 @@ function ProfileMenu({
   const menuRef = useRef<HTMLDivElement>(null);
   const otherAccounts = accounts.filter((item) => item.id !== activeAccountId);
   const avatarSrc = avatarUrl || TTEUNI_IMAGES.chatProfile;
+  const hasCustomAvatar = Boolean(avatarUrl);
 
   useEffect(() => {
     const onDoc = (event: MouseEvent) => {
@@ -107,28 +104,37 @@ function ProfileMenu({
   };
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative shrink-0" ref={menuRef}>
       <button
         type="button"
         onClick={() => setMenuOpen((open) => !open)}
-        className={`flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border transition-colors duration-200 ${
+        className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border bg-white outline-none transition-colors duration-200 focus:outline-none focus-visible:outline-none sm:h-11 sm:w-11 ${
           currentPage === "mypage"
             ? "border-coral"
-            : "border-stone-200 bg-white hover:border-coral"
+            : "border-stone-200 hover:border-coral"
         }`}
         aria-label={t("nav.profileMenu")}
         aria-expanded={menuOpen}
+        aria-haspopup="menu"
       >
-        {avatarUrl ? (
-          <img src={avatarSrc} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <UserFillIcon className="h-6 w-6 text-gray-700" />
-        )}
+        <img
+          src={avatarSrc}
+          alt=""
+          className={
+            hasCustomAvatar
+              ? "h-full w-full object-cover"
+              : "h-[78%] w-[78%] object-contain"
+          }
+        />
       </button>
       {menuOpen ? (
-        <div className="absolute right-0 z-[60] mt-2 w-52 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-lg">
+        <div
+          role="menu"
+          className="absolute right-0 z-[60] mt-2 w-52 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-lg"
+        >
           <button
             type="button"
+            role="menuitem"
             onClick={go(onGoMypage)}
             className="flex w-full px-4 py-2.5 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
           >
@@ -136,6 +142,7 @@ function ProfileMenu({
           </button>
           <button
             type="button"
+            role="menuitem"
             onClick={go(onLogout)}
             className="flex w-full items-center gap-2 px-4 py-2.5 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
           >
@@ -144,6 +151,7 @@ function ProfileMenu({
           </button>
           <button
             type="button"
+            role="menuitem"
             onClick={() => {
               setMenuOpen(false);
               onAddAccount();
@@ -155,13 +163,14 @@ function ProfileMenu({
           </button>
           {otherAccounts.length > 0 ? (
             <div className="border-t border-stone-100 py-1">
-              <p className="px-4 py-1.5 font-sans text-[11px] font-medium uppercase tracking-wide text-stone-400">
+              <p className="px-4 py-1.5 font-sans text-[11px] font-medium text-stone-400">
                 {t("nav.switchAccount")}
               </p>
               {otherAccounts.map((account) => (
                 <button
                   key={account.id}
                   type="button"
+                  role="menuitem"
                   onClick={() => {
                     setMenuOpen(false);
                     onSwitchAccount?.(account.id);
@@ -228,21 +237,22 @@ export default function AppShell({
           className="pointer-events-none absolute left-0 top-[-20px] z-0 h-[170px] w-full bg-[length:auto_170px] bg-top bg-repeat-x"
           style={{ backgroundImage: `url(${assetUrl("/images/nav_lace.png")})` }}
         />
-        <div className="page-shell relative z-10 flex h-20 items-center justify-between md:h-24">
+        <div className="nav-shell relative z-10 flex h-20 w-full items-center justify-between gap-3 md:h-24 md:gap-6">
           <button
             type="button"
             onClick={go(onGoHome)}
-            className="flex items-center transition-opacity duration-200 hover:opacity-80"
+            className="flex shrink-0 items-center outline-none transition-opacity duration-200 hover:opacity-80 focus:outline-none focus-visible:outline-none"
             aria-label={t("nav.brand")}
           >
             <BrandTextLogo className="h-7 w-auto object-contain md:h-8" />
           </button>
 
-          <nav className="hidden items-center gap-7 md:flex">
+          <nav className="ml-auto flex min-w-0 items-center justify-end gap-3 sm:gap-5 md:gap-7 lg:gap-8">
             <NavTextItem
               label={t("nav.home")}
               active={currentPage === "landing"}
               overlay={isOverlayHeader}
+              className="hidden sm:inline-flex"
               onClick={go(onGoHome)}
             />
             <NavTextItem
@@ -266,24 +276,6 @@ export default function AppShell({
               />
             )}
           </nav>
-
-          <div className="flex items-center gap-4 md:hidden">
-            <NavTextItem
-              label={t("nav.community")}
-              active={currentPage === "community"}
-              overlay={isOverlayHeader}
-              onClick={go(onGoCommunity)}
-            />
-            {isLoggedIn ? (
-              profileBtn
-            ) : (
-              <NavTextItem
-                label={t("nav.login")}
-                overlay={isOverlayHeader}
-                onClick={onLogin}
-              />
-            )}
-          </div>
         </div>
       </header>
 

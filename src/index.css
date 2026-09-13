@@ -77,6 +77,69 @@ body {
     padding-inline: clamp(1.25rem, 4.5vw, 6rem);
   }
 
+  .nav-shell {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+    padding-inline: clamp(1.25rem, 4.5vw, 6rem);
+  }
+
+  .nav-text-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+    font-family: "Noto Sans KR", system-ui, sans-serif;
+    font-size: clamp(0.8125rem, 0.15vw + 0.78rem, 0.875rem);
+    font-weight: 400;
+    line-height: 1.5;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s ease-out, transform 0.2s ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .nav-text-item,
+  .nav-text-item:hover,
+  .nav-text-item:focus,
+  .nav-text-item:focus-visible,
+  .nav-text-item:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border-style: none !important;
+    border-width: 0 !important;
+  }
+
+  .nav-text-item::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    bottom: -0.125rem;
+    height: 2px;
+    width: 100%;
+    border-radius: 999px;
+    background: #fc5f53;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease-out;
+  }
+
+  .nav-text-item.is-active,
+  .nav-text-item:active {
+    transform: translateY(-1px);
+  }
+
+  .nav-text-item.is-active::after,
+  .nav-text-item:active::after {
+    transform: scaleX(1);
+  }
+
   .card-surface {
     border-radius: 0.75rem;
   }

@@ -14,7 +14,6 @@ import {
   localizedQaAnswer,
   localizedQaPost,
 } from "../../utils/i18nContent.ts";
-import { FlagFillIcon } from "../icons/FillIcons.tsx";
 
 const LOCAL_AUTHOR = "나";
 
@@ -99,9 +98,8 @@ function QaDetail({ post, onBack }: QaDetailProps) {
             <button
               type="button"
               onClick={() => setReportTarget({ type: "post", id: post.id })}
-              className="inline-flex shrink-0 items-center gap-1 rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-coral"
+              className="shrink-0 rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-coral"
             >
-              <FlagFillIcon className="h-4 w-4" />
               {t("report.action")}
             </button>
           </div>
@@ -151,9 +149,8 @@ function QaDetail({ post, onBack }: QaDetailProps) {
                     <button
                       type="button"
                       onClick={() => setReportTarget({ type: "comment", id: ans.id })}
-                      className="inline-flex items-center gap-1 font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
+                      className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
                     >
-                      <FlagFillIcon className="h-3 w-3" />
                       {t("report.action")}
                     </button>
                   </div>
