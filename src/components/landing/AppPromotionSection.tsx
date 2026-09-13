@@ -134,8 +134,8 @@ function AppPromotionSection() {
           <div className="app-promo-pagination mt-5 flex justify-center gap-1.5 py-1.5" />
         </div>
 
-        <div className="mx-auto mt-20 max-w-3xl px-5 text-center md:mt-28 md:px-8">
-          <h2 className="flex flex-col gap-2 font-sans text-2xl font-bold leading-none text-black sm:text-3xl md:gap-2.5 md:text-4xl">
+        <div className="page-shell mt-20 text-center md:mt-28">
+          <h2 className="flex flex-col gap-2 font-sans text-2xl font-bold leading-none text-black sm:text-3xl md:gap-2.5 md:text-4xl lg:text-5xl">
             <span>{t("landing.promoLine1")}</span>
             <span>{t("landing.promoLine2")}</span>
           </h2>

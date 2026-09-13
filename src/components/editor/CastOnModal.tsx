@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AnimatePresence, motion } from "framer-motion";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import { softShadow } from "../ui/tabButtonStyles.ts";
@@ -115,23 +114,17 @@ export default function CastOnModal({
     }
   };
 
+  if (!open) return null;
+
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          className="pointer-events-auto fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/20 p-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+        <div
+          className="fade-in pointer-events-auto fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/20 p-6"
           onClick={onClose}
           role="dialog"
           aria-modal
         >
-          <motion.div
-            className={`max-h-[90vh] w-full max-w-md overflow-y-auto rounded-[1.75rem] bg-[#FFFBF7] p-6 ${softShadow}`}
-            initial={{ scale: 0.96, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.96, opacity: 0 }}
+          <div
+            className={`max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl bg-[#FFFBF7] p-6 ${softShadow}`}
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="font-sans text-xl font-bold text-gray-900">
@@ -323,9 +316,7 @@ export default function CastOnModal({
                     : t("editor.castOn.createCanvas")}
               </Button>
             </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </div>
+        </div>
   );
 }

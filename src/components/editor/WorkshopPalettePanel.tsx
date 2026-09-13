@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
 
@@ -58,13 +57,12 @@ export default function WorkshopPalettePanel({
         {WORKSHOP_PALETTES.map((palette) => {
           const active = activePaletteId === palette.id;
           return (
-            <motion.button
+            <button
               key={palette.id}
               type="button"
-              whileHover={{ scale: 1.02 }}
               onClick={() => onSelectPalette(palette.id, palette.colors)}
               aria-pressed={active}
-              className={`flex w-full items-center justify-between gap-2 px-2.5 py-2 text-left ${
+              className={`flex w-full items-center justify-between gap-2 px-2.5 py-2 text-left transition-transform duration-150 hover:scale-[1.02] ${
                 active ? editorChromeBtnActive : editorChromeBtn
               }`}
             >
@@ -91,7 +89,7 @@ export default function WorkshopPalettePanel({
                   />
                 ))}
               </span>
-            </motion.button>
+            </button>
           );
         })}
       </div>

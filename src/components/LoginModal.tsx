@@ -1,6 +1,5 @@
 import { type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
 import BrandTextLogo from "./ui/BrandTextLogo.tsx";
 import Button from "./ui/Button.tsx";
 import SmoothInput from "./ui/SmoothInput.tsx";
@@ -68,11 +67,8 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
         aria-label={t("common.close")}
       />
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-md rounded-2xl bg-gray-50 p-8"
+      <div
+        className="fade-in relative w-full max-w-md rounded-xl bg-gray-50 p-8"
         role="dialog"
         aria-modal="true"
         aria-labelledby="login-title"
@@ -152,7 +148,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
             <AppleIcon />
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -71,10 +71,10 @@ export const ACHIEVEMENT_BADGES: AchievementBadge[] = [
   },
   {
     id: "badge4",
-    name: "게이지 계산요정",
+    name: "게이지(Gauge) 계산요정",
     level: "intermediate",
     levelLabel: "중급",
-    description: "게이지 계산기 수식에 내 손땀을 대입해 콧수를 3회 이상 똑똑하게 변환했습니다.",
+    description: "게이지(Gauge) 계산기 수식에 내 손땀을 대입해 콧수를 3회 이상 똑똑하게 변환했습니다.",
     imageSrc: assetUrl("/images/badge4.png"),
     color: "text-emerald-600",
     bgColor: "bg-emerald-500/10",

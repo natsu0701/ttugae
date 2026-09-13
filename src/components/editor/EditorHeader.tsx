@@ -2,7 +2,8 @@ import type { ReactNode, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
-import { ChevronLeftFillIcon, UserFillIcon } from "../icons/FillIcons.tsx";
+import BackButton from "../ui/BackButton.tsx";
+import { UserFillIcon } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive, editorChromeTone } from "../ui/tabButtonStyles.ts";
 
 const SIZE_PRESETS = [
@@ -55,14 +56,7 @@ export default function EditorHeader({
   return (
     <header className="relative z-20 flex h-16 shrink-0 items-center border-b border-stone-800/80 bg-stone-950 px-4 md:px-6">
       <div className="z-10 flex min-w-0 items-center gap-2 pr-3">
-        <button
-          type="button"
-          onClick={onExit}
-          className={`flex h-10 w-10 shrink-0 items-center justify-center ${editorChromeBtn}`}
-          aria-label={t("editor.exitAria")}
-        >
-          <ChevronLeftFillIcon className="h-5 w-5" />
-        </button>
+        <BackButton onClick={onExit} tone="dark" className={`shrink-0 ${editorChromeBtn}`} />
         {leftExtra ? <div className="min-w-0 max-w-[min(100%,42vw)]">{leftExtra}</div> : null}
       </div>
 

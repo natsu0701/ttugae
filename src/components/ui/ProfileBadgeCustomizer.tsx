@@ -1,6 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   ACHIEVEMENT_BADGES,
   getAchievementBadge,
@@ -142,14 +141,9 @@ function ProfileBadgeCustomizer({
           />
         </button>
 
-        <AnimatePresence>
-          {isAvatarMenuOpen ? (
-            <motion.div
-              initial={{ opacity: 0, y: 6, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 6, scale: 0.96 }}
-              transition={{ type: "spring", damping: 22, stiffness: 320 }}
-              className="absolute left-1/2 top-[calc(100%+20px)] z-40 w-48 origin-top -translate-x-1/2 rounded-2xl border border-stone-200 bg-white p-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.08)]"
+        {isAvatarMenuOpen ? (
+            <div
+              className="fade-in absolute left-1/2 top-[calc(100%+20px)] z-40 w-48 origin-top -translate-x-1/2 rounded-xl border border-stone-200 bg-white p-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.08)]"
             >
               <button
                 type="button"
@@ -175,19 +169,13 @@ function ProfileBadgeCustomizer({
                 <ProfileFillIcon className="h-4 w-4 shrink-0 text-stone-500" />
                 {t("common.photoDefault")}
               </button>
-            </motion.div>
+            </div>
           ) : null}
-        </AnimatePresence>
 
-        <AnimatePresence mode="wait">
-          {equippedBadge ? (
-            <motion.button
+        {equippedBadge ? (
+            <button
               key={equippedBadge.id}
               type="button"
-              initial={{ scale: 0, rotate: -35 }}
-              animate={{ scale: 1, rotate: 0 }}
-              exit={{ scale: 0, rotate: 35 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
               onClick={(e) => {
                 e.stopPropagation();
                 openBadgePicker();
@@ -202,7 +190,7 @@ function ProfileBadgeCustomizer({
                 alt={badgeName(t, equippedBadge.id, equippedBadge.name)}
                 className="h-full w-full object-contain"
               />
-            </motion.button>
+            </button>
           ) : (
             <button
               type="button"
@@ -216,7 +204,6 @@ function ProfileBadgeCustomizer({
               {t("common.badge")}
             </button>
           )}
-        </AnimatePresence>
       </div>
 
       <div className="flex items-center gap-2">
@@ -237,14 +224,9 @@ function ProfileBadgeCustomizer({
       <p className="mt-1 font-sans text-xs font-medium text-stone-500">{displayHandle}</p>
       <p className="mt-1 font-sans text-[11px] text-stone-400">{displaySubtitle}</p>
 
-      <AnimatePresence>
-        {isDropdownOpen ? (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="scrollbar-thin absolute left-1/2 top-full z-40 mt-4 max-h-[360px] w-80 origin-top -translate-x-1/2 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-4 shadow-[0_15px_45px_rgba(0,0,0,0.08)]"
+      {isDropdownOpen ? (
+          <div
+            className="fade-in scrollbar-thin absolute left-1/2 top-full z-40 mt-4 max-h-[360px] w-80 origin-top -translate-x-1/2 overflow-y-auto rounded-xl border border-stone-200 bg-white p-4 shadow-[0_15px_45px_rgba(0,0,0,0.08)]"
           >
             <div className="mb-2.5 border-b border-stone-100 pb-2.5 text-center">
               <h4 className="font-sans text-xs font-black tracking-widest text-stone-400">
@@ -304,9 +286,8 @@ function ProfileBadgeCustomizer({
                 );
               })}
             </div>
-          </motion.div>
+          </div>
         ) : null}
-      </AnimatePresence>
     </div>
   );
 }

@@ -12,7 +12,6 @@ import {
   type MouseEvent,
   type SyntheticEvent,
 } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export type SmoothInputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
@@ -110,13 +109,7 @@ const SmoothInput = forwardRef<HTMLInputElement, SmoothInputProps>(function Smoo
 
   const isControlled = value !== undefined;
   const [focused, setFocused] = useState(false);
-
-  const caretX = useMotionValue(0);
-  const springCaretX = useSpring(caretX, {
-    stiffness: 500,
-    damping: 30,
-    mass: 0.5,
-  });
+  const [caretOffset, setCaretOffset] = useState(0);
 
   const inputId = id ?? (label ? label.replace(/\s/g, "-").toLowerCase() : undefined);
   const toneClass = tone === "dark" ? DARK_TONE : LIGHT_TONE;
@@ -139,8 +132,8 @@ const SmoothInput = forwardRef<HTMLInputElement, SmoothInputProps>(function Smoo
     measurer.textContent = displayBeforeCaret(liveValue, selectionStart, type);
     const paddingLeft = Number.parseFloat(cs.paddingLeft) || 0;
     const borderLeft = Number.parseFloat(cs.borderLeftWidth) || 0;
-    caretX.set(measurer.offsetWidth + paddingLeft + borderLeft - input.scrollLeft);
-  }, [caretX, type]);
+    setCaretOffset(measurer.offsetWidth + paddingLeft + borderLeft - input.scrollLeft);
+  }, [type]);
 
   useLayoutEffect(() => {
     updateCaretPosition();
@@ -190,11 +183,9 @@ const SmoothInput = forwardRef<HTMLInputElement, SmoothInputProps>(function Smoo
         aria-hidden
       />
       <div className="pointer-events-none absolute inset-0 z-10 flex items-center overflow-hidden">
-        <motion.div
-          style={{ x: springCaretX, opacity: focused ? undefined : 0 }}
-          className="h-[1.05em] w-[2.5px] shrink-0 rounded-full bg-coral"
-          animate={focused ? { opacity: [1, 0.15, 1] } : { opacity: 0 }}
-          transition={{ repeat: focused ? Infinity : 0, duration: 0.9, ease: "easeInOut" }}
+        <div
+          className={`input-caret h-[1.05em] w-[2.5px] shrink-0 rounded-full bg-coral ${focused ? "is-on" : "opacity-0"}`}
+          style={{ transform: `translateX(${caretOffset}px)` }}
         />
       </div>
       <input

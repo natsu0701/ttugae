@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AnimatePresence, motion } from "framer-motion";
 import { RefreshFillIcon } from "../icons/FillIcons.tsx";
 import {
   pickRandomPresets,
@@ -59,28 +58,13 @@ export default function ColorPresetsSection({
       </div>
 
       <div className="flex flex-col gap-2">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={listGeneration}
-            className="flex flex-col gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: "easeOut" }}
-          >
-            {visiblePresets.map((preset, index) => {
+        <div key={listGeneration} className="flex flex-col gap-2 fade-in">
+            {visiblePresets.map((preset) => {
               const active = activePresetId === preset.id;
               return (
-                <motion.button
+                <button
                   key={`${listGeneration}-${preset.id}`}
                   type="button"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.3,
-                    delay: index * 0.05,
-                    ease: "easeOut",
-                  }}
                   onClick={() => onApply(preset.id, preset.colors)}
                   className={`group flex w-full items-center gap-2 px-2.5 py-2 text-left ${
                     active ? editorChromeBtnActive : editorChromeBtn
@@ -102,11 +86,10 @@ export default function ColorPresetsSection({
                   >
                     {presetLabel(preset, t)}
                   </span>
-                </motion.button>
+                </button>
               );
             })}
-          </motion.div>
-        </AnimatePresence>
+          </div>
       </div>
 
       <p className="mt-2 font-seoyun text-[10px] font-normal text-stone-500">

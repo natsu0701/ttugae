@@ -329,7 +329,7 @@ export const COMMUNITY_PATTERNS: CommunityPattern[] = [
       needle: "대바늘 2.5mm",
       duration: "5일",
       review:
-        "발등 게이지만 맞춰 두면 길이 조절이 쉽습니다. 한 짝 뜨고 나서 코 수를 적어 두면 짝이 안 맞을 일이 없어요.",
+        "발등 게이지(Gauge)만 맞춰 두면 길이 조절이 쉽습니다. 한 짝 뜨고 나서 코 수를 적어 두면 짝이 안 맞을 일이 없어요.",
     },
     needle: { needleType: "knitting", needleSize: "2.5mm", needleDetail: "dpn" },
     grid: [

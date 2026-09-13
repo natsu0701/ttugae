@@ -761,7 +761,7 @@ export default function PatternEditor({
         <div className="flex w-full max-w-full flex-col items-center justify-center px-1">
           <div
             ref={canvasRef}
-            className="flex aspect-square w-full max-w-[min(100%,32rem)] items-center justify-center rounded-3xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.06)]"
+            className="flex aspect-square w-full max-w-[min(100%,32rem)] items-center justify-center rounded-xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.06)]"
           >
             <div
               className="max-h-full max-w-full"

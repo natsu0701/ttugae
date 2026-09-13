@@ -1,5 +1,4 @@
 import { memo, type MouseEvent } from "react";
-import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import { playWelcomeKnitSound } from "../../utils/audioEffects.ts";
@@ -37,23 +36,13 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
       />
 
       {/* 웰컴 그라데이션 오버레이 필터 (따스한 분위기 연출 및 6px 최적화 블러 적용) */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-0"
-        style={{ backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}
-        initial={{ backgroundColor: "rgba(244, 164, 184, 0.45)" }}
-        animate={{ backgroundColor: "rgba(247, 245, 240, 0.2)" }}
-        transition={{
-          duration: 1.8,
-          ease: "easeOut",
-        }}
-        aria-hidden
-      />
+      <div className="hero-overlay pointer-events-none absolute inset-0 z-0" aria-hidden />
 
       <HeroDecorations />
 
       {/* 텍스트 컨테이너 여백 (레이스 아래 안전지대 확보) */}
-      <div className="relative z-10 mx-auto w-full shrink-0 max-w-none text-center pt-28 sm:pt-36 md:pt-44">
-        <div className="mx-auto max-w-4xl px-6 py-4">
+      <div className="relative z-10 mx-auto w-full shrink-0 text-center pt-28 sm:pt-36 md:pt-44">
+        <div className="page-shell py-4">
           <Reveal delay={0.4}>
             <h1 className="break-keep">
               {/* 1줄 리드 카피 - 슬림하고 세련된 고딕 */}
@@ -66,7 +55,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
                 마우스 위치를 정교하게 트래킹하는 솜사탕 그라데이션 효과
               */}
               <span
-                className="interactive-gradient-text mt-3 flex cursor-pointer flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] sm:text-5xl md:mt-4 md:gap-1 md:text-6xl lg:text-7xl"
+                className="interactive-gradient-text mt-3 flex cursor-pointer flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] sm:text-5xl md:mt-4 md:gap-1 md:text-6xl lg:text-7xl xl:text-7xl 2xl:text-[clamp(3rem,4vw,4.5rem)]"
                 style={{ fontFamily: "Mungyeong-Gamhong-Apple, sans-serif" }}
               >
                 {HERO_SLOGAN_KEYS.map((key) => {

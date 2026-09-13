@@ -1,6 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   CalendarFillIcon,
   ChatFillIcon,
@@ -417,7 +416,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
   };
 
   return (
-    <div className="w-full select-none rounded-[32px] border border-stone-200/50 bg-[#FFFBF7] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.015)] md:p-8">
+    <div className="w-full select-none rounded-xl border border-stone-200/50 bg-[#FFFBF7] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.015)] md:p-8">
       <div className="mb-8 flex flex-col justify-between gap-6 border-b border-stone-200/40 pb-6 md:flex-row md:items-center">
         <div>
           <span className="rounded-full bg-coral/10 px-3.5 py-1 font-sans text-[10px] font-bold uppercase tracking-widest text-coral">
@@ -459,7 +458,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               <span className="block font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
                 {t("offline.mapLabel")}
               </span>
-              <div className="relative min-h-[320px] flex-1 overflow-hidden rounded-[32px] bg-[#ECE6DC] shadow-inner">
+              <div className="relative min-h-[320px] flex-1 overflow-hidden rounded-xl bg-[#ECE6DC] shadow-inner">
                 <div ref={mapContainerRef} className="absolute inset-0 z-10 h-full w-full" />
                 {!leafletLoaded ? (
                   <div className="absolute inset-0 z-20 flex flex-col items-center justify-center space-y-3 bg-stone-50">
@@ -518,7 +517,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               <span className="block font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
                 {t("offline.detailLabel")}
               </span>
-              <div className="flex flex-1 flex-col justify-between overflow-y-auto rounded-[32px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.01)]">
+              <div className="flex flex-1 flex-col justify-between overflow-y-auto rounded-xl bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.01)]">
                 <div className="space-y-4">
                   <div className="flex flex-wrap gap-1.5">
                     {OFFLINE_EVENTS_DATA.map((event) => (
@@ -699,13 +698,9 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 {t("offline.reviewCount", { count: OFFLINE_REVIEWS.length })}
               </span>
             </div>
-            <AnimatePresence>
-              {clonedSuccessMsg ? (
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="flex flex-col items-start justify-between gap-3 rounded-2xl bg-stone-900 px-5 py-3 text-stone-100 shadow-lg sm:flex-row sm:items-center"
+            {clonedSuccessMsg ? (
+                <div
+                  className="fade-in flex flex-col items-start justify-between gap-3 rounded-xl bg-stone-900 px-5 py-3 text-stone-100 shadow-lg sm:flex-row sm:items-center"
                 >
                   <span className="whitespace-normal break-all font-sans text-xs font-bold leading-normal">
                     {t("offline.cloneDone", { name: clonedSuccessMsg })}
@@ -718,16 +713,15 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     <span>{t("offline.goNow")}</span>
                     <ChevronRightFillIcon className="h-3.5 w-3.5" />
                   </button>
-                </motion.div>
+                </div>
               ) : null}
-            </AnimatePresence>
-            <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+            <div className="mx-auto flex w-full flex-col gap-6">
               {OFFLINE_REVIEWS.map((revRaw) => {
                 const rev = localizedReview(t, revRaw);
                 return (
                 <div
                   key={rev.id}
-                  className="relative flex h-auto flex-col justify-between overflow-hidden rounded-[24px] bg-white p-6 transition-shadow hover:shadow-md md:p-8"
+                  className="relative flex h-auto flex-col justify-between overflow-hidden rounded-xl bg-white p-6 transition-shadow hover:shadow-md md:p-8"
                 >
                   <div className="space-y-5">
                     <div className="flex items-start justify-between gap-4">
@@ -800,21 +794,16 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
         ) : null}
       </div>
 
-      <AnimatePresence>
-        {activeModalTicket ? (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+      {activeModalTicket ? (
+          <div className="fade-in fixed inset-0 z-50 flex items-center justify-center p-4">
+            <button
+              type="button"
               onClick={() => setActiveModalTicket(null)}
               className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm"
+              aria-label={t("common.close")}
             />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="relative z-10 w-full max-w-sm space-y-6 rounded-3xl bg-white p-6 text-center shadow-[0_30px_70px_rgba(0,0,0,0.15)]"
+            <div
+              className="relative z-10 w-full max-w-sm space-y-6 rounded-xl bg-white p-6 text-center shadow-[0_30px_70px_rgba(0,0,0,0.15)]"
             >
               <div className="space-y-1.5">
                 <span className="rounded-full bg-coral/10 px-3.5 py-0.5 font-sans text-[9px] font-bold uppercase tracking-widest text-coral">
@@ -855,10 +844,9 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               >
                 {t("offline.ticketClose")}
               </button>
-            </motion.div>
+            </div>
           </div>
         ) : null}
-      </AnimatePresence>
     </div>
   );
 }

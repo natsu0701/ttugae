@@ -7,7 +7,6 @@ import {
   type ReactNode,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
 import { ChevronLeftFillIcon, ChevronRightFillIcon } from "../icons/FillIcons.tsx";
 
 const SIDEBAR_MIN = 240;
@@ -145,13 +144,10 @@ export default function EditorRightSidebar({
         className="absolute left-0 top-0 z-20 h-full w-1 cursor-col-resize transition-colors hover:bg-coral/40"
       />
 
-      <motion.aside
-        layout
-        className="relative h-full overflow-hidden border-l border-stone-800/80 bg-stone-800"
-        initial={false}
-        animate={{ width: isCollapsed ? 0 : sidebarWidth }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        onAnimationComplete={() => {
+      <aside
+        className="relative h-full overflow-hidden border-l border-stone-800/80 bg-stone-800 transition-[width] duration-200 ease-out"
+        style={{ width: isCollapsed ? 0 : sidebarWidth }}
+        onTransitionEnd={() => {
           window.dispatchEvent(new Event("resize"));
           if (isCollapsed) setContentMounted(false);
         }}
@@ -164,7 +160,7 @@ export default function EditorRightSidebar({
             {children}
           </div>
         ) : null}
-      </motion.aside>
+      </aside>
     </div>
   );
 }

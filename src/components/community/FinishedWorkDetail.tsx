@@ -121,7 +121,7 @@ export default function FinishedWorkDetail({
         <BackButton onClick={onBack} />
       </div>
 
-      <article className="page-shell max-w-4xl">
+      <article className="page-shell">
         <header className="pb-8">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0 flex-1">

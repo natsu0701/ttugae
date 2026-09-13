@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import BackButton from "../ui/BackButton.tsx";
+import ReportModal from "../ui/ReportModal.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import {
   getAnswersForPost,
@@ -13,6 +14,7 @@ import {
   localizedQaAnswer,
   localizedQaPost,
 } from "../../utils/i18nContent.ts";
+import { FlagFillIcon } from "../icons/FillIcons.tsx";
 
 const LOCAL_AUTHOR = "나";
 
@@ -25,7 +27,7 @@ type QaDetailProps = {
   onBack: () => void;
 };
 
-export default function QaDetail({ post, onBack }: QaDetailProps) {
+function QaDetail({ post, onBack }: QaDetailProps) {
   const { t } = useTranslation();
   const [answers, setAnswers] = useState<QaAnswer[]>(() =>
     getAnswersForPost(post.id),
@@ -33,6 +35,9 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
   const [draft, setDraft] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editDraft, setEditDraft] = useState("");
+  const [reportTarget, setReportTarget] = useState<{ type: "post" | "comment"; id: string } | null>(
+    null,
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,10 +57,10 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
     setDraft("");
   };
 
-  const startEdit = (ans: QaAnswer) => {
+  const startEdit = useCallback((ans: QaAnswer) => {
     setEditingId(ans.id);
     setEditDraft(ans.body);
-  };
+  }, []);
 
   const saveEdit = (id: string) => {
     const text = editDraft.trim();
@@ -85,11 +90,21 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
         </div>
       </header>
 
-      <article className="mx-auto max-w-3xl px-5 md:px-8">
-        <section className="rounded-2xl bg-gray-50 p-6 md:p-8">
-          <h1 className="font-sans text-2xl font-bold leading-snug text-gray-900 md:text-3xl">
-            {displayPost.title}
-          </h1>
+      <article className="page-shell">
+        <section className="rounded-xl bg-gray-50 p-6 md:p-8">
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="text-display font-sans font-bold leading-snug text-gray-900">
+              {displayPost.title}
+            </h1>
+            <button
+              type="button"
+              onClick={() => setReportTarget({ type: "post", id: post.id })}
+              className="inline-flex shrink-0 items-center gap-1 rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-coral"
+            >
+              <FlagFillIcon className="h-4 w-4" />
+              {t("report.action")}
+            </button>
+          </div>
           <div className="mt-4 flex flex-wrap gap-3 font-sans text-sm font-normal text-gray-500">
             <span>@{displayAuthor(t, post.author)}</span>
             <span>{post.createdAt}</span>
@@ -112,28 +127,38 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
               return (
                 <li
                   key={ans.id}
-                  className="relative rounded-2xl bg-gray-50 p-5 transition-colors hover:bg-gray-100"
+                  className="relative rounded-xl bg-gray-50 p-5 transition-colors hover:bg-gray-100"
                 >
-                  {own && !editing && (
-                    <div className="absolute right-4 top-4 flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() => startEdit(ans)}
-                        className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
-                      >
-                        {t("common.edit")}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => deleteAnswer(ans.id)}
-                        className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
-                      >
-                        {t("common.delete")}
-                      </button>
-                    </div>
-                  )}
+                  <div className="absolute right-4 top-4 flex gap-3">
+                    {own && !editing ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => startEdit(ans)}
+                          className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
+                        >
+                          {t("common.edit")}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteAnswer(ans.id)}
+                          className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
+                        >
+                          {t("common.delete")}
+                        </button>
+                      </>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() => setReportTarget({ type: "comment", id: ans.id })}
+                      className="inline-flex items-center gap-1 font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
+                    >
+                      <FlagFillIcon className="h-3 w-3" />
+                      {t("report.action")}
+                    </button>
+                  </div>
 
-                  <div className="flex flex-wrap items-center gap-2 pr-20 font-sans text-xs font-normal text-gray-500">
+                  <div className="flex flex-wrap items-center gap-2 pr-28 font-sans text-xs font-normal text-gray-500">
                     <span className="font-normal text-gray-700">@{displayAuthor(t, ans.author)}</span>
                     <span>{ans.createdAt}</span>
                   </div>
@@ -144,7 +169,7 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
                         value={editDraft}
                         onChange={(e) => setEditDraft(e.target.value)}
                         rows={3}
-                        className="w-full rounded-2xl bg-white px-4 py-3 font-sans text-sm font-normal leading-normal text-gray-700 outline-none focus:bg-gray-100"
+                        className="w-full rounded-xl bg-white px-4 py-3 font-sans text-sm font-normal leading-normal text-gray-700 outline-none focus:bg-gray-100"
                       />
                       <div className="mt-2 flex gap-2">
                         <Button
@@ -180,7 +205,7 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
 
           <form
             onSubmit={handleSubmit}
-            className="mt-8 rounded-2xl bg-gray-50 p-5"
+            className="mt-8 rounded-xl bg-gray-50 p-5"
           >
             <label className="font-sans text-sm font-normal text-gray-700">
               {t("community.writeAnswer")}
@@ -199,6 +224,14 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
           </form>
         </section>
       </article>
+      <ReportModal
+        open={Boolean(reportTarget)}
+        targetType={reportTarget?.type ?? "post"}
+        targetId={reportTarget?.id ?? post.id}
+        onClose={() => setReportTarget(null)}
+      />
     </div>
   );
 }
+
+export default memo(QaDetail);

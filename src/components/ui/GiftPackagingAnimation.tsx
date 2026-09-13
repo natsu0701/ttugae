@@ -1,6 +1,5 @@
 import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AnimatePresence, motion } from "framer-motion";
 
 type GiftPackagingAnimationProps = {
   isOpen: boolean;
@@ -8,8 +7,6 @@ type GiftPackagingAnimationProps = {
   patternTitle: string;
   onGoVault?: () => void;
 };
-
-const BOX_EASE = [0.22, 1, 0.36, 1] as const;
 
 function RibbonBow() {
   return (
@@ -53,101 +50,63 @@ function GiftPackagingAnimation({
 
   const displayTitle = patternTitle.trim() || t("gift.untitled");
 
+  if (!isOpen) return null;
+
   return (
-    <AnimatePresence>
-      {isOpen ? (
-        <motion.div
-          className="fixed inset-0 z-[120] flex items-center justify-center bg-stone-950/70 p-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
+    <div
+      className="fade-in fixed inset-0 z-[120] flex items-center justify-center bg-stone-950/70 p-6"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-md rounded-xl bg-[#F7F5F0] px-8 py-10 text-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative mx-auto h-52 w-52">
+          <div className="gift-box" />
+          <div className="gift-ribbon-v" />
+          <div className="gift-ribbon-h" />
+          <div className="gift-lid">
+            <span className="absolute left-1/2 top-0 h-full w-5 -translate-x-1/2 bg-[#F7F5F0]/90" />
+          </div>
+          <div className="gift-bow">
+            <RibbonBow />
+          </div>
+        </div>
+
+        <div
+          className={`transition-all duration-300 ${
+            packed ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+          }`}
         >
-          <motion.div
-            className="relative w-full max-w-md rounded-[2rem] bg-[#F7F5F0] px-8 py-10 text-center"
-            initial={{ opacity: 0, y: 24, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.98 }}
-            transition={{ duration: 0.45, ease: BOX_EASE }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative mx-auto h-52 w-52">
-              <motion.div
-                className="absolute left-1/2 top-1/2 h-32 w-40 rounded-xl bg-coral"
-                initial={{ x: "-50%", y: "-42%", scale: 0.72, opacity: 0 }}
-                animate={{ x: "-50%", y: "-42%", scale: 1, opacity: 1 }}
-                transition={{ duration: 0.45, ease: BOX_EASE }}
-              />
+          <p className="font-sans text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
+            Pattern packed
+          </p>
+          <h2 className="mt-2 font-sans text-xl font-bold text-stone-950">
+            {t("gift.done")}
+          </h2>
+          <p className="mt-2 line-clamp-2 font-sans text-sm font-normal text-stone-500">
+            {displayTitle}
+          </p>
 
-              <motion.div
-                className="absolute left-1/2 top-1/2 h-32 w-5 bg-[#F7F5F0]/90"
-                initial={{ x: "-50%", y: "-42%", opacity: 0 }}
-                animate={{ x: "-50%", y: "-42%", opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.35, ease: BOX_EASE }}
-              />
-
-              <motion.div
-                className="absolute left-1/2 top-1/2 h-5 w-40 bg-[#F7F5F0]/90"
-                initial={{ x: "-50%", y: "-42%", opacity: 0 }}
-                animate={{ x: "-50%", y: "-42%", opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.35, ease: BOX_EASE }}
-              />
-
-              <motion.div
-                className="absolute left-1/2 top-1/2 h-11 w-44 rounded-t-xl bg-[#E45A50]"
-                initial={{ x: "-50%", y: "-340%", opacity: 0, rotateX: 40 }}
-                animate={{ x: "-50%", y: "-200%", opacity: 1, rotateX: 0 }}
-                transition={{ delay: 0.35, duration: 0.55, ease: BOX_EASE }}
-              >
-                <span className="absolute left-1/2 top-0 h-full w-5 -translate-x-1/2 bg-[#F7F5F0]/90" />
-              </motion.div>
-
-              <motion.div
-                className="absolute left-1/2 top-1/2"
-                initial={{ x: "-50%", y: "-360%", scale: 0, opacity: 0 }}
-                animate={{ x: "-50%", y: "-250%", scale: 1, opacity: 1 }}
-                transition={{ delay: 0.85, type: "spring", stiffness: 320, damping: 18 }}
-              >
-                <RibbonBow />
-              </motion.div>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={packed ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-              transition={{ duration: 0.4, ease: BOX_EASE }}
+          <div className="mt-8 flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={onGoVault}
+              className="h-11 rounded-xl bg-stone-950 px-5 font-sans text-sm font-semibold text-white transition-colors hover:bg-coral"
             >
-              <p className="font-sans text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
-                Pattern packed
-              </p>
-              <h2 className="mt-2 font-sans text-xl font-bold text-stone-950">
-                {t("gift.done")}
-              </h2>
-              <p className="mt-2 line-clamp-2 font-sans text-sm font-normal text-stone-500">
-                {displayTitle}
-              </p>
-
-              <div className="mt-8 flex flex-col gap-2">
-                <button
-                  type="button"
-                  onClick={onGoVault}
-                  className="h-11 rounded-xl bg-stone-950 px-5 font-sans text-sm font-semibold text-white transition-colors hover:bg-coral"
-                >
-                  {t("gift.toVault")}
-                </button>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="h-11 rounded-xl border border-stone-200 bg-white px-5 font-sans text-sm font-medium text-stone-600 transition-colors hover:bg-stone-50"
-                >
-                  {t("gift.backEditor")}
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
+              {t("gift.toVault")}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="h-11 rounded-xl border border-stone-200 bg-white px-5 font-sans text-sm font-medium text-stone-600 transition-colors hover:bg-stone-50"
+            >
+              {t("gift.backEditor")}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

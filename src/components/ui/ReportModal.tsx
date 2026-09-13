@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "./Button.tsx";
 import { REPORT_REASONS, saveReport, type ReportTargetType } from "../../utils/reportStorage.ts";
@@ -15,6 +15,13 @@ function ReportModal({ open, targetType, targetId, onClose }: ReportModalProps) 
   const [reason, setReason] = useState<(typeof REPORT_REASONS)[number]>("spam");
   const [detail, setDetail] = useState("");
   const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    setReason("spam");
+    setDetail("");
+    setDone(false);
+  }, [open, targetId, targetType]);
 
   if (!open) return null;
 

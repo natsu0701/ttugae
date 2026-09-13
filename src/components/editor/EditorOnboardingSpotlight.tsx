@@ -5,7 +5,6 @@ import {
   type CSSProperties,
   type RefObject,
 } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
@@ -178,15 +177,10 @@ export default function EditorOnboardingSpotlight({
         </>
       ) : null}
 
-      <AnimatePresence mode="wait">
-        <motion.div
+      <div
           key={step}
-          className="absolute z-10 max-w-xs -translate-x-1/2 rounded-2xl bg-white px-4 py-4 pointer-events-auto"
+          className="fade-in pointer-events-auto absolute z-10 max-w-xs -translate-x-1/2 rounded-xl bg-white px-4 py-4"
           style={{ top: bubbleTop, left: bubbleLeft }}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.25 }}
         >
           <p className="relative font-sans text-sm font-normal leading-relaxed text-gray-800">
             <span
@@ -220,8 +214,7 @@ export default function EditorOnboardingSpotlight({
               </Button>
             )}
           </div>
-        </motion.div>
-      </AnimatePresence>
+        </div>
     </div>
   );
 }
