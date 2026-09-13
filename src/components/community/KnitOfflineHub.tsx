@@ -611,7 +611,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 return (
                   <div
                     key={meet.id}
-                    className={`relative flex flex-col justify-between rounded-2xl bg-white p-5 transition-all duration-300 ${
+                    className={`relative flex flex-col justify-between rounded-xl bg-white p-5 ${
                       meet.isJoined ? "ring-1 ring-coral/20 shadow-sm" : "hover:shadow-md"
                     }`}
                   >
@@ -652,7 +652,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       <div className="h-2 w-full overflow-hidden rounded-full bg-stone-100">
                         <div
                           style={{ width: `${percent}%` }}
-                          className={`h-full rounded-full transition-all duration-500 ${
+                          className={`h-full rounded-full ${
                             meet.isJoined ? "bg-coral" : "bg-stone-500"
                           }`}
                         />

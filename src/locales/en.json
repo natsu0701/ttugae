@@ -59,7 +59,7 @@
       "unitHearts": "",
       "unitFinished": "",
       "regionTitle": "Activity area",
-      "regionHint": "Saving your district sorts the lounge map and meetups near you.",
+      "regionHint": "Saving your district sorts the Tteugae Lounge map and meetups near you.",
       "regionLabel": "District",
       "regionPlaceholder": "Mangwon-dong, Mapo-gu, Seoul",
       "gaugeTitle": "My gauge (Gauge)",
@@ -86,7 +86,7 @@
     "finishedTitle": "Finished Projects",
     "likedTitle": "Liked Patterns",
     "likedEmptyTitle": "No liked patterns yet",
-    "likedEmptyDesc": "Heart patterns you love in the community feed.",
+    "likedEmptyDesc": "Heart patterns you love in Tteugae Lounge.",
     "savedTitle": "Saved Patterns",
     "savedEmptyTitle": "No saved patterns",
     "savedEmptyDesc": "Bookmark patterns to revisit them later.",
@@ -114,7 +114,7 @@
       "yarnAdd": "Add yarn",
       "yarnAdded": "Added to your yarn stash.",
       "needleTitle": "Needle drawer",
-      "needleHint": "Register needles to filter community charts you can knit right now.",
+      "needleHint": "Register needles to filter Tteugae Lounge charts you can knit right now.",
       "needleEmpty": "No needles registered yet.",
       "needleAdd": "Add needle",
       "needleAdded": "Added to your needle drawer.",
@@ -132,9 +132,9 @@
       "styleSimple": "Simple daily"
     },
     "meetupsTitle": "Knit meetups",
-    "meetupsSubtitle": "Groups you joined in the lounge appear here right away.",
+    "meetupsSubtitle": "Groups you joined in Tteugae Lounge appear here right away.",
     "meetupsEmptyTitle": "No booked meetups yet",
-    "meetupsEmptyDesc": "Open Offline events in the lounge and tap join.",
+    "meetupsEmptyDesc": "Open Offline events in Tteugae Lounge and tap join.",
     "meetupsTickets": "On-site check-in",
     "meetupsTicketMeta": "{{count}} QR tickets · row {{row}} session saved",
     "meetupsGoods": "Goods portfolio: {{list}}",
@@ -273,7 +273,7 @@
     "stitchCount": "{{cols}}×{{rows}} sts",
     "rank": "#{{rank}}",
     "qaEmptyTitle": "No questions yet",
-    "qaEmptyDesc": "Post your knitting questions to the community.",
+    "qaEmptyDesc": "Post your knitting questions in Tteugae Lounge.",
     "commentCount": "{{count}} replies",
     "noMatchTitle": "No finished charts match these knitting filters yet.",
     "noMatchDesc": "Turn off a filter or reset to browse a wider set.",
@@ -321,7 +321,7 @@
     "filterResultCount": "{{count}} results",
     "tasteHint": "Recommended charts matching your taste are shown first.",
     "photoFail": "Couldn’t load the finished photo",
-    "backToCommunity": "Community",
+    "backToCommunity": "Tteugae Lounge",
     "backQa": "Q&A list",
     "yarnUsed": "Yarn",
     "needleSize": "Needles",
@@ -335,13 +335,11 @@
     "submitComment": "Post",
     "answersCount": "{{count}} answers",
     "writeAnswer": "Write an answer",
-    "remixTitle": "Remix family of this chart",
-    "remixHint": "From the original to this piece, forks and twists along the way.",
-    "shareToCommunity": "Share to community",
+    "shareToCommunity": "Share to Tteugae Lounge",
     "patternPreview": "Chart preview",
     "loungeChip": "TTEUGAE LOUNGE",
-    "searchResultCount": "{{count}} results",
-    "searchIncludesAuthor": "Search includes pattern titles and author names.",
+    "searchResultCount": "Search results {{count}}",
+    "searchIncludesAuthor": "Search includes pattern titles and author nicknames or IDs.",
     "follow": "Follow",
     "unfollow": "Unfollow",
     "followCounts": "Following {{following}} · Followers {{followers}}",
@@ -617,13 +615,13 @@
     "heroLead": "Leave the tricky charts to Tteuni,",
     "heroLine1": "Just focus",
     "heroLine2": "on knitting!",
-    "heroSub": "Editor, AI chat, and community — every knitting moment in one place.",
+    "heroSub": "Editor, AI chat, and Tteugae Lounge — every knitting moment in one place.",
     "startDrawing": "Draw pattern",
     "feature1Line1": "Your own chart,",
     "feature1Line2": "ready in a few clicks",
     "feature1Body": "Place stitches and colors on the grid — Tteuni catches the mistakes.",
     "feature2Title": "An editor-first smart knitting platform",
-    "feature2Body": "Skip the fiddly prep math. The web editor and community keep you in the flow of making.",
+    "feature2Body": "Skip the fiddly prep math. The web editor and Tteugae Lounge keep you in the flow of making.",
     "promoLine1": "Knit in real life with Tteuni",
     "promoLine2": "AR navigation app",
     "promoBody1": "Sync charts from the web to the app.",
@@ -645,7 +643,7 @@
     "tabConvertDesc": "Skip reading a dense grid. The editor turns symbols into a written pattern like “Row 1: knit 2, purl 1” in a second.",
     "tabCommunityTitle": "Community",
     "tabCommunitySub": "Lounge pattern sharing",
-    "tabCommunityDesc": "Wrap your finished chart and share it in the lounge. Peek at others’ photos and one click pulls a chart into your editor."
+    "tabCommunityDesc": "Wrap your finished chart and share it in Tteugae Lounge. Peek at others’ photos and one click pulls a chart into your editor."
   },
   "createPost": {
     "editTitle": "Edit post",
@@ -754,8 +752,8 @@
         "desc": "You logged leftover yarn and needles in the stash 5 or more times."
       },
       "badge8": {
-        "name": "Warm lounge lead",
-        "desc": "You shared a finished story and chart in the community feed."
+        "name": "Warm Tteugae Lounge lead",
+        "desc": "You shared a finished story and chart in the Tteugae Lounge feed."
       },
       "badge9": {
         "name": "Tteuni’s soulmate",
@@ -866,11 +864,11 @@
       "qa-3": {
         "title": "When yarn color doesn’t match the chart",
         "excerpt": "I bought coral yarn and it’s much redder than on screen. Looking for a swap.",
-        "body": "The community preview looks like a soft coral, but in real life it’s closer to #FC5F53 and too loud.\n\nAny similar-tone substitutes, or a way to tone the color down?"
+        "body": "The Tteugae Lounge preview looks like a soft coral, but in real life it’s closer to #FC5F53 and too loud.\n\nAny similar-tone substitutes, or a way to tone the color down?"
       },
       "qa-4": {
         "title": "Grid won’t load in the pattern editor",
-        "excerpt": "I tapped import from a community card and only got an empty grid.",
+        "excerpt": "I tapped import from a Tteugae Lounge card and only got an empty grid.",
         "body": "Tried in Chrome, and I’m logged in. Only one chart (cp-3) does this, even after refresh.\n\nCould it be local storage space?"
       },
       "qa-5": {
@@ -910,7 +908,7 @@
       "ans-3": "At that gauge, 5cm is about 14 extra rows. Finish the last two sleeve rows with a snugger stitch.",
       "ans-4": "Measure the showcase beige cardigan photo against your wrist — that makes the extra-row math easier.",
       "ans-5": "Cotton coral reads louder than on screen. Blend a beige row, or go up a needle size for a softer look.",
-      "ans-6": "The teddy chart does import. If you get an empty grid, tap Import to editor again from the community card.",
+      "ans-6": "The teddy chart does import. If you get an empty grid, tap Import to editor again from the Tteugae Lounge card.",
       "ans-7": "In-the-round stockinette jogs one stitch each round. Park a marker at the start, and if it leans, change rounds one stitch earlier.",
       "ans-8": "Split the hand stitches into four, then pick the thumb from the side. Hang scrap markers in four spots before the split.",
       "ans-9": "Pick up the neighboring stitch at the turning corner to close the hole. Keep sock one’s counts beside you for sock two.",
@@ -986,7 +984,7 @@
         "date": "Aug 24, 7:00 PM",
         "needle": "3.0mm crochet hook",
         "yarn": "1 ball 4-ply cotton",
-        "place": "Hongdae community table"
+        "place": "Hongdae Tteugae Lounge table"
       },
       "mt-mangwon-bookcafe": {
         "title": "Mangwon dessert-cafe crop cardigan knit",

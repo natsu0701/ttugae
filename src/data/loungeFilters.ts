@@ -1,16 +1,7 @@
 import type { CommunityPattern } from "./communityPatterns.ts";
-import {
-  needlesMatch,
-  resolvePatternNeedle,
-  type NeedleType,
-} from "./knittingMetadataLibrary.ts";
-import {
-  loadTasteProfile,
-  loadYarnInventory,
-  ownedNeedlesForFilter,
-  type SkillLevel,
-  type YarnStock,
-} from "../utils/personalizationStorage.ts";
+import { findLoungeAuthor, handleFromAuthor } from "./loungeAuthors.ts";
+import type { NeedleType } from "./knittingMetadataLibrary.ts";
+import { type SkillLevel } from "../utils/personalizationStorage.ts";
 
 export type LoungeLevel = SkillLevel;
 export type LoungeTool = NeedleType;
@@ -28,18 +19,12 @@ export type LoungeFilters = {
   query: string;
   level: "all" | LoungeLevel;
   tool: "all" | LoungeTool;
-  itemKind: "all" | LoungeItemKind;
-  material: "all" | LoungeMaterial;
-  myHardwareOnly: boolean;
 };
 
 export const DEFAULT_LOUNGE_FILTERS: LoungeFilters = {
   query: "",
   level: "all",
   tool: "all",
-  itemKind: "all",
-  material: "all",
-  myHardwareOnly: false,
 };
 
 const SEEDED_META: Record<string, LoungeMeta> = {
@@ -93,63 +78,34 @@ export function getLoungeMeta(pattern: CommunityPattern): LoungeMeta {
   };
 }
 
-export function materialsFromYarnBag(yarns: YarnStock[] = loadYarnInventory()): Set<LoungeMaterial> {
-  const found = new Set<LoungeMaterial>();
-  for (const yarn of yarns) {
-    found.add(inferLoungeMaterial(`${yarn.name} ${yarn.needle}`));
-  }
-  return found;
-}
-
-export function filtersFromKnittingBag(): LoungeFilters {
-  const taste = loadTasteProfile();
-  const owned = ownedNeedlesForFilter();
-  const materials = [...materialsFromYarnBag()];
-  const types = [...new Set(owned.map((item) => item.needleType))];
-
-  return {
-    query: "",
-    level: taste.skill,
-    tool: types.length === 1 ? types[0] : "all",
-    itemKind: "all",
-    material: materials.length === 1 ? materials[0] : "all",
-    myHardwareOnly: true,
-  };
+export function patternSearchText(pattern: CommunityPattern): string {
+  const handle = handleFromAuthor(pattern.author);
+  const author = findLoungeAuthor(handle);
+  return [
+    pattern.title,
+    pattern.author,
+    pattern.finishedCaption,
+    pattern.finishedDetail.review,
+    handle,
+    author?.nickname,
+    author?.handle,
+    author?.bio,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 }
 
 export function applyLoungeFilters(
   patterns: CommunityPattern[],
   filters: LoungeFilters,
 ): CommunityPattern[] {
-  let result = patterns.filter((pattern) => {
-    const q = filters.query.trim().toLowerCase();
-    if (q) {
-      const hay =
-        `${pattern.title} ${pattern.author} ${pattern.finishedCaption}`.toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
+  const q = filters.query.trim().toLowerCase();
+  return patterns.filter((pattern) => {
+    if (q && !patternSearchText(pattern).includes(q)) return false;
     const meta = getLoungeMeta(pattern);
     if (filters.level !== "all" && meta.level !== filters.level) return false;
     if (filters.tool !== "all" && meta.tool !== filters.tool) return false;
     return true;
   });
-
-  if (!filters.myHardwareOnly) return result;
-
-  const owned = ownedNeedlesForFilter();
-  const bagMaterials = materialsFromYarnBag();
-
-  if (owned.length > 0) {
-    result = result.filter((pattern) => {
-      const spec = resolvePatternNeedle(pattern);
-      if (!spec) return false;
-      return owned.some((item) => needlesMatch(spec, item));
-    });
-  }
-
-  if (bagMaterials.size > 0) {
-    result = result.filter((pattern) => bagMaterials.has(getLoungeMeta(pattern).material));
-  }
-
-  return result;
 }

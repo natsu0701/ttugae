@@ -111,10 +111,10 @@ export const ACHIEVEMENT_BADGES: AchievementBadge[] = [
   },
   {
     id: "badge8",
-    name: "따뜻한 라운지 리더",
+    name: "따뜻한 뜨개라운지 리더",
     level: "advanced",
     levelLabel: "고급",
-    description: "커뮤니티 자랑 피드에 정성 어린 제작 수기와 도안을 공유해 많은 이들에게 영감을 주었습니다.",
+    description: "뜨개라운지 자랑 피드에 정성 어린 제작 수기와 도안을 공유해 많은 이들에게 영감을 주었습니다.",
     imageSrc: assetUrl("/images/badge8.png"),
     color: "text-rose-500",
     bgColor: "bg-rose-500/10",

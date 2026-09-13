@@ -9,6 +9,7 @@ import {
   DEFAULT_LOUNGE_FILTERS,
   type LoungeFilters,
 } from "../../data/loungeFilters.ts";
+import { LOUNGE_CLOSE_FILTER_EVENT } from "../../utils/communityTabEvent.ts";
 
 type FilterOption = { id: string; labelKey: string };
 
@@ -88,6 +89,12 @@ function CommunityFilterBar({
     setPanelOpen(false);
   }, [closeSignal]);
 
+  useEffect(() => {
+    const close = () => setPanelOpen(false);
+    window.addEventListener(LOUNGE_CLOSE_FILTER_EVENT, close);
+    return () => window.removeEventListener(LOUNGE_CLOSE_FILTER_EVENT, close);
+  }, []);
+
   const patch = (partial: Partial<LoungeFilters>) => {
     onChange({ ...filters, ...partial });
   };
@@ -119,11 +126,13 @@ function CommunityFilterBar({
           <FilterFillIcon className="h-4 w-4" />
         </button>
       </div>
-      <p className="mt-3 font-sans text-sm font-semibold text-stone-800">
+      <p className="mt-3 font-sans text-base font-bold leading-6 text-stone-900">
         {t("community.searchResultCount", { count: resultCount })}
       </p>
       {searching ? (
-        <p className="mt-1 font-sans text-xs text-stone-500">{t("community.searchIncludesAuthor")}</p>
+        <p className="mt-1 font-sans text-xs font-medium leading-5 text-stone-500">
+          {t("community.searchIncludesAuthor")}
+        </p>
       ) : null}
 
       {panelOpen ? (

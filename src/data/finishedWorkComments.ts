@@ -56,6 +56,48 @@ export const FINISHED_COMMENTS: FinishedComment[] = [
     createdAt: "2026.05.27",
     body: "회색 기본형이랑 같은 도안이라 금방 따라 했어요. 노란 색이 봄에 잘 어울려요.",
   },
+  {
+    id: "fc-8",
+    patternId: "cp-1",
+    author: "yarnlover",
+    createdAt: "2026.05.12",
+    body: "체리 꼭지 색만 바꿔도 분위기가 달라져서 따라 떴어요.",
+  },
+  {
+    id: "fc-9",
+    patternId: "cp-1",
+    author: "teddyknit",
+    createdAt: "2026.05.13",
+    body: "키링 고리 달 때 코가 풀리지 않게 매듭을 한 번 더 해주세요.",
+  },
+  {
+    id: "fc-10",
+    patternId: "cp-1",
+    author: "heartstitch",
+    createdAt: "2026.05.14",
+    body: "면사라 여름에 들고 다니기 좋아요. 도안 감사합니다.",
+  },
+  {
+    id: "fc-11",
+    patternId: "cp-1",
+    author: "sunnyknit",
+    createdAt: "2026.05.15",
+    body: "초보도 하루면 끝나는 크기라 선물용으로 딱입니다.",
+  },
+  {
+    id: "fc-12",
+    patternId: "cp-1",
+    author: "fingertip",
+    createdAt: "2026.05.16",
+    body: "잎사귀 코 수가 조금 타이트해서 바늘을 0.5호 올렸어요.",
+  },
+  {
+    id: "fc-13",
+    patternId: "cp-1",
+    author: "socklane",
+    createdAt: "2026.05.17",
+    body: "같은 도안으로 딸기 색 조합도 예쁠 것 같아요.",
+  },
 ];
 
 export function getCommentsForPattern(patternId: string) {

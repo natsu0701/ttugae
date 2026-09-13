@@ -52,7 +52,9 @@ export function resolvePathFallback(pathname: string): NavReturn {
   if (
     path.startsWith("/community/qa/") ||
     path.startsWith("/community/work/") ||
-    path.startsWith("/community/post/")
+    path.startsWith("/community/post/") ||
+    path.startsWith("/community/author/") ||
+    path.startsWith("/community/attend/")
   ) {
     return { view: "community", path: "/community" };
   }
@@ -79,5 +81,22 @@ export function goBack(fallbackPath = "/"): void {
   }
   const target = resolvePathFallback(window.location.pathname);
   window.history.replaceState({}, "", appPath(target.path ?? fallbackPath));
+  window.dispatchEvent(new PopStateEvent("popstate"));
+}
+
+const LOUNGE_NESTED = { loungeNested: true };
+
+export function pushLoungePath(path: string): void {
+  window.history.pushState(LOUNGE_NESTED, "", appPath(path));
+}
+
+/** 뜨개라운지 상세에서 이전 화면으로. 직접 URL로 들어온 경우에는 피드로 되돌린다. */
+export function leaveLoungeChild(fallbackPath = "/community"): void {
+  const state = window.history.state as { loungeNested?: boolean } | null;
+  if (state?.loungeNested) {
+    window.history.back();
+    return;
+  }
+  window.history.replaceState({}, "", appPath(fallbackPath));
   window.dispatchEvent(new PopStateEvent("popstate"));
 }

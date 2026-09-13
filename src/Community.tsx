@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import PatternCard, { communityPostPath } from "./components/community/PatternCard.tsx";
+import PatternCard from "./components/community/PatternCard.tsx";
 import ShowcaseFeedCard from "./components/community/ShowcaseFeedCard.tsx";
 import QaList from "./components/community/QaList.tsx";
 import QaDetail from "./components/community/QaDetail.tsx";
@@ -23,7 +23,11 @@ import { getQaPost, QA_POSTS } from "./data/qaPosts.ts";
 import { getPatternEditorGrid } from "./data/patternThumbnails.ts";
 import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
 import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
-import { COMMUNITY_TAB_EVENT } from "./utils/communityTabEvent.ts";
+import { appPath, routePath } from "./utils/appPath.ts";
+import { leaveLoungeChild, pushLoungePath } from "./utils/navReturn.ts";
+import { checkInMeetup } from "./utils/meetupExtraStorage.ts";
+import { handleFromAuthor } from "./data/loungeAuthors.ts";
+import { COMMUNITY_TAB_EVENT, closeLoungeFilters } from "./utils/communityTabEvent.ts";
 import { deleteSharedCommunityPattern } from "./utils/communityShare.ts";
 import { deleteMyFinishedWork } from "./utils/myFinishedWorksStore.ts";
 import {
@@ -35,10 +39,6 @@ import {
   DEFAULT_LOUNGE_FILTERS,
   type LoungeFilters,
 } from "./data/loungeFilters.ts";
-import { appPath, routePath } from "./utils/appPath.ts";
-import { goBack } from "./utils/navReturn.ts";
-import { checkInMeetup } from "./utils/meetupExtraStorage.ts";
-import { handleFromAuthor } from "./data/loungeAuthors.ts";
 
 const KnitOfflineHub = lazy(() => import("./components/community/KnitOfflineHub.tsx"));
 
@@ -143,23 +143,25 @@ export default function Community({
     setSelectedQaId(postId);
     setSelectedWorkId(null);
     setActiveTab("qa");
-    window.history.pushState({}, "", appPath(`/community/qa/${postId}`));
+    closeLoungeFilters();
+    pushLoungePath(`/community/qa/${postId}`);
   };
 
   const closeQa = () => {
-    goBack("/community");
+    leaveLoungeChild("/community");
   };
 
   const openWork = (pattern: CommunityPattern) => {
     setSelectedWorkId(pattern.id);
     setSelectedQaId(null);
     setAuthorHandle(null);
+    closeLoungeFilters();
     setFilterCloseSignal((n) => n + 1);
-    window.history.pushState({}, "", communityPostPath(pattern.id));
+    pushLoungePath(`/community/post/${pattern.id}`);
   };
 
   const closeWork = () => {
-    goBack("/community");
+    leaveLoungeChild("/community");
   };
 
   const openAuthor = (pattern: CommunityPattern) => {
@@ -167,8 +169,9 @@ export default function Community({
     setAuthorHandle(handle);
     setSelectedWorkId(null);
     setSelectedQaId(null);
+    closeLoungeFilters();
     setFilterCloseSignal((n) => n + 1);
-    window.history.pushState({}, "", appPath(`/community/author/${encodeURIComponent(handle)}`));
+    pushLoungePath(`/community/author/${encodeURIComponent(handle)}`);
   };
 
   const handleTabChange = (tabId: CommunityCategory) => {
@@ -176,6 +179,7 @@ export default function Community({
     setSelectedQaId(null);
     setSelectedWorkId(null);
     setAuthorHandle(null);
+    closeLoungeFilters();
     setFilterCloseSignal((n) => n + 1);
     if (routePath(window.location.pathname) !== "/community") {
       window.history.replaceState({}, "", appPath("/community"));
@@ -227,7 +231,7 @@ export default function Community({
     return (
       <AuthorProfilePage
         handle={authorHandle}
-        onBack={() => goBack("/community")}
+        onBack={() => leaveLoungeChild("/community")}
         onImportToEditor={onImportToEditor}
         onOpenFinished={openWork}
       />
@@ -294,7 +298,7 @@ export default function Community({
         {activeTab === "qa" ? (
           <QaList posts={QA_POSTS} onSelect={openQa} />
         ) : activeTab === "offline" ? (
-          <Suspense fallback={<div className="min-h-[480px] rounded-2xl bg-gray-50" aria-busy="true" />}>
+          <Suspense fallback={<div className="min-h-[480px] rounded-xl bg-gray-50" aria-busy="true" />}>
             <KnitOfflineHub onGoEditor={onGoEditor} />
           </Suspense>
         ) : (
@@ -332,25 +336,26 @@ export default function Community({
                         : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
                   }
                 >
-                    {filtered.map((pattern, index) => (
-                      <div key={pattern.id}>
-                        {activeTab === "showcase" ? (
-                          <ShowcaseFeedCard
-                            pattern={pattern}
-                            onImport={onImportToEditor}
-                            onOpenFinished={openWork}
-                          />
-                        ) : (
-                          <PatternCard
-                            pattern={pattern}
-                            rank={activeTab === "best" ? index + 1 : undefined}
-                            onImport={onImportToEditor}
-                            onOpenFinished={openWork}
-                            onOpenAuthor={openAuthor}
-                          />
-                        )}
-                      </div>
-                    ))}
+                    {filtered.map((pattern, index) =>
+                      activeTab === "showcase" ? (
+                        <ShowcaseFeedCard
+                          key={pattern.id}
+                          pattern={pattern}
+                          onImport={onImportToEditor}
+                          onOpenFinished={openWork}
+                          onOpenAuthor={openAuthor}
+                        />
+                      ) : (
+                        <PatternCard
+                          key={pattern.id}
+                          pattern={pattern}
+                          rank={activeTab === "best" ? index + 1 : undefined}
+                          onImport={onImportToEditor}
+                          onOpenFinished={openWork}
+                          onOpenAuthor={openAuthor}
+                        />
+                      ),
+                    )}
                 </div>
               </>
             )}

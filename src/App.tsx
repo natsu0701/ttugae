@@ -26,12 +26,8 @@ import {
   saveAuthSession,
 } from "./utils/authStorage.ts";
 import { clearProfile } from "./utils/profileStorage.ts";
-import {
-  consumeNavReturn,
-  goBack,
-  resolvePathFallback,
-  setNavReturn,
-} from "./utils/navReturn.ts";
+import { consumeNavReturn, goBack, resolvePathFallback, setNavReturn } from "./utils/navReturn.ts";
+import { closeLoungeFilters } from "./utils/communityTabEvent.ts";
 import { appPath, currentRouteHref, routePath } from "./utils/appPath.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
 import {
@@ -447,7 +443,10 @@ function AppRoutes() {
         accounts={accounts}
         activeAccountId={activeAccount?.id ?? null}
         onGoHome={() => navigate("landing")}
-        onGoCommunity={() => navigate("community")}
+        onGoCommunity={() => {
+          closeLoungeFilters();
+          navigate("community");
+        }}
         onGoMypage={requestMypage}
         onGoEditor={() => openEditor({ patternId: null, share: null })}
         onLogin={() => {

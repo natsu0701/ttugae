@@ -55,6 +55,14 @@ export function findLoungeAuthor(handleOrName: string): LoungeAuthor | null {
   );
 }
 
+export function resolveLoungeAuthor(handleOrName: string): LoungeAuthor {
+  const found = findLoungeAuthor(handleOrName);
+  if (found) return found;
+  const handle = handleFromAuthor(handleOrName);
+  const nickname = handleOrName.replace(/^@/, "").trim() || handle;
+  return { handle, nickname, bio: "" };
+}
+
 export function searchLoungeAuthors(query: string): LoungeAuthor[] {
   const q = query.trim().toLowerCase();
   if (!q) return AUTHOR_DIRECTORY;

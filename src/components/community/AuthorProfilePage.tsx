@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import BackButton from "../ui/BackButton.tsx";
 import Button from "../ui/Button.tsx";
 import PatternCard from "./PatternCard.tsx";
-import { findLoungeAuthor, patternsByAuthorHandle } from "../../data/loungeAuthors.ts";
+import { resolveLoungeAuthor, patternsByAuthorHandle } from "../../data/loungeAuthors.ts";
 import { loadSharedCommunityPatterns } from "../../utils/communityShare.ts";
 import { isFollowing, listFollowers, listFollowing, toggleFollow } from "../../utils/followStorage.ts";
 import { currentUserHandle } from "../../utils/identity.ts";
@@ -25,7 +25,7 @@ export default function AuthorProfilePage({
   onOpenFinished,
 }: AuthorProfilePageProps) {
   const { t } = useTranslation();
-  const author = findLoungeAuthor(handle);
+  const author = resolveLoungeAuthor(handle);
   const [tick, setTick] = useState(0);
   const patterns = useMemo(
     () => patternsByAuthorHandle(handle, loadSharedCommunityPatterns()),
@@ -36,7 +36,7 @@ export default function AuthorProfilePage({
   const following = isFollowing(resolvedHandle);
   void tick;
 
-  if (!author) {
+  if (!author.handle) {
     return (
       <div className="page-shell py-8">
         <BackButton onClick={onBack} />

@@ -102,7 +102,7 @@ function PatternCard({
       onOpenFinished(pattern);
       return;
     }
-    window.history.pushState({}, "", href);
+    window.history.pushState({ loungeNested: true }, "", href);
     window.dispatchEvent(new PopStateEvent("popstate"));
   };
 
@@ -123,25 +123,6 @@ function PatternCard({
             <PatternGridPreview pattern={pattern} />
           ) : (
             <FinishedHoverLayer pattern={pattern} />
-          )}
-
-          {showImportOverlay && onImport ? (
-            <div className="absolute inset-0 z-[1] flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onImport(pattern);
-                }}
-                className="translate-y-2 rounded-2xl bg-white px-5 py-3 font-sans text-xs font-bold text-stone-950 shadow-md transition-transform duration-300 group-hover:translate-y-0 hover:bg-stone-100"
-                aria-label={t("community.importToEditor")}
-              >
-                {t("community.importToEditor")}
-              </button>
-            </div>
-          ) : (
-            <div className="pointer-events-none absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           )}
 
           {rank != null && rank <= 10 ? (
@@ -191,29 +172,44 @@ function PatternCard({
         </div>
       </a>
 
-      <div className="flex items-center justify-end gap-3 px-4 pb-4">
+      <div className="flex items-center justify-between gap-3 px-4 pb-4">
+        {showImportOverlay && onImport ? (
+          <button
+            type="button"
+            onClick={() => onImport(pattern)}
+            className="rounded-full bg-stone-900 px-3 py-1.5 font-sans text-[11px] font-bold text-white hover:bg-coral"
+          >
+            {t("community.importToEditor")}
+          </button>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center justify-end gap-3">
         <button
           type="button"
           onClick={() => toggleLike(pattern.id)}
-          className={`flex items-center gap-1.5 text-xs transition-colors ${
+          className={`flex items-center gap-1.5 text-xs ${
             liked ? "font-semibold text-coral" : "text-stone-400 hover:text-stone-600"
           }`}
           aria-pressed={liked}
+          aria-label={t("community.like")}
         >
           <HeartFillIcon className="h-3.5 w-3.5" filled={liked} />
-          <span>{likeCount}</span>
+          <span className="font-bold text-stone-800">{likeCount}</span>
         </button>
         <button
           type="button"
           onClick={() => toggleSave(pattern.id)}
-          className={`flex items-center gap-1.5 text-xs transition-colors ${
+          className={`flex items-center gap-1.5 text-xs ${
             saved ? "font-semibold text-stone-800" : "text-stone-400 hover:text-stone-600"
           }`}
           aria-pressed={saved}
+          aria-label={t("community.save")}
         >
           <BookmarkFillIcon className="h-3.5 w-3.5" filled={saved} />
-          <span>{saveCount}</span>
+          <span className="font-bold text-stone-800">{saveCount}</span>
         </button>
+        </div>
       </div>
     </article>
   );

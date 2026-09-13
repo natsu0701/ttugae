@@ -7,7 +7,7 @@ import {
 } from "../../data/communityPatterns.ts";
 import { useCommunityActions } from "../../context/CommunityActionsContext.tsx";
 import { getPatternPreviewModel } from "../../data/patternThumbnails.ts";
-import { getCommentsForPattern } from "../../data/finishedWorkComments.ts";
+import { loadCommentsForPattern } from "../../utils/commentStorage.ts";
 import { communityPostPath } from "./PatternCard.tsx";
 import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
 import NeedleBadge from "./NeedleBadge.tsx";
@@ -19,6 +19,7 @@ type ShowcaseFeedCardProps = {
   pattern: CommunityPattern;
   onImport?: (pattern: CommunityPattern) => void;
   onOpenFinished?: (pattern: CommunityPattern) => void;
+  onOpenAuthor?: (pattern: CommunityPattern) => void;
 };
 
 function skillBadgeKey(pattern: CommunityPattern): string {
@@ -53,6 +54,7 @@ function ShowcaseFeedCard({
   pattern,
   onImport,
   onOpenFinished,
+  onOpenAuthor,
 }: ShowcaseFeedCardProps) {
   const { t } = useTranslation();
   const view = localizedPattern(t, pattern);
@@ -64,7 +66,7 @@ function ShowcaseFeedCard({
   const saved = isSaved(pattern.id);
   const likeCount = getLikeCount(pattern.id);
   const saveCount = getSaveCount(pattern.id);
-  const commentCount = getCommentsForPattern(pattern.id).length;
+  const commentCount = loadCommentsForPattern(pattern.id).length;
   const href = communityPostPath(pattern.id);
   const photoSrc = finishedImageUrl(pattern.finishedImage);
   const body = view.finishedDetail.review || view.finishedCaption;
@@ -79,21 +81,27 @@ function ShowcaseFeedCard({
       onOpenFinished(pattern);
       return;
     }
-    window.history.pushState({}, "", href);
+    window.history.pushState({ loungeNested: true }, "", href);
     window.dispatchEvent(new PopStateEvent("popstate"));
   };
 
   return (
     <article className="mb-8 rounded-xl bg-stone-50/60 p-5 shadow-sm">
       <div className="mb-4 flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral/15 font-sans text-sm font-bold text-coral">
-          {pattern.author.slice(0, 1)}
-        </span>
-        <p className="min-w-0 truncate font-sans text-sm font-semibold text-stone-800">
-          {pattern.author}
-        </p>
-        <EquippedAuthorChip author={pattern.author} />
-        <span className="rounded-full bg-white px-2.5 py-0.5 font-sans text-[10px] font-bold tracking-wide text-stone-500">
+        <button
+          type="button"
+          className="flex min-w-0 items-center gap-3 text-left"
+          onClick={() => onOpenAuthor?.(pattern)}
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral/15 font-sans text-sm font-bold text-coral">
+            {pattern.author.slice(0, 1)}
+          </span>
+          <p className="min-w-0 truncate font-sans text-sm font-semibold text-stone-800">
+            {pattern.author}
+          </p>
+          <EquippedAuthorChip author={pattern.author} />
+        </button>
+        <span className="ml-auto rounded-full bg-white px-2.5 py-0.5 font-sans text-[10px] font-bold tracking-wide text-stone-500">
           {badge}
         </span>
       </div>
@@ -113,30 +121,15 @@ function ShowcaseFeedCard({
             <img
               src={photoSrc}
               alt={t("community.finishedAltOf", { title: view.title })}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover group-hover:hidden"
               loading="lazy"
               decoding="async"
               onError={() => setImageFailed(true)}
             />
           )}
 
-          <div className="absolute inset-0 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
+          <div className="absolute inset-0 hidden group-hover:block">
             <PatternOverlay pattern={pattern} />
-            {onImport ? (
-              <div className="absolute inset-0 z-[1] flex items-center justify-center bg-black/35">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onImport(pattern);
-                  }}
-                  className="rounded-2xl bg-white px-5 py-3 font-sans text-xs font-bold text-stone-950 shadow-md transition-colors hover:bg-stone-100"
-                >
-                  {t("community.importToEditor")}
-                </button>
-              </div>
-            ) : null}
           </div>
           <NeedleBadge
             spec={pattern.needle}
@@ -155,40 +148,51 @@ function ShowcaseFeedCard({
             {body}
           </p>
         </div>
-        <div className="flex shrink-0 items-center gap-3 pb-0.5">
+        <div className="flex shrink-0 flex-col items-end gap-2 pb-0.5">
+          {onImport ? (
+            <button
+              type="button"
+              onClick={() => onImport(pattern)}
+              className="rounded-full bg-stone-900 px-3 py-1.5 font-sans text-[11px] font-bold text-white hover:bg-coral"
+            >
+              {t("community.importToEditor")}
+            </button>
+          ) : null}
+          <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => toggleLike(pattern.id)}
-            className={`flex items-center gap-1 text-xs transition-colors ${
+            className={`flex items-center gap-1 text-xs ${
               liked ? "font-semibold text-coral" : "text-stone-400 hover:text-stone-600"
             }`}
             aria-pressed={liked}
             aria-label={t("community.like")}
           >
             <HeartFillIcon className="h-4 w-4" filled={liked} />
-            <span>{likeCount}</span>
+            <span className="font-bold text-stone-800">{likeCount}</span>
           </button>
           <button
             type="button"
             onClick={() => toggleSave(pattern.id)}
-            className={`flex items-center gap-1 text-xs transition-colors ${
+            className={`flex items-center gap-1 text-xs ${
               saved ? "font-semibold text-stone-800" : "text-stone-400 hover:text-stone-600"
             }`}
             aria-pressed={saved}
             aria-label={t("community.save")}
           >
             <BookmarkFillIcon className="h-4 w-4" filled={saved} />
-            <span>{saveCount}</span>
+            <span className="font-bold text-stone-800">{saveCount}</span>
           </button>
           <button
             type="button"
             onClick={() => onOpenFinished?.(pattern)}
-            className="flex items-center gap-1 text-xs text-stone-400 transition-colors hover:text-stone-600"
+            className="flex items-center gap-1 text-xs text-stone-400 hover:text-stone-600"
             aria-label={t("community.comment")}
           >
             <ChatFillIcon className="h-4 w-4" />
-            <span>{commentCount}</span>
+            <span className="font-bold text-stone-800">{commentCount}</span>
           </button>
+          </div>
         </div>
       </div>
     </article>

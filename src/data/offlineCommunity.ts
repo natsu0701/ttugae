@@ -209,7 +209,7 @@ export const KNITTING_MEETUPS: KnittingMeetup[] = [
     maxCapacity: 5,
     currentMembers: 2,
     memberIds: [],
-    place: "홍대입구 커뮤니티 테이블",
+    place: "홍대입구 뜨개라운지 테이블",
     datetime: "8월 24일 오후 7시",
     prep: "코바늘 3호와 면사 한 볼",
   },

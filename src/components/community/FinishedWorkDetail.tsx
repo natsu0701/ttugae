@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
@@ -29,7 +29,7 @@ import {
 } from "../../utils/commentStorage.ts";
 import { currentUserHandle, isOwnAuthor } from "../../utils/identity.ts";
 import { handleFromAuthor } from "../../data/loungeAuthors.ts";
-import { appPath } from "../../utils/appPath.ts";
+import { pushLoungePath } from "../../utils/navReturn.ts";
 import { loadAuthSession } from "../../utils/authStorage.ts";
 
 type FinishedWorkDetailProps = {
@@ -96,6 +96,11 @@ export default function FinishedWorkDetail({
 
   const refreshComments = () => setComments(loadCommentsForPattern(pattern.id));
 
+  useEffect(() => {
+    const max = commentPageCount(comments.length);
+    if (page > max) setPage(max);
+  }, [comments.length, page]);
+
   const handleComment = (e: React.FormEvent) => {
     e.preventDefault();
     const text = draft.trim();
@@ -107,11 +112,7 @@ export default function FinishedWorkDetail({
   };
 
   const openAuthor = () => {
-    window.history.pushState(
-      {},
-      "",
-      appPath(`/community/author/${encodeURIComponent(handleFromAuthor(pattern.author))}`),
-    );
+    pushLoungePath(`/community/author/${encodeURIComponent(handleFromAuthor(pattern.author))}`);
     window.dispatchEvent(new PopStateEvent("popstate"));
   };
 
@@ -173,18 +174,22 @@ export default function FinishedWorkDetail({
               <button
                 type="button"
                 onClick={() => toggleLike(pattern.id)}
-                className={`flex items-center gap-1.5 text-sm ${liked ? "font-semibold text-coral" : "text-stone-500"}`}
+                className={`flex items-center gap-1.5 text-sm ${liked ? "font-semibold text-coral" : "text-stone-600"}`}
+                aria-pressed={liked}
               >
                 <HeartFillIcon className="h-4 w-4" filled={liked} />
-                <span>{likeCount}</span>
+                <span>{t("community.like")}</span>
+                <span className="font-bold text-stone-900">{likeCount}</span>
               </button>
               <button
                 type="button"
                 onClick={() => toggleSave(pattern.id)}
-                className={`flex items-center gap-1.5 text-sm ${saved ? "font-semibold text-stone-800" : "text-stone-500"}`}
+                className={`flex items-center gap-1.5 text-sm ${saved ? "font-semibold text-stone-800" : "text-stone-600"}`}
+                aria-pressed={saved}
               >
                 <BookmarkFillIcon className="h-4 w-4" filled={saved} />
-                <span>{saveCount}</span>
+                <span>{t("community.save")}</span>
+                <span className="font-bold text-stone-900">{saveCount}</span>
               </button>
             </div>
           </div>
@@ -265,7 +270,9 @@ export default function FinishedWorkDetail({
               return (
                 <li key={c.id} className="rounded-xl bg-gray-50 p-4">
                   <div className="flex flex-wrap items-center gap-2 font-sans text-xs text-gray-500">
-                    <span className="text-gray-700">@{comment.author}</span>
+                    <span className="text-gray-700">
+                      @{c.author === "나" ? myHandle : comment.author.replace(/^@/, "")}
+                    </span>
                     <span>{c.createdAt}</span>
                     <button
                       type="button"
@@ -292,6 +299,14 @@ export default function FinishedWorkDetail({
                         }}
                       >
                         {t("common.save")}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        className="px-3 py-2 text-sm"
+                        onClick={() => setEditingId(null)}
+                      >
+                        {t("common.cancel")}
                       </Button>
                     </div>
                   ) : (
