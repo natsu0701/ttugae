@@ -126,7 +126,7 @@ function ProfileMenu({
         )}
       </button>
       {menuOpen ? (
-        <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-lg">
+        <div className="absolute right-0 z-[60] mt-2 w-52 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-lg">
           <button
             type="button"
             onClick={go(onGoMypage)}
@@ -220,7 +220,7 @@ export default function AppShell({
         className={
           isOverlayHeader
             ? "absolute left-0 top-0 z-50 w-full border-none bg-transparent"
-            : "relative w-full bg-white"
+            : "relative z-50 w-full bg-white"
         }
       >
         <div
@@ -290,7 +290,7 @@ export default function AppShell({
       {isOverlayHeader ? (
         children
       ) : (
-        <div className="relative z-10 pt-20 md:pt-16">{children}</div>
+        <div className="relative z-10 pt-20 md:pt-24">{children}</div>
       )}
       <LandingFooter />
     </div>
