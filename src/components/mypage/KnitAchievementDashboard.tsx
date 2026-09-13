@@ -8,12 +8,16 @@ import {
 import { badgeDesc, badgeName } from "../../utils/i18nContent.ts";
 import {
   BookmarkFillIcon,
+  BrushFillIcon,
+  CalendarFillIcon,
   HeartFillIcon,
   ImageFillIcon,
   PatternsFillIcon,
+  StatsFillIcon,
 } from "../icons/FillIcons.tsx";
 import { formatKnitDuration } from "../../utils/knittingLogStorage.ts";
 import { resolveKnitLevel } from "../../utils/knitLevel.ts";
+import type { StoredPattern } from "../../types/storedPattern.ts";
 
 type FilterTab = "owned" | "unowned";
 
@@ -22,6 +26,7 @@ export type KnitAchievementDashboardProps = KnitAchievementStats & {
   likedCount?: number;
   savedCount?: number;
   patternCount?: number;
+  patterns?: StoredPattern[];
 };
 
 const FILTER_TABS: { id: FilterTab; labelKey: string }[] = [
@@ -29,10 +34,28 @@ const FILTER_TABS: { id: FilterTab; labelKey: string }[] = [
   { id: "unowned", labelKey: "mypage.badgesUnowned" },
 ];
 
+const MONTH_KEYS = [
+  "mypage.month1",
+  "mypage.month2",
+  "mypage.month3",
+  "mypage.month4",
+  "mypage.month5",
+  "mypage.month6",
+] as const;
+
+const DEMO_COLOR_USAGE = [
+  { nameKey: "mypage.colorCoral", hex: "#FC5F53", percent: 32 },
+  { nameKey: "mypage.colorBeige", hex: "#E8DCC8", percent: 24 },
+  { nameKey: "mypage.colorNavy", hex: "#1E3A5F", percent: 18 },
+  { nameKey: "mypage.colorGray", hex: "#E5E7EB", percent: 14 },
+  { nameKey: "mypage.colorOther", hex: "#9CA3AF", percent: 12 },
+];
+
+const DEMO_MONTHLY = [2, 4, 1, 6, 3, 5];
+
 function KnitAchievementDashboard({
   totalStitches,
   completedProjects,
-  activeStreak = 12,
   hasPackagedPattern = false,
   gaugeConversions = 0,
   colorPaletteUses = 0,
@@ -49,6 +72,7 @@ function KnitAchievementDashboard({
   likedCount = 0,
   savedCount = 0,
   patternCount = 0,
+  patterns = [],
 }: KnitAchievementDashboardProps) {
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<FilterTab>("owned");
@@ -97,52 +121,105 @@ function KnitAchievementDashboard({
     return activeTab === "owned" ? owned : !owned;
   });
 
+  const monthlyData = useMemo(() => {
+    const now = new Date();
+    return MONTH_KEYS.map((key, i) => {
+      const monthIndex = now.getMonth() - (MONTH_KEYS.length - 1 - i);
+      const adjusted = new Date(now.getFullYear(), monthIndex, 1);
+      const count = patterns.filter((p) => {
+        const d = new Date(p.updatedAt);
+        return d.getMonth() === adjusted.getMonth() && d.getFullYear() === adjusted.getFullYear();
+      }).length;
+      return { label: t(key), value: count > 0 ? count : DEMO_MONTHLY[i] ?? 1 };
+    });
+  }, [patterns, t]);
+
+  const maxMonthly = Math.max(...monthlyData.map((d) => d.value), 1);
+
   const summaryItems = [
     { icon: PatternsFillIcon, label: t("mypage.profile.statPatterns"), value: patternCount || activeProjectCount },
     { icon: HeartFillIcon, label: t("mypage.profile.statHearts"), value: likedCount },
     { icon: ImageFillIcon, label: t("mypage.profile.statFinished"), value: finishedCount ?? completedProjects },
     { icon: BookmarkFillIcon, label: t("mypage.profile.statSaved"), value: savedCount },
+    { icon: StatsFillIcon, label: t("mypage.achStitches"), value: totalStitches.toLocaleString() },
+    { icon: CalendarFillIcon, label: t("mypage.timeTitle"), value: t("mypage.timeValue", { hours: duration.hours, mins: duration.mins }) },
   ];
 
   return (
     <div className="w-full space-y-6">
       <div className="rounded-xl border border-stone-200 bg-white p-6">
         <h3 className="text-title text-stone-900">{t("mypage.achTitle")}</h3>
-        <p className="mt-1 text-body text-stone-500">{t("mypage.achSubtitle")}</p>
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <p className="mt-2 text-body leading-6 text-stone-500">{t("mypage.achSubtitle")}</p>
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {summaryItems.map((item) => (
-            <div key={item.label} className="rounded-xl bg-stone-50 p-4">
+            <div key={item.label} className="rounded-xl bg-stone-50 px-4 py-4">
               <item.icon className="h-5 w-5 text-coral" />
-              <p className="mt-2 font-sans text-xs text-stone-500">{item.label}</p>
-              <p className="mt-1 font-sans text-xl font-bold text-stone-900">{item.value}</p>
+              <p className="mt-3 font-sans text-xs leading-5 text-stone-500">{item.label}</p>
+              <p className="mt-1.5 font-sans text-xl font-bold leading-7 text-stone-900">{item.value}</p>
             </div>
           ))}
         </div>
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-stone-100 p-4">
-            <p className="text-xs text-stone-400">{t("mypage.achStitches")}</p>
-            <p className="mt-1 text-xl font-black">{totalStitches.toLocaleString()}</p>
-          </div>
-          <div className="rounded-xl border border-stone-100 p-4">
-            <p className="text-xs text-stone-400">{t("mypage.achStreak")}</p>
-            <p className="mt-1 text-xl font-black">{activeStreak}</p>
-          </div>
-          <div className="rounded-xl border border-stone-100 p-4">
-            <p className="text-xs text-stone-400">{t("mypage.timeTitle")}</p>
-            <p className="mt-1 text-xl font-black">
-              {t("mypage.timeValue", { hours: duration.hours, mins: duration.mins })}
-            </p>
-          </div>
-        </div>
         <div className="mt-5">
-          <div className="mb-2 flex justify-between text-xs">
+          <div className="mb-2 flex justify-between gap-3 text-xs leading-5">
             <span>{t("mypage.level.next", { remaining: level.remaining.toLocaleString() })}</span>
-            <span className="text-coral">{level.progress}%</span>
+            <span className="shrink-0 text-coral">{level.progress}%</span>
           </div>
           <div className="h-3 overflow-hidden rounded-full bg-stone-100">
             <div className="h-full rounded-full bg-coral" style={{ width: `${level.progress}%` }} />
           </div>
         </div>
+      </div>
+
+      <div className="rounded-xl border border-stone-200 bg-white p-6">
+        <div className="flex items-center gap-2">
+          <StatsFillIcon className="h-5 w-5 text-coral" />
+          <h4 className="font-sans text-sm font-bold text-stone-900">{t("mypage.statsMonthly")}</h4>
+        </div>
+        <p className="mt-2 font-sans text-xs leading-5 text-stone-400">{t("mypage.statsMonthlyHint")}</p>
+        <div className="mt-4 flex h-40 items-end justify-between gap-2">
+          {monthlyData.map((item) => {
+            const height = maxMonthly > 0 ? (item.value / maxMonthly) * 100 : 0;
+            return (
+              <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center gap-2">
+                <span className="font-sans text-xs font-bold text-coral">{item.value}</span>
+                <div className="flex h-24 w-full items-end justify-center">
+                  <div
+                    className="w-full max-w-[2.5rem] rounded-t-xl bg-coral"
+                    style={{ height: `${Math.max(height, 8)}%` }}
+                  />
+                </div>
+                <span className="font-seoyun text-[10px] leading-4 text-gray-500">{item.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-stone-200 bg-white p-6">
+        <div className="flex items-center gap-2">
+          <BrushFillIcon className="h-5 w-5 text-coral" />
+          <h4 className="font-sans text-sm font-bold text-stone-900">{t("mypage.statsColors")}</h4>
+        </div>
+        <p className="mt-2 font-sans text-xs leading-5 text-stone-400">{t("mypage.statsColorsHint")}</p>
+        <ul className="mt-5 space-y-4">
+          {DEMO_COLOR_USAGE.map((color) => (
+            <li key={color.nameKey}>
+              <div className="mb-1.5 flex items-center justify-between gap-3">
+                <span className="flex items-center gap-2 font-sans text-sm leading-5 text-gray-800">
+                  <span
+                    className="h-4 w-4 shrink-0 rounded-full"
+                    style={{ backgroundColor: color.hex }}
+                  />
+                  {t(color.nameKey)}
+                </span>
+                <span className="font-sans text-sm font-bold text-coral">{color.percent}%</span>
+              </div>
+              <div className="h-2.5 overflow-hidden rounded-full bg-gray-100">
+                <div className="h-full rounded-full bg-coral" style={{ width: `${color.percent}%` }} />
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="rounded-xl border border-stone-200 bg-white p-6">
@@ -179,8 +256,8 @@ function KnitAchievementDashboard({
                 >
                   <img src={badge.imageSrc} alt="" className={`h-16 w-16 object-contain ${isUnlocked ? "" : "grayscale"}`} />
                   <div className="min-w-0">
-                    <h5 className="truncate text-sm font-bold">{badgeName(t, badge.id, badge.name)}</h5>
-                    <p className="mt-1 text-xs text-stone-400">{badgeDesc(t, badge.id, badge.description)}</p>
+                    <h5 className="truncate text-sm font-bold leading-5">{badgeName(t, badge.id, badge.name)}</h5>
+                    <p className="mt-1.5 text-xs leading-5 text-stone-400">{badgeDesc(t, badge.id, badge.description)}</p>
                   </div>
                 </div>
               );

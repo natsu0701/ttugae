@@ -9,6 +9,7 @@ import { isFollowing, listFollowers, listFollowing, toggleFollow } from "../../u
 import { currentUserHandle } from "../../utils/identity.ts";
 import type { CommunityPattern } from "../../data/communityPatterns.ts";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
+import { loadProfile } from "../../utils/profileStorage.ts";
 
 type AuthorProfilePageProps = {
   handle: string;
@@ -78,6 +79,11 @@ export default function AuthorProfilePage({
             </Button>
           ) : null}
         </div>
+        {mine && loadProfile().isPublic === false ? (
+          <p className="mt-4 rounded-lg bg-stone-50 px-3 py-2 font-sans text-xs leading-5 text-stone-500">
+            {t("mypage.profile.publicOff")} — {t("mypage.profile.publicHint")}
+          </p>
+        ) : null}
       </section>
       <section className="mt-8">
         <h2 className="text-title text-gray-900">{t("community.authorWorks")}</h2>

@@ -50,7 +50,7 @@
       "confirmPlaceholder": "再入力",
       "save": "保存する",
       "statsTitle": "アクティビティ概要",
-      "statsHint": "統計タブで詳しいグラフを確認できます。",
+      "statsHint": "アクティビティでグラフとバッジを確認できます。",
       "statPatterns": "作成した編み図",
       "statHearts": "もらったハート",
       "statFinished": "完成作品",
@@ -70,7 +70,10 @@
       "gaugeAfterRows": "洗い後の段",
       "levelTitle": "ふわふわニッター (Level 3)",
       "profileHint": "プロフィールと手編みゲージ (Gauge) を管理します。",
-      "publicToggle": "プロフィール公開"
+      "publicToggle": "プロフィール公開",
+      "publicOn": "プロフィール公開",
+      "publicOff": "非公開 (Private)",
+      "publicHint": "非公開にすると他の人にはプロフィールが見えません。"
     },
     "patterns": {
       "title": "マイ編み図",
@@ -191,6 +194,7 @@
     "titlePopular": "人気ニッター",
     "titlePopularDesc": "いいね3つ以上",
     "badgeVault": "バッジ保管箱",
+    "badgeVaultHint": "持っているバッジを装備するか、まだないバッジを確認できます。",
     "badgesOwned": "所持",
     "badgesUnowned": "未所持",
     "timeTitle": "累計編み時間",
@@ -208,7 +212,10 @@
       "followers": "フォロワー",
       "followingCount": "フォロー {{count}}",
       "followerCount": "フォロワー {{count}}",
-      "searchPh": "英字IDまたはニックネーム検索"
+      "searchPh": "英字IDまたはニックネーム検索",
+      "follow": "フォロー",
+      "unfollow": "フォロー解除",
+      "empty": "該当するニッターがいません。"
     },
     "region": {
       "province": "道 / 市",
@@ -232,7 +239,9 @@
       "qrHost": "参加者認証QR",
       "checkIn": "出席認証",
       "checkedIn": "出席済み",
-      "diaryTitle": "모임活動記録",
+      "diaryTitle": "集まりの活動記録",
+      "diaryHint": "集まりのあと、写真と文章を日記のように残せます。",
+      "diaryBodyPh": "集まりであったことを書いてください。",
       "diarySave": "記録する"
     }
   },
@@ -1110,7 +1119,7 @@
   },
   "unsaved": {
     "title": "変更を保存しますか？",
-    "body": "保存せずに移動するとプロフィールの変更が消えます。",
+    "body": "保存せずに移動すると変更が消えます。",
     "save": "保存",
     "discard": "保存しない"
   }

@@ -30,6 +30,7 @@ export type KnittingMeetup = {
   datetime?: string;
   prep?: string;
   custom?: boolean;
+  hostHandle?: string;
 };
 
 export type AttachedPatternData = {

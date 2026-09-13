@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   MEETUP_RESERVATION_EVENT,
   OFFLINE_UPDATED_EVENT,
+  ensureHostedMeetup,
   loadJoinedMeetups,
   meetupJoinedCount,
 } from "../../utils/offlineActivityStorage.ts";
@@ -21,14 +22,38 @@ import { currentUserHandle } from "../../utils/identity.ts";
 import Button from "../ui/Button.tsx";
 import Textarea from "../ui/Textarea.tsx";
 
+type ActiveMeetup = {
+  meetupId: string;
+  title: string;
+  region: string;
+  custom?: boolean;
+  memberIds?: string[];
+  hostHandle?: string;
+  maxCapacity?: number;
+  currentMembers?: number;
+};
+
+function readPhotoAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ""));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function MyMeetupsPanel() {
   const { t } = useTranslation();
   const [tick, setTick] = useState(0);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [diaryBody, setDiaryBody] = useState("");
+  const [diaryPhoto, setDiaryPhoto] = useState<string | undefined>();
+  const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    ensureHostedMeetup();
     const bump = () => setTick((n) => n + 1);
+    bump();
     window.addEventListener(OFFLINE_UPDATED_EVENT, bump);
     window.addEventListener(MEETUP_RESERVATION_EVENT, bump);
     window.addEventListener("storage", bump);
@@ -41,12 +66,41 @@ export default function MyMeetupsPanel() {
 
   const storeMeetups = useMemo(() => loadJoinedMeetups(), [tick]);
   const hubMeetups = useMemo(() => loadHubReservedMeetups(), [tick]);
-  const empty = storeMeetups.length === 0 && hubMeetups.length === 0;
-  const active = storeMeetups.find((item) => item.meetupId === activeId);
   const handle = currentUserHandle();
+
+  const hubAsMeetups: ActiveMeetup[] = hubMeetups.map((meetup) => ({
+    meetupId: meetup.id,
+    title: loc(t, `content.meetups.${meetup.id}.title`, meetup.title),
+    region: loc(t, `content.meetups.${meetup.id}.region`, meetup.region),
+    maxCapacity: meetup.maxCapacity,
+    currentMembers: meetup.currentMembers,
+  }));
+
+  const allMeetups: ActiveMeetup[] = [
+    ...storeMeetups.map((meetup) => ({
+      meetupId: meetup.meetupId,
+      title: loc(t, `content.meetups.${meetup.meetupId}.title`, meetup.title),
+      region: loc(t, `content.meetups.${meetup.meetupId}.region`, meetup.region),
+      custom: meetup.custom,
+      memberIds: meetup.memberIds,
+      hostHandle: meetup.hostHandle,
+      maxCapacity: meetup.maxCapacity,
+      currentMembers: meetup.currentMembers,
+    })),
+    ...hubAsMeetups.filter((hub) => !storeMeetups.some((item) => item.meetupId === hub.meetupId)),
+  ];
+
+  const empty = allMeetups.length === 0;
+  const active = allMeetups.find((item) => item.meetupId === activeId) ?? null;
   const host = active ? isMeetupHost(active, handle) : false;
   const payload = active ? attendancePayload(active.meetupId) : "";
   const diaries = active ? loadMeetupDiaries(active.meetupId) : [];
+
+  const resetDiary = () => {
+    setDiaryBody("");
+    setDiaryPhoto(undefined);
+    if (photoRef.current) photoRef.current.value = "";
+  };
 
   return (
     <div>
@@ -59,33 +113,31 @@ export default function MyMeetupsPanel() {
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-4">
-          {hubMeetups.map((meetup) => (
-            <article key={meetup.id} className="rounded-xl bg-stone-50 p-5">
-              <p className="font-sans text-[11px] text-stone-400">
-                {loc(t, `content.meetups.${meetup.id}.region`, meetup.region)}
-              </p>
-              <h3 className="mt-1 font-sans text-lg font-bold">
-                {loc(t, `content.meetups.${meetup.id}.title`, meetup.title)}
-              </h3>
-            </article>
-          ))}
-          {storeMeetups.map((meetup) => {
-            const joined = meetupJoinedCount(meetup);
+          {allMeetups.map((meetup) => {
+            const joined = meetupJoinedCount({
+              meetupId: meetup.meetupId,
+              title: meetup.title,
+              region: meetup.region,
+              requiredNeedle: "",
+              requiredYarn: "",
+              maxCapacity: meetup.maxCapacity ?? 0,
+              currentMembers: meetup.currentMembers ?? 0,
+              memberIds: meetup.memberIds ?? [],
+            });
             return (
               <button
                 key={meetup.meetupId}
                 type="button"
-                onClick={() => setActiveId(meetup.meetupId)}
+                onClick={() => {
+                  setActiveId(meetup.meetupId);
+                  resetDiary();
+                }}
                 className="rounded-xl bg-stone-50 p-5 text-left"
               >
-                <p className="font-sans text-[11px] text-stone-400">
-                  {loc(t, `content.meetups.${meetup.meetupId}.region`, meetup.region)}
-                </p>
-                <h3 className="mt-1 font-sans text-lg font-bold">
-                  {loc(t, `content.meetups.${meetup.meetupId}.title`, meetup.title)}
-                </h3>
-                <p className="mt-3 font-seoyun text-xs text-stone-500">
-                  {t("mypage.meetupsJoined", { max: meetup.maxCapacity, joined })}
+                <p className="font-sans text-[11px] leading-4 text-stone-400">{meetup.region}</p>
+                <h3 className="mt-1.5 font-sans text-lg font-bold leading-7">{meetup.title}</h3>
+                <p className="mt-3 font-seoyun text-xs leading-5 text-stone-500">
+                  {t("mypage.meetupsJoined", { max: meetup.maxCapacity ?? 0, joined })}
                 </p>
               </button>
             );
@@ -95,7 +147,14 @@ export default function MyMeetupsPanel() {
 
       {active ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <button type="button" className="absolute inset-0 bg-stone-900/30" onClick={() => setActiveId(null)} />
+          <button
+            type="button"
+            className="absolute inset-0 bg-stone-900/30"
+            onClick={() => {
+              setActiveId(null);
+              resetDiary();
+            }}
+          />
           <div className="relative max-h-[90vh] w-full max-w-lg overflow-auto rounded-xl bg-white p-6">
             <h3 className="text-title">{active.title}</h3>
             {host ? (
@@ -120,28 +179,58 @@ export default function MyMeetupsPanel() {
             )}
             <div className="mt-6">
               <h4 className="font-sans text-sm font-bold">{t("mypage.meetups.diaryTitle")}</h4>
+              <p className="mt-1 font-sans text-xs leading-5 text-stone-400">{t("mypage.meetups.diaryHint")}</p>
+              <input
+                ref={photoRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  void readPhotoAsDataUrl(file).then(setDiaryPhoto);
+                }}
+              />
+              <button
+                type="button"
+                className="mt-3 rounded-lg border border-dashed border-stone-200 px-3 py-2 font-sans text-xs text-stone-500"
+                onClick={() => photoRef.current?.click()}
+              >
+                {t("mypage.meetups.diaryPhoto")}
+              </button>
+              {diaryPhoto ? (
+                <img src={diaryPhoto} alt="" className="mt-3 max-h-40 rounded-lg object-cover" />
+              ) : null}
               <Textarea
                 value={diaryBody}
                 onChange={(e) => setDiaryBody(e.target.value)}
                 className="mt-2"
+                placeholder={t("mypage.meetups.diaryBodyPh")}
               />
               <Button
                 type="button"
                 className="mt-2 px-4 py-2 text-sm"
                 onClick={() => {
-                  if (!diaryBody.trim()) return;
-                  saveMeetupDiary({ meetupId: active.meetupId, body: diaryBody.trim() });
-                  setDiaryBody("");
+                  if (!diaryBody.trim() && !diaryPhoto) return;
+                  saveMeetupDiary({
+                    meetupId: active.meetupId,
+                    body: diaryBody.trim(),
+                    photoUrl: diaryPhoto,
+                  });
+                  resetDiary();
                   setTick((n) => n + 1);
                 }}
               >
                 {t("mypage.meetups.diarySave")}
               </Button>
-              <ul className="mt-4 space-y-2">
+              <ul className="mt-4 space-y-3">
                 {diaries.map((entry) => (
                   <li key={entry.id} className="rounded-lg bg-stone-50 p-3 text-sm">
-                    <p className="text-xs text-stone-400">@{entry.author}</p>
-                    <p className="mt-1">{entry.body}</p>
+                    <p className="text-xs leading-4 text-stone-400">@{entry.author}</p>
+                    {entry.photoUrl ? (
+                      <img src={entry.photoUrl} alt="" className="mt-2 max-h-40 rounded-lg object-cover" />
+                    ) : null}
+                    {entry.body ? <p className="mt-1.5 leading-6">{entry.body}</p> : null}
                   </li>
                 ))}
               </ul>

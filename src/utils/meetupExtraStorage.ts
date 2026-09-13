@@ -76,7 +76,11 @@ export function saveMeetupDiary(entry: Omit<MeetupDiaryEntry, "id" | "createdAt"
   return next;
 }
 
-export function isMeetupHost(meetup: { custom?: boolean; memberIds?: string[] }, handle = currentUserHandle()) {
-  if (meetup.custom && meetup.memberIds?.[0] === handle) return true;
-  return meetup.custom === true && (meetup.memberIds?.includes(handle) ?? false) && meetup.memberIds?.[0] === handle;
+export function isMeetupHost(
+  meetup: { custom?: boolean; memberIds?: string[]; hostHandle?: string },
+  handle = currentUserHandle(),
+) {
+  if (meetup.hostHandle) return meetup.hostHandle === handle;
+  if (meetup.custom) return meetup.memberIds?.[0] === handle;
+  return false;
 }

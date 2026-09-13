@@ -50,7 +50,7 @@
       "confirmPlaceholder": "다시 입력",
       "save": "저장하기",
       "statsTitle": "활동 요약",
-      "statsHint": "통계 탭에서 자세한 그래프를 확인할 수 있어요.",
+      "statsHint": "활동 요약에서 그래프와 배지 현황을 확인할 수 있어요.",
       "statPatterns": "총 도안 수",
       "statHearts": "받은 하트",
       "statFinished": "완성 작품",
@@ -65,6 +65,9 @@
       "gaugeTitle": "내 게이지(Gauge)",
       "gaugeHint": "10x10cm 편물의 세탁 전후 코·단 수를 저장하면 에디터 시작 코 수에 연동됩니다.",
       "publicToggle": "프로필 전체 공개",
+      "publicOn": "프로필 전체 공개",
+      "publicOff": "비공개 (Private)",
+      "publicHint": "비공개로 두면 다른 뜨개러에게 내 프로필이 보이지 않습니다.",
       "gaugeBeforeSts": "세탁 전 코",
       "gaugeBeforeRows": "세탁 전 단",
       "gaugeAfterSts": "세탁 후 코",
@@ -130,7 +133,6 @@
     },
     "meetupsTitle": "뜨개 모임",
     "meetupsSubtitle": "뜨개라운지에서 참가한 소모임이 여기에 펼쳐집니다.",
-    "meetupsEmptyDesc": "뜨개라운지의 오프라인 모임 및 행사 탭에서 참가 신청하기를 눌러 보세요.",
     "meetupsEmptyTitle": "아직 예약한 모임이 없어요",
     "meetupsEmptyDesc": "라운지의 오프라인 모임 및 행사 탭에서 참가 신청하기를 눌러 보세요.",
     "meetupsTickets": "현장 참여 증적",
@@ -141,6 +143,7 @@
     "badgesOwned": "보유",
     "badgesUnowned": "미보유",
     "badgeVault": "배지 보관함",
+    "badgeVaultHint": "보유한 배지를 장착하거나, 아직 없는 배지를 확인하세요.",
     "timeTitle": "누적 뜨개 시간",
     "timeValue": "{{hours}}시간 {{mins}}분",
     "level": {
@@ -156,7 +159,10 @@
       "followers": "팔로워",
       "followingCount": "팔로잉 {{count}}",
       "followerCount": "팔로워 {{count}}",
-      "searchPh": "아이디(영문) 또는 닉네임 검색"
+      "searchPh": "아이디(영문) 또는 닉네임 검색",
+      "follow": "팔로우",
+      "unfollow": "언팔로우",
+      "empty": "해당하는 뜨개러가 없어요."
     },
     "region": {
       "province": "도 / 시",
@@ -181,6 +187,9 @@
       "checkIn": "출석 인증",
       "checkedIn": "출석 완료",
       "diaryTitle": "모임 활동 기록",
+      "diaryHint": "모임이 끝난 뒤 사진과 글을 뜨개 일기처럼 남겨 보세요.",
+      "diaryPhoto": "사진 추가",
+      "diaryBodyPh": "모임에서 있었던 일을 적어 주세요.",
       "diarySave": "기록 남기기"
     },
     "badgesAll": "전체 배지",
@@ -1110,7 +1119,7 @@
   },
   "unsaved": {
     "title": "변경 사항을 저장하시겠습니까?",
-    "body": "저장하지 않으면 수정한 프로필 내용이 사라집니다.",
+    "body": "저장하지 않으면 수정한 내용이 사라집니다.",
     "save": "저장",
     "discard": "저장하지 않음"
   }

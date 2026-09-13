@@ -50,7 +50,7 @@
       "confirmPlaceholder": "Re-enter password",
       "save": "Save changes",
       "statsTitle": "Activity at a glance",
-      "statsHint": "Open the Statistics tab for detailed charts.",
+      "statsHint": "Charts and badge status live in Activity.",
       "statPatterns": "Patterns created",
       "statHearts": "Hearts received",
       "statFinished": "Finished projects",
@@ -70,7 +70,10 @@
       "gaugeAfterRows": "After-wash rows",
       "levelTitle": "Cozy fluff knitter (Level 3)",
       "profileHint": "Manage your profile and personal gauge.",
-      "publicToggle": "Public profile"
+      "publicToggle": "Public profile",
+      "publicOn": "Public profile",
+      "publicOff": "Private",
+      "publicHint": "A private profile is hidden from other knitters."
     },
     "patterns": {
       "title": "My Patterns",
@@ -191,6 +194,7 @@
     "titlePopular": "Popular knitter",
     "titlePopularDesc": "Get 3 or more likes",
     "badgeVault": "Badge vault",
+    "badgeVaultHint": "Equip owned badges or browse ones you have not earned yet.",
     "badgesOwned": "Owned",
     "badgesUnowned": "Not owned",
     "timeTitle": "Total knitting time",
@@ -208,7 +212,10 @@
       "followers": "Followers",
       "followingCount": "Following {{count}}",
       "followerCount": "Followers {{count}}",
-      "searchPh": "Search by English ID or nickname"
+      "searchPh": "Search by English ID or nickname",
+      "follow": "Follow",
+      "unfollow": "Unfollow",
+      "empty": "No knitters match this search."
     },
     "region": {
       "province": "Province / city",
@@ -233,6 +240,9 @@
       "checkIn": "Check in",
       "checkedIn": "Checked in",
       "diaryTitle": "Meetup diary",
+      "diaryHint": "After the meetup, add a photo and a short note.",
+      "diaryPhoto": "Add photo",
+      "diaryBodyPh": "Write what happened at the meetup.",
       "diarySave": "Save note"
     }
   },
@@ -1110,7 +1120,7 @@
   },
   "unsaved": {
     "title": "Save your changes?",
-    "body": "If you leave without saving, profile edits will be lost.",
+    "body": "If you leave without saving, your edits will be lost.",
     "save": "Save",
     "discard": "Don't save"
   }

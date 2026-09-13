@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PatternCard from "./components/community/PatternCard.tsx";
 import MyPatternsPanel from "./components/mypage/MyPatternsPanel.tsx";
@@ -57,11 +57,20 @@ import {
   PencilFillIcon,
   CompassFillIcon,
 } from "./components/icons/FillIcons.tsx";
-import { listFollowers, listFollowing } from "./utils/followStorage.ts";
-import { searchLoungeAuthors } from "./data/loungeAuthors.ts";
+import {
+  FOLLOW_CHANGED_EVENT,
+  isFollowing,
+  listFollowers,
+  listFollowing,
+  toggleFollow,
+} from "./utils/followStorage.ts";
+import { findLoungeAuthor, searchLoungeAuthors } from "./data/loungeAuthors.ts";
 import { currentUserHandle } from "./utils/identity.ts";
 import { resolveKnitLevel, LEVEL_PERIOD_DAYS } from "./utils/knitLevel.ts";
 import { loadKnitCalendarEvents, loadKnitMinutes } from "./utils/knittingLogStorage.ts";
+import { getAchievementBadge } from "./data/achievementBadges.ts";
+import { loadEquippedBadgeId, saveEquippedBadgeId } from "./utils/equippedBadgeStorage.ts";
+import { badgeName } from "./utils/i18nContent.ts";
 
 export type MyPageTab =
   | "profile"
@@ -164,22 +173,25 @@ function ProfileInfoPanel({
   const [handleError, setHandleError] = useState("");
   const [activityRegion, setActivityRegion] = useState(loadActivityRegion);
   const [isPublic, setIsPublic] = useState(stored.isPublic !== false);
+  const [equippedBadgeId, setEquippedBadgeId] = useState<string | null>(() => loadEquippedBadgeId());
   const [followOpen, setFollowOpen] = useState<"following" | "followers" | null>(null);
   const [followQuery, setFollowQuery] = useState("");
+  const [socialTick, setSocialTick] = useState(0);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const achievementStats = useMemo(() => computeAchievementStats(patterns), [patterns]);
   const badgeUnlocks = useMemo(() => buildBadgeUnlocks(achievementStats), [achievementStats]);
   const level = resolveKnitLevel(achievementStats.totalStitches);
-  const following = listFollowing();
-  const followers = listFollowers();
-  const followHits = searchLoungeAuthors(followQuery);
+  const following = useMemo(() => listFollowing(), [socialTick]);
+  const followers = useMemo(() => listFollowers(), [socialTick]);
+  const equippedBadge = equippedBadgeId ? getAchievementBadge(equippedBadgeId) : null;
+  const showEquippedBadge = Boolean(equippedBadge && badgeUnlocks[equippedBadge.id]?.unlocked);
 
-  const markDirty = () => setDirty(true);
+  const markDirty = useCallback(() => setDirty(true), [setDirty]);
 
-  const saveAll = () => {
+  const saveAll = useCallback(() => {
     if (!isValidHandle(handle)) {
       setHandleError(t("mypage.account.handleInvalid"));
-      return;
+      return false;
     }
     setHandleError("");
     saveProfileAccount({ nickname, handle, isPublic, region: activityRegion });
@@ -187,19 +199,44 @@ function ProfileInfoPanel({
     updateActiveAccount({ nickname, handle, avatarUrl });
     if (avatarUrl) saveProfileAvatar(avatarUrl);
     else clearProfileAvatar();
+    saveEquippedBadgeId(equippedBadgeId);
     setDirty(false);
-  };
+    return true;
+  }, [activityRegion, avatarUrl, equippedBadgeId, handle, isPublic, nickname, setDirty, t]);
 
   useEffect(() => {
     registerSaver(saveAll);
-  });
+    return () => registerSaver(() => undefined);
+  }, [registerSaver, saveAll]);
+
+  useEffect(() => {
+    const bump = () => setSocialTick((n) => n + 1);
+    window.addEventListener(FOLLOW_CHANGED_EVENT, bump);
+    return () => window.removeEventListener(FOLLOW_CHANGED_EVENT, bump);
+  }, []);
 
   const handleAvatarChange = (file: File | undefined) => {
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setAvatarUrl(url);
-    markDirty();
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAvatarUrl(String(reader.result ?? ""));
+      markDirty();
+    };
+    reader.readAsDataURL(file);
   };
+
+  const followPeople = useMemo(() => {
+    const me = currentUserHandle();
+    const ids = followOpen === "following" ? following : followers;
+    const listed = ids.map(
+      (id) => findLoungeAuthor(id) ?? { handle: id, nickname: id, bio: "" },
+    );
+    const searched = followQuery.trim() ? searchLoungeAuthors(followQuery) : [];
+    const merged = followQuery.trim() ? searched : listed;
+    return merged
+      .filter((author) => author.handle !== me)
+      .filter((item, index, arr) => arr.findIndex((x) => x.handle === item.handle) === index);
+  }, [followOpen, followQuery, followers, following]);
 
   return (
     <div className="space-y-6">
@@ -233,12 +270,21 @@ function ProfileInfoPanel({
             </button>
           </div>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-            <span className="font-sans text-lg font-bold text-stone-900">{nickname}</span>
+            <span className="font-sans text-lg font-bold leading-7 text-stone-900">{nickname}</span>
             <span className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-[11px] font-bold text-white">
               Lv.{level.level}
             </span>
+            {showEquippedBadge && equippedBadge ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2 py-0.5">
+                <img src={equippedBadge.imageSrc} alt="" className="h-5 w-5 object-contain" />
+                <span className="font-sans text-[11px] font-bold text-stone-700">
+                  {badgeName(t, equippedBadge.id, equippedBadge.name)}
+                </span>
+              </span>
+            ) : null}
           </div>
-          <p className="mt-1 font-sans text-sm text-stone-500">@{handle}</p>
+          <p className="mt-1.5 font-sans text-sm leading-5 text-stone-500">@{handle}</p>
+          <p className="mt-1 font-sans text-xs leading-5 text-stone-400">{level.title}</p>
           <div className="mt-4 w-full max-w-xl rounded-lg bg-stone-50 p-4 text-left">
             <p className="font-sans text-xs font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
             <ul className="mt-2 space-y-1 font-sans text-xs text-stone-500">
@@ -297,17 +343,32 @@ function ProfileInfoPanel({
           </div>
         </div>
 
-        <label className="mt-6 flex items-center justify-between rounded-lg bg-stone-50 px-4 py-3 text-sm">
-          <span>{t("mypage.profile.publicToggle")}</span>
-          <input
-            type="checkbox"
-            checked={isPublic}
-            onChange={(e) => {
-              setIsPublic(e.target.checked);
+        <div className="mt-6 flex items-center justify-between gap-4 rounded-lg bg-stone-50 px-4 py-3">
+          <div>
+            <p className="font-sans text-sm leading-5 text-stone-800">
+              {isPublic ? t("mypage.profile.publicOn") : t("mypage.profile.publicOff")}
+            </p>
+            <p className="mt-1 font-sans text-xs leading-4 text-stone-400">
+              {t("mypage.profile.publicHint")}
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={isPublic}
+            onClick={() => {
+              setIsPublic((value) => !value);
               markDirty();
             }}
-          />
-        </label>
+            className={`relative h-6 w-11 shrink-0 rounded-full ${isPublic ? "bg-coral" : "bg-stone-300"}`}
+          >
+            <span
+              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white ${
+                isPublic ? "left-5" : "left-0.5"
+              }`}
+            />
+          </button>
+        </div>
 
         <div className="mt-6 flex justify-end">
           <Button type="button" className="px-5 py-2.5 text-sm" onClick={saveAll}>
@@ -318,18 +379,17 @@ function ProfileInfoPanel({
 
       <div className="rounded-xl border border-stone-200 bg-white p-6 md:p-8">
         <h3 className="text-title">{t("mypage.badgeVault")}</h3>
-        <ProfileBadgeCustomizer
-          nickname={nickname}
-          handle={handle}
-          subtitle={`Lv.${level.level} ${level.title}`}
-          avatarUrl={avatarUrl}
-          unlocks={badgeUnlocks}
-          onPickAvatar={() => avatarInputRef.current?.click()}
-          onResetAvatar={() => {
-            setAvatarUrl(undefined);
-            markDirty();
-          }}
-        />
+        <p className="mt-2 font-sans text-sm leading-6 text-stone-500">{t("mypage.badgeVaultHint")}</p>
+        <div className="mt-5">
+          <ProfileBadgeCustomizer
+            unlocks={badgeUnlocks}
+            equippedBadgeId={equippedBadgeId}
+            onEquip={(id) => {
+              setEquippedBadgeId(id);
+              markDirty();
+            }}
+          />
+        </div>
       </div>
 
       {followOpen ? (
@@ -346,15 +406,33 @@ function ProfileInfoPanel({
               className="mt-3 w-full rounded-lg border border-stone-200 px-3 py-2 text-sm"
             />
             <ul className="mt-3 max-h-72 space-y-2 overflow-auto">
-              {(followOpen === "following" ? following : followers)
-                .map((id) => searchLoungeAuthors(id)[0] ?? { handle: id, nickname: id, bio: "" })
-                .concat(followHits.filter((a) => a.handle !== currentUserHandle()))
-                .filter((item, index, arr) => arr.findIndex((x) => x.handle === item.handle) === index)
-                .map((author) => (
-                  <li key={author.handle} className="rounded-lg bg-stone-50 px-3 py-2 text-sm">
-                    {author.nickname} @{author.handle}
-                  </li>
-                ))}
+              {followPeople.length === 0 ? (
+                <li className="px-1 py-6 text-center text-sm text-stone-400">{t("mypage.follow.empty")}</li>
+              ) : (
+                followPeople.map((author) => {
+                  const followingThem = isFollowing(author.handle);
+                  return (
+                    <li
+                      key={author.handle}
+                      className="flex items-center justify-between gap-3 rounded-lg bg-stone-50 px-3 py-2 text-sm"
+                    >
+                      <div className="min-w-0">
+                        <p className="truncate font-medium leading-5">{author.nickname}</p>
+                        <p className="truncate text-xs leading-4 text-stone-400">@{author.handle}</p>
+                      </div>
+                      <button
+                        type="button"
+                        className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
+                          followingThem ? "bg-stone-200 text-stone-600" : "bg-coral text-white"
+                        }`}
+                        onClick={() => toggleFollow(author.handle)}
+                      >
+                        {followingThem ? t("mypage.follow.unfollow") : t("mypage.follow.follow")}
+                      </button>
+                    </li>
+                  );
+                })
+              )}
             </ul>
           </div>
         </div>
@@ -364,15 +442,35 @@ function ProfileInfoPanel({
 }
 
 function GaugeTab() {
+  const { t } = useTranslation();
+  const { setDirty, registerSaver } = useUnsavedChanges();
   const [gauge, setGauge] = useState(loadCompactGauge);
+
+  const saveGauge = useCallback(() => {
+    saveGaugeProfile(gauge);
+    setDirty(false);
+  }, [gauge, setDirty]);
+
+  useEffect(() => {
+    registerSaver(saveGauge);
+    return () => registerSaver(() => undefined);
+  }, [registerSaver, saveGauge]);
+
   return (
-    <GaugeCalculator
-      gauge={gauge}
-      onChange={(next) => {
-        setGauge(next);
-        saveGaugeProfile(next);
-      }}
-    />
+    <div>
+      <GaugeCalculator
+        gauge={gauge}
+        onChange={(next) => {
+          setGauge(next);
+          setDirty(true);
+        }}
+      />
+      <div className="mt-4 flex justify-end">
+        <Button type="button" className="px-5 py-2.5 text-sm" onClick={saveGauge}>
+          {t("mypage.profile.save")}
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -443,7 +541,13 @@ export default function MyPage({
   const [activeTab, setActiveTab] = useState<MyPageTab>("profile");
   const [accountOpen, setAccountOpen] = useState(false);
   const { likedPatternIds, savedPatternIds } = useCommunityActions();
+  const { requestLeave } = useUnsavedChanges();
   const achievementStats = useMemo(() => computeAchievementStats(patterns), [patterns]);
+
+  const selectTab = (id: MyPageTab) => {
+    if (id === activeTab) return;
+    requestLeave(() => setActiveTab(id));
+  };
 
   const handleWithdraw = () => {
     const ok = window.confirm(t("mypage.account.withdrawConfirm"));
@@ -480,7 +584,7 @@ export default function MyPage({
                 <button
                   key={id}
                   type="button"
-                  onClick={() => setActiveTab(id)}
+                  onClick={() => selectTab(id)}
                   className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-sm font-normal md:w-full ${tabButtonBase} ${tabButtonClass(active)}`}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
@@ -517,6 +621,7 @@ export default function MyPage({
                 likedCount={likedPatternIds.length}
                 savedCount={savedPatternIds.length}
                 patternCount={patterns.length}
+                patterns={patterns}
               />
               <KnitCalendar events={loadKnitCalendarEvents(patterns)} />
             </div>
