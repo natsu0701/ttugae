@@ -1,11 +1,11 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import PatternCard, { communityPostPath } from "./components/community/PatternCard.tsx";
 import ShowcaseFeedCard from "./components/community/ShowcaseFeedCard.tsx";
 import QaList from "./components/community/QaList.tsx";
 import QaDetail from "./components/community/QaDetail.tsx";
 import FinishedWorkDetail from "./components/community/FinishedWorkDetail.tsx";
+import AuthorProfilePage from "./components/community/AuthorProfilePage.tsx";
 import CommunityFilterBar from "./components/ui/CommunityFilterBar.tsx";
 import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
 import {
@@ -36,6 +36,9 @@ import {
   type LoungeFilters,
 } from "./data/loungeFilters.ts";
 import { appPath, routePath } from "./utils/appPath.ts";
+import { goBack } from "./utils/navReturn.ts";
+import { checkInMeetup } from "./utils/meetupExtraStorage.ts";
+import { handleFromAuthor } from "./data/loungeAuthors.ts";
 
 const KnitOfflineHub = lazy(() => import("./components/community/KnitOfflineHub.tsx"));
 
@@ -56,10 +59,22 @@ function workIdFromPath(pathname: string): string | null {
   return m?.[1] ?? null;
 }
 
+function authorHandleFromPath(pathname: string): string | null {
+  const m = routePath(pathname).match(/^\/community\/author\/([^/]+)/);
+  return m?.[1] ? decodeURIComponent(m[1]) : null;
+}
+
+function attendIdFromPath(pathname: string): string | null {
+  const m = routePath(pathname).match(/^\/community\/attend\/([^/]+)/);
+  return m?.[1] ? decodeURIComponent(m[1]) : null;
+}
+
 function syncFromPath(pathname: string) {
   return {
     qaId: qaIdFromPath(pathname),
     workId: workIdFromPath(pathname),
+    authorHandle: authorHandleFromPath(pathname),
+    attendId: attendIdFromPath(pathname),
   };
 }
 
@@ -82,6 +97,9 @@ export default function Community({
     loadSharedCommunityPatterns(),
   );
   const [loungeFilters, setLoungeFilters] = useState<LoungeFilters>(DEFAULT_LOUNGE_FILTERS);
+  const [authorHandle, setAuthorHandle] = useState<string | null>(initialPath.authorHandle);
+  const [filterCloseSignal, setFilterCloseSignal] = useState(0);
+  const [attendNotice, setAttendNotice] = useState<string | null>(null);
 
   useEffect(() => {
     const refresh = () => setSharedPatterns(loadSharedCommunityPatterns());
@@ -110,10 +128,12 @@ export default function Community({
 
   useEffect(() => {
     const onPop = () => {
-      const { qaId, workId } = syncFromPath(window.location.pathname);
+      const { qaId, workId, authorHandle: nextAuthor } = syncFromPath(window.location.pathname);
       setSelectedQaId(qaId);
       setSelectedWorkId(workId);
+      setAuthorHandle(nextAuthor);
       if (qaId) setActiveTab("qa");
+      setFilterCloseSignal((n) => n + 1);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
@@ -127,35 +147,48 @@ export default function Community({
   };
 
   const closeQa = () => {
-    if (qaIdFromPath(window.location.pathname)) {
-      window.history.back();
-      return;
-    }
-    setSelectedQaId(null);
+    goBack("/community");
   };
 
   const openWork = (pattern: CommunityPattern) => {
     setSelectedWorkId(pattern.id);
     setSelectedQaId(null);
+    setAuthorHandle(null);
+    setFilterCloseSignal((n) => n + 1);
     window.history.pushState({}, "", communityPostPath(pattern.id));
   };
 
   const closeWork = () => {
-    if (workIdFromPath(window.location.pathname)) {
-      window.history.back();
-      return;
-    }
+    goBack("/community");
+  };
+
+  const openAuthor = (pattern: CommunityPattern) => {
+    const handle = handleFromAuthor(pattern.author);
+    setAuthorHandle(handle);
     setSelectedWorkId(null);
+    setSelectedQaId(null);
+    setFilterCloseSignal((n) => n + 1);
+    window.history.pushState({}, "", appPath(`/community/author/${encodeURIComponent(handle)}`));
   };
 
   const handleTabChange = (tabId: CommunityCategory) => {
     setActiveTab(tabId);
     setSelectedQaId(null);
     setSelectedWorkId(null);
+    setAuthorHandle(null);
+    setFilterCloseSignal((n) => n + 1);
     if (routePath(window.location.pathname) !== "/community") {
       window.history.replaceState({}, "", appPath("/community"));
     }
   };
+
+  useEffect(() => {
+    const attendId = attendIdFromPath(window.location.pathname);
+    if (!attendId) return;
+    const added = checkInMeetup(attendId);
+    setAttendNotice(added ? t("community.attendOk") : t("community.attendDup"));
+    window.history.replaceState({}, "", appPath("/community"));
+  }, [t]);
 
   const filtered = useMemo(() => {
     if (activeTab === "qa" || activeTab === "offline") return [];
@@ -190,6 +223,17 @@ export default function Community({
   const selectedPost = selectedQaId ? getQaPost(selectedQaId) : null;
   const selectedWork = selectedWorkId ? getCommunityPattern(selectedWorkId) : null;
 
+  if (authorHandle) {
+    return (
+      <AuthorProfilePage
+        handle={authorHandle}
+        onBack={() => goBack("/community")}
+        onImportToEditor={onImportToEditor}
+        onOpenFinished={openWork}
+      />
+    );
+  }
+
   if (selectedPost) {
     return <QaDetail post={selectedPost} onBack={closeQa} />;
   }
@@ -217,10 +261,13 @@ export default function Community({
 
   return (
     <div className="relative pb-24">
-      <section className="px-5 pt-8 md:px-8">
-        <div className="mx-auto max-w-6xl">
+      {attendNotice ? (
+        <p className="page-shell pt-4 font-sans text-sm font-medium text-coral">{attendNotice}</p>
+      ) : null}
+      <section className="pt-8">
+        <div className="page-shell">
           <WelcomeBanner
-            chip="LOUNGE"
+            chip={t("community.loungeChip")}
             title={t("community.heroTitle")}
             subtitle={t("community.heroSubtitle")}
             image={TTEUNI_IMAGES.community}
@@ -228,7 +275,7 @@ export default function Community({
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 pt-8 md:px-8">
+      <section className="page-shell pt-8">
         <div className="flex flex-wrap items-center gap-2">
           {COMMUNITY_TABS.map((tab) => (
             <button
@@ -243,7 +290,7 @@ export default function Community({
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-8 md:px-8">
+      <section className="page-shell py-8">
         {activeTab === "qa" ? (
           <QaList posts={QA_POSTS} onSelect={openQa} />
         ) : activeTab === "offline" ? (
@@ -257,10 +304,11 @@ export default function Community({
                 filters={loungeFilters}
                 resultCount={filtered.length}
                 onChange={setLoungeFilters}
+                closeSignal={filterCloseSignal}
               />
             </div>
             {filtered.length === 0 ? (
-              <div className="rounded-2xl bg-gray-50 p-12 text-center">
+              <div className="rounded-xl bg-gray-50 p-12 text-center">
                 <p className="font-sans text-xl font-bold text-gray-900">
                   {t("community.noMatchTitle")}
                 </p>
@@ -278,22 +326,14 @@ export default function Community({
                 <div
                   className={
                     activeTab === "showcase"
-                      ? "mx-auto grid max-w-3xl grid-cols-1 md:max-w-none md:grid-cols-2 md:gap-8"
+                      ? "mx-auto grid w-full grid-cols-1 md:grid-cols-2 md:gap-8"
                       : activeTab === "best"
                         ? "grid grid-cols-1 gap-4 md:grid-cols-3"
                         : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
                   }
                 >
-                  <AnimatePresence mode="popLayout">
                     {filtered.map((pattern, index) => (
-                      <motion.div
-                        key={pattern.id}
-                        layout
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.96 }}
-                        transition={{ duration: 0.28, ease: "easeOut" }}
-                      >
+                      <div key={pattern.id}>
                         {activeTab === "showcase" ? (
                           <ShowcaseFeedCard
                             pattern={pattern}
@@ -306,11 +346,11 @@ export default function Community({
                             rank={activeTab === "best" ? index + 1 : undefined}
                             onImport={onImportToEditor}
                             onOpenFinished={openWork}
+                            onOpenAuthor={openAuthor}
                           />
                         )}
-                      </motion.div>
+                      </div>
                     ))}
-                  </AnimatePresence>
                 </div>
               </>
             )}

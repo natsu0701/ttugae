@@ -2,11 +2,15 @@
   "nav": {
     "brand": "뜨개러투게더",
     "home": "홈",
-    "community": "커뮤니티",
+    "community": "뜨개라운지",
     "startEditor": "도안 그리기",
     "login": "로그인",
     "logout": "로그아웃",
-    "mypageAria": "마이페이지"
+    "mypage": "마이페이지",
+    "mypageAria": "마이페이지",
+    "profileMenu": "프로필 메뉴",
+    "addAccount": "계정 추가",
+    "switchAccount": "계정 전환"
   },
   "mypage": {
     "title": "마이페이지",
@@ -20,13 +24,15 @@
       "stats": "통계",
       "settings": "설정",
       "summary": "활동 요약",
-      "meetups": "내가 예약한 뜨개 모임",
-      "statsDetail": "상세 통계"
+      "meetups": "뜨개 모임",
+      "statsDetail": "활동 요약",
+      "gauge": "내 게이지(Gauge)"
     },
     "account": {
       "section": "계정",
       "manage": "내 계정 관리",
       "handle": "아이디",
+      "handleInvalid": "아이디는 영문 알파벳만 사용할 수 있습니다.",
       "addAccount": "계정 추가",
       "logout": "로그아웃",
       "withdraw": "계정 탈퇴",
@@ -56,8 +62,9 @@
       "regionHint": "구/동 단위로 저장하면 라운지 지도와 소모임 피드가 거주지 근처부터 정렬됩니다.",
       "regionLabel": "구 / 동",
       "regionPlaceholder": "서울시 마포구 망원동",
-      "gaugeTitle": "내 게이지",
+      "gaugeTitle": "내 게이지(Gauge)",
       "gaugeHint": "10x10cm 편물의 세탁 전후 코·단 수를 저장하면 에디터 시작 코 수에 연동됩니다.",
+      "publicToggle": "프로필 전체 공개",
       "gaugeBeforeSts": "세탁 전 코",
       "gaugeBeforeRows": "세탁 전 단",
       "gaugeAfterSts": "세탁 후 코",
@@ -76,7 +83,7 @@
     "finishedTitle": "내 완성작",
     "likedTitle": "좋아요 누른 도안",
     "likedEmptyTitle": "아직 좋아요한 도안이 없어요",
-    "likedEmptyDesc": "커뮤니티에서 마음에 드는 도안에 하트를 눌러 보세요.",
+    "likedEmptyDesc": "뜨개라운지에서 마음에 드는 도안에 하트를 눌러 보세요.",
     "savedTitle": "저장한 도안",
     "savedEmptyTitle": "저장한 도안이 없어요",
     "savedEmptyDesc": "책갈피 버튼으로 나중에 볼 도안을 모아 보세요.",
@@ -104,12 +111,12 @@
       "yarnAdd": "실 추가",
       "yarnAdded": "실 장고에 추가했어요.",
       "needleTitle": "바늘 창고",
-      "needleHint": "보유 바늘을 등록하면 커뮤니티에서 지금 바로 뜰 수 있는 도안만 걸러 볼 수 있어요.",
+      "needleHint": "보유 바늘을 등록하면 뜨개라운지에서 지금 바로 뜰 수 있는 도안만 걸러 볼 수 있어요.",
       "needleEmpty": "아직 등록된 바늘이 없어요.",
       "needleAdd": "바늘 추가",
       "needleAdded": "바늘 창고에 추가했어요.",
       "tasteTitle": "숙련도 및 취향",
-      "tasteHint": "선택한 스타일은 커뮤니티 전체 탭 상단에 추천 도안으로 먼저 보여집니다.",
+      "tasteHint": "선택한 스타일은 뜨개라운지 전체 탭 상단에 추천 도안으로 먼저 보여집니다.",
       "skillLabel": "숙련도",
       "styleLabel": "선호 스타일",
       "skillBeginner": "입문",
@@ -121,8 +128,9 @@
       "styleAmigurumi": "아미구루미",
       "styleSimple": "심플 데일리"
     },
-    "meetupsTitle": "내가 예약한 뜨개 모임",
-    "meetupsSubtitle": "라운지에서 참가한 소모임이 새로고침 없이 여기에 바로 펼쳐집니다.",
+    "meetupsTitle": "뜨개 모임",
+    "meetupsSubtitle": "뜨개라운지에서 참가한 소모임이 여기에 펼쳐집니다.",
+    "meetupsEmptyDesc": "뜨개라운지의 오프라인 모임 및 행사 탭에서 참가 신청하기를 눌러 보세요.",
     "meetupsEmptyTitle": "아직 예약한 모임이 없어요",
     "meetupsEmptyDesc": "라운지의 오프라인 모임 및 행사 탭에서 참가 신청하기를 눌러 보세요.",
     "meetupsTickets": "현장 참여 증적",
@@ -130,7 +138,51 @@
     "meetupsGoods": "굿즈 포트폴리오: {{list}}",
     "meetupsCapacity": "신청 정원 {{current}} / {{max}}명",
     "meetupsJoined": "정원 {{max}}명 중 {{joined}}명 참여 중",
-    "badgesMine": "내 배지",
+    "badgesOwned": "보유",
+    "badgesUnowned": "미보유",
+    "badgeVault": "배지 보관함",
+    "timeTitle": "누적 뜨개 시간",
+    "timeValue": "{{hours}}시간 {{mins}}분",
+    "level": {
+      "guideTitle": "등급 안내",
+      "criteria": "산정 기준: 완성 코 수 + 작품 수 + 모임 출석",
+      "period": "산정 기간: 최근 {{days}}일",
+      "score": "등급 점수: {{score}}점",
+      "next": "다음 레벨까지 {{remaining}}점 남음",
+      "max": "최고 레벨입니다."
+    },
+    "follow": {
+      "following": "팔로잉",
+      "followers": "팔로워",
+      "followingCount": "팔로잉 {{count}}",
+      "followerCount": "팔로워 {{count}}",
+      "searchPh": "아이디(영문) 또는 닉네임 검색"
+    },
+    "region": {
+      "province": "도 / 시",
+      "city": "시 / 구",
+      "dong": "동",
+      "searchPh": "동 이름으로 검색"
+    },
+    "gauge": {
+      "targetCm": "목표 폭 (cm)",
+      "resultTitle": "추천 코·단",
+      "resultLine": "{{cm}}cm 기준 약 {{sts}}코, {{rows}}단",
+      "ratioLine": "수축 비율 코 {{sts}} / 단 {{rows}}"
+    },
+    "calendar": {
+      "title": "뜨개 캘린더",
+      "legendFinished": "완성일: 작품 완성 기록",
+      "legendBadge": "배지 획득일",
+      "legendMeetup": "참여 모임 날짜"
+    },
+    "meetups": {
+      "qrHost": "참가자 인증용 QR",
+      "checkIn": "출석 인증",
+      "checkedIn": "출석 완료",
+      "diaryTitle": "모임 활동 기록",
+      "diarySave": "기록 남기기"
+    },
     "badgesAll": "전체 배지",
     "badgesBeginner": "초급 업적",
     "badgesMid": "중급 업적",
@@ -186,7 +238,8 @@
   },
   "community": {
     "heroTitle": "뜨개러들의 영감 보관소",
-    "heroSubtitle": "다른 뜨개러들이 만든 도안을 구경하고, 내 에디터로 가져와 직접 떠보세요!",
+    "heroSubtitle": "다른 뜨개러들이 만든 도안을 구경하고, 내 에디터로 가져와 직접 떠보세요.",
+    "loungeChip": "TTEUGAE LOUNGE",
     "tabs": {
       "all": "전체",
       "best": "베스트 도안",
@@ -209,7 +262,7 @@
     "stitchCount": "{{cols}}×{{rows}} 코",
     "rank": "{{rank}}위",
     "qaEmptyTitle": "등록된 질문이 없어요",
-    "qaEmptyDesc": "궁금한 점을 커뮤니티에 올려 보세요.",
+    "qaEmptyDesc": "궁금한 점을 뜨개라운지에 올려 보세요.",
     "commentCount": "댓글 {{count}}",
     "noMatchTitle": "일치하는 뜨개 조건의 완성 도안이 아직 없습니다.",
     "noMatchDesc": "상단의 상세 필터를 끄거나 조건을 초기화해 더 넓은 작품을 살펴보세요.",
@@ -227,7 +280,7 @@
     "aiPreview": "AI 예상 이미지",
     "commentPlaceholder": "응원의 말을 남겨 주세요",
     "qaReplyPlaceholder": "도움이 되는 답변을 남겨 주세요",
-    "filterSearch": "도안 검색",
+    "filterSearch": "도안 또는 작가 검색",
     "filterAria": "필터",
     "filterLevel": "나의 뜨개 실력",
     "filterTool": "사용 도구 (대바늘/코바늘)",
@@ -273,8 +326,20 @@
     "writeAnswer": "답변 작성",
     "remixTitle": "이 도안의 리믹스 계보",
     "remixHint": "원본부터 현재 작품까지, 포크(Fork)와 변형이 이어진 흐름이에요.",
-    "shareToCommunity": "커뮤니티에 공유하기",
-    "patternPreview": "도안 미리보기"
+    "shareToCommunity": "뜨개라운지에 공유하기",
+    "patternPreview": "도안 미리보기",
+    "searchResultCount": "검색 결과 {{count}}개",
+    "searchIncludesAuthor": "도안 제목과 작가 닉네임을 함께 검색합니다.",
+    "follow": "구독",
+    "unfollow": "구독 취소",
+    "followCounts": "구독 {{following}} · 구독자 {{followers}}",
+    "authorWorks": "이 작가의 작품",
+    "authorEmpty": "아직 공개된 작품이 없습니다.",
+    "authorMissing": "작가를 찾을 수 없습니다.",
+    "commentAs": "작성 계정 @{{handle}}",
+    "commentNeedLogin": "댓글을 쓰려면 로그인해 주세요.",
+    "attendOk": "출석이 인증되었습니다.",
+    "attendDup": "이미 출석 인증된 모임입니다."
   },
   "editor": {
     "defaultTitle": "새 도안",
@@ -291,7 +356,7 @@
     "drawingTools": "그리기 도구",
     "symbolPalette": "기호 팔레트",
     "castOnButton": "+ 코 만들기",
-    "gaugeButton": "게이지 입력",
+    "gaugeButton": "게이지(Gauge) 입력",
     "yarnColors": "실 색상",
     "addYarn": "+ 실 추가하기",
     "usedColors": "Selection Colors",
@@ -307,7 +372,7 @@
     "preview3dError": "스웨터 모델을 불러오지 못했어요. public/models/sweater.glb 파일을 확인해 주세요",
     "preview3dReset": "정면으로 되돌리기",
     "stitchCheckTitle": "도안을 한 번만 더 확인해요",
-    "stitchCheckMessage": "앗! {{row}}단의 코 수가 맞지 않아요. 도안을 다시 확인해 주세요 🧶",
+    "stitchCheckMessage": "앗! {{row}}단의 코 수가 맞지 않아요. 도안을 다시 확인해 주세요.",
     "previewViewMode": "미리보기 보기 방식",
     "facesTitle": "앞면과 뒷면",
     "facesSame": "같게",
@@ -540,13 +605,13 @@
     "heroLead": "복잡한 도안은 뜨니에게 맡기고,",
     "heroLine1": "뜨개질에만",
     "heroLine2": "집중하세요!",
-    "heroSub": "에디터부터 AI 챗봇, 커뮤니티까지 뜨개질의 모든 순간을 한곳에서.",
+    "heroSub": "에디터부터 AI 챗봇, 뜨개라운지까지 뜨개질의 모든 순간을 한곳에서.",
     "startDrawing": "도안 그리기",
     "feature1Line1": "클릭 몇 번으로",
     "feature1Line2": "완성되는 나만의 도안",
     "feature1Body": "격자 위에 기호와 색을 놓고, 실수는 뜨니가 체크해 줘요.",
     "feature2Title": "에디터 중심의 지능형 뜨개 통합 플랫폼",
-    "feature2Body": "수작업으로 복잡하게 계산하던 준비 과정을 웹 스마트 에디터와 커뮤니티로 통합하여, 창작의 몰입감과 즐거움을 극대화합니다.",
+    "feature2Body": "수작업으로 복잡하게 계산하던 준비 과정을 웹 스마트 에디터와 뜨개라운지로 통합하여, 창작의 몰입감과 즐거움을 극대화합니다.",
     "promoLine1": "실전 뜨개질은 뜨니와 함께!",
     "promoLine2": "AR 내비게이션 앱",
     "promoBody1": "웹에서 그린 도안을 앱으로 연동해 보세요.",
@@ -566,9 +631,9 @@
     "tabConvertTitle": "서술형 변환",
     "tabConvertSub": "자연어 도안 생성",
     "tabConvertDesc": "복잡한 격자 그림 도안을 읽는 피로감을 해소하기 위해, 에디터에 그려진 기호 레이아웃을 '1단: 겉뜨기 2코, 안뜨기 1코'와 같이 자연스러운 서술형 한글 텍스트 도안으로 1초 만에 자동 번역하여 출력합니다.",
-    "tabCommunityTitle": "커뮤니티",
-    "tabCommunitySub": "라운지 도안 공유",
-    "tabCommunityDesc": "내가 설계하고 완성한 정성 어린 도안 카드를 포장하여 라운지 피드에 자랑해 보세요. 다른 유저들이 올린 완성작 실물 사진을 마우스로 확인하고, 클릭 한 번으로 내 도안 작업실 에디터 창으로 즉시 가져와 수정 및 배포할 수 있습니다."
+    "tabCommunityTitle": "뜨개라운지",
+    "tabCommunitySub": "뜨개라운지 도안 공유",
+    "tabCommunityDesc": "내가 설계하고 완성한 정성 어린 도안 카드를 포장하여 뜨개라운지 피드에 자랑해 보세요. 다른 유저들이 올린 완성작 실물 사진을 마우스로 확인하고, 클릭 한 번으로 내 도안 작업실 에디터 창으로 즉시 가져와 수정 및 배포할 수 있습니다."
   },
   "createPost": {
     "editTitle": "게시물 수정",
@@ -1027,5 +1092,26 @@
         "fiber": "울·아크릴 혼방"
       }
     }
+  },
+  "report": {
+    "title": "신고하기",
+    "hint": "사유를 선택해 주세요. 신고 내용은 검토 후 처리됩니다.",
+    "action": "신고",
+    "submit": "신고 접수",
+    "submitted": "신고가 접수되었습니다.",
+    "detailPh": "추가 설명을 적어 주세요.",
+    "reasons": {
+      "spam": "스팸 / 광고",
+      "abuse": "욕설 / 비방",
+      "copyright": "저작권 침해",
+      "privacy": "개인정보 노출",
+      "other": "기타"
+    }
+  },
+  "unsaved": {
+    "title": "변경 사항을 저장하시겠습니까?",
+    "body": "저장하지 않으면 수정한 프로필 내용이 사라집니다.",
+    "save": "저장",
+    "discard": "저장하지 않음"
   }
 }

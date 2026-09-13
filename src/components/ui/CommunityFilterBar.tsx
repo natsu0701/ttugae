@@ -1,6 +1,5 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   CheckFillIcon,
   FilterFillIcon,
@@ -8,13 +7,8 @@ import {
 } from "../icons/FillIcons.tsx";
 import {
   DEFAULT_LOUNGE_FILTERS,
-  filtersFromKnittingBag,
   type LoungeFilters,
 } from "../../data/loungeFilters.ts";
-import {
-  loadNeedleInventory,
-  loadYarnInventory,
-} from "../../utils/personalizationStorage.ts";
 
 type FilterOption = { id: string; labelKey: string };
 
@@ -31,25 +25,11 @@ const TOOL_FILTERS: FilterOption[] = [
   { id: "crochet", labelKey: "community.filterToolCrochet" },
 ];
 
-const CATEGORY_FILTERS: FilterOption[] = [
-  { id: "all", labelKey: "community.filterCatAll" },
-  { id: "clothing", labelKey: "community.filterCatClothes" },
-  { id: "accessory", labelKey: "community.filterCatAcc" },
-  { id: "household", labelKey: "community.filterCatHome" },
-];
-
-const MATERIAL_FILTERS: FilterOption[] = [
-  { id: "all", labelKey: "community.filterMatAll" },
-  { id: "merino", labelKey: "community.filterMatMerino" },
-  { id: "cotton", labelKey: "community.filterMatCotton" },
-  { id: "mohair", labelKey: "community.filterMatMohair" },
-  { id: "acrylic", labelKey: "community.filterMatAcrylic" },
-];
-
 type CommunityFilterBarProps = {
   filters: LoungeFilters;
   resultCount: number;
   onChange: (next: LoungeFilters) => void;
+  closeSignal?: number;
 };
 
 function FilterColumn({
@@ -77,7 +57,7 @@ function FilterColumn({
               key={opt.id}
               type="button"
               onClick={() => onSelect(opt.id)}
-              className={`flex items-center justify-between rounded-xl px-3.5 py-2 text-left font-sans text-xs transition-colors ${
+              className={`flex items-center justify-between rounded-lg px-3.5 py-2 text-left font-sans text-xs transition-colors ${
                 active
                   ? "bg-gray-900 font-medium text-white"
                   : "bg-transparent font-normal text-gray-600 hover:bg-gray-50"
@@ -97,35 +77,19 @@ function CommunityFilterBar({
   filters,
   resultCount,
   onChange,
+  closeSignal = 0,
 }: CommunityFilterBarProps) {
   const { t } = useTranslation();
   const [panelOpen, setPanelOpen] = useState(false);
-  const hasActive =
-    filters.level !== "all" ||
-    filters.tool !== "all" ||
-    filters.itemKind !== "all" ||
-    filters.material !== "all" ||
-    filters.myHardwareOnly;
+  const hasActive = filters.level !== "all" || filters.tool !== "all";
+  const searching = filters.query.trim().length > 0;
 
-  const bagHint = () => {
-    const yarns = loadYarnInventory().length;
-    const needles = loadNeedleInventory().length;
-    if (yarns === 0 && needles === 0) {
-      return t("community.filterBagEmpty");
-    }
-    return t("community.filterBagHint", { yarns, needles });
-  };
+  useEffect(() => {
+    setPanelOpen(false);
+  }, [closeSignal]);
 
   const patch = (partial: Partial<LoungeFilters>) => {
     onChange({ ...filters, ...partial });
-  };
-
-  const handleHardwareToggle = () => {
-    if (filters.myHardwareOnly) {
-      patch({ myHardwareOnly: false });
-      return;
-    }
-    onChange({ ...filtersFromKnittingBag(), query: filters.query });
   };
 
   return (
@@ -155,91 +119,43 @@ function CommunityFilterBar({
           <FilterFillIcon className="h-4 w-4" />
         </button>
       </div>
+      <p className="mt-3 font-sans text-sm font-semibold text-stone-800">
+        {t("community.searchResultCount", { count: resultCount })}
+      </p>
+      {searching ? (
+        <p className="mt-1 font-sans text-xs text-stone-500">{t("community.searchIncludesAuthor")}</p>
+      ) : null}
 
-      <AnimatePresence>
-        {panelOpen ? (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="mt-3 rounded-2xl border border-gray-200 bg-white p-5">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={handleHardwareToggle}
-                  className={`flex items-center gap-2 rounded-full border px-3.5 py-2 font-sans text-xs font-medium transition-colors ${
-                    filters.myHardwareOnly
-                      ? "border-gray-900 bg-gray-900 text-white"
-                      : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <span
-                    className={`flex h-3.5 w-3.5 items-center justify-center rounded-full border ${
-                      filters.myHardwareOnly
-                        ? "border-white bg-white text-gray-900"
-                        : "border-gray-300 bg-gray-100 text-transparent"
-                    }`}
-                  >
-                    <CheckFillIcon className="h-2 w-2" />
-                  </span>
-                  {t("community.filterBagToggle")}
-                </button>
-                {hasActive ? (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onChange({ ...DEFAULT_LOUNGE_FILTERS, query: filters.query })
-                    }
-                    className="flex items-center gap-1 rounded-full px-3 py-2 font-sans text-xs font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-                  >
-                    <RefreshFillIcon className="h-3 w-3" />
-                    {t("community.filterReset")}
-                  </button>
-                ) : null}
-              </div>
-
-              {filters.myHardwareOnly ? (
-                <p className="mb-4 font-seoyun text-[11px] font-normal text-gray-500">
-                  {bagHint()}
-                </p>
-              ) : null}
-
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                <FilterColumn
-                  label={t("community.filterLevel")}
-                  options={LEVEL_FILTERS}
-                  value={filters.level}
-                  onSelect={(id) => patch({ level: id as LoungeFilters["level"] })}
-                />
-                <FilterColumn
-                  label={t("community.filterTool")}
-                  options={TOOL_FILTERS}
-                  value={filters.tool}
-                  onSelect={(id) => patch({ tool: id as LoungeFilters["tool"] })}
-                />
-                <FilterColumn
-                  label={t("community.filterMaterial")}
-                  options={MATERIAL_FILTERS}
-                  value={filters.material}
-                  onSelect={(id) => patch({ material: id as LoungeFilters["material"] })}
-                />
-                <FilterColumn
-                  label={t("community.filterCategory")}
-                  options={CATEGORY_FILTERS}
-                  value={filters.itemKind}
-                  onSelect={(id) => patch({ itemKind: id as LoungeFilters["itemKind"] })}
-                />
-              </div>
-              <p className="mt-4 font-sans text-[11px] font-normal text-gray-400">
-                {t("community.filterResultCount", { count: resultCount })}
-              </p>
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      {panelOpen ? (
+        <div className="mt-3 rounded-xl border border-gray-200 bg-white p-5">
+          <div className="mb-4 flex justify-end">
+            {hasActive ? (
+              <button
+                type="button"
+                onClick={() => onChange({ ...DEFAULT_LOUNGE_FILTERS, query: filters.query })}
+                className="flex items-center gap-1 rounded-full px-3 py-2 font-sans text-xs font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+              >
+                <RefreshFillIcon className="h-3 w-3" />
+                {t("community.filterReset")}
+              </button>
+            ) : null}
+          </div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <FilterColumn
+              label={t("community.filterLevel")}
+              options={LEVEL_FILTERS}
+              value={filters.level}
+              onSelect={(id) => patch({ level: id as LoungeFilters["level"] })}
+            />
+            <FilterColumn
+              label={t("community.filterTool")}
+              options={TOOL_FILTERS}
+              value={filters.tool}
+              onSelect={(id) => patch({ tool: id as LoungeFilters["tool"] })}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

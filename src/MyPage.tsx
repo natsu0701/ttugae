@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PatternCard from "./components/community/PatternCard.tsx";
 import MyPatternsPanel from "./components/mypage/MyPatternsPanel.tsx";
@@ -8,13 +8,17 @@ import SettingsPanel from "./components/mypage/SettingsPanel.tsx";
 import ProfileBadgeCustomizer from "./components/ui/ProfileBadgeCustomizer.tsx";
 import SmoothInput from "./components/ui/SmoothInput.tsx";
 import KnitAchievementDashboard from "./components/mypage/KnitAchievementDashboard.tsx";
-import StatsDetailPanel from "./components/mypage/StatsDetailPanel.tsx";
+import GaugeCalculator from "./components/mypage/GaugeCalculator.tsx";
+import KnitCalendar from "./components/mypage/KnitCalendar.tsx";
+import RegionPicker from "./components/mypage/RegionPicker.tsx";
 import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
+import Button from "./components/ui/Button.tsx";
 import {
   buildBadgeUnlocks,
   computeAchievementStats,
 } from "./components/mypage/achievementStats.ts";
 import { useCommunityActions } from "./context/CommunityActionsContext.tsx";
+import { useUnsavedChanges } from "./context/UnsavedChangesContext.tsx";
 import { getCommunityPattern } from "./data/communityPatterns.ts";
 import type { StoredPattern } from "./types/storedPattern.ts";
 import type { CommunityPattern } from "./data/communityPatterns.ts";
@@ -23,18 +27,18 @@ import {
   DEFAULT_NICKNAME,
   clearProfileAvatar,
   loadProfile,
+  saveProfileAccount,
   saveProfileAvatar,
 } from "./utils/profileStorage.ts";
+import { isValidHandle, updateActiveAccount } from "./utils/accountStorage.ts";
 import {
   loadGaugeProfile,
   saveGaugeProfile,
 } from "./utils/personalizationStorage.ts";
 import {
   loadActivityRegion,
-  saveActivityArea,
   saveActivityRegion,
 } from "./utils/offlineActivityStorage.ts";
-import { ACTIVITY_AREAS, parseActivityRegion } from "./data/offlineCommunity.ts";
 import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
 import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
 import {
@@ -43,7 +47,6 @@ import {
   ImageFillIcon,
   HeartFillIcon,
   BookmarkFillIcon,
-  StatsFillIcon,
   SettingsFillIcon,
   DashboardFillIcon,
   PinFillIcon,
@@ -51,28 +54,35 @@ import {
   UserPlusFillIcon,
   LogoutFillIcon,
   WithdrawFillIcon,
+  PencilFillIcon,
+  CompassFillIcon,
 } from "./components/icons/FillIcons.tsx";
+import { listFollowers, listFollowing } from "./utils/followStorage.ts";
+import { searchLoungeAuthors } from "./data/loungeAuthors.ts";
+import { currentUserHandle } from "./utils/identity.ts";
+import { resolveKnitLevel, LEVEL_PERIOD_DAYS } from "./utils/knitLevel.ts";
+import { loadKnitCalendarEvents, loadKnitMinutes } from "./utils/knittingLogStorage.ts";
 
 export type MyPageTab =
   | "profile"
   | "summary"
   | "meetups"
+  | "gauge"
   | "patterns"
   | "finished"
   | "liked"
   | "saved"
-  | "stats"
   | "settings";
 
 const NAV_TABS: { id: MyPageTab; Icon: typeof ProfileFillIcon; labelKey: string }[] = [
   { id: "profile", Icon: ProfileFillIcon, labelKey: "mypage.tabs.profile" },
   { id: "summary", Icon: DashboardFillIcon, labelKey: "mypage.tabs.summary" },
   { id: "meetups", Icon: PinFillIcon, labelKey: "mypage.tabs.meetups" },
+  { id: "gauge", Icon: CompassFillIcon, labelKey: "mypage.tabs.gauge" },
   { id: "patterns", Icon: PatternsFillIcon, labelKey: "mypage.tabs.patterns" },
   { id: "finished", Icon: ImageFillIcon, labelKey: "mypage.tabs.finished" },
   { id: "liked", Icon: HeartFillIcon, labelKey: "mypage.tabs.liked" },
   { id: "saved", Icon: BookmarkFillIcon, labelKey: "mypage.tabs.saved" },
-  { id: "stats", Icon: StatsFillIcon, labelKey: "mypage.tabs.statsDetail" },
   { id: "settings", Icon: SettingsFillIcon, labelKey: "mypage.tabs.settings" },
 ];
 
@@ -146,37 +156,59 @@ function ProfileInfoPanel({
   patterns: StoredPattern[];
 }) {
   const { t } = useTranslation();
+  const { setDirty, registerSaver } = useUnsavedChanges();
   const stored = loadProfile();
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(() => stored.avatarUrl);
-  const [gauge, setGauge] = useState(loadCompactGauge);
+  const [nickname, setNickname] = useState(stored.nickname || DEFAULT_NICKNAME);
+  const [handle, setHandle] = useState(stored.handle || DEFAULT_HANDLE);
+  const [handleError, setHandleError] = useState("");
   const [activityRegion, setActivityRegion] = useState(loadActivityRegion);
+  const [isPublic, setIsPublic] = useState(stored.isPublic !== false);
+  const [followOpen, setFollowOpen] = useState<"following" | "followers" | null>(null);
+  const [followQuery, setFollowQuery] = useState("");
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const achievementStats = useMemo(() => computeAchievementStats(patterns), [patterns]);
   const badgeUnlocks = useMemo(() => buildBadgeUnlocks(achievementStats), [achievementStats]);
-  const nickname = stored.nickname || DEFAULT_NICKNAME;
-  const handle = stored.handle || DEFAULT_HANDLE;
+  const level = resolveKnitLevel(achievementStats.totalStitches);
+  const following = listFollowing();
+  const followers = listFollowers();
+  const followHits = searchLoungeAuthors(followQuery);
+
+  const markDirty = () => setDirty(true);
+
+  const saveAll = () => {
+    if (!isValidHandle(handle)) {
+      setHandleError(t("mypage.account.handleInvalid"));
+      return;
+    }
+    setHandleError("");
+    saveProfileAccount({ nickname, handle, isPublic, region: activityRegion });
+    saveActivityRegion(activityRegion);
+    updateActiveAccount({ nickname, handle, avatarUrl });
+    if (avatarUrl) saveProfileAvatar(avatarUrl);
+    else clearProfileAvatar();
+    setDirty(false);
+  };
+
+  useEffect(() => {
+    registerSaver(saveAll);
+  });
 
   const handleAvatarChange = (file: File | undefined) => {
     if (!file) return;
     const url = URL.createObjectURL(file);
     setAvatarUrl(url);
-    saveProfileAvatar(url);
-  };
-
-  const persistGauge = (next: typeof gauge) => {
-    saveGaugeProfile(next);
+    markDirty();
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.profile.title")}</h2>
-        <p className="mt-1 font-seoyun text-sm font-normal text-stone-500">
-          {t("mypage.profile.profileHint")}
-        </p>
+        <h2 className="text-title text-gray-900">{t("mypage.profile.title")}</h2>
+        <p className="mt-1 font-seoyun text-sm text-stone-500">{t("mypage.profile.profileHint")}</p>
       </div>
 
-      <div className="rounded-[32px] border border-stone-200/40 bg-white p-6 shadow-[0_8px_30px_rgb(252,95,83,0.02)] md:p-8">
+      <div className="rounded-xl border border-stone-200 bg-white p-6 md:p-8">
         <input
           ref={avatarInputRef}
           type="file"
@@ -184,108 +216,163 @@ function ProfileInfoPanel({
           className="hidden"
           onChange={(e) => handleAvatarChange(e.target.files?.[0])}
         />
+        <div className="flex flex-col items-center">
+          <div className="relative h-28 w-28">
+            <img
+              src={avatarUrl || TTEUNI_IMAGES.chatProfile}
+              alt=""
+              className="h-full w-full rounded-full object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => avatarInputRef.current?.click()}
+              className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-coral text-white shadow"
+              aria-label={t("mypage.profile.changeAvatar")}
+            >
+              <PencilFillIcon className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            <span className="font-sans text-lg font-bold text-stone-900">{nickname}</span>
+            <span className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-[11px] font-bold text-white">
+              Lv.{level.level}
+            </span>
+          </div>
+          <p className="mt-1 font-sans text-sm text-stone-500">@{handle}</p>
+          <div className="mt-4 w-full max-w-xl rounded-lg bg-stone-50 p-4 text-left">
+            <p className="font-sans text-xs font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
+            <ul className="mt-2 space-y-1 font-sans text-xs text-stone-500">
+              <li>{t("mypage.level.criteria")}</li>
+              <li>{t("mypage.level.period", { days: LEVEL_PERIOD_DAYS })}</li>
+              <li>{t("mypage.level.score", { score: level.score.toLocaleString() })}</li>
+              <li>
+                {level.nextScore
+                  ? t("mypage.level.next", { remaining: level.remaining.toLocaleString() })
+                  : t("mypage.level.max")}
+              </li>
+            </ul>
+          </div>
+          <div className="mt-4 flex gap-4 text-sm">
+            <button type="button" className="hover:text-coral" onClick={() => setFollowOpen("following")}>
+              {t("mypage.follow.followingCount", { count: following.length })}
+            </button>
+            <button type="button" className="hover:text-coral" onClick={() => setFollowOpen("followers")}>
+              {t("mypage.follow.followerCount", { count: followers.length })}
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <SmoothInput
+            label={t("mypage.profile.nickname")}
+            value={nickname}
+            onChange={(e) => {
+              setNickname(e.target.value);
+              markDirty();
+            }}
+          />
+          <SmoothInput
+            label={t("mypage.account.handle")}
+            value={handle}
+            onChange={(e) => {
+              setHandle(e.target.value);
+              setHandleError(isValidHandle(e.target.value) ? "" : t("mypage.account.handleInvalid"));
+              markDirty();
+            }}
+          />
+        </div>
+        {handleError ? <p className="mt-2 text-xs text-coral">{handleError}</p> : null}
+
+        <div className="mt-8">
+          <h3 className="font-sans text-sm font-bold">{t("mypage.profile.regionTitle")}</h3>
+          <p className="mt-1 font-seoyun text-xs text-stone-500">{t("mypage.profile.regionHint")}</p>
+          <div className="mt-3">
+            <RegionPicker
+              value={activityRegion}
+              onChange={(next) => {
+                setActivityRegion(next);
+                markDirty();
+              }}
+            />
+          </div>
+        </div>
+
+        <label className="mt-6 flex items-center justify-between rounded-lg bg-stone-50 px-4 py-3 text-sm">
+          <span>{t("mypage.profile.publicToggle")}</span>
+          <input
+            type="checkbox"
+            checked={isPublic}
+            onChange={(e) => {
+              setIsPublic(e.target.checked);
+              markDirty();
+            }}
+          />
+        </label>
+
+        <div className="mt-6 flex justify-end">
+          <Button type="button" className="px-5 py-2.5 text-sm" onClick={saveAll}>
+            {t("mypage.profile.save")}
+          </Button>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-stone-200 bg-white p-6 md:p-8">
+        <h3 className="text-title">{t("mypage.badgeVault")}</h3>
         <ProfileBadgeCustomizer
           nickname={nickname}
           handle={handle}
-          subtitle={t("mypage.profile.levelTitle")}
+          subtitle={`Lv.${level.level} ${level.title}`}
           avatarUrl={avatarUrl}
           unlocks={badgeUnlocks}
           onPickAvatar={() => avatarInputRef.current?.click()}
           onResetAvatar={() => {
             setAvatarUrl(undefined);
-            clearProfileAvatar();
+            markDirty();
           }}
         />
-
-        <div className="mt-8 space-y-3 border-t border-stone-100 pt-6">
-          <div>
-            <h3 className="font-sans text-sm font-bold text-gray-900">{t("mypage.profile.regionTitle")}</h3>
-            <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
-              {t("mypage.profile.regionHint")}
-            </p>
-          </div>
-          <SmoothInput
-            label={t("mypage.profile.regionLabel")}
-            value={activityRegion}
-            onChange={(e) => {
-              setActivityRegion(e.target.value);
-              saveActivityRegion(e.target.value);
-            }}
-            placeholder={t("mypage.profile.regionPlaceholder")}
-          />
-          <div className="flex flex-wrap gap-2">
-            {ACTIVITY_AREAS.map((item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() => {
-                  saveActivityArea(item);
-                  setActivityRegion(loadActivityRegion());
-                }}
-                className={`${tabButtonBase} ${tabButtonClass(parseActivityRegion(activityRegion).area === item)}`}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-8 space-y-4 border-t border-stone-100 pt-6">
-          <div>
-            <h3 className="font-sans text-sm font-bold text-gray-900">{t("mypage.profile.gaugeTitle")}</h3>
-            <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
-              {t("mypage.profile.gaugeHint")}
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-3.5">
-            <SmoothInput
-              label={t("mypage.profile.gaugeBeforeSts")}
-              value={gauge.beforeSts}
-              onChange={(e) => {
-                const next = { ...gauge, beforeSts: e.target.value };
-                setGauge(next);
-                persistGauge(next);
-              }}
-              inputMode="numeric"
-              className="h-9 rounded-lg px-3 py-1.5 text-xs"
-            />
-            <SmoothInput
-              label={t("mypage.profile.gaugeBeforeRows")}
-              value={gauge.beforeRows}
-              onChange={(e) => {
-                const next = { ...gauge, beforeRows: e.target.value };
-                setGauge(next);
-                persistGauge(next);
-              }}
-              inputMode="numeric"
-              className="h-9 rounded-lg px-3 py-1.5 text-xs"
-            />
-            <SmoothInput
-              label={t("mypage.profile.gaugeAfterSts")}
-              value={gauge.afterSts}
-              onChange={(e) => {
-                const next = { ...gauge, afterSts: e.target.value };
-                setGauge(next);
-                persistGauge(next);
-              }}
-              inputMode="numeric"
-              className="h-9 rounded-lg px-3 py-1.5 text-xs"
-            />
-            <SmoothInput
-              label={t("mypage.profile.gaugeAfterRows")}
-              value={gauge.afterRows}
-              onChange={(e) => {
-                const next = { ...gauge, afterRows: e.target.value };
-                setGauge(next);
-                persistGauge(next);
-              }}
-              inputMode="numeric"
-              className="h-9 rounded-lg px-3 py-1.5 text-xs"
-            />
-          </div>
-        </div>
       </div>
+
+      {followOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <button type="button" className="absolute inset-0 bg-stone-900/30" onClick={() => setFollowOpen(null)} />
+          <div className="relative w-full max-w-md rounded-xl bg-white p-5">
+            <h3 className="font-sans text-base font-bold">
+              {followOpen === "following" ? t("mypage.follow.following") : t("mypage.follow.followers")}
+            </h3>
+            <input
+              value={followQuery}
+              onChange={(e) => setFollowQuery(e.target.value)}
+              placeholder={t("mypage.follow.searchPh")}
+              className="mt-3 w-full rounded-lg border border-stone-200 px-3 py-2 text-sm"
+            />
+            <ul className="mt-3 max-h-72 space-y-2 overflow-auto">
+              {(followOpen === "following" ? following : followers)
+                .map((id) => searchLoungeAuthors(id)[0] ?? { handle: id, nickname: id, bio: "" })
+                .concat(followHits.filter((a) => a.handle !== currentUserHandle()))
+                .filter((item, index, arr) => arr.findIndex((x) => x.handle === item.handle) === index)
+                .map((author) => (
+                  <li key={author.handle} className="rounded-lg bg-stone-50 px-3 py-2 text-sm">
+                    {author.nickname} @{author.handle}
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </div>
+      ) : null}
     </div>
+  );
+}
+
+function GaugeTab() {
+  const [gauge, setGauge] = useState(loadCompactGauge);
+  return (
+    <GaugeCalculator
+      gauge={gauge}
+      onChange={(next) => {
+        setGauge(next);
+        saveGaugeProfile(next);
+      }}
+    />
   );
 }
 
@@ -375,7 +462,7 @@ export default function MyPage({
 
   return (
     <div className="pb-16">
-      <div className="mx-auto max-w-6xl px-5 pt-8 md:px-8">
+      <div className="page-shell pt-8">
         <WelcomeBanner
           chip="MY PAGE"
           title={t("mypage.title")}
@@ -384,7 +471,7 @@ export default function MyPage({
         />
       </div>
 
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-8 md:flex-row md:px-8">
+      <div className="page-shell flex flex-col gap-8 py-8 md:flex-row">
         <div className="flex shrink-0 flex-col md:w-56">
           <nav className="flex flex-row flex-wrap gap-2 md:flex-col">
             {NAV_TABS.map(({ id, Icon, labelKey }) => {
@@ -409,24 +496,33 @@ export default function MyPage({
           {activeTab === "profile" ? <ProfileInfoPanel patterns={patterns} /> : null}
 
           {activeTab === "summary" ? (
-            <KnitAchievementDashboard
-              totalStitches={achievementStats.totalStitches}
-              completedProjects={achievementStats.completedProjects}
-              activeStreak={achievementStats.activeStreak}
-              hasPackagedPattern={achievementStats.hasPackagedPattern}
-              gaugeConversions={achievementStats.gaugeConversions}
-              colorPaletteUses={achievementStats.colorPaletteUses}
-              hasSharedLoungePost={achievementStats.hasSharedLoungePost}
-              tteuniChats={achievementStats.tteuniChats}
-              activeProjectCount={achievementStats.activeProjectCount}
-              yarnInventoryCount={achievementStats.yarnInventoryCount}
-              marketplaceDownloads={achievementStats.marketplaceDownloads}
-              finishedCount={achievementStats.finishedCount}
-              hasOfflineCheckin={achievementStats.hasOfflineCheckin}
-              offlineCheckins={achievementStats.offlineCheckins}
-              currentProgressRow={achievementStats.currentProgressRow}
-            />
+            <div className="space-y-6">
+              <KnitAchievementDashboard
+                totalStitches={achievementStats.totalStitches}
+                completedProjects={achievementStats.completedProjects}
+                activeStreak={achievementStats.activeStreak}
+                hasPackagedPattern={achievementStats.hasPackagedPattern}
+                gaugeConversions={achievementStats.gaugeConversions}
+                colorPaletteUses={achievementStats.colorPaletteUses}
+                hasSharedLoungePost={achievementStats.hasSharedLoungePost}
+                tteuniChats={achievementStats.tteuniChats}
+                activeProjectCount={achievementStats.activeProjectCount}
+                yarnInventoryCount={achievementStats.yarnInventoryCount}
+                marketplaceDownloads={achievementStats.marketplaceDownloads}
+                finishedCount={achievementStats.finishedCount}
+                hasOfflineCheckin={achievementStats.hasOfflineCheckin}
+                offlineCheckins={achievementStats.offlineCheckins}
+                currentProgressRow={achievementStats.currentProgressRow}
+                knitMinutes={loadKnitMinutes(patterns)}
+                likedCount={likedPatternIds.length}
+                savedCount={savedPatternIds.length}
+                patternCount={patterns.length}
+              />
+              <KnitCalendar events={loadKnitCalendarEvents(patterns)} />
+            </div>
           ) : null}
+
+          {activeTab === "gauge" ? <GaugeTab /> : null}
 
           {activeTab === "meetups" ? <MyMeetupsPanel /> : null}
 
@@ -474,14 +570,6 @@ export default function MyPage({
                 onImport={onImportCommunity}
               />
             </div>
-          ) : null}
-
-          {activeTab === "stats" ? (
-            <StatsDetailPanel
-              patterns={patterns}
-              likedCount={likedPatternIds.length}
-              savedCount={savedPatternIds.length}
-            />
           ) : null}
 
           {activeTab === "settings" ? <SettingsPanel /> : null}

@@ -22,6 +22,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
+  font-size: clamp(14px, 0.28vw + 13.2px, 17px);
 }
 
 body {
@@ -36,6 +37,34 @@ body {
 
 #root {
   overflow-x: clip;
+}
+
+@layer components {
+  .page-shell {
+    width: 100%;
+    max-width: min(100%, 96rem);
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 4rem);
+  }
+
+  .card-surface {
+    border-radius: 0.75rem;
+  }
+
+  .text-display {
+    font-size: clamp(1.375rem, 1.4vw + 0.9rem, 2.5rem);
+    line-height: 1.25;
+  }
+
+  .text-title {
+    font-size: clamp(1.125rem, 0.7vw + 0.95rem, 1.5rem);
+    line-height: 1.35;
+  }
+
+  .text-body {
+    font-size: clamp(0.875rem, 0.2vw + 0.82rem, 1rem);
+    line-height: 1.6;
+  }
 }
 
 @layer base {
@@ -77,6 +106,11 @@ body.yarn-trail-active {
 .yarn-trail-svg {
   overflow: visible;
   mix-blend-mode: normal;
+}
+
+@keyframes tteuni-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .yarn-trail-svg .yarn-segment,

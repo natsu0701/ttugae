@@ -1,4 +1,4 @@
-import { routePath } from "./appPath.ts";
+import { appPath, routePath } from "./appPath.ts";
 
 const RETURN_KEY = "ttugae.nav.return.v1";
 
@@ -69,4 +69,15 @@ export function resolvePathFallback(pathname: string): NavReturn {
     return { view: "mypage", path: "/mypage" };
   }
   return { view: "landing", path: "/" };
+}
+
+export function goBack(fallbackPath = "/"): void {
+  consumeNavReturn();
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+  const target = resolvePathFallback(window.location.pathname);
+  window.history.replaceState({}, "", appPath(target.path ?? fallbackPath));
+  window.dispatchEvent(new PopStateEvent("popstate"));
 }

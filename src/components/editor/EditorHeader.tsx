@@ -2,7 +2,7 @@ import type { ReactNode, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
-import { CloseFillIcon, UserFillIcon } from "../icons/FillIcons.tsx";
+import { ChevronLeftFillIcon, UserFillIcon } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive, editorChromeTone } from "../ui/tabButtonStyles.ts";
 
 const SIZE_PRESETS = [
@@ -61,7 +61,7 @@ export default function EditorHeader({
           className={`flex h-10 w-10 shrink-0 items-center justify-center ${editorChromeBtn}`}
           aria-label={t("editor.exitAria")}
         >
-          <CloseFillIcon className="h-5 w-5" />
+          <ChevronLeftFillIcon className="h-5 w-5" />
         </button>
         {leftExtra ? <div className="min-w-0 max-w-[min(100%,42vw)]">{leftExtra}</div> : null}
       </div>

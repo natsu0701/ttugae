@@ -12,7 +12,8 @@ import {
   meetupRegionScore,
   parseActivityRegion,
 } from "../data/offlineCommunity.ts";
-import { loadProfile, saveProfileRegion } from "./profileStorage.ts";
+import { saveProfileRegion, loadProfile } from "./profileStorage.ts";
+import { currentUserHandle } from "./identity.ts";
 import { backupProgressRowOnCheckin } from "./editorProgressStorage.ts";
 
 const MEETUP_STORE_KEY = "meetup_store";
@@ -71,8 +72,7 @@ function writeJson(key: string, value: unknown) {
 }
 
 export function currentUserId() {
-  const profile = loadProfile();
-  return profile.handle?.trim() || profile.nickname?.trim() || "ttugae-user";
+  return currentUserHandle();
 }
 
 function encodeTicketPayload(eventId: string, userId: string) {

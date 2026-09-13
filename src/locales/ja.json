@@ -2,11 +2,15 @@
   "nav": {
     "brand": "編み物トゥゲザー",
     "home": "ホーム",
-    "community": "コミュニティ",
+    "community": "トゥゲラウンジ",
     "startEditor": "編み図を描く",
     "login": "ログイン",
     "logout": "ログアウト",
-    "mypageAria": "マイページ"
+    "mypageAria": "マイページ",
+    "mypage": "マイページ",
+    "profileMenu": "プロフィールメニュー",
+    "addAccount": "アカウント追加",
+    "switchAccount": "アカウント切替"
   },
   "mypage": {
     "title": "マイページ",
@@ -20,8 +24,9 @@
       "stats": "統計",
       "settings": "設定",
       "summary": "アクティビティ",
-      "meetups": "予約した集まり",
-      "statsDetail": "詳細統計"
+      "meetups": "編み物모임",
+      "statsDetail": "詳細統計",
+      "gauge": "マイゲージ (Gauge)"
     },
     "account": {
       "section": "アカウント",
@@ -30,7 +35,8 @@
       "addAccount": "アカウント追加",
       "logout": "ログアウト",
       "withdraw": "アカウント削除",
-      "withdrawConfirm": "アカウントを削除すると、この端末からログアウトされます。続けますか？"
+      "withdrawConfirm": "アカウントを削除すると、この端末からログアウトされます。続けますか？",
+      "handleInvalid": "IDは英字のみ使用できます。"
     },
     "profile": {
       "title": "プロフィール",
@@ -63,7 +69,8 @@
       "gaugeAfterSts": "洗い後の目",
       "gaugeAfterRows": "洗い後の段",
       "levelTitle": "ふわふわニッター (Level 3)",
-      "profileHint": "プロフィールと手編みゲージを管理します。"
+      "profileHint": "プロフィールと手編みゲージを管理します。",
+      "publicToggle": "プロフィール公開"
     },
     "patterns": {
       "title": "マイ編み図",
@@ -121,7 +128,7 @@
       "styleAmigurumi": "アミグルミ",
       "styleSimple": "シンプルデイリー"
     },
-    "meetupsTitle": "予約した集まり",
+    "meetupsTitle": "編み物모임",
     "meetupsSubtitle": "ラウンジで参加した集まりがすぐにここに出ます。",
     "meetupsEmptyTitle": "まだ予約した集まりはありません",
     "meetupsEmptyDesc": "ラウンジのオフラインイベントタブで参加してみましょう。",
@@ -182,7 +189,52 @@
     "title100": "100目達成",
     "title100Desc": "累計100目以上",
     "titlePopular": "人気ニッター",
-    "titlePopularDesc": "いいね3つ以上"
+    "titlePopularDesc": "いいね3つ以上",
+    "badgeVault": "バッジ保管箱",
+    "badgesOwned": "所持",
+    "badgesUnowned": "未所持",
+    "timeTitle": "累計編み時間",
+    "timeValue": "{{hours}}時間 {{mins}}分",
+    "level": {
+      "guideTitle": "ランク案内",
+      "criteria": "算定基準: 完成目数 + 作品数 + 모임出席",
+      "period": "算定期間: 直近{{days}}日",
+      "score": "ランク点数: {{score}}",
+      "next": "次のレベルまで {{remaining}}点",
+      "max": "最高レベルです。"
+    },
+    "follow": {
+      "following": "フォロー中",
+      "followers": "フォロワー",
+      "followingCount": "フォロー {{count}}",
+      "followerCount": "フォロワー {{count}}",
+      "searchPh": "英字IDまたはニックネーム検索"
+    },
+    "region": {
+      "province": "道 / 市",
+      "city": "市 / 区",
+      "dong": "洞",
+      "searchPh": "洞名で検索"
+    },
+    "gauge": {
+      "targetCm": "目標幅 (cm)",
+      "resultTitle": "おすすめ目数",
+      "resultLine": "{{cm}}cm あたり 約{{sts}}目、{{rows}}段",
+      "ratioLine": "収縮比 目 {{sts}} / 段 {{rows}}"
+    },
+    "calendar": {
+      "title": "編み物カレンダー",
+      "legendFinished": "完成日",
+      "legendBadge": "バッジ獲得日",
+      "legendMeetup": "모임参加日"
+    },
+    "meetups": {
+      "qrHost": "参加者認証QR",
+      "checkIn": "出席認証",
+      "checkedIn": "出席済み",
+      "diaryTitle": "모임活動記録",
+      "diarySave": "記録する"
+    }
   },
   "community": {
     "heroTitle": "編み物好きのインスピレーション庫",
@@ -274,7 +326,20 @@
     "remixTitle": "この編み図のリミックス系譜",
     "remixHint": "オリジナルから今の作品まで、フォークとアレンジの流れです。",
     "shareToCommunity": "コミュニティにシェア",
-    "patternPreview": "編み図プレビュー"
+    "patternPreview": "編み図プレビュー",
+    "loungeChip": "TTEUGAE LOUNGE",
+    "searchResultCount": "検索結果 {{count}}件",
+    "searchIncludesAuthor": "作品名と作者名を検索します。",
+    "follow": "フォロー",
+    "unfollow": "フォロー解除",
+    "followCounts": "フォロー {{following}} · フォロワー {{followers}}",
+    "authorWorks": "この作者の作品",
+    "authorEmpty": "公開作品がありません。",
+    "authorMissing": "作者が見つかりません。",
+    "commentAs": "@{{handle}} として投稿",
+    "commentNeedLogin": "コメントするにはログインしてください。",
+    "attendOk": "出席を確認しました。",
+    "attendDup": "すでに出席済みです。"
   },
   "editor": {
     "defaultTitle": "新しい編み図",
@@ -316,7 +381,7 @@
     "facesEditingBack": "裏側の編み図を編集しています",
     "previewFacesSplit": "表と裏に別の編み図を載せています。モデルを回して裏を確認してください。",
     "stitchCheckTitle": "編み図をもう一度確認しましょう",
-    "stitchCheckMessage": "あれ？{{row}}段の目数が合いません。編み図を見直してください 🧶",
+    "stitchCheckMessage": "あれ？{{row}}段の目数が合いません。編み図を見直してください。",
     "aiPreviewTitle": "AI完成イメージ",
     "aiPreviewAlt": "AI完成イメージのプレビュー",
     "aiPreviewShareTitle": "AI完成イメージ",
@@ -1027,5 +1092,26 @@
         "fiber": "ウール・アクリル混紡"
       }
     }
+  },
+  "report": {
+    "title": "通報",
+    "hint": "理由を選んでください。",
+    "action": "通報",
+    "submit": "通報する",
+    "submitted": "通報を受け付けました。",
+    "detailPh": "補足を入力",
+    "reasons": {
+      "spam": "スパム",
+      "abuse": "誹謗",
+      "copyright": "著作権",
+      "privacy": "個人情報",
+      "other": "その他"
+    }
+  },
+  "unsaved": {
+    "title": "変更を保存しますか？",
+    "body": "保存せずに移動するとプロフィールの変更が消えます。",
+    "save": "保存",
+    "discard": "保存しない"
   }
 }

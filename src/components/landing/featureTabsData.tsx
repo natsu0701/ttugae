@@ -46,10 +46,10 @@ export const FEATURE_TABS: FeatureTab[] = [
   },
   {
     id: "community",
-    title: "커뮤니티",
-    subtitle: "라운지 도안 공유",
+    title: "뜨개라운지",
+    subtitle: "뜨개라운지 도안 공유",
     description:
-      "내가 설계하고 완성한 정성 어린 도안 카드를 포장하여 라운지 피드에 자랑해 보세요. 다른 유저들이 올린 완성작 실물 사진을 마우스로 확인하고, 클릭 한 번으로 내 도안 작업실 에디터 창으로 즉시 가져와 수정 및 배포할 수 있습니다.",
+      "내가 설계하고 완성한 정성 어린 도안 카드를 포장하여 뜨개라운지 피드에 자랑해 보세요. 다른 유저들이 올린 완성작 실물 사진을 마우스로 확인하고, 클릭 한 번으로 내 도안 작업실 에디터 창으로 즉시 가져와 수정 및 배포할 수 있습니다.",
     imagePath: assetUrl("/images/community.png"),
     icon: CommunityFillIcon,
   },

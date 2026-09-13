@@ -454,6 +454,39 @@ export function ZoomOutFillIcon({ className = "h-5 w-5" }: IconProps) {
   );
 }
 
+export function PencilFillIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M16.7 3.6a2.2 2.2 0 013.1 0l.6.6a2.2 2.2 0 010 3.1L9.2 18.5 4 20l1.5-5.2L16.7 3.6z"
+      />
+    </svg>
+  );
+}
+
+export function FlagFillIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M6 3.4h.2A1.4 1.4 0 017.6 4.6V21H5.2V4.6A1.2 1.2 0 016 3.4zm2.8 1.5h9.4c.7 0 1.1.8.7 1.4l-1.7 2.6 1.7 2.6c.4.6 0 1.4-.7 1.4H8.8V4.9z"
+      />
+    </svg>
+  );
+}
+
+export function SwitchFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M7.2 6.2l-3 3 3 3V9.8h8.2V7.4H7.2V6.2zm9.6 5.6v2.4H8.6v2.4h8.2v2.4l3-3-3-3.2z"
+      />
+    </svg>
+  );
+}
+
 export function SpinnerFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>

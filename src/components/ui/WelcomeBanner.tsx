@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 /**
  * 니팅힙 감성 미니멀 웰컴 배너
  * - 테두리 없는 오트밀 크림 면(Fill) 카드 + 파스텔 번짐 섀도우
@@ -21,7 +19,7 @@ export default function WelcomeBanner({
   image,
 }: WelcomeBannerProps) {
   return (
-    <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-3xl bg-[#FFFBF7] p-8 shadow-[0_8px_30px_rgb(252,95,83,0.02)] sm:p-10 md:flex-row">
+    <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-xl bg-[#FFFBF7] p-8 shadow-[0_8px_30px_rgb(252,95,83,0.02)] sm:p-10 md:flex-row">
       <div className="w-full min-w-0 md:flex-1">
         <span className="mb-3 block w-fit rounded-full bg-[#FC5F53]/10 px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-widest text-[#FC5F53]">
           {chip}
@@ -43,12 +41,11 @@ export default function WelcomeBanner({
       </div>
 
       <div className="relative hidden h-32 w-32 shrink-0 sm:block md:h-36 md:w-36" aria-hidden>
-        <motion.img
+        <img
           src={image}
           alt=""
           className="h-28 w-28 object-contain md:h-32 md:w-32"
-          animate={{ y: [0, -6, 0] }}
-          transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
+          style={{ animation: "tteuni-float 2.8s ease-in-out infinite" }}
         />
       </div>
     </div>

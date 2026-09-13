@@ -14,7 +14,7 @@ function FeatureOneSection({ onOpenEditor }: FeatureOneSectionProps) {
   const { t } = useTranslation();
   return (
     <section id="features" className={landingSection.white}>
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div className="page-shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
           <FeatureBadge>Feature 01</FeatureBadge>
           <h2 className={landingHeading.h2}>

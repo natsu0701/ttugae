@@ -1,20 +1,17 @@
 import {
   useEffect,
-  useId,
-  useLayoutEffect,
-  useMemo,
   useRef,
   useState,
   type ReactNode,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import LandingFooter from "../landing/LandingFooter.tsx";
 import BrandTextLogo from "../ui/BrandTextLogo.tsx";
-import Button from "../ui/Button.tsx";
-import { UserFillIcon } from "../icons/FillIcons.tsx";
-import { softShadow } from "../ui/tabButtonStyles.ts";
+import { UserFillIcon, LogoutFillIcon, UserPlusFillIcon, SwitchFillIcon } from "../icons/FillIcons.tsx";
 import { assetUrl } from "../../utils/appPath.ts";
+import { useUnsavedChanges } from "../../context/UnsavedChangesContext.tsx";
+import type { UserAccount } from "../../utils/accountStorage.ts";
+import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 
 export type AppNavPage = "landing" | "community" | "mypage";
 
@@ -22,148 +19,19 @@ type AppShellProps = {
   currentPage: AppNavPage;
   isLoggedIn: boolean;
   children: ReactNode;
+  avatarUrl?: string;
+  accounts?: UserAccount[];
+  activeAccountId?: string | null;
   onGoHome: () => void;
   onGoCommunity: () => void;
   onGoMypage: () => void;
   onGoEditor: () => void;
   onLogin: () => void;
+  onLogout: () => void;
+  onAddAccount: () => void;
+  onSwitchAccount?: (id: string) => void;
 };
 
-const YARN_CORAL = "#FC5F53";
-/** 텍스트 바깥으로 털실 아웃라인이 그려질 여백 */
-const OUTLINE_PAD_X = 10;
-const OUTLINE_PAD_Y = 5;
-const OUTLINE_RADIUS = 12;
-
-/** 상단 중앙에서 시작해 시계 방향으로 한 바퀴 감기는 둥근 사각형 경로 */
-function roundedRectPath(w: number, h: number, radius: number): string {
-  const r = Math.min(radius, w / 2, h / 2);
-  return [
-    `M ${w / 2} 0`,
-    `H ${w - r}`,
-    `A ${r} ${r} 0 0 1 ${w} ${r}`,
-    `V ${h - r}`,
-    `A ${r} ${r} 0 0 1 ${w - r} ${h}`,
-    `H ${r}`,
-    `A ${r} ${r} 0 0 1 0 ${h - r}`,
-    `V ${r}`,
-    `A ${r} ${r} 0 0 1 ${r} 0`,
-    "Z",
-  ].join(" ");
-}
-
-/**
- * 호버 시 메뉴 둘레를 따라 스르륵 감기는 핑크 털실 아웃라인.
- * - 점선(홈질) 스타일을 유지하려고 framer의 pathLength 대신
- *   마스크(solid stroke)의 dashoffset을 직접 보간해 점선 경로를 드러낸다.
- * - 털실 뭉치 마커는 같은 진행률로 getPointAtLength를 따라 이동.
- */
-function YarnHoverOutline({
-  width,
-  height,
-  hovered,
-}: {
-  width: number;
-  height: number;
-  hovered: boolean;
-}) {
-  const rawId = useId();
-  const maskId = `yarn-wrap-${rawId.replace(/:/g, "")}`;
-  const pathRef = useRef<SVGPathElement>(null);
-  const [length, setLength] = useState(0);
-
-  const d = useMemo(
-    () => roundedRectPath(width, height, OUTLINE_RADIUS),
-    [width, height],
-  );
-
-  useLayoutEffect(() => {
-    setLength(pathRef.current?.getTotalLength() ?? 0);
-  }, [d]);
-
-  const progress = useMotionValue(0);
-
-  useEffect(() => {
-    const controls = animate(progress, hovered ? 1 : 0, {
-      duration: hovered ? 0.55 : 0.35,
-      ease: "easeInOut",
-    });
-    return () => controls.stop();
-  }, [hovered, progress]);
-
-  const dashOffset = useTransform(progress, (p) => length * (1 - p));
-  const visibleOpacity = useTransform(progress, [0, 0.02, 1], [0, 1, 1]);
-  const markerX = useTransform(progress, (p) =>
-    pathRef.current && length > 0
-      ? pathRef.current.getPointAtLength(p * length).x
-      : 0,
-  );
-  const markerY = useTransform(progress, (p) =>
-    pathRef.current && length > 0
-      ? pathRef.current.getPointAtLength(p * length).y
-      : 0,
-  );
-
-  if (width <= 0 || height <= 0) return null;
-
-  return (
-    <svg
-      className="pointer-events-none absolute overflow-visible drop-shadow-[0_0_3px_rgba(255,255,255,0.9)]"
-      style={{
-        left: -OUTLINE_PAD_X,
-        top: -OUTLINE_PAD_Y,
-        width,
-        height,
-      }}
-      viewBox={`0 0 ${width} ${height}`}
-      aria-hidden
-    >
-      <mask
-        id={maskId}
-        maskUnits="userSpaceOnUse"
-        x={-6}
-        y={-6}
-        width={width + 12}
-        height={height + 12}
-      >
-        <motion.path
-          ref={pathRef}
-          d={d}
-          fill="none"
-          stroke="#FFFFFF"
-          strokeWidth={6}
-          strokeLinecap="round"
-          strokeDasharray={length || 1}
-          style={{ strokeDashoffset: dashOffset }}
-        />
-      </mask>
-
-      {/* 점선 홈질 스타일의 털실 라인 — 마스크로 진행률만큼 드러남 */}
-      <motion.path
-        d={d}
-        fill="none"
-        stroke={YARN_CORAL}
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeDasharray="6 3"
-        mask={`url(#${maskId})`}
-        style={{ opacity: visibleOpacity }}
-      />
-
-      {/* 감겨 들어가는 끝점의 털실 뭉치 마커 */}
-      <motion.g style={{ x: markerX, y: markerY, opacity: visibleOpacity }}>
-        <circle r={3} fill={YARN_CORAL} />
-      </motion.g>
-    </svg>
-  );
-}
-
-/**
- * 내비 텍스트 링크
- * - 색상: duration-300으로 코랄(#FC5F53)까지 페이드
- * - 호버: 텍스트 둘레를 따라 점선 털실이 한 바퀴 감기는 드로잉 모션
- * - 현재 페이지는 털실 밑줄을 항상 표시
- */
 function NavTextItem({
   label,
   active = false,
@@ -172,138 +40,230 @@ function NavTextItem({
 }: {
   label: string;
   active?: boolean;
-  /** 투명 헤더(비디오 배경 위)에서 시인성 확보용 진한 글자색 */
   overlay?: boolean;
   onClick: () => void;
 }) {
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const [hovered, setHovered] = useState(false);
-  const [box, setBox] = useState({ w: 0, h: 0 });
-
-  useLayoutEffect(() => {
-    const el = btnRef.current;
-    if (!el) return;
-    const measure = () =>
-      setBox({
-        w: el.offsetWidth + OUTLINE_PAD_X * 2,
-        h: el.offsetHeight + OUTLINE_PAD_Y * 2,
-      });
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <button
-      ref={btnRef}
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
       className={[
-        "relative inline-block py-1 font-sans text-sm font-normal",
-        "transition-colors duration-300 ease-out",
-        active
-          ? "text-coral"
-          : overlay
-            ? "text-stone-800 hover:text-coral"
-            : "text-gray-600 hover:text-coral",
-        // 비디오 배경 위 시인성: 은은한 흰색 텍스트 그림자
+        "relative inline-flex items-center py-1 font-sans text-sm font-normal outline-none",
+        "transition-colors duration-200 ease-out",
+        "focus:outline-none focus-visible:outline-none",
+        "[-webkit-tap-highlight-color:transparent]",
+        active ? "text-coral -translate-y-px" : overlay
+          ? "text-stone-800 hover:text-coral"
+          : "text-gray-600 hover:text-coral",
         overlay ? "[text-shadow:0_1px_6px_rgba(255,255,255,0.9)]" : "",
-        // 현재 페이지 표시용 털실 밑줄 (호버 효과는 YarnHoverOutline이 담당)
         "after:pointer-events-none after:absolute after:-bottom-0.5 after:left-0",
-        "after:h-[3px] after:w-full after:origin-left after:rounded-full after:bg-coral",
-        "after:transition-transform after:duration-300 after:ease-out",
+        "after:h-[2px] after:w-full after:origin-left after:rounded-full after:bg-coral",
+        "after:transition-transform after:duration-200 after:ease-out",
         active ? "after:scale-x-100" : "after:scale-x-0",
       ].join(" ")}
     >
-      <YarnHoverOutline width={box.w} height={box.h} hovered={hovered} />
       <span className="relative z-10">{label}</span>
     </button>
   );
 }
 
-const profileBtnClass = (active: boolean) =>
-  `flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-300 ${softShadow} ${
-    active
-      ? "bg-coral text-white"
-      : "bg-white text-gray-700 hover:bg-coral hover:text-white"
-  }`;
+function ProfileMenu({
+  currentPage,
+  avatarUrl,
+  accounts,
+  activeAccountId,
+  onGoMypage,
+  onLogout,
+  onAddAccount,
+  onSwitchAccount,
+}: {
+  currentPage: AppNavPage;
+  avatarUrl?: string;
+  accounts: UserAccount[];
+  activeAccountId?: string | null;
+  onGoMypage: () => void;
+  onLogout: () => void;
+  onAddAccount: () => void;
+  onSwitchAccount?: (id: string) => void;
+}) {
+  const { t } = useTranslation();
+  const { requestLeave } = useUnsavedChanges();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const otherAccounts = accounts.filter((item) => item.id !== activeAccountId);
+  const avatarSrc = avatarUrl || TTEUNI_IMAGES.chatProfile;
+
+  useEffect(() => {
+    const onDoc = (event: MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  const go = (fn: () => void) => () => {
+    setMenuOpen(false);
+    requestLeave(fn);
+  };
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        type="button"
+        onClick={() => setMenuOpen((open) => !open)}
+        className={`flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border transition-colors duration-200 ${
+          currentPage === "mypage"
+            ? "border-coral"
+            : "border-stone-200 bg-white hover:border-coral"
+        }`}
+        aria-label={t("nav.profileMenu")}
+        aria-expanded={menuOpen}
+      >
+        {avatarUrl ? (
+          <img src={avatarSrc} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <UserFillIcon className="h-6 w-6 text-gray-700" />
+        )}
+      </button>
+      {menuOpen ? (
+        <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-lg">
+          <button
+            type="button"
+            onClick={go(onGoMypage)}
+            className="flex w-full px-4 py-2.5 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
+          >
+            {t("nav.mypage")}
+          </button>
+          <button
+            type="button"
+            onClick={go(onLogout)}
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
+          >
+            <LogoutFillIcon className="h-4 w-4" />
+            {t("nav.logout")}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMenuOpen(false);
+              onAddAccount();
+            }}
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
+          >
+            <UserPlusFillIcon className="h-4 w-4" />
+            {t("nav.addAccount")}
+          </button>
+          {otherAccounts.length > 0 ? (
+            <div className="border-t border-stone-100 py-1">
+              <p className="px-4 py-1.5 font-sans text-[11px] font-medium uppercase tracking-wide text-stone-400">
+                {t("nav.switchAccount")}
+              </p>
+              {otherAccounts.map((account) => (
+                <button
+                  key={account.id}
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onSwitchAccount?.(account.id);
+                  }}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
+                >
+                  <SwitchFillIcon className="h-4 w-4" />
+                  @{account.handle}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 export default function AppShell({
   currentPage,
   isLoggedIn,
   children,
+  avatarUrl,
+  accounts = [],
+  activeAccountId,
   onGoHome,
   onGoCommunity,
   onGoMypage,
   onGoEditor,
   onLogin,
+  onLogout,
+  onAddAccount,
+  onSwitchAccount,
 }: AppShellProps) {
   const { t } = useTranslation();
-
-  // 랜딩: 투명 헤더를 히어로 비디오 위에 오버레이 / 그 외: 흰 배경 헤더(스크롤과 함께 이동)
+  const { requestLeave } = useUnsavedChanges();
   const isOverlayHeader = currentPage === "landing";
+  const go = (fn: () => void) => () => requestLeave(fn);
+
+  const profileBtn = (
+    <ProfileMenu
+      currentPage={currentPage}
+      avatarUrl={avatarUrl}
+      accounts={accounts}
+      activeAccountId={activeAccountId}
+      onGoMypage={onGoMypage}
+      onLogout={onLogout}
+      onAddAccount={onAddAccount}
+      onSwitchAccount={onSwitchAccount}
+    />
+  );
 
   return (
-    <div className="relative min-h-screen bg-white font-sans text-gray-900">
+    <div className="relative min-h-screen w-full bg-white font-sans text-gray-900">
       <header
         className={
           isOverlayHeader
             ? "absolute left-0 top-0 z-50 w-full border-none bg-transparent"
-            : "relative bg-white"
+            : "relative w-full bg-white"
         }
       >
-        {/* 뜨개 레이스 무늬(3278×297) — 천장에 1px 틈 없이 밀착, 클릭 이벤트는 통과 */}
         <div
           aria-hidden
           className="pointer-events-none absolute left-0 top-[-20px] z-0 h-[170px] w-full bg-[length:auto_170px] bg-top bg-repeat-x"
           style={{ backgroundImage: `url(${assetUrl("/images/nav_lace.png")})` }}
         />
-        {/* 내비 콘텐츠 — 레이스보다 위 레이어(z-10)라 클릭·호버 모두 정상 동작 */}
-        <div className="relative z-10 mx-auto flex h-20 max-w-6xl items-center justify-between px-5 md:h-24 md:px-8">
+        <div className="page-shell relative z-10 flex h-20 items-center justify-between md:h-24">
           <button
             type="button"
-            onClick={onGoHome}
-            className="flex items-center transition-opacity duration-300 ease-out hover:opacity-80"
+            onClick={go(onGoHome)}
+            className="flex items-center transition-opacity duration-200 hover:opacity-80"
             aria-label={t("nav.brand")}
           >
             <BrandTextLogo className="h-7 w-auto object-contain md:h-8" />
           </button>
 
-          <nav className="hidden items-center gap-6 md:flex">
+          <nav className="hidden items-center gap-7 md:flex">
             <NavTextItem
               label={t("nav.home")}
               active={currentPage === "landing"}
               overlay={isOverlayHeader}
-              onClick={onGoHome}
+              onClick={go(onGoHome)}
             />
             <NavTextItem
               label={t("nav.community")}
               active={currentPage === "community"}
               overlay={isOverlayHeader}
-              onClick={onGoCommunity}
+              onClick={go(onGoCommunity)}
             />
-            <Button onClick={onGoEditor} className="px-5 py-2 text-sm">
-              {t("nav.startEditor")}
-            </Button>
-
+            <NavTextItem
+              label={t("nav.startEditor")}
+              overlay={isOverlayHeader}
+              onClick={go(onGoEditor)}
+            />
             {isLoggedIn ? (
-              <button
-                type="button"
-                onClick={onGoMypage}
-                className={profileBtnClass(currentPage === "mypage")}
-                aria-label={t("nav.mypageAria")}
-              >
-                <UserFillIcon className="h-6 w-6" />
-              </button>
+              profileBtn
             ) : (
-              <Button onClick={onLogin} className="px-4 py-2 text-sm">
-                {t("nav.login")}
-              </Button>
+              <NavTextItem
+                label={t("nav.login")}
+                overlay={isOverlayHeader}
+                onClick={onLogin}
+              />
             )}
           </nav>
 
@@ -312,21 +272,16 @@ export default function AppShell({
               label={t("nav.community")}
               active={currentPage === "community"}
               overlay={isOverlayHeader}
-              onClick={onGoCommunity}
+              onClick={go(onGoCommunity)}
             />
             {isLoggedIn ? (
-              <button
-                type="button"
-                onClick={onGoMypage}
-                className={profileBtnClass(currentPage === "mypage")}
-                aria-label={t("nav.mypageAria")}
-              >
-                <UserFillIcon className="h-5 w-5" />
-              </button>
+              profileBtn
             ) : (
-              <Button onClick={onLogin} className="px-3 py-2 text-sm">
-                {t("nav.login")}
-              </Button>
+              <NavTextItem
+                label={t("nav.login")}
+                overlay={isOverlayHeader}
+                onClick={onLogin}
+              />
             )}
           </div>
         </div>

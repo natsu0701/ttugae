@@ -15,19 +15,19 @@ const BADGES: BadgeDef[] = [
     id: "first-pattern",
     labelKey: "mypage.titleFirst",
     descKey: "mypage.titleFirstDesc",
-    icon: "🧶",
+    icon: "Y",
   },
   {
     id: "stitches-100",
     labelKey: "mypage.title100",
     descKey: "mypage.title100Desc",
-    icon: "🏅",
+    icon: "B",
   },
   {
     id: "popular",
     labelKey: "mypage.titlePopular",
     descKey: "mypage.titlePopularDesc",
-    icon: "⭐",
+    icon: "S",
   },
 ];
 

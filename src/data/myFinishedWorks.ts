@@ -15,7 +15,7 @@ export const MY_FINISHED_WORKS: MyFinishedWork[] = [
     title: "베이지 가디건",
     image: "completed_Beige cardigan.jpg",
     caption:
-      "사용 실: 메리노 울 100%, 바늘: 4.5mm. 뜨는 데 2주 걸렸어요! 소매 부분 코줄임이 헷갈렸는데 뜨니 코칭 덕분에 완성했네요😊",
+      "사용 실: 메리노 울 100%, 바늘: 4.5mm. 뜨는 데 2주 걸렸어요! 소매 부분 코줄임이 헷갈렸는데 뜨니 코칭 덕분에 완성했네요.",
     completedAt: "2026.04.12",
   },
   {

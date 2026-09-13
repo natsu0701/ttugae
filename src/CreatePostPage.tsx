@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { FolderFillIcon } from "./components/icons/FillIcons.tsx";
 import LandingFooter from "./components/landing/LandingFooter.tsx";
+import BackButton from "./components/ui/BackButton.tsx";
 import Button from "./components/ui/Button.tsx";
 import SmoothInput from "./components/ui/SmoothInput.tsx";
 import Textarea from "./components/ui/Textarea.tsx";
@@ -185,13 +186,7 @@ export default function CreatePostPage({
             <FolderFillIcon className="mr-2 inline h-4 w-4" />
             {t("createPost.loadMine")}
           </Button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="text-sm text-gray-500 hover:text-coral"
-          >
-            {t("createPost.back")}
-          </button>
+          <BackButton onClick={onCancel} />
         </div>
         <LoadMyPatternModal
           open={patternModalOpen}
@@ -210,13 +205,7 @@ export default function CreatePostPage({
     <div className="min-h-screen bg-white pb-24 font-sans text-gray-900">
       <header className={`relative z-20 bg-gray-50 px-5 py-4 md:px-8 ${softShadow}`}>
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="font-sans text-sm font-normal text-gray-600 transition-colors hover:text-coral"
-          >
-            {t("createPost.back")}
-          </button>
+          <BackButton onClick={onCancel} />
           <h1 className="font-sans text-lg font-bold text-gray-900">
             {isEdit ? t("createPost.editTitle") : t("createPost.writeTitle")}
           </h1>

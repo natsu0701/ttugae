@@ -125,14 +125,12 @@ export function applyLoungeFilters(
     const q = filters.query.trim().toLowerCase();
     if (q) {
       const hay =
-        `${pattern.title} ${pattern.author} ${pattern.finishedCaption} ${pattern.finishedDetail.yarn}`.toLowerCase();
+        `${pattern.title} ${pattern.author} ${pattern.finishedCaption}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     const meta = getLoungeMeta(pattern);
     if (filters.level !== "all" && meta.level !== filters.level) return false;
     if (filters.tool !== "all" && meta.tool !== filters.tool) return false;
-    if (filters.itemKind !== "all" && meta.itemKind !== filters.itemKind) return false;
-    if (filters.material !== "all" && meta.material !== filters.material) return false;
     return true;
   });
 

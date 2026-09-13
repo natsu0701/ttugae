@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
+import BackButton from "../ui/BackButton.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import {
   getAnswersForPost,
@@ -79,14 +80,8 @@ export default function QaDetail({ post, onBack }: QaDetailProps) {
   return (
     <div className="min-h-screen bg-white pb-16 font-sans text-gray-900">
       <header className="relative z-10 bg-white">
-        <div className="mx-auto flex max-w-3xl items-center px-5 py-4 md:px-8">
-          <button
-            type="button"
-            onClick={onBack}
-            className="font-sans text-sm font-normal text-gray-700 transition-colors hover:text-coral"
-          >
-            {t("community.backQa")}
-          </button>
+        <div className="page-shell flex items-center py-4">
+          <BackButton onClick={onBack} />
         </div>
       </header>
 

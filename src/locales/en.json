@@ -2,11 +2,15 @@
   "nav": {
     "brand": "Knit Together",
     "home": "Home",
-    "community": "Community",
+    "community": "Tteugae Lounge",
     "startEditor": "Draw pattern",
     "login": "Log in",
     "logout": "Log out",
-    "mypageAria": "My page"
+    "mypageAria": "My page",
+    "mypage": "My page",
+    "profileMenu": "Profile menu",
+    "addAccount": "Add account",
+    "switchAccount": "Switch account"
   },
   "mypage": {
     "title": "My Page",
@@ -20,8 +24,9 @@
       "stats": "Statistics",
       "settings": "Settings",
       "summary": "Activity",
-      "meetups": "My meetups",
-      "statsDetail": "Detailed stats"
+      "meetups": "Knit meetups",
+      "statsDetail": "Detailed stats",
+      "gauge": "My gauge (Gauge)"
     },
     "account": {
       "section": "Account",
@@ -30,7 +35,8 @@
       "addAccount": "Add account",
       "logout": "Log out",
       "withdraw": "Delete account",
-      "withdrawConfirm": "Deleting your account will sign you out on this device. Continue?"
+      "withdrawConfirm": "Deleting your account will sign you out on this device. Continue?",
+      "handleInvalid": "User ID must be English letters only."
     },
     "profile": {
       "title": "Profile",
@@ -56,14 +62,15 @@
       "regionHint": "Saving your district sorts the lounge map and meetups near you.",
       "regionLabel": "District",
       "regionPlaceholder": "Mangwon-dong, Mapo-gu, Seoul",
-      "gaugeTitle": "My gauge",
+      "gaugeTitle": "My gauge (Gauge)",
       "gaugeHint": "Stitches and rows in 10×10cm before and after washing, used for cast-on.",
       "gaugeBeforeSts": "Before-wash sts",
       "gaugeBeforeRows": "Before-wash rows",
       "gaugeAfterSts": "After-wash sts",
       "gaugeAfterRows": "After-wash rows",
       "levelTitle": "Cozy fluff knitter (Level 3)",
-      "profileHint": "Manage your profile and personal gauge."
+      "profileHint": "Manage your profile and personal gauge.",
+      "publicToggle": "Public profile"
     },
     "patterns": {
       "title": "My Patterns",
@@ -121,7 +128,7 @@
       "styleAmigurumi": "Amigurumi",
       "styleSimple": "Simple daily"
     },
-    "meetupsTitle": "Meetups I booked",
+    "meetupsTitle": "Knit meetups",
     "meetupsSubtitle": "Groups you joined in the lounge appear here right away.",
     "meetupsEmptyTitle": "No booked meetups yet",
     "meetupsEmptyDesc": "Open Offline events in the lounge and tap join.",
@@ -182,7 +189,52 @@
     "title100": "100 stitches",
     "title100Desc": "Knit 100 stitches in total",
     "titlePopular": "Popular knitter",
-    "titlePopularDesc": "Get 3 or more likes"
+    "titlePopularDesc": "Get 3 or more likes",
+    "badgeVault": "Badge vault",
+    "badgesOwned": "Owned",
+    "badgesUnowned": "Not owned",
+    "timeTitle": "Total knitting time",
+    "timeValue": "{{hours}}h {{mins}}m",
+    "level": {
+      "guideTitle": "Level guide",
+      "criteria": "Criteria: stitches + finished works + meetup attendance",
+      "period": "Period: last {{days}} days",
+      "score": "Level score: {{score}}",
+      "next": "{{remaining}} points to next level",
+      "max": "Highest level reached."
+    },
+    "follow": {
+      "following": "Following",
+      "followers": "Followers",
+      "followingCount": "Following {{count}}",
+      "followerCount": "Followers {{count}}",
+      "searchPh": "Search by English ID or nickname"
+    },
+    "region": {
+      "province": "Province / city",
+      "city": "City / district",
+      "dong": "Neighborhood",
+      "searchPh": "Search neighborhood"
+    },
+    "gauge": {
+      "targetCm": "Target width (cm)",
+      "resultTitle": "Recommended stitches",
+      "resultLine": "About {{sts}} sts, {{rows}} rows for {{cm}}cm",
+      "ratioLine": "Shrink ratio sts {{sts}} / rows {{rows}}"
+    },
+    "calendar": {
+      "title": "Knitting calendar",
+      "legendFinished": "Finished dates",
+      "legendBadge": "Badge dates",
+      "legendMeetup": "Meetup dates"
+    },
+    "meetups": {
+      "qrHost": "Check-in QR for guests",
+      "checkIn": "Check in",
+      "checkedIn": "Checked in",
+      "diaryTitle": "Meetup diary",
+      "diarySave": "Save note"
+    }
   },
   "community": {
     "heroTitle": "A library of knitting inspiration",
@@ -274,7 +326,20 @@
     "remixTitle": "Remix family of this chart",
     "remixHint": "From the original to this piece, forks and twists along the way.",
     "shareToCommunity": "Share to community",
-    "patternPreview": "Chart preview"
+    "patternPreview": "Chart preview",
+    "loungeChip": "TTEUGAE LOUNGE",
+    "searchResultCount": "{{count}} results",
+    "searchIncludesAuthor": "Search includes pattern titles and author names.",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "followCounts": "Following {{following}} · Followers {{followers}}",
+    "authorWorks": "Works by this author",
+    "authorEmpty": "No public works yet.",
+    "authorMissing": "Author not found.",
+    "commentAs": "Posting as @{{handle}}",
+    "commentNeedLogin": "Log in to comment.",
+    "attendOk": "Attendance confirmed.",
+    "attendDup": "Already checked in."
   },
   "editor": {
     "defaultTitle": "Untitled pattern",
@@ -307,7 +372,7 @@
     "preview3dError": "Couldn’t load the sweater model. Check public/models/sweater.glb",
     "preview3dReset": "Reset view",
     "stitchCheckTitle": "Let’s double-check the chart",
-    "stitchCheckMessage": "Oops! Row {{row}} doesn’t match the stitch count. Please review the chart 🧶",
+    "stitchCheckMessage": "Oops! Row {{row}} doesn’t match the stitch count. Please review the chart.",
     "previewViewMode": "Preview view mode",
     "facesTitle": "Front and back",
     "facesSame": "Same",
@@ -1027,5 +1092,26 @@
         "fiber": "Wool-acrylic blend"
       }
     }
+  },
+  "report": {
+    "title": "Report",
+    "hint": "Choose a reason. Reports are reviewed later.",
+    "action": "Report",
+    "submit": "Submit report",
+    "submitted": "Report submitted.",
+    "detailPh": "Add more detail.",
+    "reasons": {
+      "spam": "Spam / ads",
+      "abuse": "Harassment",
+      "copyright": "Copyright",
+      "privacy": "Privacy",
+      "other": "Other"
+    }
+  },
+  "unsaved": {
+    "title": "Save your changes?",
+    "body": "If you leave without saving, profile edits will be lost.",
+    "save": "Save",
+    "discard": "Don't save"
   }
 }

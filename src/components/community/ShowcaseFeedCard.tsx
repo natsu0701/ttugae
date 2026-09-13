@@ -84,7 +84,7 @@ function ShowcaseFeedCard({
   };
 
   return (
-    <article className="mb-8 rounded-3xl bg-stone-50/60 p-5 shadow-sm">
+    <article className="mb-8 rounded-xl bg-stone-50/60 p-5 shadow-sm">
       <div className="mb-4 flex items-center gap-3">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral/15 font-sans text-sm font-bold text-coral">
           {pattern.author.slice(0, 1)}

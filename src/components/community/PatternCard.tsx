@@ -44,13 +44,15 @@ function FinishedHoverLayer({ pattern }: { pattern: CommunityPattern }) {
   const [failed, setFailed] = useState(false);
   const src = finishedImageUrl(pattern.finishedImage);
 
-  if (failed) return null;
+  if (failed) {
+    return <PatternGridPreview pattern={pattern} />;
+  }
 
   return (
     <img
       src={src}
       alt={t("community.finishedAltOf", { title: view.title })}
-      className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+      className="absolute inset-0 h-full w-full object-cover"
       loading="lazy"
       decoding="async"
       onError={() => setFailed(true)}
@@ -63,6 +65,7 @@ type PatternCardProps = {
   rank?: number;
   onImport?: (pattern: CommunityPattern) => void;
   onOpenFinished?: (pattern: CommunityPattern) => void;
+  onOpenAuthor?: (pattern: CommunityPattern) => void;
   showImportOverlay?: boolean;
 };
 
@@ -71,6 +74,7 @@ function PatternCard({
   rank,
   onImport,
   onOpenFinished,
+  onOpenAuthor,
   showImportOverlay = true,
 }: PatternCardProps) {
   const { t } = useTranslation();
@@ -104,8 +108,9 @@ function PatternCard({
 
   return (
     <article
-      className="group overflow-hidden rounded-3xl bg-white shadow-sm transition-all duration-300 hover:shadow-md"
+      className="group overflow-hidden rounded-xl bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
       onPointerEnter={() => setHoverPhoto(true)}
+      onPointerLeave={() => setHoverPhoto(false)}
     >
       <a
         href={href}
@@ -114,8 +119,11 @@ function PatternCard({
         aria-label={view.title}
       >
         <div className="relative aspect-square w-full overflow-hidden bg-stone-50">
-          <PatternGridPreview pattern={pattern} />
-          {hoverPhoto ? <FinishedHoverLayer pattern={pattern} /> : null}
+          {hoverPhoto ? (
+            <PatternGridPreview pattern={pattern} />
+          ) : (
+            <FinishedHoverLayer pattern={pattern} />
+          )}
 
           {showImportOverlay && onImport ? (
             <div className="absolute inset-0 z-[1] flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -167,7 +175,17 @@ function PatternCard({
             {view.title}
           </h3>
           <p className="mt-2 flex items-center gap-1.5 font-sans text-xs font-medium text-stone-500">
-            @{displayAuthor(t, pattern.author)}
+            <button
+              type="button"
+              className="hover:text-coral"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onOpenAuthor?.(pattern);
+              }}
+            >
+              @{displayAuthor(t, pattern.author)}
+            </button>
             <EquippedAuthorChip author={pattern.author} />
           </p>
         </div>
