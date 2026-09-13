@@ -291,7 +291,7 @@
     "aiPreview": "AI preview",
     "commentPlaceholder": "Leave a kind note",
     "qaReplyPlaceholder": "Leave a helpful answer",
-    "filterSearch": "Search charts",
+    "filterSearch": "Search charts or authors",
     "filterAria": "Filters",
     "filterLevel": "Skill level",
     "filterTool": "Tools (needles / hook)",
@@ -641,8 +641,8 @@
     "tabConvertTitle": "Written pattern",
     "tabConvertSub": "Plain-language chart",
     "tabConvertDesc": "Skip reading a dense grid. The editor turns symbols into a written pattern like “Row 1: knit 2, purl 1” in a second.",
-    "tabCommunityTitle": "Community",
-    "tabCommunitySub": "Lounge pattern sharing",
+    "tabCommunityTitle": "Tteugae Lounge",
+    "tabCommunitySub": "Tteugae Lounge pattern sharing",
     "tabCommunityDesc": "Wrap your finished chart and share it in Tteugae Lounge. Peek at others’ photos and one click pulls a chart into your editor."
   },
   "createPost": {
