@@ -59,11 +59,11 @@ export default function AiPreviewNavigator({
 
   return (
     <div className={`${editorPanel} p-4`}>
-      <p className="mb-1 font-sans text-sm font-bold text-white">
+      <p className="mb-1 font-sans text-base font-bold text-white">
         {t("editor.preview3d")}
       </p>
       {metaHint && (
-        <p className="mb-2 font-seoyun text-[11px] font-normal leading-snug text-stone-300">
+        <p className="mb-2 font-seoyun text-sm font-normal leading-snug text-stone-300">
           {metaHint}
         </p>
       )}
@@ -76,7 +76,7 @@ export default function AiPreviewNavigator({
               key={item.id}
               type="button"
               onClick={() => setItemType(item.id)}
-              className={`rounded-full px-2.5 py-1 font-sans text-[11px] font-normal ${
+              className={`rounded-full px-2.5 py-1 font-sans text-sm font-normal ${
                 active ? "border border-coral bg-coral text-white" : editorChromeTone
               }`}
             >
@@ -108,7 +108,7 @@ export default function AiPreviewNavigator({
         </Suspense>
       </div>
       {facesIndependent ? (
-        <p className="mt-2 font-seoyun text-[11px] font-normal leading-snug text-stone-300">
+        <p className="mt-2 font-seoyun text-sm font-normal leading-snug text-stone-300">
           {t("editor.previewFacesSplit")}
         </p>
       ) : null}

@@ -30,6 +30,7 @@ export type KnittingMeetup = {
   datetime?: string;
   prep?: string;
   custom?: boolean;
+  hostHandle?: string;
 };
 
 export type AttachedPatternData = {
@@ -132,8 +133,8 @@ export const OFFLINE_EVENTS: OfflineEvent[] = [
     dateLabel: "2026.08.29 - 08.30",
     hours: "13:00 - 20:00",
     host: "망원 실타래 공방",
-    summary: "공방 문을 열고 게이지 상담과 소량 원사, 완성작을 함께 보여 줍니다.",
-    goods: ["메리노 원사", "베이지 가디건", "게이지 스와치"],
+    summary: "공방 문을 열고 게이지(Gauge) 상담과 소량 원사, 완성작을 함께 보여 줍니다.",
+    goods: ["메리노 원사", "베이지 가디건", "게이지(Gauge) 스와치"],
     patternIds: ["cp-6"],
     x: 18,
     y: 52,
@@ -208,7 +209,7 @@ export const KNITTING_MEETUPS: KnittingMeetup[] = [
     maxCapacity: 5,
     currentMembers: 2,
     memberIds: [],
-    place: "홍대입구 커뮤니티 테이블",
+    place: "홍대입구 뜨개라운지 테이블",
     datetime: "8월 24일 오후 7시",
     prep: "코바늘 3호와 면사 한 볼",
   },

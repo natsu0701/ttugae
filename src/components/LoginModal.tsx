@@ -1,6 +1,5 @@
 import { type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
 import BrandTextLogo from "./ui/BrandTextLogo.tsx";
 import Button from "./ui/Button.tsx";
 import SmoothInput from "./ui/SmoothInput.tsx";
@@ -15,7 +14,7 @@ const socialBtnBase =
 
 function KakaoIcon() {
   return (
-    <span className="font-sans text-sm font-bold text-gray-900" aria-hidden>
+    <span className="font-sans text-base font-bold text-gray-900" aria-hidden>
       K
     </span>
   );
@@ -68,11 +67,8 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
         aria-label={t("common.close")}
       />
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-md rounded-2xl bg-gray-50 p-8"
+      <div
+        className="fade-in relative w-full max-w-md rounded-xl bg-gray-50 p-8"
         role="dialog"
         aria-modal="true"
         aria-labelledby="login-title"
@@ -90,7 +86,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           <BrandTextLogo className="h-7 w-auto object-contain" />
           {t("login.title")}
         </h2>
-        <p className="mt-2 font-seoyun text-sm text-gray-600">
+        <p className="mt-2 font-seoyun text-base text-gray-600">
           {t("login.subtitle")}
         </p>
 
@@ -118,7 +114,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           <div className="absolute inset-0 flex items-center">
             <div className="h-px w-full bg-gray-200" />
           </div>
-          <p className="relative mx-auto w-fit bg-gray-50 px-4 font-seoyun text-sm text-gray-500">
+          <p className="relative mx-auto w-fit bg-gray-50 px-4 font-seoyun text-base text-gray-500">
             {t("login.orSocial")}
           </p>
         </div>
@@ -152,7 +148,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
             <AppleIcon />
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { FolderFillIcon } from "./components/icons/FillIcons.tsx";
 import LandingFooter from "./components/landing/LandingFooter.tsx";
+import BackButton from "./components/ui/BackButton.tsx";
 import Button from "./components/ui/Button.tsx";
 import SmoothInput from "./components/ui/SmoothInput.tsx";
 import Textarea from "./components/ui/Textarea.tsx";
@@ -41,7 +42,8 @@ function applyDraftToForm(
   setters: {
     setDraft: (d: ShareDraftPayload) => void;
     setTitle: (t: string) => void;
-    setYarnNeedle: (y: string) => void;
+    setYarnUsed: (y: string) => void;
+    setNeedleUsed: (n: string) => void;
     setReview: (r: string) => void;
     setPhotoUrl: (p: string | undefined) => void;
   },
@@ -54,14 +56,16 @@ function applyDraftToForm(
   const needleLine = loaded.pattern.needle
     ? formatNeedleBadge(loaded.pattern.needle)
     : "";
-  setters.setYarnNeedle([yarnLine, needleLine].filter(Boolean).join(" · "));
+  setters.setYarnUsed(yarnLine);
+  setters.setNeedleUsed(needleLine);
   setters.setPhotoUrl(loaded.finishedPhotoDataUrl);
 
   if (loaded.editCommunityId) {
     const post = getSharedCommunityPattern(loaded.editCommunityId);
     if (post) {
       setters.setTitle(post.title);
-      setters.setYarnNeedle(post.finishedDetail.yarn);
+      setters.setYarnUsed(post.finishedDetail.yarn);
+      setters.setNeedleUsed(post.finishedDetail.needle);
       setters.setReview(post.finishedDetail.review);
       if (
         post.finishedImage.startsWith("blob:") ||
@@ -82,7 +86,8 @@ export default function CreatePostPage({
   const { t } = useTranslation();
   const [draft, setDraft] = useState<ShareDraftPayload | null>(() => loadShareDraft());
   const [title, setTitle] = useState("");
-  const [yarnNeedle, setYarnNeedle] = useState("");
+  const [yarnUsed, setYarnUsed] = useState("");
+  const [needleUsed, setNeedleUsed] = useState("");
   const [review, setReview] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | undefined>();
   const [patternModalOpen, setPatternModalOpen] = useState(false);
@@ -94,7 +99,8 @@ export default function CreatePostPage({
     applyDraftToForm(loaded, {
       setDraft,
       setTitle,
-      setYarnNeedle,
+      setYarnUsed,
+      setNeedleUsed,
       setReview,
       setPhotoUrl,
     });
@@ -117,7 +123,8 @@ export default function CreatePostPage({
     applyDraftToForm(merged, {
       setDraft,
       setTitle,
-      setYarnNeedle,
+      setYarnUsed,
+      setNeedleUsed,
       setReview,
       setPhotoUrl,
     });
@@ -148,7 +155,8 @@ export default function CreatePostPage({
       existingCommunityId: draft.editCommunityId,
       meta: {
         title,
-        yarnNeedle,
+        yarn: yarnUsed,
+        needleText: needleUsed,
         review,
         finishedPhotoDataUrl: photoUrl,
       },
@@ -173,7 +181,7 @@ export default function CreatePostPage({
     return (
       <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900">
         <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6">
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-base text-gray-600">
             {t("createPost.noDraft")}
           </p>
           <Button
@@ -185,13 +193,7 @@ export default function CreatePostPage({
             <FolderFillIcon className="mr-2 inline h-4 w-4" />
             {t("createPost.loadMine")}
           </Button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="text-sm text-gray-500 hover:text-coral"
-          >
-            {t("createPost.back")}
-          </button>
+          <BackButton onClick={onCancel} />
         </div>
         <LoadMyPatternModal
           open={patternModalOpen}
@@ -210,13 +212,7 @@ export default function CreatePostPage({
     <div className="min-h-screen bg-white pb-24 font-sans text-gray-900">
       <header className={`relative z-20 bg-gray-50 px-5 py-4 md:px-8 ${softShadow}`}>
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="font-sans text-sm font-normal text-gray-600 transition-colors hover:text-coral"
-          >
-            {t("createPost.back")}
-          </button>
+          <BackButton onClick={onCancel} />
           <h1 className="font-sans text-lg font-bold text-gray-900">
             {isEdit ? t("createPost.editTitle") : t("createPost.writeTitle")}
           </h1>
@@ -229,11 +225,11 @@ export default function CreatePostPage({
         className="mx-auto max-w-2xl space-y-8 px-5 py-8 md:px-8"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-sans text-sm font-normal text-gray-600">{t("createPost.attached")}</p>
+          <p className="font-sans text-base font-normal text-gray-600">{t("createPost.attached")}</p>
           <Button
             type="button"
             variant="secondary"
-            className="px-4 py-2 text-sm"
+            className="px-4 py-2 text-base"
             onClick={() => setPatternModalOpen(true)}
           >
             <FolderFillIcon className="mr-1.5 inline h-4 w-4" />
@@ -249,7 +245,7 @@ export default function CreatePostPage({
         />
 
         <div>
-          <p className="mb-2 font-sans text-sm font-normal text-gray-600">
+          <p className="mb-2 font-sans text-base font-normal text-gray-600">
             {t("createPost.photo")}
           </p>
           <input
@@ -262,7 +258,7 @@ export default function CreatePostPage({
           <Button
             type="button"
             variant="secondary"
-            className="px-4 py-2 text-sm"
+            className="px-4 py-2 text-base"
             onClick={() => photoInputRef.current?.click()}
           >
             {t("createPost.photoUpload")}
@@ -279,10 +275,18 @@ export default function CreatePostPage({
         />
 
         <SmoothInput
-          label={t("createPost.yarnNeedle")}
-          value={yarnNeedle}
-          onChange={(e) => setYarnNeedle(e.target.value)}
-          placeholder={t("createPost.yarnNeedlePh")}
+          label={t("community.yarnUsed")}
+          value={yarnUsed}
+          onChange={(e) => setYarnUsed(e.target.value)}
+          placeholder={t("createPost.yarnPh")}
+          className="border-stone-200"
+        />
+
+        <SmoothInput
+          label={t("community.needleSize")}
+          value={needleUsed}
+          onChange={(e) => setNeedleUsed(e.target.value)}
+          placeholder={t("createPost.needlePh")}
           className="border-stone-200"
         />
 

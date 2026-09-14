@@ -41,14 +41,14 @@ function BarChart({
         const height = maxValue > 0 ? (item.value / maxValue) * 100 : 0;
         return (
           <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center gap-2">
-            <span className="font-sans text-xs font-bold text-coral">{item.value}</span>
+            <span className="font-sans text-sm font-bold text-coral">{item.value}</span>
             <div className="flex w-full justify-center">
               <div
                 className="w-full max-w-[2.5rem] rounded-t-xl bg-coral transition-all duration-500"
                 style={{ height: `${Math.max(height, 8)}%` }}
               />
             </div>
-            <span className="font-seoyun text-[10px] font-normal text-gray-500">
+            <span className="font-seoyun text-sm font-normal text-gray-500">
               {item.label}
             </span>
           </div>
@@ -86,7 +86,7 @@ export default function StatsDetailPanel({
     <div className="space-y-8">
       <div>
         <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.statsPageTitle")}</h2>
-        <p className="mt-1 font-sans text-sm font-normal text-gray-600">
+        <p className="mt-1 font-sans text-base font-normal text-gray-600">
           {t("mypage.statsPageHint")}
         </p>
       </div>
@@ -104,7 +104,7 @@ export default function StatsDetailPanel({
 
       <div className={`rounded-2xl bg-white p-6 ${softShadow}`}>
         <h3 className="font-sans text-base font-bold text-gray-900">{t("mypage.statsMonthly")}</h3>
-        <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
+        <p className="mt-1 font-seoyun text-sm font-normal text-gray-500">
           {t("mypage.statsMonthlyHint")}
         </p>
         <BarChart data={monthlyData} maxValue={maxMonthly} />
@@ -112,21 +112,21 @@ export default function StatsDetailPanel({
 
       <div className={`rounded-2xl bg-white p-6 ${softShadow}`}>
         <h3 className="font-sans text-base font-bold text-gray-900">{t("mypage.statsColors")}</h3>
-        <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
+        <p className="mt-1 font-seoyun text-sm font-normal text-gray-500">
           {t("mypage.statsColorsHint")}
         </p>
         <ul className="mt-6 space-y-4">
           {DEMO_COLOR_USAGE.map((color) => (
             <li key={color.nameKey}>
               <div className="mb-1.5 flex items-center justify-between">
-                <span className="flex items-center gap-2 font-sans text-sm font-normal text-gray-800">
+                <span className="flex items-center gap-2 font-sans text-base font-normal text-gray-800">
                   <span
                     className="h-4 w-4 rounded-full shadow-sm shadow-gray-200/50"
                     style={{ backgroundColor: color.hex }}
                   />
                   {t(color.nameKey)}
                 </span>
-                <span className="font-sans text-sm font-bold text-coral">{color.percent}%</span>
+                <span className="font-sans text-base font-bold text-coral">{color.percent}%</span>
               </div>
               <div className="h-2.5 overflow-hidden rounded-full bg-gray-100">
                 <div
@@ -147,7 +147,7 @@ export default function StatsDetailPanel({
           { label: t("mypage.statsFinished"), value: 3 },
         ].map((s) => (
           <div key={s.label} className={`rounded-2xl bg-gray-50 p-4 text-center ${softShadow}`}>
-            <p className="font-sans text-xs font-normal text-gray-500">{s.label}</p>
+            <p className="font-sans text-sm font-normal text-gray-500">{s.label}</p>
             <p className="mt-1 font-sans text-2xl font-bold text-gray-900">{s.value}</p>
           </div>
         ))}

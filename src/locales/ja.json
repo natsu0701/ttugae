@@ -2,11 +2,15 @@
   "nav": {
     "brand": "編み物トゥゲザー",
     "home": "ホーム",
-    "community": "コミュニティ",
+    "community": "トゥゲラウンジ",
     "startEditor": "編み図を描く",
     "login": "ログイン",
     "logout": "ログアウト",
-    "mypageAria": "マイページ"
+    "mypageAria": "マイページ",
+    "mypage": "マイページ",
+    "profileMenu": "プロフィールメニュー",
+    "addAccount": "アカウント追加",
+    "switchAccount": "アカウント切替"
   },
   "mypage": {
     "title": "マイページ",
@@ -20,8 +24,11 @@
       "stats": "統計",
       "settings": "設定",
       "summary": "アクティビティ",
-      "meetups": "予約した集まり",
-      "statsDetail": "詳細統計"
+      "meetups": "編み物모임",
+      "statsDetail": "詳細統計",
+      "gauge": "マイゲージ (Gauge)",
+      "bag": "編み物バッグ",
+      "projects": "マイプロジェクト"
     },
     "account": {
       "section": "アカウント",
@@ -30,7 +37,8 @@
       "addAccount": "アカウント追加",
       "logout": "ログアウト",
       "withdraw": "アカウント削除",
-      "withdrawConfirm": "アカウントを削除すると、この端末からログアウトされます。続けますか？"
+      "withdrawConfirm": "アカウントを削除すると、この端末からログアウトされます。続けますか？",
+      "handleInvalid": "IDは英字のみ使用できます。"
     },
     "profile": {
       "title": "プロフィール",
@@ -44,7 +52,7 @@
       "confirmPlaceholder": "再入力",
       "save": "保存する",
       "statsTitle": "アクティビティ概要",
-      "statsHint": "統計タブで詳しいグラフを確認できます。",
+      "statsHint": "アクティビティでグラフとバッジを確認できます。",
       "statPatterns": "作成した編み図",
       "statHearts": "もらったハート",
       "statFinished": "完成作品",
@@ -53,17 +61,21 @@
       "unitHearts": "回",
       "unitFinished": "点",
       "regionTitle": "活動エリア",
-      "regionHint": "区・洞を保存するとラウンジ地図と集まりが近くから並びます。",
+      "regionHint": "区・洞を保存するとトゥゲラウンジ地図と集まりが近くから並びます。",
       "regionLabel": "区 / 洞",
       "regionPlaceholder": "ソウル市麻浦区望遠洞",
-      "gaugeTitle": "マイゲージ",
+      "gaugeTitle": "マイゲージ (Gauge)",
       "gaugeHint": "10×10cmの洗い前後の目・段数を保存すると作り目に使います。",
       "gaugeBeforeSts": "洗い前の目",
       "gaugeBeforeRows": "洗い前の段",
       "gaugeAfterSts": "洗い後の目",
       "gaugeAfterRows": "洗い後の段",
       "levelTitle": "ふわふわニッター (Level 3)",
-      "profileHint": "プロフィールと手編みゲージを管理します。"
+      "profileHint": "プロフィールと手編みゲージ (Gauge) を管理します。",
+      "publicToggle": "プロフィール公開",
+      "publicOn": "プロフィール公開",
+      "publicOff": "非公開 (Private)",
+      "publicHint": "非公開にすると他の人にはプロフィールが見えません。"
     },
     "patterns": {
       "title": "マイ編み図",
@@ -71,12 +83,35 @@
       "createNew": "新しい編み図",
       "emptyTitle": "保存した編み図はまだありません",
       "emptyDesc": "「新しい編み図」で最初の一枚を始めましょう。",
-      "deleteAria": "編み図を削除"
+      "deleteAria": "編み図を削除",
+      "search": "編み図検索",
+      "searchPh": "タイトルで検索",
+      "allFolders": "すべてのコレクション",
+      "unfiled": "未分類",
+      "newFolderPh": "新しいコレクション名",
+      "addFolder": "コレクション追加",
+      "deleteFolder": "コレクション削除",
+      "moveFolder": "コレクションへ移動"
+    },
+    "bag": {
+      "title": "編み物バッグ",
+      "subtitle": "糸の在庫、針の倉庫、ゲージ (Gauge) をまとめて確認できます。",
+      "gaugeList": "ゲージ (Gauge) 一覧",
+      "gaugeHint": "プロフィールに保存した 10x10cm の目・段数です。"
+    },
+    "projects": {
+      "title": "マイプロジェクト",
+      "subtitle": "進行中の編み図と完成作品を分けて管理します。",
+      "inProgress": "進行中",
+      "completed": "完成作品",
+      "completeToggle": "完成チェック",
+      "progressEmpty": "進行中のプロジェクトはありません。",
+      "completedEmpty": "完成にしたプロジェクトはまだありません。"
     },
     "finishedTitle": "完成作品",
     "likedTitle": "いいねした編み図",
     "likedEmptyTitle": "いいねした編み図はまだありません",
-    "likedEmptyDesc": "コミュニティで気に入った編み図にハートを押してみましょう。",
+    "likedEmptyDesc": "トゥゲラウンジで気に入った編み図にハートを押してみましょう。",
     "savedTitle": "保存した編み図",
     "savedEmptyTitle": "保存した編み図がありません",
     "savedEmptyDesc": "ブックマークであとから見る編み図を集めましょう。",
@@ -109,7 +144,7 @@
       "needleAdd": "針を追加",
       "needleAdded": "針の引き出しに追加しました。",
       "tasteTitle": "熟練度と好み",
-      "tasteHint": "選んだスタイルはコミュニティのすべてタブの上に先に出ます。",
+      "tasteHint": "選んだスタイルはトゥゲラウンジのすべてタブの上に先に出ます。",
       "skillLabel": "熟練度",
       "styleLabel": "好きなスタイル",
       "skillBeginner": "入門",
@@ -121,10 +156,10 @@
       "styleAmigurumi": "アミグルミ",
       "styleSimple": "シンプルデイリー"
     },
-    "meetupsTitle": "予約した集まり",
-    "meetupsSubtitle": "ラウンジで参加した集まりがすぐにここに出ます。",
+    "meetupsTitle": "編み物모임",
+    "meetupsSubtitle": "トゥゲラウンジで参加した集まりがすぐにここに出ます。",
     "meetupsEmptyTitle": "まだ予約した集まりはありません",
-    "meetupsEmptyDesc": "ラウンジのオフラインイベントタブで参加してみましょう。",
+    "meetupsEmptyDesc": "トゥゲラウンジのオフラインイベントタブで参加してみましょう。",
     "meetupsTickets": "現地チェックイン",
     "meetupsTicketMeta": "QRチケット{{count}}枚 · {{row}}段セッション保存",
     "meetupsGoods": "グッズポートフォリオ: {{list}}",
@@ -182,7 +217,61 @@
     "title100": "100目達成",
     "title100Desc": "累計100目以上",
     "titlePopular": "人気ニッター",
-    "titlePopularDesc": "いいね3つ以上"
+    "titlePopularDesc": "いいね3つ以上",
+    "badgeVault": "バッジ保管箱",
+    "badgeVaultHint": "持っているバッジを装備するか、まだないバッジを確認できます。",
+    "badgesOwned": "所持",
+    "badgesUnowned": "未所持",
+    "timeTitle": "累計編み時間",
+    "timeValue": "{{hours}}時間 {{mins}}分",
+    "level": {
+      "guideTitle": "ランク案内",
+      "criteria": "算定基準: 完成目数 + 作品数 + 모임出席",
+      "period": "算定期間: 直近{{days}}日",
+      "score": "ランク点数: {{score}}",
+      "next": "次のレベルまで {{remaining}}点",
+      "max": "最高レベルです。"
+    },
+    "follow": {
+      "following": "フォロー中",
+      "followers": "フォロワー",
+      "followingCount": "フォロー {{count}}",
+      "followerCount": "フォロワー {{count}}",
+      "searchPh": "英字IDまたはニックネーム検索",
+      "follow": "フォロー",
+      "unfollow": "フォロー解除",
+      "empty": "該当するニッターがいません。"
+    },
+    "region": {
+      "province": "道 / 市",
+      "city": "市 / 区",
+      "dong": "洞",
+      "searchPh": "洞名で検索"
+    },
+    "gauge": {
+      "targetCm": "目標幅 (cm)",
+      "resultTitle": "おすすめ目数",
+      "resultLine": "{{cm}}cm あたり 約{{sts}}目、{{rows}}段",
+      "ratioLine": "収縮比 目 {{sts}} / 段 {{rows}}"
+    },
+    "calendar": {
+      "title": "編み物カレンダー",
+      "legendFinished": "完成日",
+      "legendBadge": "バッジ獲得日",
+      "legendMeetup": "모임参加日"
+    },
+    "meetups": {
+      "qrHost": "参加者認証QR",
+      "checkIn": "出席認証",
+      "checkedIn": "出席済み",
+      "diaryTitle": "集まりの活動記録",
+      "diaryHint": "集まりのあと、写真と文章を日記のように残せます。",
+      "diaryPhoto": "写真を追加",
+      "diaryBodyPh": "集まりであったことを書いてください。",
+      "diarySave": "記録する",
+      "openHost": "主催者QRを見る",
+      "openGuest": "出席認証を開く"
+    }
   },
   "community": {
     "heroTitle": "編み物好きのインスピレーション庫",
@@ -209,7 +298,7 @@
     "stitchCount": "{{cols}}×{{rows}} 目",
     "rank": "第{{rank}}位",
     "qaEmptyTitle": "質問はまだありません",
-    "qaEmptyDesc": "編み物の疑問をコミュニティに投稿してみましょう。",
+    "qaEmptyDesc": "編み物の疑問をトゥゲラウンジに投稿してみましょう。",
     "commentCount": "返信 {{count}}件",
     "noMatchTitle": "この条件に合う完成編み図はまだありません。",
     "noMatchDesc": "フィルターを外すか初期化して、もっと広い作品を見てみましょう。",
@@ -227,7 +316,7 @@
     "aiPreview": "AIプレビュー",
     "commentPlaceholder": "応援の言葉を残してください",
     "qaReplyPlaceholder": "役立つ返信を残してください",
-    "filterSearch": "編み図を検索",
+    "filterSearch": "編み図または作者を検索",
     "filterAria": "フィルター",
     "filterLevel": "編み物の実力",
     "filterTool": "道具（棒針 / かぎ針）",
@@ -257,8 +346,8 @@
     "filterResultCount": "{{count}}件",
     "tasteHint": "設定した好みに合うおすすめ編み図を先に表示します。",
     "photoFail": "完成写真を読み込めませんでした",
-    "backToCommunity": "← コミュニティ",
-    "backQa": "← Q&A一覧",
+    "backToCommunity": "トゥゲラウンジへ",
+    "backQa": "Q&A一覧",
     "yarnUsed": "使った糸",
     "needleSize": "針サイズ",
     "duration": "制作期間",
@@ -271,10 +360,21 @@
     "submitComment": "投稿",
     "answersCount": "回答 {{count}}件",
     "writeAnswer": "回答を書く",
-    "remixTitle": "この編み図のリミックス系譜",
-    "remixHint": "オリジナルから今の作品まで、フォークとアレンジの流れです。",
-    "shareToCommunity": "コミュニティにシェア",
-    "patternPreview": "編み図プレビュー"
+    "shareToCommunity": "トゥゲラウンジにシェア",
+    "patternPreview": "編み図プレビュー",
+    "loungeChip": "TTEUGAE LOUNGE",
+    "searchResultCount": "検索結果 {{count}}件",
+    "searchIncludesAuthor": "作品名と作者名を検索します。",
+    "follow": "フォロー",
+    "unfollow": "フォロー解除",
+    "followCounts": "フォロー {{following}} · フォロワー {{followers}}",
+    "authorWorks": "この作者の作品",
+    "authorEmpty": "公開作品がありません。",
+    "authorMissing": "作者が見つかりません。",
+    "commentAs": "@{{handle}} として投稿",
+    "commentNeedLogin": "コメントするにはログインしてください。",
+    "attendOk": "出席を確認しました。",
+    "attendDup": "すでに出席済みです。"
   },
   "editor": {
     "defaultTitle": "新しい編み図",
@@ -291,7 +391,7 @@
     "drawingTools": "描画ツール",
     "symbolPalette": "記号パレット",
     "castOnButton": "+ 作り目",
-    "gaugeButton": "ゲージ入力",
+    "gaugeButton": "ゲージ (Gauge) 入力",
     "yarnColors": "毛糸の色",
     "addYarn": "+ 毛糸を追加",
     "usedColors": "Selection Colors",
@@ -316,7 +416,7 @@
     "facesEditingBack": "裏側の編み図を編集しています",
     "previewFacesSplit": "表と裏に別の編み図を載せています。モデルを回して裏を確認してください。",
     "stitchCheckTitle": "編み図をもう一度確認しましょう",
-    "stitchCheckMessage": "あれ？{{row}}段の目数が合いません。編み図を見直してください 🧶",
+    "stitchCheckMessage": "あれ？{{row}}段の目数が合いません。編み図を見直してください。",
     "aiPreviewTitle": "AI完成イメージ",
     "aiPreviewAlt": "AI完成イメージのプレビュー",
     "aiPreviewShareTitle": "AI完成イメージ",
@@ -331,14 +431,24 @@
       "paint": "塗る",
       "eraser": "消しゴム",
       "checker": "市松塗り",
-      "select": "範囲選択"
+      "select": "範囲選択",
+      "pan": "パン"
     },
     "toolHints": {
       "paint": "セルをクリックまたはドラッグして記号・色を置きます",
       "eraser": "クリックまたはドラッグで消去します",
       "checker": "チェッカーボード状に交互に塗りつぶします",
-      "select": "ドラッグで範囲を指定し、「選択範囲を塗りつぶす」を押します"
+      "select": "ドラッグで範囲を指定し、「選択範囲を塗りつぶす」を押します",
+      "pan": "ドラッグ、または Space を押しながらドラッグしてキャンバスを動かします"
     },
+    "entryTitle": "編み図を描く",
+    "entryHint": "新しい編み図を作るか、保存済みの編み図を開いてください。",
+    "entryNew": "新しい編み図を作る",
+    "entryLoad": "保存した編み図を開く",
+    "entryEmpty": "保存された編み図はありません。新しい編み図から始めましょう。",
+    "needleShort": "針",
+    "yarnShort": "糸",
+    "yarnUnset": "未設定",
     "stitches": {
       "empty": "クリア",
       "knit": "メリヤス",
@@ -361,8 +471,8 @@
       "partLabel": "3D部位",
       "widthLabel": "横（目数）",
       "heightLabel": "縦（段数）",
-      "gaugeTitle": "ゲージ換算",
-      "gaugeHint": "10×10cmの目・段数。洗い後ゲージで標準身幅50cmの作り目を計算します。",
+      "gaugeTitle": "ゲージ (Gauge) 換算",
+      "gaugeHint": "10×10cmの目・段数。洗い後ゲージ (Gauge) で標準身幅50cmの作り目を計算します。",
       "gaugeBefore": "洗い前",
       "gaugeAfter": "洗い後",
       "gaugeSts": "横の目数",
@@ -371,7 +481,7 @@
       "recommendedValue": "{{sts}}目 · {{rows}}段",
       "recommendedBefore": "洗い前基準 {{sts}}目 · {{rows}}段",
       "applyRecommended": "推奨目数を入れる",
-      "gaugeSave": "ゲージを保存",
+      "gaugeSave": "ゲージ (Gauge) を保存",
       "needleTitle": "針の仕様",
       "needleHint": "棒針かかぎ針かを選び、形に合うタイプと号数を指定してください。",
       "cancel": "キャンセル",
@@ -458,6 +568,8 @@
     "tteuniReplyStripe": "横縞の編み図です。色ごとに表編みとうら編みを交互に入れました。",
     "tteuniReplyAutumn": "秋らしい編み図を適用しました。リブと表編み記号を混ぜています。",
     "tteuniReplyDefault": "ご依頼に合わせて編み記号を格子に入れました！保存してみてください。",
+    "tteuniReplyColor": "カーディガンなら身頃はあたたかいベース、ネックと裾は一段深いポイント色がまとまります。おすすめパレットから3色だけ選ぶと整って見えます。",
+    "tteuniReplyEdit": "編み図を直すときは先に目・段数を確認し、ずれている段は選択ツールで塗り直してください。保存前に文章プレビューでもう一度読んでみてください。",
     "scanHint": "完成写真の目・段、配色、表編み／うら編みの流れを今の格子と合わせます。",
     "scanAutoFix": "写真に合わせて自動補正",
     "yarnSearchHint": "ブランドや種類（メリノウール、モヘアなど）を入力してみてください",
@@ -495,7 +607,7 @@
     "edit": "編集",
     "submit": "投稿",
     "open": "開く →",
-    "homeBack": "← ホーム",
+    "homeBack": "ホーム",
     "lastEdited": "最終更新: {{date}}",
     "deletePatternConfirm": "「{{title}}」を削除しますか？",
     "deleteFinishedConfirm": "完成作品「{{title}}」を削除しますか？",
@@ -523,7 +635,14 @@
     "sharedPattern": "共有された編み図",
     "postUploaded": "投稿を公開しました。",
     "patternSaved": "編み図を保存しました。",
-    "patternDeleted": "編み図を削除しました。"
+    "patternDeleted": "編み図を削除しました。",
+    "loggedIn": "ログインしました"
+  },
+  "chat": {
+    "widgetTitle": "トゥニチャット(AI)",
+    "widgetHint": "配色、編み図の修正、糸選びを聞いてください。",
+    "scrollTop": "一番上へ",
+    "open": "トゥニチャット(AI)を開く"
   },
   "login": {
     "title": "はじめる",
@@ -540,13 +659,13 @@
     "heroLead": "複雑な編み図はトゥニにまかせて、",
     "heroLine1": "編み物だけに",
     "heroLine2": "集中しましょう！",
-    "heroSub": "エディター、AIチャット、コミュニティまで。編み物のすべてがここに。",
+    "heroSub": "エディター、AIチャット、トゥゲラウンジまで。編み物のすべてがここに。",
     "startDrawing": "編み図を描く",
     "feature1Line1": "クリック数回で",
     "feature1Line2": "完成する自分だけの編み図",
     "feature1Body": "マスに記号と色を置き、ミスはトゥニがチェックします。",
     "feature2Title": "エディター中心のスマート編み物プラットフォーム",
-    "feature2Body": "手計算だらけの準備をウェブエディターとコミュニティにまとめ、創作に没頭できます。",
+    "feature2Body": "手計算だらけの準備をウェブエディターとトゥゲラウンジにまとめ、創作に没頭できます。",
     "promoLine1": "本番の編み物はトゥニと一緒に！",
     "promoLine2": "ARナビゲーションアプリ",
     "promoBody1": "ウェブで描いた編み図をアプリに連携。",
@@ -566,21 +685,23 @@
     "tabConvertTitle": "文章変換",
     "tabConvertSub": "自然言語の編み図",
     "tabConvertDesc": "マス目を読む負担を減らすため、記号レイアウトを「1段：表2目、裏1目」のような文章編み図へすぐ変換します。",
-    "tabCommunityTitle": "コミュニティ",
-    "tabCommunitySub": "ラウンジで編み図シェア",
-    "tabCommunityDesc": "仕上げた編み図カードを包んでラウンジに自慢しましょう。実物写真を見て、クリック1つで自分のエディターに取り込み、直して公開できます。"
+    "tabCommunityTitle": "トゥゲラウンジ",
+    "tabCommunitySub": "トゥゲラウンジで編み図シェア",
+    "tabCommunityDesc": "仕上げた編み図カードを包んでトゥゲラウンジに自慢しましょう。実物写真を見て、クリック1つで自分のエディターに取り込み、直して公開できます。"
   },
   "createPost": {
     "editTitle": "投稿を編集",
     "writeTitle": "投稿を作成",
     "noDraft": "添付する編み図がありません。保存した編み図を読み込むか戻ってください。",
     "loadMine": "マイ編み図を読み込む",
-    "back": "← 戻る",
+    "back": "戻る",
     "attached": "添付の編み図",
     "title": "タイトル",
     "titlePh": "例: ベージュカーディガン完成！",
     "yarnNeedle": "使った糸 / 針",
     "yarnNeedlePh": "例: メリノウール100%、かぎ針4.5mm",
+    "yarnPh": "例: メリノウール100%",
+    "needlePh": "例: かぎ針4.5mm",
     "review": "本文（レビュー）",
     "reviewPh": "編んだ感想、コツ、かかった時間などを書いてください。",
     "previewAlt": "完成プレビュー",
@@ -596,7 +717,9 @@
     "untitled": "新しい編み図",
     "done": "編み図の包装が完了しました",
     "toVault": "保管庫へ",
-    "backEditor": "エディターに戻る"
+    "backEditor": "エディターに戻る",
+    "collection": "保存するコレクション",
+    "packedChip": "編み図の包装"
   },
   "offline": {
     "title": "オフラインニュースと集まり",
@@ -661,8 +784,8 @@
         "desc": "作品の最後の目をきちんと閉じて伏せ目を終えました。"
       },
       "badge4": {
-        "name": "ゲージ計算の妖精",
-        "desc": "自分の手加減をゲージ計算に入れて目数を3回以上変換しました。"
+        "name": "ゲージ (Gauge) 計算の妖精",
+        "desc": "自分の手加減をゲージ (Gauge) 計算に入れて目数を3回以上変換しました。"
       },
       "badge5": {
         "name": "配色カーディガンコレクター",
@@ -677,8 +800,8 @@
         "desc": "所持糸の残量と針を保管庫に5回以上記録しました。"
       },
       "badge8": {
-        "name": "あたたかいラウンジリーダー",
-        "desc": "コミュニティ自慢フィードに制作ノートと編み図をシェアしました。"
+        "name": "あたたかいトゥゲラウンジリーダー",
+        "desc": "トゥゲラウンジ自慢フィードに制作ノートと編み図をシェアしました。"
       },
       "badge9": {
         "name": "トゥニのソウルメイト",
@@ -764,7 +887,7 @@
         "yarn": "靴下用ウール（ピンク）",
         "needle": "棒針2.5mm",
         "duration": "5日",
-        "review": "甲のゲージさえ合えば長さ調整は簡単です。1足編んだら目数を書いておくとペアがずれません。"
+        "review": "甲のゲージ (Gauge) さえ合えば長さ調整は簡単です。1足編んだら目数を書いておくとペアがずれません。"
       },
       "cp-10": {
         "title": "黄色いビーニー",
@@ -784,16 +907,16 @@
       "qa-2": {
         "title": "ベージュカーディガンの袖丈の伸ばし方",
         "excerpt": "完成自慢のカーディガンで、袖だけ5cmほど長く編みたいです。",
-        "body": "完成自慢のベージュカーディガンを参考に編んでいますが、腕が短く感じます。\n\n身頃はそのままで袖の段だけ足すなら何段必要ですか？ゲージは10cmで22目28段くらいです。"
+        "body": "完成自慢のベージュカーディガンを参考に編んでいますが、腕が短く感じます。\n\n身頃はそのままで袖の段だけ足すなら何段必要ですか？ゲージ (Gauge) は10cmで22目28段くらいです。"
       },
       "qa-3": {
         "title": "糸色が編み図と違うとき",
         "excerpt": "コーラルの糸を買ったら画面よりずっと赤く出ます。代替糸を探しています。",
-        "body": "コミュニティのプレビューは柔らかいコーラルなのに、実物は#FC5F53に近くて派手です。\n\n似たトーンの代替ブランドや、色を落ち着かせる方法はありますか？"
+        "body": "トゥゲラウンジのプレビューは柔らかいコーラルなのに、実物は#FC5F53に近くて派手です。\n\n似たトーンの代替ブランドや、色を落ち着かせる方法はありますか？"
       },
       "qa-4": {
         "title": "エディターで格子が読み込めないとき",
-        "excerpt": "コミュニティカードから読み込みを押すと空の格子だけ出ます。",
+        "excerpt": "トゥゲラウンジカードから読み込みを押すと空の格子だけ出ます。",
         "body": "Chromeで試し、ログインもしています。特定の編み図(cp-3)だけで、再読み込みしても同じです。\n\nローカル保存容量の問題でしょうか？"
       },
       "qa-5": {
@@ -809,7 +932,7 @@
       "qa-7": {
         "title": "ピンク靴下のかかとを回したら穴が開きました",
         "excerpt": "1足は完成しましたがかかとの角が粗いです。2足目の前に直したいです。",
-        "body": "ふんわりピンク靴下の1足目を編みました。甲ゲージは合っていますが、短い段でかかとを回す区間に穴が残ります。\n\n目数を書けというレビューは見ましたが、穴はどう埋めますか？拾い目を入れるべきですか？"
+        "body": "ふんわりピンク靴下の1足目を編みました。甲ゲージ (Gauge) は合っていますが、短い段でかかとを回す区間に穴が残ります。\n\n目数を書けというレビューは見ましたが、穴はどう埋めますか？拾い目を入れるべきですか？"
       },
       "qa-8": {
         "title": "ハートと星のコースター、目数を揃えてもいいですか？",
@@ -830,10 +953,10 @@
     "answers": {
       "ans-1": "細編みのリングはかぎ針を少しひねって入れると穴が減ります。1段目はしっかり、2段目からゆるまないように。",
       "ans-2": "しるし糸で目数を付けると増えがすぐわかります。6目が目標なら5目編んでから最後を確認する習慣も良いです。",
-      "ans-3": "そのゲージなら5cmは約14段追加です。袖先2段は弾力のある細編みで締めてください。",
+      "ans-3": "そのゲージ (Gauge) なら5cmは約14段追加です。袖先2段は弾力のある細編みで締めてください。",
       "ans-4": "完成自慢のベージュカーディガン写真の長さを測り、手首まで届くか比べると段数計算がしやすいです。",
       "ans-5": "同じコーラルでも綿糸は画面より鮮やかです。ベージュを1段混ぜるか、1号太い針でゆるく編むとトーンが下がります。",
-      "ans-6": "くまの編み図は読み込めます。空の格子ならコミュニティからもう一度「エディターに読み込む」を押してください。",
+      "ans-6": "くまの編み図は読み込めます。空の格子ならトゥゲラウンジからもう一度「エディターに読み込む」を押してください。",
       "ans-7": "筒の表編みは段ごとに始まりが1目ずれます。マーカーを段の始まりに置き、傾いたら1目前で段を変えてください。",
       "ans-8": "手の甲の目を4つに分け、親指は横から別に取ります。分け直前にしるし糸を4か所にかけると順番が混ざりません。",
       "ans-9": "回す角で隣の目も一緒に拾うと穴が減ります。2足目は1足目の目数を横に置いて同じ段で折ってください。",
@@ -909,7 +1032,7 @@
         "date": "8月24日午後7時",
         "needle": "かぎ針3号",
         "yarn": "コットン4本撚り1玉",
-        "place": "ホンデコミュニティテーブル"
+        "place": "ホンデトゥゲラウンジテーブル"
       },
       "mt-mangwon-bookcafe": {
         "title": "マンウォン洞デザートカフェのクロップカーディガン会",
@@ -1027,5 +1150,26 @@
         "fiber": "ウール・アクリル混紡"
       }
     }
+  },
+  "report": {
+    "title": "通報",
+    "hint": "理由を選んでください。",
+    "action": "通報",
+    "submit": "通報する",
+    "submitted": "通報を受け付けました。",
+    "detailPh": "補足を入力",
+    "reasons": {
+      "spam": "スパム",
+      "abuse": "誹謗",
+      "copyright": "著作権",
+      "privacy": "個人情報",
+      "other": "その他"
+    }
+  },
+  "unsaved": {
+    "title": "保存しますか？",
+    "body": "保存せずに移動すると変更が消えます。",
+    "save": "保存",
+    "discard": "保存しない"
   }
 }

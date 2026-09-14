@@ -149,6 +149,26 @@ export function applyAiPatternFromMessage(
 export function getTteuniReply(message: string, t: (key: string) => string): string {
   const text = message.toLowerCase();
   if (
+    text.includes("배색") ||
+    text.includes("색상") ||
+    text.includes("컬러") ||
+    text.includes("color") ||
+    text.includes("palette") ||
+    text.includes("配色")
+  ) {
+    return t("editor.tteuniReplyColor");
+  }
+  if (
+    text.includes("수정") ||
+    text.includes("고치") ||
+    text.includes("편집") ||
+    text.includes("edit") ||
+    text.includes("fix") ||
+    text.includes("直し")
+  ) {
+    return t("editor.tteuniReplyEdit");
+  }
+  if (
     text.includes("가디건") ||
     text.includes("cardigan") ||
     text.includes("カーディガン")

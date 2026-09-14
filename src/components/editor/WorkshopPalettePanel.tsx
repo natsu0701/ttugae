@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
 
@@ -50,7 +49,7 @@ export default function WorkshopPalettePanel({
   };
   return (
     <div className="mt-6 rounded-2xl border border-stone-600/80 bg-stone-700 p-4">
-      <p className="mb-3 font-sans text-xs font-normal tracking-wide text-stone-300">
+      <p className="mb-3 font-sans text-sm font-normal tracking-wide text-stone-300">
         {t("editor.workshopTitle")}
       </p>
 
@@ -58,10 +57,9 @@ export default function WorkshopPalettePanel({
         {WORKSHOP_PALETTES.map((palette) => {
           const active = activePaletteId === palette.id;
           return (
-            <motion.button
+            <button
               key={palette.id}
               type="button"
-              whileHover={{ scale: 1.02 }}
               onClick={() => onSelectPalette(palette.id, palette.colors)}
               aria-pressed={active}
               className={`flex w-full items-center justify-between gap-2 px-2.5 py-2 text-left ${
@@ -69,11 +67,11 @@ export default function WorkshopPalettePanel({
               }`}
             >
               <span className="min-w-0">
-                <span className="block truncate font-sans text-[11px] font-normal text-inherit">
+                <span className="block truncate font-sans text-sm font-normal text-inherit">
                   {paletteTitle(palette.id, palette.name)}
                 </span>
                 <span
-                  className={`block truncate font-sans text-[9px] font-normal uppercase tracking-wide ${
+                  className={`block truncate font-sans text-2xs font-normal uppercase tracking-wide ${
                     active ? "text-white/80" : "text-stone-400"
                   }`}
                 >
@@ -91,7 +89,7 @@ export default function WorkshopPalettePanel({
                   />
                 ))}
               </span>
-            </motion.button>
+            </button>
           );
         })}
       </div>

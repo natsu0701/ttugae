@@ -75,7 +75,7 @@ export const COMMUNITY_PATTERNS: CommunityPattern[] = [
       needle: "코바늘 3호",
       duration: "약 4시간",
       review:
-        "키링 고리 코 부분만 짧은 뜨기로 촘촘하게 마무리했어요. 선물용으로 3개 더 떴습니다🍒",
+        "키링 고리 코 부분만 짧은 뜨기로 촘촘하게 마무리했어요. 선물용으로 3개 더 떴습니다.",
     },
     needle: { needleType: "crochet", needleSize: "3호", needleDetail: "standard" },
     grid: [
@@ -109,7 +109,7 @@ export const COMMUNITY_PATTERNS: CommunityPattern[] = [
       needle: "대바늘 4.5mm",
       duration: "2주",
       review:
-        "색 변경 구간에서 코 수 맞추기가 조금 헷갈렸는데, 완성하니 너무 뿌듯해요. 길이는 목에 두른 뒤 원하는 만큼 더 뜨면 됩니다😊",
+        "색 변경 구간에서 코 수 맞추기가 조금 헷갈렸는데, 완성하니 너무 뿌듯해요. 길이는 목에 두른 뒤 원하는 만큼 더 뜨면 됩니다.",
     },
     needle: { needleType: "knitting", needleSize: "4.5mm", needleDetail: "circular" },
     grid: [
@@ -191,7 +191,7 @@ export const COMMUNITY_PATTERNS: CommunityPattern[] = [
     publishedAt: "2026.05.02",
     hasAttachedPattern: true,
     finishedImage: "completed_heart.png",
-    finishedCaption: "코스터 4장 세트로 떠서 친구들에게 나눠줬어요♥",
+    finishedCaption: "코스터 4장 세트로 떠서 친구들에게 나눠줬어요.",
     finishedDetail: {
       yarn: "면 실 3합 (코랄·화이트)",
       needle: "코바늘 4호",
@@ -230,7 +230,7 @@ export const COMMUNITY_PATTERNS: CommunityPattern[] = [
       needle: "대바늘 4.5mm",
       duration: "2주",
       review:
-        "소매 부분 코줄임이 헷갈렸는데 뜨니 코칭 덕분에 완성했네요😊 몸판은 여유 있게, 소매는 14단 더 늘리면 길이감이 딱 좋아요.",
+        "소매 부분 코줄임이 헷갈렸는데 뜨니 코칭 덕분에 완성했네요. 몸판은 여유 있게, 소매는 14단 더 늘리면 길이감이 딱 좋아요.",
     },
     needle: { needleType: "knitting", needleSize: "4.5mm", needleDetail: "circular" },
     grid: [
@@ -329,7 +329,7 @@ export const COMMUNITY_PATTERNS: CommunityPattern[] = [
       needle: "대바늘 2.5mm",
       duration: "5일",
       review:
-        "발등 게이지만 맞춰 두면 길이 조절이 쉽습니다. 한 짝 뜨고 나서 코 수를 적어 두면 짝이 안 맞을 일이 없어요.",
+        "발등 게이지(Gauge)만 맞춰 두면 길이 조절이 쉽습니다. 한 짝 뜨고 나서 코 수를 적어 두면 짝이 안 맞을 일이 없어요.",
     },
     needle: { needleType: "knitting", needleSize: "2.5mm", needleDetail: "dpn" },
     grid: [

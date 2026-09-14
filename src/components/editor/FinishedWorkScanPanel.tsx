@@ -85,8 +85,8 @@ export default function FinishedWorkScanPanel({
 
   return (
     <div className={`${editorPanel} p-4`}>
-      <p className="mb-1 font-sans text-sm font-bold text-white">{t("editor.scanTitle")}</p>
-      <p className="mb-3 font-seoyun text-[11px] font-normal leading-snug text-stone-400">
+      <p className="mb-1 font-sans text-base font-bold text-white">{t("editor.scanTitle")}</p>
+      <p className="mb-3 font-seoyun text-sm font-normal leading-snug text-stone-400">
         {t("editor.scanHint")}
       </p>
 
@@ -106,7 +106,7 @@ export default function FinishedWorkScanPanel({
               key={photo.file}
               type="button"
               onClick={() => pickProjectPhoto(photo.file, photo.label)}
-              className={`rounded-full px-2.5 py-1 font-sans text-[10px] ${
+              className={`rounded-full px-2.5 py-1 font-sans text-sm ${
                 active ? editorChromeBtnActive : editorChromeBtn
               }`}
             >
@@ -120,7 +120,7 @@ export default function FinishedWorkScanPanel({
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className={`${editorChromeBtn} flex flex-1 items-center justify-center gap-1.5 px-3 py-2 font-sans text-[11px]`}
+          className={`${editorChromeBtn} flex flex-1 items-center justify-center gap-1.5 px-3 py-2 font-sans text-sm`}
         >
           <ImageFillIcon className="h-3.5 w-3.5" />
           {t("common.photoUpload")}
@@ -129,19 +129,19 @@ export default function FinishedWorkScanPanel({
           type="button"
           onClick={() => void runScan()}
           disabled={busy}
-          className={`${editorChromeBtnActive} flex flex-1 items-center justify-center gap-1.5 px-3 py-2 font-sans text-[11px] disabled:opacity-60`}
+          className={`${editorChromeBtnActive} flex flex-1 items-center justify-center gap-1.5 px-3 py-2 font-sans text-sm disabled:opacity-60`}
         >
           {busy ? <SpinnerFillIcon className="h-3.5 w-3.5 animate-spin" /> : null}
           {busy ? t("editor.scanBusy") : t("editor.scanRun")}
         </button>
       </div>
 
-      <p className="mt-2 truncate font-sans text-[10px] text-stone-400">
+      <p className="mt-2 truncate font-sans text-sm text-stone-400">
         {sourceLabel || t("editor.scanNoPhoto")}
       </p>
 
       {error ? (
-        <p className="mt-3 font-seoyun text-[11px] leading-snug text-stone-300">{error}</p>
+        <p className="mt-3 font-seoyun text-sm leading-snug text-stone-300">{error}</p>
       ) : null}
 
       {result ? (
@@ -149,7 +149,7 @@ export default function FinishedWorkScanPanel({
           {result.messages.map((message) => (
             <p
               key={message}
-              className="font-seoyun text-[11px] font-normal leading-relaxed text-stone-200"
+              className="font-seoyun text-sm font-normal leading-relaxed text-stone-200"
             >
               {message}
             </p>
@@ -158,7 +158,7 @@ export default function FinishedWorkScanPanel({
             <button
               type="button"
               onClick={applyCorrection}
-              className={`${editorChromeBtnActive} mt-1 flex w-full items-center justify-center gap-1.5 px-3 py-2 font-sans text-[11px]`}
+              className={`${editorChromeBtnActive} mt-1 flex w-full items-center justify-center gap-1.5 px-3 py-2 font-sans text-sm`}
             >
               <CheckFillIcon className="h-3.5 w-3.5" />
               {t("editor.scanAutoFix")}

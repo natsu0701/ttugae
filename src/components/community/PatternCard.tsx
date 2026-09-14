@@ -7,8 +7,6 @@ import {
 } from "../../data/communityPatterns.ts";
 import { useCommunityActions } from "../../context/CommunityActionsContext.tsx";
 import { getPatternPreviewModel } from "../../data/patternThumbnails.ts";
-import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
-import NeedleBadge from "./NeedleBadge.tsx";
 import PatternChartGrid from "./PatternChartGrid.tsx";
 import { displayAuthor, localizedPattern } from "../../utils/i18nContent.ts";
 import { appPath } from "../../utils/appPath.ts";
@@ -44,13 +42,15 @@ function FinishedHoverLayer({ pattern }: { pattern: CommunityPattern }) {
   const [failed, setFailed] = useState(false);
   const src = finishedImageUrl(pattern.finishedImage);
 
-  if (failed) return null;
+  if (failed) {
+    return <PatternGridPreview pattern={pattern} />;
+  }
 
   return (
     <img
       src={src}
       alt={t("community.finishedAltOf", { title: view.title })}
-      className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+      className="absolute inset-0 h-full w-full object-cover"
       loading="lazy"
       decoding="async"
       onError={() => setFailed(true)}
@@ -63,6 +63,7 @@ type PatternCardProps = {
   rank?: number;
   onImport?: (pattern: CommunityPattern) => void;
   onOpenFinished?: (pattern: CommunityPattern) => void;
+  onOpenAuthor?: (pattern: CommunityPattern) => void;
   showImportOverlay?: boolean;
 };
 
@@ -71,6 +72,7 @@ function PatternCard({
   rank,
   onImport,
   onOpenFinished,
+  onOpenAuthor,
   showImportOverlay = true,
 }: PatternCardProps) {
   const { t } = useTranslation();
@@ -98,14 +100,15 @@ function PatternCard({
       onOpenFinished(pattern);
       return;
     }
-    window.history.pushState({}, "", href);
+    window.history.pushState({ loungeNested: true }, "", href);
     window.dispatchEvent(new PopStateEvent("popstate"));
   };
 
   return (
     <article
-      className="group overflow-hidden rounded-3xl bg-white shadow-sm transition-all duration-300 hover:shadow-md"
+      className="group overflow-hidden rounded-xl bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
       onPointerEnter={() => setHoverPhoto(true)}
+      onPointerLeave={() => setHoverPhoto(false)}
     >
       <a
         href={href}
@@ -114,31 +117,15 @@ function PatternCard({
         aria-label={view.title}
       >
         <div className="relative aspect-square w-full overflow-hidden bg-stone-50">
-          <PatternGridPreview pattern={pattern} />
-          {hoverPhoto ? <FinishedHoverLayer pattern={pattern} /> : null}
-
-          {showImportOverlay && onImport ? (
-            <div className="absolute inset-0 z-[1] flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onImport(pattern);
-                }}
-                className="translate-y-2 rounded-2xl bg-white px-5 py-3 font-sans text-xs font-bold text-stone-950 shadow-md transition-transform duration-300 group-hover:translate-y-0 hover:bg-stone-100"
-                aria-label={t("community.importToEditor")}
-              >
-                {t("community.importToEditor")}
-              </button>
-            </div>
+          {hoverPhoto ? (
+            <PatternGridPreview pattern={pattern} />
           ) : (
-            <div className="pointer-events-none absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <FinishedHoverLayer pattern={pattern} />
           )}
 
           {rank != null && rank <= 10 ? (
             <span
-              className={`pointer-events-none absolute left-3.5 top-3.5 z-[2] rounded-lg px-2.5 py-1 font-sans text-sm font-bold text-white ${
+              className={`pointer-events-none absolute left-3.5 top-3.5 z-[2] rounded-lg px-2.5 py-1 font-sans text-base font-bold text-white ${
                 rank === 1
                   ? "bg-coral"
                   : rank === 2
@@ -151,51 +138,84 @@ function PatternCard({
               {t("community.rank", { rank })}
             </span>
           ) : (
-            <span className="pointer-events-none absolute left-3.5 top-3.5 z-[2] rounded-lg bg-stone-950/80 px-2.5 py-1 font-sans text-[10px] font-bold tracking-wider text-white backdrop-blur-sm">
+            <span className="pointer-events-none absolute left-3.5 top-3.5 z-[2] rounded-lg bg-stone-950/80 px-2.5 py-1 font-sans text-sm font-bold tracking-wider text-white backdrop-blur-sm">
               {sizeLabel}
             </span>
           )}
-          <NeedleBadge
-            spec={pattern.needle}
-            needleText={view.finishedDetail.needle}
-            className="pointer-events-none absolute bottom-3.5 right-3.5 z-[2] shadow-sm"
-          />
         </div>
 
         <div className="bg-white p-4">
-          <h3 className="line-clamp-1 font-sans text-sm font-bold text-stone-900 transition-colors group-hover:text-coral">
+          <h3 className="line-clamp-1 font-sans text-base font-bold text-stone-900 transition-colors group-hover:text-coral">
             {view.title}
           </h3>
-          <p className="mt-2 flex items-center gap-1.5 font-sans text-xs font-medium text-stone-500">
-            @{displayAuthor(t, pattern.author)}
-            <EquippedAuthorChip author={pattern.author} />
+          <p className="mt-2 flex items-center gap-1.5 font-sans text-sm font-medium text-stone-500">
+            <button
+              type="button"
+              className="hover:text-coral"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onOpenAuthor?.(pattern);
+              }}
+            >
+              @{displayAuthor(t, pattern.author)}
+            </button>
+            <span className="text-stone-300" aria-hidden>
+              |
+            </span>
+            <time dateTime={pattern.publishedAt}>{pattern.publishedAt}</time>
           </p>
+          <dl className="mt-3 grid grid-cols-2 gap-2 font-sans text-sm text-stone-500">
+            <div>
+              <dt className="text-stone-400">{t("community.yarnUsed")}</dt>
+              <dd className="mt-0.5 truncate font-medium text-stone-700">{view.finishedDetail.yarn}</dd>
+            </div>
+            <div>
+              <dt className="text-stone-400">{t("community.needleSize")}</dt>
+              <dd className="mt-0.5 truncate font-medium text-stone-700">{view.finishedDetail.needle}</dd>
+            </div>
+          </dl>
         </div>
       </a>
 
-      <div className="flex items-center justify-end gap-3 px-4 pb-4">
+      <div className="flex items-center justify-between gap-3 px-4 pb-4">
+        {showImportOverlay && onImport ? (
+          <button
+            type="button"
+            onClick={() => onImport(pattern)}
+            className="rounded-full bg-stone-900 px-3 py-1.5 font-sans text-sm font-bold text-white hover:bg-coral"
+          >
+            {t("community.importToEditor")}
+          </button>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center justify-end gap-3">
         <button
           type="button"
           onClick={() => toggleLike(pattern.id)}
-          className={`flex items-center gap-1.5 text-xs transition-colors ${
+          className={`flex items-center gap-1.5 text-sm ${
             liked ? "font-semibold text-coral" : "text-stone-400 hover:text-stone-600"
           }`}
           aria-pressed={liked}
+          aria-label={t("community.like")}
         >
           <HeartFillIcon className="h-3.5 w-3.5" filled={liked} />
-          <span>{likeCount}</span>
+          <span className="font-bold text-stone-800">{likeCount}</span>
         </button>
         <button
           type="button"
           onClick={() => toggleSave(pattern.id)}
-          className={`flex items-center gap-1.5 text-xs transition-colors ${
+          className={`flex items-center gap-1.5 text-sm ${
             saved ? "font-semibold text-stone-800" : "text-stone-400 hover:text-stone-600"
           }`}
           aria-pressed={saved}
+          aria-label={t("community.save")}
         >
           <BookmarkFillIcon className="h-3.5 w-3.5" filled={saved} />
-          <span>{saveCount}</span>
+          <span className="font-bold text-stone-800">{saveCount}</span>
         </button>
+        </div>
       </div>
     </article>
   );

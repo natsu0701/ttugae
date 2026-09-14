@@ -1,5 +1,5 @@
 /** 탭·필터: 기본 white → hover black → active coral + 에어브러시 섀도우 */
-export const softShadow = "shadow-[0_8px_30px_rgba(252,95,83,0.025)]";
+export const softShadow = "shadow-sm";
 
 /** 에디터 다크 크롬 — 버튼·패널 공통 중간 톤 */
 export const editorChromeTone =
@@ -23,7 +23,7 @@ export function tabButtonClass(active: boolean, variant: "fill" | "outline" = "f
 }
 
 export const tabButtonBase =
-  `rounded-full px-5 py-2.5 font-sans text-sm font-normal transition-colors duration-200 ${softShadow}`;
+  `rounded-full px-5 py-2.5 font-sans text-base font-normal leading-5 transition-colors duration-200 md:text-lg ${softShadow}`;
 
 export const tabButtonCompactBase =
-  `rounded-xl px-3 py-2 font-sans text-sm font-normal transition-colors duration-200 ${softShadow}`;
+  `rounded-xl px-3 py-2 font-sans text-base font-normal leading-5 transition-colors duration-200 md:text-lg ${softShadow}`;

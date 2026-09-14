@@ -51,7 +51,10 @@ export default function ColorChipMenu({
         title={yarn.label}
         onClick={() => {
           onSelect?.();
+        }}
+        onContextMenu={(e) => {
           if (variant === "selection") return;
+          e.preventDefault();
           setOpen((o) => !o);
         }}
         className={`relative flex items-center justify-center overflow-hidden transition-colors ${
@@ -82,14 +85,14 @@ export default function ColorChipMenu({
         <div className="absolute left-0 top-full z-50 mt-1 min-w-[7rem] rounded-xl border border-stone-800/80 bg-stone-900 p-1">
           <button
             type="button"
-            className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-stone-200 transition-colors hover:bg-stone-800 hover:text-white"
+            className="w-full rounded-lg px-3 py-2 text-left font-sans text-sm font-normal text-stone-200 transition-colors hover:bg-stone-800 hover:text-white"
             onClick={() => colorInputRef.current?.click()}
           >
             {t("common.change")}
           </button>
           <button
             type="button"
-            className="w-full rounded-lg px-3 py-2 text-left font-sans text-xs font-normal text-stone-200 transition-colors hover:bg-stone-800 hover:text-white"
+            className="w-full rounded-lg px-3 py-2 text-left font-sans text-sm font-normal text-stone-200 transition-colors hover:bg-stone-800 hover:text-white"
             onClick={() => {
               onDeleteFromCanvas(yarn.id);
               setOpen(false);

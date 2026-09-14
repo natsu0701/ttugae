@@ -6,8 +6,11 @@ import { type StoredPattern } from "./types/storedPattern.ts";
 import { getPatternEditorGrid } from "./data/patternThumbnails.ts";
 import type { CommunityPattern } from "./data/communityPatterns.ts";
 import { CommunityActionsProvider } from "./context/CommunityActionsContext.tsx";
+import { UnsavedChangesProvider, useUnsavedChanges } from "./context/UnsavedChangesContext.tsx";
 import AppShell, { type AppNavPage } from "./components/layout/AppShell.tsx";
 import Toast from "./components/ui/Toast.tsx";
+import ConfirmDialog from "./components/ui/ConfirmDialog.tsx";
+import EditorEntryModal from "./components/ui/EditorEntryModal.tsx";
 import YarnStitchTrail from "./components/effects/YarnStitchTrail.tsx";
 import { saveShareDraft } from "./utils/shareDraft.ts";
 import { openShareDraftFromPatterns } from "./utils/createShareDraft.ts";
@@ -24,13 +27,21 @@ import {
   saveAuthSession,
 } from "./utils/authStorage.ts";
 import { clearProfile } from "./utils/profileStorage.ts";
-import {
-  consumeNavReturn,
-  resolvePathFallback,
-  setNavReturn,
-} from "./utils/navReturn.ts";
+import { consumeNavReturn, goBack, resolvePathFallback, setNavReturn } from "./utils/navReturn.ts";
+import { closeLoungeFilters } from "./utils/communityTabEvent.ts";
 import { appPath, currentRouteHref, routePath } from "./utils/appPath.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
+import {
+  ACCOUNTS_CHANGED_EVENT,
+  addAccount,
+  clearActiveAccount,
+  ensureActiveAccount,
+  loadAccounts,
+  loadActiveAccount,
+  switchAccount,
+  type UserAccount,
+} from "./utils/accountStorage.ts";
+import { currentUserAvatar } from "./utils/identity.ts";
 
 const PatternEditor = lazy(() => import("./PatternEditor.tsx"));
 const MyPage = lazy(() => import("./MyPage.tsx"));
@@ -89,15 +100,30 @@ function AppRoutes() {
   );
   const [isLoggedIn, setIsLoggedIn] = useState(() => loadAuthSession());
   const [showLogin, setShowLogin] = useState(false);
+  const [editorEntryOpen, setEditorEntryOpen] = useState(false);
+  const [loginMode, setLoginMode] = useState<"login" | "add">("login");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activePatternId, setActivePatternId] = useState<string | null>(null);
   const [incomingShare, setIncomingShare] = useState<StoredPattern | null>(null);
   const [patterns, setPatterns] = useState<StoredPattern[]>(() => loadStoredPatterns());
+  const [accounts, setAccounts] = useState<UserAccount[]>(() => loadAccounts());
+  const [activeAccount, setActiveAccount] = useState(() => loadActiveAccount());
+  const { pending, resolveLeave } = useUnsavedChanges();
 
   const persistPatterns = useCallback((next: StoredPattern[]) => {
     saveStoredPatterns(next);
     setPatterns(next);
   }, []);
+
+  const refreshAccounts = useCallback(() => {
+    setAccounts(loadAccounts());
+    setActiveAccount(loadActiveAccount());
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener(ACCOUNTS_CHANGED_EVENT, refreshAccounts);
+    return () => window.removeEventListener(ACCOUNTS_CHANGED_EVENT, refreshAccounts);
+  }, [refreshAccounts]);
 
   const showToast = useCallback((message: string) => {
     setToastMessage(message);
@@ -137,28 +163,11 @@ function AppRoutes() {
   const leaveEditor = useCallback(() => {
     setIncomingShare(null);
     setActivePatternId(null);
-    const target =
-      consumeNavReturn() ??
-      (isLoggedIn
-        ? { view: "mypage" as const, path: "/mypage" }
-        : { view: "landing" as const, path: "/" });
-    if (target.view === "editor") {
-      navigate(isLoggedIn ? "mypage" : "landing");
-      return;
-    }
-    navigate(target.view, target.path, true);
-  }, [isLoggedIn, navigate]);
+    goBack(isLoggedIn ? "/mypage" : "/");
+  }, [isLoggedIn]);
 
   const leaveCreatePost = useCallback(() => {
-    const target =
-      consumeNavReturn() ?? resolvePathFallback(window.location.pathname);
-    if (target.view === "editor") {
-      setView("editor");
-      commitPath(target.path ?? "/editor", true);
-      return;
-    }
-    setView(target.view);
-    commitPath(target.path ?? pathFromView(target.view), true);
+    goBack(resolvePathFallback(window.location.pathname).path ?? "/community");
   }, []);
 
   const requestMypage = useCallback(() => {
@@ -179,20 +188,39 @@ function AppRoutes() {
     saveAuthSession();
     setIsLoggedIn(true);
     setShowLogin(false);
+    if (loginMode === "add") {
+      addAccount({});
+    } else if (!loadActiveAccount()) {
+      const list = loadAccounts();
+      if (list[0]) switchAccount(list[0].id);
+      else ensureActiveAccount();
+    }
+    setLoginMode("login");
+    refreshAccounts();
+    showToast(t("toast.loggedIn"));
   };
 
   const handleLogout = () => {
     clearAuthSession();
+    clearActiveAccount();
     setIsLoggedIn(false);
+    refreshAccounts();
     navigate("landing");
   };
 
   const handleDeleteAccount = () => {
     clearAuthSession();
     clearProfile();
+    clearActiveAccount();
     setIsLoggedIn(false);
+    refreshAccounts();
     navigate("landing");
     showToast(t("toast.accountDeleted"));
+  };
+
+  const handleSwitchAccount = (id: string) => {
+    switchAccount(id);
+    refreshAccounts();
   };
 
   const importCommunityPattern = (pattern: CommunityPattern) => {
@@ -345,6 +373,14 @@ function AppRoutes() {
           />
         </Suspense>
         <Toast message={toastMessage ?? ""} visible={Boolean(toastMessage)} />
+        <ConfirmDialog
+          open={pending}
+          title={t("unsaved.title")}
+          body={t("unsaved.body")}
+          onConfirm={() => resolveLeave("save")}
+          onDiscard={() => resolveLeave("discard")}
+          onCancel={() => resolveLeave("cancel")}
+        />
       </>
     );
   }
@@ -370,7 +406,12 @@ function AppRoutes() {
               setIncomingShare(null);
               setActivePatternId(null);
               consumeNavReturn();
-              requestMypage();
+              if (!isLoggedIn) {
+                showToast(t("toast.loginRequired"));
+                setShowLogin(true);
+                return;
+              }
+              navigate("mypage", "/mypage/patterns");
             }}
             onSave={(pattern) => {
               const existing = patterns.slice();
@@ -388,6 +429,14 @@ function AppRoutes() {
         {showLogin && (
           <LoginModal onClose={() => setShowLogin(false)} onLogin={handleLogin} />
         )}
+        <ConfirmDialog
+          open={pending}
+          title={t("unsaved.title")}
+          body={t("unsaved.body")}
+          onConfirm={() => resolveLeave("save")}
+          onDiscard={() => resolveLeave("discard")}
+          onCancel={() => resolveLeave("cancel")}
+        />
       </>
     );
   }
@@ -398,18 +447,36 @@ function AppRoutes() {
       <AppShell
         currentPage={shellPage}
         isLoggedIn={isLoggedIn}
+        avatarUrl={currentUserAvatar()}
+        accounts={accounts}
+        activeAccountId={activeAccount?.id ?? null}
         onGoHome={() => navigate("landing")}
-        onGoCommunity={() => navigate("community")}
+        onGoCommunity={() => {
+          closeLoungeFilters();
+          navigate("community");
+        }}
         onGoMypage={requestMypage}
-        onGoEditor={() => openEditor({ patternId: null, share: null })}
-        onLogin={() => setShowLogin(true)}
+        onGoEditor={() => setEditorEntryOpen(true)}
+        onLogin={() => {
+          setLoginMode("login");
+          setShowLogin(true);
+        }}
+        onLogout={handleLogout}
+        onAddAccount={() => {
+          setLoginMode("add");
+          setShowLogin(true);
+        }}
+        onSwitchAccount={handleSwitchAccount}
       >
         {view === "mypage" && isLoggedIn && (
           <Suspense fallback={<RouteFallback />}>
             <MyPage
               patterns={patterns}
               onLogout={handleLogout}
-              onAddAccount={() => setShowLogin(true)}
+              onAddAccount={() => {
+                setLoginMode("add");
+                setShowLogin(true);
+              }}
               onDeleteAccount={handleDeleteAccount}
               onCreateNew={() => openEditor({ patternId: null, share: null })}
               onOpenPattern={(id) => openEditor({ patternId: id, share: null })}
@@ -446,21 +513,44 @@ function AppRoutes() {
           </Suspense>
         )}
         {view === "landing" && (
-          <LandingPage onOpenEditor={() => openEditor({ patternId: null, share: null })} />
+          <LandingPage onOpenEditor={() => setEditorEntryOpen(true)} />
         )}
       </AppShell>
       <Toast message={toastMessage ?? ""} visible={Boolean(toastMessage)} />
       {showLogin && (
         <LoginModal onClose={() => setShowLogin(false)} onLogin={handleLogin} />
       )}
+      <EditorEntryModal
+        open={editorEntryOpen}
+        patterns={patterns}
+        onClose={() => setEditorEntryOpen(false)}
+        onCreateNew={() => {
+          setEditorEntryOpen(false);
+          openEditor({ patternId: null, share: null });
+        }}
+        onLoadExisting={(id) => {
+          setEditorEntryOpen(false);
+          openEditor({ patternId: id, share: null });
+        }}
+      />
+      <ConfirmDialog
+        open={pending}
+        title={t("unsaved.title")}
+        body={t("unsaved.body")}
+        onConfirm={() => resolveLeave("save")}
+        onDiscard={() => resolveLeave("discard")}
+        onCancel={() => resolveLeave("cancel")}
+      />
     </>
   );
 }
 
 export default function App() {
   return (
-    <CommunityActionsProvider>
-      <AppRoutes />
-    </CommunityActionsProvider>
+    <UnsavedChangesProvider>
+      <CommunityActionsProvider>
+        <AppRoutes />
+      </CommunityActionsProvider>
+    </UnsavedChangesProvider>
   );
 }

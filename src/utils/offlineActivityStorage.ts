@@ -12,7 +12,8 @@ import {
   meetupRegionScore,
   parseActivityRegion,
 } from "../data/offlineCommunity.ts";
-import { loadProfile, saveProfileRegion } from "./profileStorage.ts";
+import { saveProfileRegion, loadProfile } from "./profileStorage.ts";
+import { currentUserHandle } from "./identity.ts";
 import { backupProgressRowOnCheckin } from "./editorProgressStorage.ts";
 
 const MEETUP_STORE_KEY = "meetup_store";
@@ -71,8 +72,7 @@ function writeJson(key: string, value: unknown) {
 }
 
 export function currentUserId() {
-  const profile = loadProfile();
-  return profile.handle?.trim() || profile.nickname?.trim() || "ttugae-user";
+  return currentUserHandle();
 }
 
 function encodeTicketPayload(eventId: string, userId: string) {
@@ -108,6 +108,7 @@ export function normalizeMeetup(raw: LooseMeetup): KnittingMeetup {
     datetime: raw.datetime,
     prep: raw.prep,
     custom: raw.custom,
+    hostHandle: raw.hostHandle,
   };
 }
 
@@ -204,10 +205,39 @@ export function joinMeetup(meetupId: string): boolean {
 }
 
 export function saveCustomMeetup(meetup: KnittingMeetup): KnittingMeetup[] {
-  const next = [normalizeMeetup(meetup), ...loadMeetupStore()];
+  const hostHandle = meetup.hostHandle || currentUserId();
+  const next = [normalizeMeetup({ ...meetup, custom: true, hostHandle }), ...loadMeetupStore()];
   saveMeetupStore(next);
   persistReservedIds(Array.from(new Set([...loadReservedMeetupIds(), meetup.meetupId])));
   return next;
+}
+
+export function ensureHostedMeetup(handle = currentUserId()): KnittingMeetup {
+  const store = loadMeetupStore();
+  const existing = store.find(
+    (meetup) => meetup.hostHandle === handle || (meetup.custom && meetup.memberIds[0] === handle),
+  );
+  if (existing) {
+    persistReservedIds(Array.from(new Set([...loadReservedMeetupIds(), existing.meetupId])));
+    return existing;
+  }
+  const meetup = normalizeMeetup({
+    meetupId: `mt-host-${handle}`,
+    title: "내가 주최한 뜨개 모임",
+    region: loadActivityRegion(),
+    requiredNeedle: "바늘 자유",
+    requiredYarn: "실 자유",
+    maxCapacity: 6,
+    currentMembers: 1,
+    memberIds: [handle],
+    place: "활동 지역 카페",
+    datetime: "일정 조율 중",
+    custom: true,
+    hostHandle: handle,
+  });
+  saveMeetupStore([meetup, ...store]);
+  persistReservedIds(Array.from(new Set([...loadReservedMeetupIds(), meetup.meetupId])));
+  return meetup;
 }
 
 export function meetupJoinedCount(meetup: KnittingMeetup): number {
@@ -325,7 +355,10 @@ export function loadJoinedMeetups(): KnittingMeetup[] {
   const ids = new Set(loadReservedMeetupIds());
   const userId = currentUserId();
   return loadMeetupStore().filter(
-    (meetup) => ids.has(meetup.meetupId) || meetup.memberIds.includes(userId),
+    (meetup) =>
+      ids.has(meetup.meetupId) ||
+      meetup.memberIds.includes(userId) ||
+      meetup.hostHandle === userId,
   );
 }
 

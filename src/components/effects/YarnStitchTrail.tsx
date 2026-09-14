@@ -16,15 +16,48 @@ const RECORD_THROTTLE_MS = 24;
 const BASE_COLOR = "#FC5F53";
 const HALO_COLOR = "#FF8A9B";
 const MAX_OPACITY = 0.45;
+const POINTER_QUERY = "(hover: hover), (any-hover: hover), (pointer: fine), (any-pointer: fine)";
 
-/** 커스텀 커서 핫스팟 = 바늘 끝(궤적 시작점) */
 export const CURSOR_HOTSPOT = { x: 21, y: 5 } as const;
 
-function detectTouchDevice(): boolean {
-  return (
-    window.matchMedia("(pointer: coarse)").matches ||
-    !window.matchMedia("(pointer: fine)").matches
-  );
+function canDrawYarnTrail(): boolean {
+  if (typeof window === "undefined") return false;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  return window.matchMedia(POINTER_QUERY).matches;
+}
+
+function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  if (points.length < 2) return;
+
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+
+  for (let index = 1; index < points.length; index += 1) {
+    const point = points[index];
+    const prevPoint = points[index - 1];
+    const ratio = index / points.length;
+    const opacity = Math.max(0, ratio * MAX_OPACITY);
+    const strokeWidth = 1.2 + ratio * 4.0;
+
+    ctx.strokeStyle = HALO_COLOR;
+    ctx.globalAlpha = opacity * 0.4;
+    ctx.lineWidth = strokeWidth * 1.4;
+    ctx.beginPath();
+    ctx.moveTo(prevPoint.x, prevPoint.y);
+    ctx.lineTo(point.x, point.y);
+    ctx.stroke();
+
+    ctx.strokeStyle = BASE_COLOR;
+    ctx.globalAlpha = opacity;
+    ctx.lineWidth = strokeWidth;
+    ctx.beginPath();
+    ctx.moveTo(prevPoint.x, prevPoint.y);
+    ctx.lineTo(point.x, point.y);
+    ctx.stroke();
+  }
+
+  ctx.globalAlpha = 1;
 }
 
 type YarnStitchTrailProps = {
@@ -32,34 +65,96 @@ type YarnStitchTrailProps = {
 };
 
 function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
-  const [isTouchDevice] = useState(detectTouchDevice);
+  const [pointerOk, setPointerOk] = useState(canDrawYarnTrail);
   const [prefEnabled, setPrefEnabled] = useState(loadYarnTrailEnabled);
 
   const pointsRef = useRef<Point[]>([]);
   const cursorRef = useRef<HTMLDivElement>(null);
-  const segmentsRef = useRef<SVGGElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const lastRecordRef = useRef(0);
-  const lastMarkupRef = useRef("");
-  const inactive = disabled || !prefEnabled;
+  const lastSizeRef = useRef({ w: 0, h: 0 });
+  const drawingRef = useRef(false);
+  const inactive = disabled || !prefEnabled || !pointerOk;
 
   useEffect(() => subscribeYarnTrail(setPrefEnabled), []);
 
   useEffect(() => {
+    const media = window.matchMedia(POINTER_QUERY);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setPointerOk(canDrawYarnTrail());
+    media.addEventListener("change", sync);
+    reduced.addEventListener("change", sync);
+    window.addEventListener("pointermove", sync, { once: true, passive: true });
+    sync();
+    return () => {
+      media.removeEventListener("change", sync);
+      reduced.removeEventListener("change", sync);
+    };
+  }, []);
+
+  useEffect(() => {
     if (inactive) {
       pointsRef.current = [];
-      lastMarkupRef.current = "";
-      if (segmentsRef.current) segmentsRef.current.replaceChildren();
+      drawingRef.current = false;
+      if (rafIdRef.current != null) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      const ctx = ctxRef.current;
+      if (ctx) ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      document.body.classList.remove("yarn-trail-active");
       return;
     }
-    if (isTouchDevice) return;
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+    ctxRef.current = ctx;
 
     document.body.classList.add("yarn-trail-active");
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const syncSize = () => {
+      const nextW = window.innerWidth;
+      const nextH = window.innerHeight;
+      if (lastSizeRef.current.w === nextW && lastSizeRef.current.h === nextH) return;
+      lastSizeRef.current = { w: nextW, h: nextH };
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(nextW * dpr);
+      canvas.height = Math.floor(nextH * dpr);
+      canvas.style.width = `${nextW}px`;
+      canvas.style.height = `${nextH}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const stopLoop = () => {
+      if (rafIdRef.current != null) cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+      drawingRef.current = false;
+    };
+
+    const updateTrail = () => {
+      const now = Date.now();
+      const validPoints = pointsRef.current.filter((p) => now - p.time < POINT_LIFETIME);
+      pointsRef.current = validPoints;
+      paintTrail(ctx, validPoints);
+      if (validPoints.length === 0) {
+        stopLoop();
+        return;
+      }
+      rafIdRef.current = requestAnimationFrame(updateTrail);
+    };
+
+    const startLoop = () => {
+      if (drawingRef.current) return;
+      drawingRef.current = true;
+      rafIdRef.current = requestAnimationFrame(updateTrail);
+    };
+
+    const handleMouseMove = (e: PointerEvent | MouseEvent) => {
+      if ("pointerType" in e && e.pointerType === "touch") return;
       if (cursorRef.current) {
         cursorRef.current.style.transform = `translate3d(${e.clientX - CURSOR_HOTSPOT.x}px, ${e.clientY - CURSOR_HOTSPOT.y}px, 0)`;
       }
@@ -72,74 +167,45 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
         ...pointsRef.current,
         { x: e.clientX, y: e.clientY, time: now },
       ].slice(-MAX_POINTS);
+      startLoop();
     };
 
     const handleMouseLeave = () => {
       pointsRef.current = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stopLoop();
     };
 
-    const updateTrail = () => {
-      const now = Date.now();
-      const validPoints = pointsRef.current.filter((p) => now - p.time < POINT_LIFETIME);
-      pointsRef.current = validPoints;
-
-      const g = segmentsRef.current;
-      if (g) {
-        let markup = "";
-        for (let index = 1; index < validPoints.length; index += 1) {
-          const point = validPoints[index];
-          const prevPoint = validPoints[index - 1];
-          const ratio = index / validPoints.length;
-          const opacity = Math.max(0, ratio * MAX_OPACITY);
-          const strokeWidth = 1.2 + ratio * 4.0;
-          markup += `<g><line class="yarn-segment" x1="${prevPoint.x}" y1="${prevPoint.y}" x2="${point.x}" y2="${point.y}" stroke="${BASE_COLOR}" stroke-width="${strokeWidth}" opacity="${opacity}" /><line class="yarn-segment" x1="${prevPoint.x}" y1="${prevPoint.y}" x2="${point.x}" y2="${point.y}" stroke="${HALO_COLOR}" stroke-width="${strokeWidth * 1.4}" opacity="${opacity * 0.4}" /></g>`;
-        }
-        if (markup !== lastMarkupRef.current) {
-          lastMarkupRef.current = markup;
-          g.innerHTML = markup;
-        }
-      }
-
-      rafIdRef.current = requestAnimationFrame(updateTrail);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    syncSize();
+    window.addEventListener("pointermove", handleMouseMove, { passive: true });
+    window.addEventListener("resize", syncSize);
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
-    rafIdRef.current = requestAnimationFrame(updateTrail);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("pointermove", handleMouseMove);
+      window.removeEventListener("resize", syncSize);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
-      if (rafIdRef.current != null) cancelAnimationFrame(rafIdRef.current);
-      rafIdRef.current = null;
+      stopLoop();
       document.body.classList.remove("yarn-trail-active");
       pointsRef.current = [];
-      lastMarkupRef.current = "";
-      if (segmentsRef.current) segmentsRef.current.replaceChildren();
     };
-  }, [inactive, isTouchDevice]);
+  }, [inactive]);
 
-  if (inactive || isTouchDevice) {
+  if (inactive) {
     return null;
   }
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-[9998] h-full w-full overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-[9998] h-[100dvh] w-screen overflow-hidden yarn-trail-layer"
       aria-hidden
     >
-      <svg
+      <canvas
+        ref={canvasRef}
         className="yarn-trail-svg pointer-events-none h-full w-full"
         style={{ mixBlendMode: "normal" }}
         aria-hidden
-      >
-        <g
-          ref={segmentsRef}
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      />
 
       <div
         ref={cursorRef}

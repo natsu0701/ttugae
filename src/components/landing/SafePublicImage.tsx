@@ -21,7 +21,7 @@ function SafePublicImage({
   if (failed) {
     return (
       <div className={fallbackClassName}>
-        <p className="text-center font-sans text-sm font-normal text-gray-500">
+        <p className="text-center font-sans text-base font-normal text-gray-500">
           {fallbackLabel ?? src}
         </p>
       </div>

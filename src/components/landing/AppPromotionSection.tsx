@@ -134,12 +134,12 @@ function AppPromotionSection() {
           <div className="app-promo-pagination mt-5 flex justify-center gap-1.5 py-1.5" />
         </div>
 
-        <div className="mx-auto mt-20 max-w-3xl px-5 text-center md:mt-28 md:px-8">
-          <h2 className="flex flex-col gap-2 font-sans text-2xl font-bold leading-none text-black sm:text-3xl md:gap-2.5 md:text-4xl">
+        <div className="page-shell mt-20 text-center md:mt-28">
+          <h2 className="flex flex-col gap-2 font-sans text-2xl font-bold leading-none text-black sm:text-3xl md:gap-2.5 md:text-4xl lg:text-5xl">
             <span>{t("landing.promoLine1")}</span>
             <span>{t("landing.promoLine2")}</span>
           </h2>
-          <p className="mt-5 font-seoyun text-[1.5rem] font-normal leading-tight text-gray-700 md:text-[1.7rem]">
+          <p className="mt-5 font-seoyun text-2xl font-normal leading-tight text-gray-700 md:text-3xl">
             {t("landing.promoBody1")}
             <br />
             {t("landing.promoBody2")}
@@ -149,7 +149,7 @@ function AppPromotionSection() {
               href="https://apps.apple.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-10 items-center justify-center rounded-xl bg-stone-950 px-5 font-sans text-xs font-semibold text-white shadow-sm transition-colors hover:bg-stone-800"
+              className="inline-flex h-10 items-center justify-center rounded-xl bg-stone-950 px-5 font-sans text-sm font-semibold text-white shadow-sm transition-colors hover:bg-stone-800"
             >
               App Store
             </a>
@@ -157,7 +157,7 @@ function AppPromotionSection() {
               href="https://play.google.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-10 items-center justify-center rounded-xl border border-stone-200 bg-white px-5 font-sans text-xs font-semibold text-stone-700 shadow-sm transition-colors hover:bg-stone-50"
+              className="inline-flex h-10 items-center justify-center rounded-xl border border-stone-200 bg-white px-5 font-sans text-sm font-semibold text-stone-700 shadow-sm transition-colors hover:bg-stone-50"
             >
               Google Play
             </a>

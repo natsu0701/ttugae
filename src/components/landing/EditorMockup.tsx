@@ -12,7 +12,7 @@ function EditorMockup() {
         <span className="h-3 w-3 rounded-full bg-coral" />
         <span className="h-3 w-3 rounded-full bg-gray-200" />
         <span className="h-3 w-3 rounded-full bg-gray-400" />
-        <span className="ml-2 font-sans text-xs font-normal text-gray-500">
+        <span className="ml-2 font-sans text-sm font-normal text-gray-500">
           Pattern Editor
         </span>
       </div>
@@ -41,7 +41,7 @@ function EditorMockup() {
           {TOOL_SYMBOLS.map((s) => (
             <span
               key={s}
-              className="flex h-8 w-8 items-center justify-center rounded-xl bg-white font-sans text-sm font-normal text-gray-600"
+              className="flex h-8 w-8 items-center justify-center rounded-xl bg-white font-sans text-base font-normal text-gray-600"
             >
               {s}
             </span>

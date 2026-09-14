@@ -15,19 +15,19 @@ const BADGES: BadgeDef[] = [
     id: "first-pattern",
     labelKey: "mypage.titleFirst",
     descKey: "mypage.titleFirstDesc",
-    icon: "🧶",
+    icon: "Y",
   },
   {
     id: "stitches-100",
     labelKey: "mypage.title100",
     descKey: "mypage.title100Desc",
-    icon: "🏅",
+    icon: "B",
   },
   {
     id: "popular",
     labelKey: "mypage.titlePopular",
     descKey: "mypage.titlePopularDesc",
-    icon: "⭐",
+    icon: "S",
   },
 ];
 
@@ -60,7 +60,7 @@ function KnittingBadgesSection({ patterns, likedCount }: KnittingBadgesSectionPr
   return (
     <section className={`rounded-2xl bg-white p-6 ${softShadow}`}>
       <h3 className="font-sans text-base font-bold text-gray-900">{t("mypage.titlesTitle")}</h3>
-      <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">
+      <p className="mt-1 font-seoyun text-sm font-normal text-gray-500">
         {t("mypage.titlesHint")}
       </p>
 
@@ -82,9 +82,9 @@ function KnittingBadgesSection({ patterns, likedCount }: KnittingBadgesSectionPr
               >
                 {badge.icon}
               </span>
-              <p className="mt-3 font-sans text-sm font-bold">{t(badge.labelKey)}</p>
+              <p className="mt-3 font-sans text-base font-bold">{t(badge.labelKey)}</p>
               <p
-                className={`mt-1 font-seoyun text-[11px] font-normal ${
+                className={`mt-1 font-seoyun text-sm font-normal ${
                   isOn ? "text-white/85" : "text-gray-400"
                 }`}
               >
