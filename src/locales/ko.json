@@ -26,7 +26,9 @@
       "summary": "활동 요약",
       "meetups": "뜨개 모임",
       "statsDetail": "활동 요약",
-      "gauge": "내 게이지(Gauge)"
+      "gauge": "내 게이지(Gauge)",
+      "bag": "뜨개 가방",
+      "projects": "내 프로젝트"
     },
     "account": {
       "section": "계정",
@@ -81,7 +83,30 @@
       "createNew": "새 도안 만들기",
       "emptyTitle": "아직 저장된 도안이 없어요",
       "emptyDesc": "‘새 도안 만들기’로 첫 도안을 시작해 보세요.",
-      "deleteAria": "도안 삭제"
+      "deleteAria": "도안 삭제",
+      "search": "도안 검색",
+      "searchPh": "도안 제목으로 검색",
+      "allFolders": "모든 컬렉션",
+      "unfiled": "미분류",
+      "newFolderPh": "새 컬렉션 이름",
+      "addFolder": "컬렉션 추가",
+      "deleteFolder": "컬렉션 삭제",
+      "moveFolder": "컬렉션 이동"
+    },
+    "bag": {
+      "title": "뜨개 가방",
+      "subtitle": "내 실장고, 바늘 창고, 게이지(Gauge)를 한곳에서 확인하세요.",
+      "gaugeList": "게이지(Gauge) 목록",
+      "gaugeHint": "프로필에 저장한 10x10cm 코·단 수입니다."
+    },
+    "projects": {
+      "title": "내 프로젝트",
+      "subtitle": "진행 중인 도안과 완성작을 나눠 관리하세요.",
+      "inProgress": "진행 중",
+      "completed": "완성작",
+      "completeToggle": "완성 체크",
+      "progressEmpty": "진행 중인 프로젝트가 없어요.",
+      "completedEmpty": "완성으로 표시한 프로젝트가 없어요."
     },
     "finishedTitle": "내 완성작",
     "likedTitle": "좋아요 누른 도안",
@@ -405,14 +430,24 @@
       "paint": "칠하기",
       "eraser": "지우개",
       "checker": "격자 채우기",
-      "select": "범위 선택"
+      "select": "범위 선택",
+      "pan": "손바닥 이동"
     },
     "toolHints": {
       "paint": "셀을 클릭하거나 드래그하여 기호/색을 찍으세요",
       "eraser": "셀을 클릭하거나 드래그하여 지우세요",
       "checker": "바둑판처럼 한 칸 건너뛰며 교차로 채워집니다",
-      "select": "드래그로 범위를 지정한 뒤 ‘선택 영역 채우기’를 누르세요"
+      "select": "드래그로 범위를 지정한 뒤 ‘선택 영역 채우기’를 누르세요",
+      "pan": "드래그하거나 Space를 누른 채 드래그하면 캔버스를 이동합니다"
     },
+    "entryTitle": "도안 그리기",
+    "entryHint": "새 도안을 만들거나, 저장해 둔 내 도안을 불러오세요.",
+    "entryNew": "새 도안 만들기",
+    "entryLoad": "기존 내 도안 불러오기",
+    "entryEmpty": "저장된 도안이 없습니다. 새 도안으로 시작해 보세요.",
+    "needleShort": "바늘",
+    "yarnShort": "실",
+    "yarnUnset": "미지정",
     "stitches": {
       "empty": "비우기",
       "knit": "겉뜨기",
@@ -532,6 +567,8 @@
     "tteuniReplyStripe": "가로 줄무늬 도안이에요. 색마다 겉뜨기·안뜨기를 번갈아 넣었답니다.",
     "tteuniReplyAutumn": "가을 느낌 도안을 적용했어요. 리브와 겉뜨기 기호를 섞어 넣었어요.",
     "tteuniReplyDefault": "요청하신 도안에 맞게 뜨개 기호를 격자에 채웠어요! 저장해 보세요.",
+    "tteuniReplyColor": "가디건이라면 몸판은 따뜻한 베이스, 넥과 단은 한 톤 진한 포인트로 배색해 보세요. 추천 팔레트에서 세 색만 고르면 정돈되어 보입니다.",
+    "tteuniReplyEdit": "도안을 고칠 때는 코·단 수를 먼저 확인하고, 어긋난 단은 선택 도구로 잡아 다시 채우면 됩니다. 저장 전에 서술형 미리보기로 한 번 더 읽어 보세요.",
     "scanHint": "완성작 사진의 코·단 배치, 배색, 겉뜨기/안뜨기 흐름을 지금 격자 도안과 맞춰 봅니다.",
     "scanAutoFix": "사진에 맞춰 자동 보정",
     "yarnSearchHint": "브랜드·종류(메리노울, 모헤어 등)를 입력해 보세요",
@@ -597,7 +634,14 @@
     "sharedPattern": "공유된 도안",
     "postUploaded": "게시물이 업로드되었습니다!",
     "patternSaved": "도안이 저장되었습니다.",
-    "patternDeleted": "도안이 삭제되었습니다."
+    "patternDeleted": "도안이 삭제되었습니다.",
+    "loggedIn": "로그인되었습니다"
+  },
+  "chat": {
+    "widgetTitle": "뜨니챗(AI)",
+    "widgetHint": "배색, 도안 수정, 실 고르기를 물어보세요.",
+    "scrollTop": "맨 위로 이동",
+    "open": "뜨니챗(AI) 열기"
   },
   "login": {
     "title": "시작하기",
@@ -655,6 +699,8 @@
     "titlePh": "예: 베이지 가디건 완성!",
     "yarnNeedle": "사용 실 / 바늘 정보",
     "yarnNeedlePh": "예: 메리노 울 100%, 코바늘 4.5mm",
+    "yarnPh": "예: 메리노 울 100%",
+    "needlePh": "예: 코바늘 4.5mm",
     "review": "내용 (후기)",
     "reviewPh": "뜨면서 느낀 점, 팁, 소요 시간 등을 적어 주세요.",
     "previewAlt": "완성작 미리보기",
@@ -670,7 +716,9 @@
     "untitled": "새 도안",
     "done": "도안 포장이 완료되었어요",
     "toVault": "보관함으로 가기",
-    "backEditor": "에디터로 돌아가기"
+    "backEditor": "에디터로 돌아가기",
+    "collection": "저장할 컬렉션",
+    "packedChip": "도안 포장"
   },
   "offline": {
     "title": "오프라인 소식 및 모임",
@@ -1118,7 +1166,7 @@
     }
   },
   "unsaved": {
-    "title": "변경 사항을 저장하시겠습니까?",
+    "title": "저장하시겠습니까?",
     "body": "저장하지 않으면 수정한 내용이 사라집니다.",
     "save": "저장",
     "discard": "저장하지 않음"

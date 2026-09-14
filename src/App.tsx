@@ -10,6 +10,7 @@ import { UnsavedChangesProvider, useUnsavedChanges } from "./context/UnsavedChan
 import AppShell, { type AppNavPage } from "./components/layout/AppShell.tsx";
 import Toast from "./components/ui/Toast.tsx";
 import ConfirmDialog from "./components/ui/ConfirmDialog.tsx";
+import EditorEntryModal from "./components/ui/EditorEntryModal.tsx";
 import YarnStitchTrail from "./components/effects/YarnStitchTrail.tsx";
 import { saveShareDraft } from "./utils/shareDraft.ts";
 import { openShareDraftFromPatterns } from "./utils/createShareDraft.ts";
@@ -99,6 +100,7 @@ function AppRoutes() {
   );
   const [isLoggedIn, setIsLoggedIn] = useState(() => loadAuthSession());
   const [showLogin, setShowLogin] = useState(false);
+  const [editorEntryOpen, setEditorEntryOpen] = useState(false);
   const [loginMode, setLoginMode] = useState<"login" | "add">("login");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activePatternId, setActivePatternId] = useState<string | null>(null);
@@ -195,6 +197,7 @@ function AppRoutes() {
     }
     setLoginMode("login");
     refreshAccounts();
+    showToast(t("toast.loggedIn"));
   };
 
   const handleLogout = () => {
@@ -403,7 +406,12 @@ function AppRoutes() {
               setIncomingShare(null);
               setActivePatternId(null);
               consumeNavReturn();
-              requestMypage();
+              if (!isLoggedIn) {
+                showToast(t("toast.loginRequired"));
+                setShowLogin(true);
+                return;
+              }
+              navigate("mypage", "/mypage/patterns");
             }}
             onSave={(pattern) => {
               const existing = patterns.slice();
@@ -448,7 +456,7 @@ function AppRoutes() {
           navigate("community");
         }}
         onGoMypage={requestMypage}
-        onGoEditor={() => openEditor({ patternId: null, share: null })}
+        onGoEditor={() => setEditorEntryOpen(true)}
         onLogin={() => {
           setLoginMode("login");
           setShowLogin(true);
@@ -505,13 +513,26 @@ function AppRoutes() {
           </Suspense>
         )}
         {view === "landing" && (
-          <LandingPage onOpenEditor={() => openEditor({ patternId: null, share: null })} />
+          <LandingPage onOpenEditor={() => setEditorEntryOpen(true)} />
         )}
       </AppShell>
       <Toast message={toastMessage ?? ""} visible={Boolean(toastMessage)} />
       {showLogin && (
         <LoginModal onClose={() => setShowLogin(false)} onLogin={handleLogin} />
       )}
+      <EditorEntryModal
+        open={editorEntryOpen}
+        patterns={patterns}
+        onClose={() => setEditorEntryOpen(false)}
+        onCreateNew={() => {
+          setEditorEntryOpen(false);
+          openEditor({ patternId: null, share: null });
+        }}
+        onLoadExisting={(id) => {
+          setEditorEntryOpen(false);
+          openEditor({ patternId: id, share: null });
+        }}
+      />
       <ConfirmDialog
         open={pending}
         title={t("unsaved.title")}

@@ -8,14 +8,12 @@ import {
 import AiPreviewNavigator from "./components/editor/AiPreviewNavigator.tsx";
 import FinishedWorkScanPanel from "./components/editor/FinishedWorkScanPanel.tsx";
 import EditorRightSidebar from "./components/editor/EditorRightSidebar.tsx";
-import ColorPresetsSection from "./components/editor/ColorPresetsSection.tsx";
 import EditorHeader from "./components/editor/EditorHeader.tsx";
 import CastOnModal from "./components/editor/CastOnModal.tsx";
 import NeedleSpecFields from "./components/editor/NeedleSpecFields.tsx";
 import ChartTabs from "./components/editor/ChartTabs.tsx";
 import CanvasToolDock from "./components/editor/CanvasToolDock.tsx";
 import ColorChipMenu from "./components/editor/ColorChipMenu.tsx";
-import SelectionColorsPanel from "./components/editor/SelectionColorsPanel.tsx";
 import WorkshopPalettePanel from "./components/editor/WorkshopPalettePanel.tsx";
 import TteuniChatbot from "./components/editor/TteuniChatbot.tsx";
 import YarnSearchPopover from "./components/editor/YarnSearchPopover.tsx";
@@ -41,7 +39,6 @@ import {
 import {
   backBodyChart,
   CHART_PART_LABELS,
-  ensureBackBodyChart,
   frontBodyChart,
   newChartId,
   type ChartTargetPart,
@@ -49,11 +46,16 @@ import {
 } from "./types/knittingProject.ts";
 import { persistCurrentProgressRow } from "./utils/editorProgressStorage.ts";
 import { formatNeedleBadgeI18n } from "./utils/i18nContent.ts";
+import { useUnsavedChanges } from "./context/UnsavedChangesContext.tsx";
+import {
+  assignPatternCollection,
+  collectionIdForPattern,
+  loadCollections,
+} from "./utils/collectionStorage.ts";
 
 const MAX_GRID = 50;
-const PALETTE_PRESET_SLOTS = 4;
 
-type Tool = "paint" | "eraser" | "checker" | "select";
+type Tool = "paint" | "eraser" | "checker" | "select" | "pan";
 
 type PatternEditorProps = {
   initialPattern: {
@@ -150,11 +152,12 @@ function isCheckerCell(r: number, c: number) {
 export default function PatternEditor({
   initialPattern,
   onSave,
-  onShare: _onShare,
+  onShare,
   onExit,
   onGoDashboard,
 }: PatternEditorProps) {
   const { t } = useTranslation();
+  const { setDirty, registerSaver, requestLeave } = useUnsavedChanges();
   const seeded = initCharts(initialPattern);
   const defaultTitle = t("editor.defaultTitle");
   const [patternId] = useState<string>(
@@ -163,13 +166,12 @@ export default function PatternEditor({
   const [title, setTitle] = useState<string>(initialPattern?.title ?? defaultTitle);
   const [charts, setCharts] = useState<KnittingChart[]>(seeded.charts);
   const [activeChartId, setActiveChartId] = useState(seeded.activeChartId);
-  const [facesIndependent, setFacesIndependent] = useState(seeded.facesIndependent);
+  const [facesIndependent] = useState(seeded.facesIndependent);
   const [paletteYarns, setPaletteYarns] = useState<EditorYarn[]>(() =>
     paletteYarnsForGrid(initGrid(initialPattern).grid, initialPattern?.colorMap),
   );
   const [yarnSearchOpen, setYarnSearchOpen] = useState(false);
   const [patternCopyDone, setPatternCopyDone] = useState(false);
-  const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [activeWorkshopPaletteId, setActiveWorkshopPaletteId] = useState<string | null>(null);
   const [castOnOpen, setCastOnOpen] = useState(false);
   const [castOnMode, setCastOnMode] = useState<"replace" | "add" | "gauge">("replace");
@@ -180,6 +182,13 @@ export default function PatternEditor({
   const [activeColor, setActiveColor] = useState<string>("coral");
   const [activeStitch, setActiveStitch] = useState<string>("knit");
   const [tool, setTool] = useState<Tool>("paint");
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [spacePan, setSpacePan] = useState(false);
+  const [isPanning, setIsPanning] = useState(false);
+  const [saveCollectionId, setSaveCollectionId] = useState(() =>
+    collectionIdForPattern(initialPattern?.id ?? ""),
+  );
   const [selection, setSelection] = useState<{
     r0: number;
     c0: number;
@@ -194,7 +203,9 @@ export default function PatternEditor({
   );
   const [customH, setCustomH] = useState(String(seeded.charts[0]?.gridData.length ?? 14));
   const dragStart = useRef<{ r: number; c: number } | null>(null);
+  const panDrag = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const leftToolbarRef = useRef<HTMLElement>(null);
   const chatbotPanelRef = useRef<HTMLDivElement>(null);
   const sizeMenuRef = useRef<HTMLDivElement>(null);
@@ -206,6 +217,8 @@ export default function PatternEditor({
   const gridRows = grid.length;
   const gridCols = grid[0]?.length ?? 0;
 
+  const markDirty = useCallback(() => setDirty(true), [setDirty]);
+
   const patchActiveGrid = useCallback(
     (updater: (prev: EditorCell[][]) => EditorCell[][]) => {
       setCharts((prev) =>
@@ -215,8 +228,9 @@ export default function PatternEditor({
             : chart,
         ),
       );
+      setDirty(true);
     },
-    [activeChartId],
+    [activeChartId, setDirty],
   );
 
   const paletteYarnIds = useMemo(
@@ -236,6 +250,38 @@ export default function PatternEditor({
     };
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space" && !e.repeat) {
+        const tag = (e.target as HTMLElement | null)?.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        e.preventDefault();
+        setSpacePan(true);
+      }
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.code === "Space") setSpacePan(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      setZoom((z) => Math.min(3, Math.max(0.4, Number((z + delta).toFixed(2)))));
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
   const colorMap = useMemo(
@@ -280,24 +326,9 @@ export default function PatternEditor({
     if (activeColor === colorId) setActiveColor("white");
   }, [activeColor, patchActiveGrid]);
 
-  const applyColorPreset = useCallback(
-    (presetId: string, colors: [string, string, string, string]) => {
-      setActivePresetId(presetId);
-      setActiveWorkshopPaletteId(null);
-      setPaletteYarns((prev) =>
-        prev.map((yarn, index) =>
-          index < PALETTE_PRESET_SLOTS ? { ...yarn, hex: colors[index] } : yarn,
-        ),
-      );
-    },
-    [],
-  );
-
-  /** 공방 추천 팔레트 원터치 매핑 — 실 색상 3종을 한꺼번에 자동 전환 */
   const applyWorkshopPalette = useCallback(
     (paletteId: string, colors: [string, string, string]) => {
       setActiveWorkshopPaletteId(paletteId);
-      setActivePresetId(null);
       setPaletteYarns((prev) =>
         prev.map((yarn, index) =>
           index < colors.length
@@ -366,26 +397,6 @@ export default function PatternEditor({
     [charts],
   );
 
-  const handleFacesIndependentChange = useCallback(
-    (independent: boolean) => {
-      if (independent) {
-        setCharts((prev) => ensureBackBodyChart(prev));
-        setFacesIndependent(true);
-        return;
-      }
-      setFacesIndependent(false);
-      const active = charts.find((chart) => chart.id === activeChartId);
-      if (active?.targetPart !== "bodyBack") return;
-      const front = frontBodyChart(charts);
-      if (!front) return;
-      setActiveChartId(front.id);
-      setCustomW(String(front.gridData[0]?.length ?? 14));
-      setCustomH(String(front.gridData.length));
-      setSelection(null);
-    },
-    [activeChartId, charts],
-  );
-
   const applyCell = useCallback(
     (r: number, c: number) => {
       patchActiveGrid((prev) => {
@@ -429,6 +440,7 @@ export default function PatternEditor({
   }, [selection, activeColor, activeStitch, tool, patchActiveGrid]);
 
   const handlePointerDown = (r: number, c: number) => {
+    if (tool === "pan" || spacePan) return;
     if (tool === "paint" || tool === "eraser" || tool === "checker") {
       setIsDragging(true);
       applyCell(r, c);
@@ -503,16 +515,39 @@ export default function PatternEditor({
 
   const handleSave = () => {
     onSave(buildPatternPayload());
+    assignPatternCollection(patternId, saveCollectionId);
+    setDirty(false);
     setIsPackOpen(true);
   };
 
+  useEffect(() => {
+    registerSaver(() => {
+      onSave(buildPatternPayload());
+      assignPatternCollection(patternId, saveCollectionId);
+      setDirty(false);
+    });
+    return () => registerSaver(() => undefined);
+  }, [registerSaver, onSave, patternId, saveCollectionId, setDirty, title, charts, needle]);
+
   const handleShareToCommunity = () => {
-    onSave(buildPatternPayload());
-    setIsPackOpen(true);
+    const payload = buildPatternPayload();
+    onSave(payload);
+    assignPatternCollection(patternId, saveCollectionId);
+    setDirty(false);
+    onShare({
+      pattern: payload,
+      yarns: paletteYarns,
+      colorMap,
+      gridRows: payload.grid.length,
+      gridCols: payload.grid[0]?.length ?? payload.gridSize,
+      needle,
+    });
   };
 
   const handleGoVault = () => {
     onSave(buildPatternPayload());
+    assignPatternCollection(patternId, saveCollectionId);
+    setDirty(false);
     setIsPackOpen(false);
     onGoDashboard();
   };
@@ -604,7 +639,10 @@ export default function PatternEditor({
     >
       <EditorHeader
         title={title}
-        onTitleChange={setTitle}
+        onTitleChange={(next) => {
+          setTitle(next);
+          markDirty();
+        }}
         gridCols={gridCols}
         gridRows={gridRows}
         sizeMenuOpen={sizeMenuOpen}
@@ -616,20 +654,20 @@ export default function PatternEditor({
         onApplySize={applySize}
         onSave={handleSave}
         onShare={handleShareToCommunity}
-        onExit={onExit}
-        onGoMypage={onGoDashboard}
+        onExit={() => requestLeave(onExit)}
+        onAddChart={() => {
+          setCastOnMode("add");
+          setCastOnOpen(true);
+        }}
         sizeMenuRef={sizeMenuRef}
-        leftExtra={
+        needleLabel={formatNeedleBadgeI18n(t, needle)}
+        yarnLabel={usedYarns.map((y) => y.label).join(", ") || t("editor.yarnUnset")}
+        chartTabs={
           <ChartTabs
             charts={charts}
             activeChartId={activeChartId}
             facesIndependent={facesIndependent}
             onSelect={handleSelectChart}
-            onFacesIndependentChange={handleFacesIndependentChange}
-            onAdd={() => {
-              setCastOnMode("add");
-              setCastOnOpen(true);
-            }}
           />
         }
       />
@@ -701,7 +739,6 @@ export default function PatternEditor({
               {t("editor.gaugeButton")}
             </button>
 
-            {/* 기호 팔레트 바로 아랫단 — 전문 공방 매칭 내추럴 컬러 추천 칩 */}
             <WorkshopPalettePanel
               activePaletteId={activeWorkshopPaletteId}
               onSelectPalette={applyWorkshopPalette}
@@ -741,40 +778,62 @@ export default function PatternEditor({
               existingIds={paletteYarnIds}
             />
           </div>
-
-          <SelectionColorsPanel
-            usedYarns={usedYarns}
-            activeColorId={activeColor}
-            onSelectColor={setActiveColor}
-            onChangeColor={changeYarnColor}
-            onDeleteFromCanvas={deleteColorFromCanvas}
-          />
-
-          <ColorPresetsSection
-            activePresetId={activePresetId}
-            onApply={applyColorPreset}
-          />
         </aside>
 
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#F7F5F0]">
-        <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-4 md:p-8">
-        <div className="flex w-full max-w-full flex-col items-center justify-center px-1">
+        <div
+          ref={stageRef}
+          className={`flex min-h-0 flex-1 items-center justify-center overflow-hidden p-4 md:p-8 ${
+            tool === "pan" || spacePan
+              ? isPanning
+                ? "cursor-grabbing"
+                : "cursor-grab"
+              : ""
+          }`}
+          onPointerDown={(e) => {
+            if (tool !== "pan" && !spacePan) return;
+            e.currentTarget.setPointerCapture(e.pointerId);
+            setIsPanning(true);
+            panDrag.current = { x: e.clientX, y: e.clientY, panX: pan.x, panY: pan.y };
+          }}
+          onPointerMove={(e) => {
+            const drag = panDrag.current;
+            if (!drag) return;
+            setPan({
+              x: drag.panX + (e.clientX - drag.x),
+              y: drag.panY + (e.clientY - drag.y),
+            });
+          }}
+          onPointerUp={() => {
+            panDrag.current = null;
+            setIsPanning(false);
+          }}
+        >
+        <div
+          className="flex h-full w-full items-center justify-center"
+          style={{
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+            transformOrigin: "center center",
+          }}
+        >
           <div
             ref={canvasRef}
-            className="flex aspect-square w-full max-w-[min(100%,32rem)] items-center justify-center rounded-xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.06)]"
+            className="max-h-full max-w-full rounded-xl bg-white p-3 shadow-sm"
+            style={{
+              aspectRatio: `${gridCols} / ${gridRows}`,
+              width: gridCols >= gridRows ? "100%" : "auto",
+              height: gridRows > gridCols ? "100%" : "auto",
+            }}
           >
             <div
-              className="max-h-full max-w-full"
-              style={{
-                aspectRatio: `${gridCols} / ${gridRows}`,
-                width: gridCols >= gridRows ? "100%" : "auto",
-                height: gridRows > gridCols ? "100%" : "auto",
-              }}
+              className={`h-full w-full ${tool === "pan" || spacePan ? "pointer-events-none" : ""}`}
+              style={{ aspectRatio: `${gridCols} / ${gridRows}` }}
             >
               <div
                 className="grid h-full w-full gap-px rounded-xl bg-stone-200/70 p-1"
                 style={{
                   gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
+                  gridTemplateRows: `repeat(${gridRows}, minmax(0, 1fr))`,
                 }}
               >
                 {grid.map((row, r) =>
@@ -786,7 +845,7 @@ export default function PatternEditor({
                   <button
                     key={`${r}-${c}`}
                     type="button"
-                    className={`relative aspect-square w-full min-w-0 rounded-sm transition-colors ${
+                    className={`relative h-full w-full min-w-0 rounded-sm ${
                       gridCols > 30
                         ? "text-[6px]"
                         : gridCols > 20
@@ -835,6 +894,9 @@ export default function PatternEditor({
           hint={toolHint}
           hintOpen={toolHintOpen}
           onDismissHint={() => setToolHintOpen(false)}
+          zoom={zoom}
+          onZoomIn={() => setZoom((z) => Math.min(3, Number((z + 0.15).toFixed(2))))}
+          onZoomOut={() => setZoom((z) => Math.max(0.4, Number((z - 0.15).toFixed(2))))}
         />
         </main>
 
@@ -859,7 +921,14 @@ export default function PatternEditor({
               <p className="mb-3 font-seoyun text-[11px] font-normal text-stone-400">
                 {t("editor.needlePanelHint")}
               </p>
-              <NeedleSpecFields value={needle} onChange={setNeedle} tone="dark" />
+              <NeedleSpecFields
+                value={needle}
+                onChange={(next) => {
+                  setNeedle(next);
+                  markDirty();
+                }}
+                tone="dark"
+              />
             </div>
             <FinishedWorkScanPanel
               grid={grid}
@@ -905,6 +974,13 @@ export default function PatternEditor({
         isOpen={isPackOpen}
         onClose={() => setIsPackOpen(false)}
         patternTitle={title}
+        onTitleChange={(next) => {
+          setTitle(next);
+          markDirty();
+        }}
+        collections={loadCollections()}
+        collectionId={saveCollectionId}
+        onCollectionChange={setSaveCollectionId}
         onGoVault={handleGoVault}
       />
     </div>

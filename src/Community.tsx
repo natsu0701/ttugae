@@ -364,7 +364,7 @@ export default function Community({
       </section>
 
       {activeTab !== "offline" ? (
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+      <div className="fixed bottom-5 right-20 z-50 flex flex-col items-end gap-2">
         <span className="rounded-full bg-gray-100 px-3 py-1.5 font-sans text-xs font-normal text-gray-600">
           {t("community.shareFabLabel")}
         </span>

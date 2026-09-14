@@ -1,6 +1,17 @@
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
+import SmoothInput from "../ui/SmoothInput.tsx";
 import type { StoredPattern } from "../../types/storedPattern.ts";
+import {
+  addCollection,
+  assignPatternCollection,
+  collectionIdForPattern,
+  COLLECTIONS_CHANGED_EVENT,
+  deleteCollection,
+  loadCollections,
+  UNFILED_COLLECTION_ID,
+} from "../../utils/collectionStorage.ts";
 
 const COLOR_MAP: Record<string, string> = {
   coral: "#FC5F53",
@@ -54,6 +65,33 @@ export default function MyPatternsPanel({
   onDelete,
 }: MyPatternsPanelProps) {
   const { t } = useTranslation();
+  const [query, setQuery] = useState("");
+  const [folderId, setFolderId] = useState("all");
+  const [newFolder, setNewFolder] = useState("");
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    const refresh = () => setTick((n) => n + 1);
+    window.addEventListener(COLLECTIONS_CHANGED_EVENT, refresh);
+    return () => window.removeEventListener(COLLECTIONS_CHANGED_EVENT, refresh);
+  }, []);
+
+  const collections = useMemo(() => {
+    void tick;
+    return loadCollections();
+  }, [tick]);
+
+  const visible = useMemo(() => {
+      const q = query.trim().toLowerCase();
+    return patterns
+      .filter((pattern) => {
+        const assigned = collectionIdForPattern(pattern.id);
+        if (folderId !== "all" && assigned !== folderId) return false;
+        if (q && !pattern.title.toLowerCase().includes(q)) return false;
+        return true;
+      })
+      .sort((a, b) => b.updatedAt - a.updatedAt);
+  }, [folderId, patterns, query, tick]);
 
   const handleDelete = (id: string, title: string) => {
     if (window.confirm(t("common.deletePatternConfirm", { title }))) {
@@ -77,8 +115,82 @@ export default function MyPatternsPanel({
         </Button>
       </div>
 
-      {patterns.length === 0 ? (
-        <div className="rounded-2xl bg-gray-50 p-8 text-center">
+      <div className="mb-5 rounded-xl border border-stone-200 bg-white p-4">
+        <SmoothInput
+          label={t("mypage.patterns.search")}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={t("mypage.patterns.searchPh")}
+        />
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setFolderId("all")}
+            className={`rounded-full px-3 py-1.5 font-sans text-xs ${
+              folderId === "all" ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"
+            }`}
+          >
+            {t("mypage.patterns.allFolders")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setFolderId(UNFILED_COLLECTION_ID)}
+            className={`rounded-full px-3 py-1.5 font-sans text-xs ${
+              folderId === UNFILED_COLLECTION_ID ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"
+            }`}
+          >
+            {t("mypage.patterns.unfiled")}
+          </button>
+          {collections.map((folder) => (
+            <button
+              key={folder.id}
+              type="button"
+              onClick={() => setFolderId(folder.id)}
+              className={`rounded-full px-3 py-1.5 font-sans text-xs ${
+                folderId === folder.id ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"
+              }`}
+            >
+              {folder.name}
+            </button>
+          ))}
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <SmoothInput
+            value={newFolder}
+            onChange={(e) => setNewFolder(e.target.value)}
+            placeholder={t("mypage.patterns.newFolderPh")}
+            className="max-w-xs"
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            className="px-3 py-2 text-sm"
+            onClick={() => {
+              if (!newFolder.trim()) return;
+              addCollection(newFolder);
+              setNewFolder("");
+            }}
+          >
+            {t("mypage.patterns.addFolder")}
+          </Button>
+          {folderId !== "all" && folderId !== UNFILED_COLLECTION_ID ? (
+            <Button
+              type="button"
+              variant="ghost"
+              className="px-3 py-2 text-sm"
+              onClick={() => {
+                deleteCollection(folderId);
+                setFolderId("all");
+              }}
+            >
+              {t("mypage.patterns.deleteFolder")}
+            </Button>
+          ) : null}
+        </div>
+      </div>
+
+      {visible.length === 0 ? (
+        <div className="rounded-xl bg-gray-50 p-8 text-center">
           <p className="font-sans text-xl font-bold text-gray-900">
             {t("mypage.patterns.emptyTitle")}
           </p>
@@ -88,52 +200,61 @@ export default function MyPatternsPanel({
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {patterns
-            .slice()
-            .sort((a, b) => b.updatedAt - a.updatedAt)
-            .map((pattern) => (
-              <article
-                key={pattern.id}
-                className="flex flex-col gap-3 rounded-2xl bg-gray-50 p-4 transition-colors hover:bg-gray-100"
+          {visible.map((pattern) => (
+            <article key={pattern.id} className="flex flex-col gap-3 rounded-xl bg-gray-50 p-4">
+              <button
+                type="button"
+                onClick={() => onOpen(pattern.id)}
+                className="flex items-start gap-4 text-left"
               >
-                <button
-                  type="button"
-                  onClick={() => onOpen(pattern.id)}
-                  className="flex items-start gap-4 text-left"
-                >
-                  <PatternThumb pattern={pattern} />
-                  <div className="min-w-0 flex-1">
-                    <h3 className="truncate font-sans text-lg font-bold text-gray-900">
-                      {pattern.title}
-                    </h3>
-                    <p className="mt-1 font-sans text-xs font-normal text-gray-500">
-                      {formatDate(pattern.updatedAt)}
-                    </p>
-                    <p className="mt-2 font-sans text-sm font-normal text-gray-600">
-                      {pattern.gridSize}×{pattern.gridSize}
-                    </p>
-                  </div>
-                </button>
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="flex-1 py-2 text-sm"
-                    onClick={() => onOpen(pattern.id)}
-                  >
-                    {t("common.edit")}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="flex-1 py-2 text-sm text-gray-600"
-                    onClick={() => handleDelete(pattern.id, pattern.title)}
-                  >
-                    {t("common.delete")}
-                  </Button>
+                <PatternThumb pattern={pattern} />
+                <div className="min-w-0 flex-1">
+                  <h3 className="truncate font-sans text-lg font-bold text-gray-900">
+                    {pattern.title}
+                  </h3>
+                  <p className="mt-1 font-sans text-xs font-normal text-gray-500">
+                    {formatDate(pattern.updatedAt)}
+                  </p>
+                  <p className="mt-2 font-sans text-sm font-normal text-gray-600">
+                    {pattern.grid[0]?.length ?? pattern.gridSize}x{pattern.grid.length}
+                  </p>
                 </div>
-              </article>
-            ))}
+              </button>
+              <label className="font-sans text-xs text-stone-500">
+                {t("mypage.patterns.moveFolder")}
+                <select
+                  className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-sm text-stone-800"
+                  value={collectionIdForPattern(pattern.id)}
+                  onChange={(e) => assignPatternCollection(pattern.id, e.target.value)}
+                >
+                  <option value={UNFILED_COLLECTION_ID}>{t("mypage.patterns.unfiled")}</option>
+                  {collections.map((folder) => (
+                    <option key={folder.id} value={folder.id}>
+                      {folder.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="flex-1 py-2 text-sm"
+                  onClick={() => onOpen(pattern.id)}
+                >
+                  {t("common.edit")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="flex-1 py-2 text-sm text-gray-600"
+                  onClick={() => handleDelete(pattern.id, pattern.title)}
+                >
+                  {t("common.delete")}
+                </Button>
+              </div>
+            </article>
+          ))}
         </div>
       )}
     </div>

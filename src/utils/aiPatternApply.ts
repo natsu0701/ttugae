@@ -177,5 +177,25 @@ export function getTteuniReply(message: string, t: (key: string) => string): str
   if (text.includes("가을") || text.includes("autumn") || text.includes("fall") || text.includes("秋")) {
     return t("editor.tteuniReplyAutumn");
   }
+  if (
+    text.includes("배색") ||
+    text.includes("색상") ||
+    text.includes("컬러") ||
+    text.includes("color") ||
+    text.includes("palette") ||
+    text.includes("配色")
+  ) {
+    return t("editor.tteuniReplyColor");
+  }
+  if (
+    text.includes("수정") ||
+    text.includes("고치") ||
+    text.includes("편집") ||
+    text.includes("edit") ||
+    text.includes("fix") ||
+    text.includes("直し")
+  ) {
+    return t("editor.tteuniReplyEdit");
+  }
   return t("editor.tteuniReplyDefault");
 }

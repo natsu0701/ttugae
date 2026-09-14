@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PatternCard from "./components/community/PatternCard.tsx";
+import KnitBagPanel from "./components/mypage/KnitBagPanel.tsx";
+import MyProjectsPanel from "./components/mypage/MyProjectsPanel.tsx";
 import MyPatternsPanel from "./components/mypage/MyPatternsPanel.tsx";
 import MyMeetupsPanel from "./components/mypage/MyMeetupsPanel.tsx";
 import FinishedWorksGallery from "./components/mypage/FinishedWorksGallery.tsx";
@@ -56,6 +58,8 @@ import {
   WithdrawFillIcon,
   PencilFillIcon,
   CompassFillIcon,
+  BagFillIcon,
+  FolderFillIcon,
 } from "./components/icons/FillIcons.tsx";
 import {
   FOLLOW_CHANGED_EVENT,
@@ -71,12 +75,16 @@ import { loadKnitCalendarEvents, loadKnitMinutes } from "./utils/knittingLogStor
 import { getAchievementBadge } from "./data/achievementBadges.ts";
 import { loadEquippedBadgeId, saveEquippedBadgeId } from "./utils/equippedBadgeStorage.ts";
 import { badgeName } from "./utils/i18nContent.ts";
+import { mypagePathForTab, mypageTabFromPath, type MyPageRouteTab } from "./utils/mypageTab.ts";
+import { appPath } from "./utils/appPath.ts";
 
 export type MyPageTab =
   | "profile"
   | "summary"
   | "meetups"
+  | "bag"
   | "gauge"
+  | "projects"
   | "patterns"
   | "finished"
   | "liked"
@@ -87,8 +95,10 @@ const NAV_TABS: { id: MyPageTab; Icon: typeof ProfileFillIcon; labelKey: string 
   { id: "profile", Icon: ProfileFillIcon, labelKey: "mypage.tabs.profile" },
   { id: "summary", Icon: DashboardFillIcon, labelKey: "mypage.tabs.summary" },
   { id: "meetups", Icon: PinFillIcon, labelKey: "mypage.tabs.meetups" },
+  { id: "bag", Icon: BagFillIcon, labelKey: "mypage.tabs.bag" },
   { id: "gauge", Icon: CompassFillIcon, labelKey: "mypage.tabs.gauge" },
-  { id: "patterns", Icon: PatternsFillIcon, labelKey: "mypage.tabs.patterns" },
+  { id: "projects", Icon: PatternsFillIcon, labelKey: "mypage.tabs.projects" },
+  { id: "patterns", Icon: FolderFillIcon, labelKey: "mypage.tabs.patterns" },
   { id: "finished", Icon: ImageFillIcon, labelKey: "mypage.tabs.finished" },
   { id: "liked", Icon: HeartFillIcon, labelKey: "mypage.tabs.liked" },
   { id: "saved", Icon: BookmarkFillIcon, labelKey: "mypage.tabs.saved" },
@@ -489,10 +499,10 @@ function AccountMenu({
 }) {
   const { t } = useTranslation();
   const itemClass =
-    "flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-sm font-normal text-stone-700 transition-colors hover:bg-white";
+    "flex w-full items-center gap-2.5 px-3 py-2.5 text-left font-sans text-sm font-normal text-stone-700 hover:bg-stone-50";
 
   return (
-    <div className="mt-2 md:w-full">
+    <div className="relative mt-2 md:w-full">
       <button
         type="button"
         onClick={onToggle}
@@ -503,21 +513,21 @@ function AccountMenu({
         {t("mypage.account.section")}
       </button>
       {open ? (
-        <div className="mt-2 space-y-0.5 rounded-2xl bg-stone-50 p-1.5">
+        <div className="absolute left-0 top-full z-40 mt-2 w-52 rounded-xl border border-stone-200 bg-white py-1 shadow-md md:left-full md:top-0 md:ml-3 md:mt-0">
           <button type="button" onClick={onAddAccount} className={itemClass}>
-            <UserPlusFillIcon className="h-5 w-5 shrink-0" />
+            <UserPlusFillIcon className="h-4 w-4 shrink-0" />
             {t("mypage.account.addAccount")}
           </button>
           <button type="button" onClick={onLogout} className={itemClass}>
-            <LogoutFillIcon className="h-5 w-5 shrink-0" />
+            <LogoutFillIcon className="h-4 w-4 shrink-0" />
             {t("mypage.account.logout")}
           </button>
           <button
             type="button"
             onClick={onWithdraw}
-            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left font-sans text-sm font-normal text-coral transition-colors hover:bg-white"
+            className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left font-sans text-sm font-normal text-coral hover:bg-stone-50"
           >
-            <WithdrawFillIcon className="h-5 w-5 shrink-0" />
+            <WithdrawFillIcon className="h-4 w-4 shrink-0" />
             {t("mypage.account.withdraw")}
           </button>
         </div>
@@ -538,7 +548,9 @@ export default function MyPage({
   onDeleteAccount,
 }: MyPageProps) {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<MyPageTab>("profile");
+  const [activeTab, setActiveTab] = useState<MyPageTab>(
+    () => mypageTabFromPath(window.location.pathname),
+  );
   const [accountOpen, setAccountOpen] = useState(false);
   const { likedPatternIds, savedPatternIds } = useCommunityActions();
   const { requestLeave } = useUnsavedChanges();
@@ -546,8 +558,17 @@ export default function MyPage({
 
   const selectTab = (id: MyPageTab) => {
     if (id === activeTab) return;
-    requestLeave(() => setActiveTab(id));
+    requestLeave(() => {
+      setActiveTab(id);
+      window.history.replaceState({}, "", appPath(mypagePathForTab(id as MyPageRouteTab)));
+    });
   };
+
+  useEffect(() => {
+    const onPop = () => setActiveTab(mypageTabFromPath(window.location.pathname));
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   const handleWithdraw = () => {
     const ok = window.confirm(t("mypage.account.withdrawConfirm"));
@@ -601,6 +622,10 @@ export default function MyPage({
 
           {activeTab === "summary" ? (
             <div className="space-y-6">
+              <div>
+                <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.tabs.summary")}</h2>
+                <p className="mt-1 font-sans text-sm text-gray-600">{t("mypage.profile.statsHint")}</p>
+              </div>
               <KnitAchievementDashboard
                 totalStitches={achievementStats.totalStitches}
                 completedProjects={achievementStats.completedProjects}
@@ -629,7 +654,18 @@ export default function MyPage({
 
           {activeTab === "gauge" ? <GaugeTab /> : null}
 
+          {activeTab === "bag" ? <KnitBagPanel /> : null}
+
           {activeTab === "meetups" ? <MyMeetupsPanel /> : null}
+
+          {activeTab === "projects" ? (
+            <MyProjectsPanel
+              patterns={patterns}
+              onCreateNew={onCreateNew}
+              onOpen={onOpenPattern}
+              onDelete={onDeletePattern}
+            />
+          ) : null}
 
           {activeTab === "patterns" ? (
             <MyPatternsPanel

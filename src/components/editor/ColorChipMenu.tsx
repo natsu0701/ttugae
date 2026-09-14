@@ -51,7 +51,10 @@ export default function ColorChipMenu({
         title={yarn.label}
         onClick={() => {
           onSelect?.();
+        }}
+        onContextMenu={(e) => {
           if (variant === "selection") return;
+          e.preventDefault();
           setOpen((o) => !o);
         }}
         className={`relative flex items-center justify-center overflow-hidden transition-colors ${

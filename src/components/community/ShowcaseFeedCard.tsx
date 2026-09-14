@@ -9,10 +9,7 @@ import { useCommunityActions } from "../../context/CommunityActionsContext.tsx";
 import { getPatternPreviewModel } from "../../data/patternThumbnails.ts";
 import { loadCommentsForPattern } from "../../utils/commentStorage.ts";
 import { communityPostPath } from "./PatternCard.tsx";
-import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
-import NeedleBadge from "./NeedleBadge.tsx";
 import PatternChartGrid from "./PatternChartGrid.tsx";
-import { getLoungeMeta } from "../../data/loungeFilters.ts";
 import { localizedPattern } from "../../utils/i18nContent.ts";
 
 type ShowcaseFeedCardProps = {
@@ -21,13 +18,6 @@ type ShowcaseFeedCardProps = {
   onOpenFinished?: (pattern: CommunityPattern) => void;
   onOpenAuthor?: (pattern: CommunityPattern) => void;
 };
-
-function skillBadgeKey(pattern: CommunityPattern): string {
-  const level = getLoungeMeta(pattern).level;
-  if (level === "beginner") return "community.skillBeginner";
-  if (level === "intermediate") return "community.skillIntermediate";
-  return "community.skillAdvanced";
-}
 
 function PatternOverlay({ pattern }: { pattern: CommunityPattern }) {
   const { cells, colorMap } = getPatternPreviewModel(pattern);
@@ -70,7 +60,6 @@ function ShowcaseFeedCard({
   const href = communityPostPath(pattern.id);
   const photoSrc = finishedImageUrl(pattern.finishedImage);
   const body = view.finishedDetail.review || view.finishedCaption;
-  const badge = t(skillBadgeKey(pattern));
 
   const openDetail = (e: MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
@@ -99,11 +88,10 @@ function ShowcaseFeedCard({
           <p className="min-w-0 truncate font-sans text-sm font-semibold text-stone-800">
             {pattern.author}
           </p>
-          <EquippedAuthorChip author={pattern.author} />
+          <time className="shrink-0 font-sans text-[11px] text-stone-400" dateTime={pattern.publishedAt}>
+            {pattern.publishedAt}
+          </time>
         </button>
-        <span className="ml-auto rounded-full bg-white px-2.5 py-0.5 font-sans text-[10px] font-bold tracking-wide text-stone-500">
-          {badge}
-        </span>
       </div>
 
       <a
@@ -131,11 +119,6 @@ function ShowcaseFeedCard({
           <div className="absolute inset-0 hidden group-hover:block">
             <PatternOverlay pattern={pattern} />
           </div>
-          <NeedleBadge
-            spec={pattern.needle}
-            needleText={pattern.finishedDetail.needle}
-            className="pointer-events-none absolute bottom-3 right-3 z-[2] shadow-sm"
-          />
         </div>
       </a>
 
@@ -144,6 +127,16 @@ function ShowcaseFeedCard({
           <h3 className="font-sans text-base font-bold text-stone-900">
             {view.title}
           </h3>
+          <dl className="mt-2 grid grid-cols-2 gap-2 font-sans text-[11px] text-stone-500">
+            <div>
+              <dt className="text-stone-400">{t("community.yarnUsed")}</dt>
+              <dd className="mt-0.5 truncate font-medium text-stone-700">{view.finishedDetail.yarn}</dd>
+            </div>
+            <div>
+              <dt className="text-stone-400">{t("community.needleSize")}</dt>
+              <dd className="mt-0.5 truncate font-medium text-stone-700">{view.finishedDetail.needle}</dd>
+            </div>
+          </dl>
           <p className="mt-2 font-sans text-sm font-light leading-relaxed text-stone-500">
             {body}
           </p>

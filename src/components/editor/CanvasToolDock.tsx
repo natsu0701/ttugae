@@ -3,18 +3,22 @@ import {
   BrushFillIcon,
   CloseFillIcon,
   EraserFillIcon,
+  PanFillIcon,
   PatternsFillIcon,
   SelectFillIcon,
+  ZoomInFillIcon,
+  ZoomOutFillIcon,
 } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
 
-type Tool = "paint" | "eraser" | "checker" | "select";
+type Tool = "paint" | "eraser" | "checker" | "select" | "pan";
 
 const TOOLS: { id: Tool; Icon: typeof BrushFillIcon }[] = [
   { id: "paint", Icon: BrushFillIcon },
   { id: "eraser", Icon: EraserFillIcon },
   { id: "checker", Icon: PatternsFillIcon },
   { id: "select", Icon: SelectFillIcon },
+  { id: "pan", Icon: PanFillIcon },
 ];
 
 type CanvasToolDockProps = {
@@ -25,6 +29,9 @@ type CanvasToolDockProps = {
   hint: string;
   hintOpen: boolean;
   onDismissHint: () => void;
+  zoom: number;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
 };
 
 export default function CanvasToolDock({
@@ -35,6 +42,9 @@ export default function CanvasToolDock({
   hint,
   hintOpen,
   onDismissHint,
+  zoom,
+  onZoomIn,
+  onZoomOut,
 }: CanvasToolDockProps) {
   const { t } = useTranslation();
 
@@ -42,7 +52,7 @@ export default function CanvasToolDock({
     <div className="flex w-full shrink-0 flex-col items-center gap-2 px-4 pb-4 pt-2">
       {hintOpen ? (
         <div
-          className="flex max-w-[min(100%,28rem)] items-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 py-2 shadow-[0_16px_40px_rgba(0,0,0,0.1)]"
+          className="flex max-w-[min(100%,28rem)] items-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 py-2 shadow-sm"
           role="status"
         >
           <p className="min-w-0 flex-1 font-seoyun text-sm font-normal leading-none text-stone-500">
@@ -59,7 +69,7 @@ export default function CanvasToolDock({
         </div>
       ) : null}
 
-      <div className="flex items-center gap-2 rounded-2xl border border-stone-600/80 bg-stone-800 px-3 py-2 shadow-[0_16px_40px_rgba(0,0,0,0.18)]">
+      <div className="flex items-center gap-2 rounded-2xl border border-stone-600/80 bg-stone-800 px-3 py-2 shadow-sm">
         <p className="mr-1 hidden font-sans text-[10px] font-normal tracking-wide text-stone-400 sm:block">
           {t("editor.drawingTools")}
         </p>
@@ -75,14 +85,11 @@ export default function CanvasToolDock({
                 onClick={() => onToolChange(toolItem.id)}
                 title={label}
                 aria-label={label}
-                className={`group flex h-10 w-10 items-center overflow-hidden px-2.5 font-sans text-sm font-normal whitespace-nowrap transition-[width] duration-200 ease-out hover:w-[8.5rem] ${
+                className={`flex h-10 w-10 items-center justify-center px-2.5 font-sans text-sm font-normal ${
                   isActive ? editorChromeBtnActive : editorChromeBtn
                 }`}
               >
                 <ToolIcon className="h-5 w-5 shrink-0" />
-                <span className="ml-0 max-w-0 overflow-hidden opacity-0 transition-all duration-200 ease-out group-hover:ml-2 group-hover:max-w-[6.5rem] group-hover:opacity-100">
-                  {label}
-                </span>
               </button>
             );
           })}
@@ -96,6 +103,26 @@ export default function CanvasToolDock({
             {t("editor.fillSelection")}
           </button>
         ) : null}
+        <span className="mx-1 h-5 w-px bg-stone-600" aria-hidden />
+        <button
+          type="button"
+          onClick={onZoomOut}
+          className={`flex h-10 w-10 items-center justify-center ${editorChromeBtn}`}
+          aria-label={t("editor.zoomOut")}
+        >
+          <ZoomOutFillIcon className="h-5 w-5" />
+        </button>
+        <span className="min-w-[2.5rem] text-center font-sans text-xs text-stone-300">
+          {Math.round(zoom * 100)}%
+        </span>
+        <button
+          type="button"
+          onClick={onZoomIn}
+          className={`flex h-10 w-10 items-center justify-center ${editorChromeBtn}`}
+          aria-label={t("editor.zoomIn")}
+        >
+          <ZoomInFillIcon className="h-5 w-5" />
+        </button>
       </div>
     </div>
   );

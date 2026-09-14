@@ -26,7 +26,9 @@
       "summary": "アクティビティ",
       "meetups": "編み物모임",
       "statsDetail": "詳細統計",
-      "gauge": "マイゲージ (Gauge)"
+      "gauge": "マイゲージ (Gauge)",
+      "bag": "編み物バッグ",
+      "projects": "マイプロジェクト"
     },
     "account": {
       "section": "アカウント",
@@ -81,7 +83,30 @@
       "createNew": "新しい編み図",
       "emptyTitle": "保存した編み図はまだありません",
       "emptyDesc": "「新しい編み図」で最初の一枚を始めましょう。",
-      "deleteAria": "編み図を削除"
+      "deleteAria": "編み図を削除",
+      "search": "編み図検索",
+      "searchPh": "タイトルで検索",
+      "allFolders": "すべてのコレクション",
+      "unfiled": "未分類",
+      "newFolderPh": "新しいコレクション名",
+      "addFolder": "コレクション追加",
+      "deleteFolder": "コレクション削除",
+      "moveFolder": "コレクションへ移動"
+    },
+    "bag": {
+      "title": "編み物バッグ",
+      "subtitle": "糸の在庫、針の倉庫、ゲージ (Gauge) をまとめて確認できます。",
+      "gaugeList": "ゲージ (Gauge) 一覧",
+      "gaugeHint": "プロフィールに保存した 10x10cm の目・段数です。"
+    },
+    "projects": {
+      "title": "マイプロジェクト",
+      "subtitle": "進行中の編み図と完成作品を分けて管理します。",
+      "inProgress": "進行中",
+      "completed": "完成作品",
+      "completeToggle": "完成チェック",
+      "progressEmpty": "進行中のプロジェクトはありません。",
+      "completedEmpty": "完成にしたプロジェクトはまだありません。"
     },
     "finishedTitle": "完成作品",
     "likedTitle": "いいねした編み図",
@@ -406,14 +431,24 @@
       "paint": "塗る",
       "eraser": "消しゴム",
       "checker": "市松塗り",
-      "select": "範囲選択"
+      "select": "範囲選択",
+      "pan": "パン"
     },
     "toolHints": {
       "paint": "セルをクリックまたはドラッグして記号・色を置きます",
       "eraser": "クリックまたはドラッグで消去します",
       "checker": "チェッカーボード状に交互に塗りつぶします",
-      "select": "ドラッグで範囲を指定し、「選択範囲を塗りつぶす」を押します"
+      "select": "ドラッグで範囲を指定し、「選択範囲を塗りつぶす」を押します",
+      "pan": "ドラッグ、または Space を押しながらドラッグしてキャンバスを動かします"
     },
+    "entryTitle": "編み図を描く",
+    "entryHint": "新しい編み図を作るか、保存済みの編み図を開いてください。",
+    "entryNew": "新しい編み図を作る",
+    "entryLoad": "保存した編み図を開く",
+    "entryEmpty": "保存された編み図はありません。新しい編み図から始めましょう。",
+    "needleShort": "針",
+    "yarnShort": "糸",
+    "yarnUnset": "未設定",
     "stitches": {
       "empty": "クリア",
       "knit": "メリヤス",
@@ -533,6 +568,8 @@
     "tteuniReplyStripe": "横縞の編み図です。色ごとに表編みとうら編みを交互に入れました。",
     "tteuniReplyAutumn": "秋らしい編み図を適用しました。リブと表編み記号を混ぜています。",
     "tteuniReplyDefault": "ご依頼に合わせて編み記号を格子に入れました！保存してみてください。",
+    "tteuniReplyColor": "カーディガンなら身頃はあたたかいベース、ネックと裾は一段深いポイント色がまとまります。おすすめパレットから3色だけ選ぶと整って見えます。",
+    "tteuniReplyEdit": "編み図を直すときは先に目・段数を確認し、ずれている段は選択ツールで塗り直してください。保存前に文章プレビューでもう一度読んでみてください。",
     "scanHint": "完成写真の目・段、配色、表編み／うら編みの流れを今の格子と合わせます。",
     "scanAutoFix": "写真に合わせて自動補正",
     "yarnSearchHint": "ブランドや種類（メリノウール、モヘアなど）を入力してみてください",
@@ -598,7 +635,14 @@
     "sharedPattern": "共有された編み図",
     "postUploaded": "投稿を公開しました。",
     "patternSaved": "編み図を保存しました。",
-    "patternDeleted": "編み図を削除しました。"
+    "patternDeleted": "編み図を削除しました。",
+    "loggedIn": "ログインしました"
+  },
+  "chat": {
+    "widgetTitle": "トゥニチャット(AI)",
+    "widgetHint": "配色、編み図の修正、糸選びを聞いてください。",
+    "scrollTop": "一番上へ",
+    "open": "トゥニチャット(AI)を開く"
   },
   "login": {
     "title": "はじめる",
@@ -656,6 +700,8 @@
     "titlePh": "例: ベージュカーディガン完成！",
     "yarnNeedle": "使った糸 / 針",
     "yarnNeedlePh": "例: メリノウール100%、かぎ針4.5mm",
+    "yarnPh": "例: メリノウール100%",
+    "needlePh": "例: かぎ針4.5mm",
     "review": "本文（レビュー）",
     "reviewPh": "編んだ感想、コツ、かかった時間などを書いてください。",
     "previewAlt": "完成プレビュー",
@@ -671,7 +717,9 @@
     "untitled": "新しい編み図",
     "done": "編み図の包装が完了しました",
     "toVault": "保管庫へ",
-    "backEditor": "エディターに戻る"
+    "backEditor": "エディターに戻る",
+    "collection": "保存するコレクション",
+    "packedChip": "編み図の包装"
   },
   "offline": {
     "title": "オフラインニュースと集まり",
@@ -1119,7 +1167,7 @@
     }
   },
   "unsaved": {
-    "title": "変更を保存しますか？",
+    "title": "保存しますか？",
     "body": "保存せずに移動すると変更が消えます。",
     "save": "保存",
     "discard": "保存しない"

@@ -1,5 +1,5 @@
 /** 탭·필터: 기본 white → hover black → active coral + 에어브러시 섀도우 */
-export const softShadow = "shadow-[0_8px_30px_rgba(252,95,83,0.025)]";
+export const softShadow = "shadow-sm";
 
 /** 에디터 다크 크롬 — 버튼·패널 공통 중간 톤 */
 export const editorChromeTone =

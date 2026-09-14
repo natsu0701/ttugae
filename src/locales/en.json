@@ -26,7 +26,9 @@
       "summary": "Activity",
       "meetups": "Knit meetups",
       "statsDetail": "Detailed stats",
-      "gauge": "My gauge (Gauge)"
+      "gauge": "My gauge (Gauge)",
+      "bag": "Knit bag",
+      "projects": "My projects"
     },
     "account": {
       "section": "Account",
@@ -81,7 +83,30 @@
       "createNew": "New pattern",
       "emptyTitle": "No saved patterns yet",
       "emptyDesc": "Tap “New pattern” to create your first chart.",
-      "deleteAria": "Delete pattern"
+      "deleteAria": "Delete pattern",
+      "search": "Search patterns",
+      "searchPh": "Search by pattern title",
+      "allFolders": "All collections",
+      "unfiled": "Unfiled",
+      "newFolderPh": "New collection name",
+      "addFolder": "Add collection",
+      "deleteFolder": "Delete collection",
+      "moveFolder": "Move to collection"
+    },
+    "bag": {
+      "title": "Knit bag",
+      "subtitle": "See your yarn stash, needle warehouse, and gauge (Gauge) in one place.",
+      "gaugeList": "Gauge (Gauge) list",
+      "gaugeHint": "Stitch and row counts saved on your profile for 10x10cm."
+    },
+    "projects": {
+      "title": "My projects",
+      "subtitle": "Keep in-progress charts separate from finished work.",
+      "inProgress": "In progress",
+      "completed": "Finished",
+      "completeToggle": "Mark complete",
+      "progressEmpty": "No projects in progress.",
+      "completedEmpty": "No projects marked complete yet."
     },
     "finishedTitle": "Finished Projects",
     "likedTitle": "Liked Patterns",
@@ -406,14 +431,24 @@
       "paint": "Paint",
       "eraser": "Eraser",
       "checker": "Checker fill",
-      "select": "Select area"
+      "select": "Select area",
+      "pan": "Pan"
     },
     "toolHints": {
       "paint": "Click or drag cells to place stitches and colors",
       "eraser": "Click or drag to clear cells",
       "checker": "Fills every other cell in a checkerboard pattern",
-      "select": "Drag to select, then tap “Fill selection”"
+      "select": "Drag to select, then tap “Fill selection”",
+      "pan": "Drag, or hold Space and drag, to move the canvas"
     },
+    "entryTitle": "Draw a pattern",
+    "entryHint": "Start a new chart or open one you already saved.",
+    "entryNew": "Create new pattern",
+    "entryLoad": "Load my pattern",
+    "entryEmpty": "No saved patterns yet. Start with a new chart.",
+    "needleShort": "Needles",
+    "yarnShort": "Yarn",
+    "yarnUnset": "Not set",
     "stitches": {
       "empty": "Clear",
       "knit": "Knit",
@@ -533,6 +568,8 @@
     "tteuniReplyStripe": "A horizontal stripe chart. Knit and purl swap with each color.",
     "tteuniReplyAutumn": "An autumn chart with rib and knit symbols mixed in.",
     "tteuniReplyDefault": "I filled the grid with stitch symbols for your request. Save it when you’re ready.",
+    "tteuniReplyColor": "For a cardigan, keep a warm base on the body and a deeper accent on the neck and hem. Three colors from a recommended palette usually look tidy.",
+    "tteuniReplyEdit": "When editing a chart, check stitch and row counts first, then re-fill the off rows with the selection tool. Read the written preview once more before saving.",
     "scanHint": "We match stitch/row layout, colors, and knit/purl flow from the photo to this grid.",
     "scanAutoFix": "Auto-correct to the photo",
     "yarnSearchHint": "Try a brand or fiber (merino, mohair…)",
@@ -598,7 +635,14 @@
     "sharedPattern": "Shared pattern",
     "postUploaded": "Your post was published.",
     "patternSaved": "Pattern saved.",
-    "patternDeleted": "Pattern deleted."
+    "patternDeleted": "Pattern deleted.",
+    "loggedIn": "You are logged in"
+  },
+  "chat": {
+    "widgetTitle": "Tteuni chat (AI)",
+    "widgetHint": "Ask about color pairing, chart edits, or yarn choices.",
+    "scrollTop": "Back to top",
+    "open": "Open Tteuni chat (AI)"
   },
   "login": {
     "title": "Get started",
@@ -656,6 +700,8 @@
     "titlePh": "e.g. Beige cardigan, done!",
     "yarnNeedle": "Yarn / needle",
     "yarnNeedlePh": "e.g. 100% merino, 4.5mm hook",
+    "yarnPh": "e.g. 100% merino",
+    "needlePh": "e.g. 4.5mm hook",
     "review": "Story (review)",
     "reviewPh": "Notes, tips, time it took…",
     "previewAlt": "Finished preview",
@@ -671,7 +717,9 @@
     "untitled": "Untitled pattern",
     "done": "Your pattern is wrapped",
     "toVault": "Go to vault",
-    "backEditor": "Back to editor"
+    "backEditor": "Back to editor",
+    "collection": "Collection folder",
+    "packedChip": "Pattern packed"
   },
   "offline": {
     "title": "Offline news and meetups",
@@ -1119,7 +1167,7 @@
     }
   },
   "unsaved": {
-    "title": "Save your changes?",
+    "title": "Save now?",
     "body": "If you leave without saving, your edits will be lost.",
     "save": "Save",
     "discard": "Don't save"

@@ -19,7 +19,7 @@ export default function WelcomeBanner({
   image,
 }: WelcomeBannerProps) {
   return (
-    <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-xl bg-[#FFFBF7] p-8 shadow-[0_8px_30px_rgb(252,95,83,0.02)] sm:p-10 md:flex-row">
+    <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-xl bg-[#FFFBF7] p-8 shadow-sm sm:p-10 md:flex-row">
       <div className="w-full min-w-0 md:flex-1">
         <span className="mb-3 block w-fit rounded-full bg-[#FC5F53]/10 px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-widest text-[#FC5F53]">
           {chip}

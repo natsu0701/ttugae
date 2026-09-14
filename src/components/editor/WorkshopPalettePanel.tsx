@@ -62,7 +62,7 @@ export default function WorkshopPalettePanel({
               type="button"
               onClick={() => onSelectPalette(palette.id, palette.colors)}
               aria-pressed={active}
-              className={`flex w-full items-center justify-between gap-2 px-2.5 py-2 text-left transition-transform duration-150 hover:scale-[1.02] ${
+              className={`flex w-full items-center justify-between gap-2 px-2.5 py-2 text-left ${
                 active ? editorChromeBtnActive : editorChromeBtn
               }`}
             >

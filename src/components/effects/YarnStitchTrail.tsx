@@ -16,15 +16,14 @@ const RECORD_THROTTLE_MS = 24;
 const BASE_COLOR = "#FC5F53";
 const HALO_COLOR = "#FF8A9B";
 const MAX_OPACITY = 0.45;
+const POINTER_QUERY = "(hover: hover), (any-hover: hover), (pointer: fine), (any-pointer: fine)";
 
-/** 커스텀 커서 핫스팟 = 바늘 끝(궤적 시작점) */
 export const CURSOR_HOTSPOT = { x: 21, y: 5 } as const;
 
-function detectTouchDevice(): boolean {
-  return (
-    window.matchMedia("(pointer: coarse)").matches ||
-    !window.matchMedia("(pointer: fine)").matches
-  );
+function canDrawYarnTrail(): boolean {
+  if (typeof window === "undefined") return false;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  return window.matchMedia(POINTER_QUERY).matches;
 }
 
 type YarnStitchTrailProps = {
@@ -32,7 +31,7 @@ type YarnStitchTrailProps = {
 };
 
 function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
-  const [isTouchDevice] = useState(detectTouchDevice);
+  const [pointerOk, setPointerOk] = useState(canDrawYarnTrail);
   const [prefEnabled, setPrefEnabled] = useState(loadYarnTrailEnabled);
 
   const pointsRef = useRef<Point[]>([]);
@@ -41,25 +40,37 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
   const rafIdRef = useRef<number | null>(null);
   const lastRecordRef = useRef(0);
   const lastMarkupRef = useRef("");
-  const inactive = disabled || !prefEnabled;
+  const inactive = disabled || !prefEnabled || !pointerOk;
 
   useEffect(() => subscribeYarnTrail(setPrefEnabled), []);
+
+  useEffect(() => {
+    const media = window.matchMedia(POINTER_QUERY);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setPointerOk(canDrawYarnTrail());
+    media.addEventListener("change", sync);
+    reduced.addEventListener("change", sync);
+    window.addEventListener("pointermove", sync, { once: true, passive: true });
+    sync();
+    return () => {
+      media.removeEventListener("change", sync);
+      reduced.removeEventListener("change", sync);
+    };
+  }, []);
 
   useEffect(() => {
     if (inactive) {
       pointsRef.current = [];
       lastMarkupRef.current = "";
       if (segmentsRef.current) segmentsRef.current.replaceChildren();
+      document.body.classList.remove("yarn-trail-active");
       return;
     }
-    if (isTouchDevice) return;
-
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) return;
 
     document.body.classList.add("yarn-trail-active");
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e: PointerEvent | MouseEvent) => {
+      if ("pointerType" in e && e.pointerType === "touch") return;
       if (cursorRef.current) {
         cursorRef.current.style.transform = `translate3d(${e.clientX - CURSOR_HOTSPOT.x}px, ${e.clientY - CURSOR_HOTSPOT.y}px, 0)`;
       }
@@ -103,12 +114,12 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       rafIdRef.current = requestAnimationFrame(updateTrail);
     };
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    window.addEventListener("pointermove", handleMouseMove, { passive: true });
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
     rafIdRef.current = requestAnimationFrame(updateTrail);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("pointermove", handleMouseMove);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       if (rafIdRef.current != null) cancelAnimationFrame(rafIdRef.current);
       rafIdRef.current = null;
@@ -117,15 +128,15 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       lastMarkupRef.current = "";
       if (segmentsRef.current) segmentsRef.current.replaceChildren();
     };
-  }, [inactive, isTouchDevice]);
+  }, [inactive]);
 
-  if (inactive || isTouchDevice) {
+  if (inactive) {
     return null;
   }
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-[9998] h-full w-full overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-[9998] h-[100dvh] w-screen overflow-hidden yarn-trail-layer"
       aria-hidden
     >
       <svg

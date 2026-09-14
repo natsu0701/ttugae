@@ -12,6 +12,7 @@ import { assetUrl } from "../../utils/appPath.ts";
 import { useUnsavedChanges } from "../../context/UnsavedChangesContext.tsx";
 import type { UserAccount } from "../../utils/accountStorage.ts";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
+import FloatingDock from "../ui/FloatingDock.tsx";
 
 export type AppNavPage = "landing" | "community" | "mypage";
 
@@ -130,7 +131,7 @@ function ProfileMenu({
       {menuOpen ? (
         <div
           role="menu"
-          className="absolute right-0 z-[60] mt-2 w-52 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-lg"
+          className="absolute right-full top-0 z-[60] mr-2 w-56 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-md"
         >
           <button
             type="button"
@@ -234,7 +235,7 @@ export default function AppShell({
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute left-0 top-[-20px] z-0 h-[170px] w-full bg-[length:auto_170px] bg-top bg-repeat-x"
+          className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[170px] w-full bg-cover bg-top bg-no-repeat md:h-[190px]"
           style={{ backgroundImage: `url(${assetUrl("/images/nav_lace.png")})` }}
         />
         <div className="nav-shell relative z-10 flex h-20 w-full items-center justify-between gap-3 md:h-24 md:gap-6">
@@ -284,6 +285,7 @@ export default function AppShell({
       ) : (
         <div className="relative z-10 pt-20 md:pt-24">{children}</div>
       )}
+      <FloatingDock />
       <LandingFooter />
     </div>
   );

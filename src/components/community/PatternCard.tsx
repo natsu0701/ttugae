@@ -7,8 +7,6 @@ import {
 } from "../../data/communityPatterns.ts";
 import { useCommunityActions } from "../../context/CommunityActionsContext.tsx";
 import { getPatternPreviewModel } from "../../data/patternThumbnails.ts";
-import EquippedAuthorChip from "./EquippedAuthorChip.tsx";
-import NeedleBadge from "./NeedleBadge.tsx";
 import PatternChartGrid from "./PatternChartGrid.tsx";
 import { displayAuthor, localizedPattern } from "../../utils/i18nContent.ts";
 import { appPath } from "../../utils/appPath.ts";
@@ -144,11 +142,6 @@ function PatternCard({
               {sizeLabel}
             </span>
           )}
-          <NeedleBadge
-            spec={pattern.needle}
-            needleText={view.finishedDetail.needle}
-            className="pointer-events-none absolute bottom-3.5 right-3.5 z-[2] shadow-sm"
-          />
         </div>
 
         <div className="bg-white p-4">
@@ -167,8 +160,21 @@ function PatternCard({
             >
               @{displayAuthor(t, pattern.author)}
             </button>
-            <EquippedAuthorChip author={pattern.author} />
+            <span className="text-stone-300" aria-hidden>
+              |
+            </span>
+            <time dateTime={pattern.publishedAt}>{pattern.publishedAt}</time>
           </p>
+          <dl className="mt-3 grid grid-cols-2 gap-2 font-sans text-[11px] text-stone-500">
+            <div>
+              <dt className="text-stone-400">{t("community.yarnUsed")}</dt>
+              <dd className="mt-0.5 truncate font-medium text-stone-700">{view.finishedDetail.yarn}</dd>
+            </div>
+            <div>
+              <dt className="text-stone-400">{t("community.needleSize")}</dt>
+              <dd className="mt-0.5 truncate font-medium text-stone-700">{view.finishedDetail.needle}</dd>
+            </div>
+          </dl>
         </div>
       </a>
 

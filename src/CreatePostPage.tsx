@@ -42,7 +42,8 @@ function applyDraftToForm(
   setters: {
     setDraft: (d: ShareDraftPayload) => void;
     setTitle: (t: string) => void;
-    setYarnNeedle: (y: string) => void;
+    setYarnUsed: (y: string) => void;
+    setNeedleUsed: (n: string) => void;
     setReview: (r: string) => void;
     setPhotoUrl: (p: string | undefined) => void;
   },
@@ -55,14 +56,16 @@ function applyDraftToForm(
   const needleLine = loaded.pattern.needle
     ? formatNeedleBadge(loaded.pattern.needle)
     : "";
-  setters.setYarnNeedle([yarnLine, needleLine].filter(Boolean).join(" · "));
+  setters.setYarnUsed(yarnLine);
+  setters.setNeedleUsed(needleLine);
   setters.setPhotoUrl(loaded.finishedPhotoDataUrl);
 
   if (loaded.editCommunityId) {
     const post = getSharedCommunityPattern(loaded.editCommunityId);
     if (post) {
       setters.setTitle(post.title);
-      setters.setYarnNeedle(post.finishedDetail.yarn);
+      setters.setYarnUsed(post.finishedDetail.yarn);
+      setters.setNeedleUsed(post.finishedDetail.needle);
       setters.setReview(post.finishedDetail.review);
       if (
         post.finishedImage.startsWith("blob:") ||
@@ -83,7 +86,8 @@ export default function CreatePostPage({
   const { t } = useTranslation();
   const [draft, setDraft] = useState<ShareDraftPayload | null>(() => loadShareDraft());
   const [title, setTitle] = useState("");
-  const [yarnNeedle, setYarnNeedle] = useState("");
+  const [yarnUsed, setYarnUsed] = useState("");
+  const [needleUsed, setNeedleUsed] = useState("");
   const [review, setReview] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | undefined>();
   const [patternModalOpen, setPatternModalOpen] = useState(false);
@@ -95,7 +99,8 @@ export default function CreatePostPage({
     applyDraftToForm(loaded, {
       setDraft,
       setTitle,
-      setYarnNeedle,
+      setYarnUsed,
+      setNeedleUsed,
       setReview,
       setPhotoUrl,
     });
@@ -118,7 +123,8 @@ export default function CreatePostPage({
     applyDraftToForm(merged, {
       setDraft,
       setTitle,
-      setYarnNeedle,
+      setYarnUsed,
+      setNeedleUsed,
       setReview,
       setPhotoUrl,
     });
@@ -149,7 +155,8 @@ export default function CreatePostPage({
       existingCommunityId: draft.editCommunityId,
       meta: {
         title,
-        yarnNeedle,
+        yarn: yarnUsed,
+        needleText: needleUsed,
         review,
         finishedPhotoDataUrl: photoUrl,
       },
@@ -268,10 +275,18 @@ export default function CreatePostPage({
         />
 
         <SmoothInput
-          label={t("createPost.yarnNeedle")}
-          value={yarnNeedle}
-          onChange={(e) => setYarnNeedle(e.target.value)}
-          placeholder={t("createPost.yarnNeedlePh")}
+          label={t("community.yarnUsed")}
+          value={yarnUsed}
+          onChange={(e) => setYarnUsed(e.target.value)}
+          placeholder={t("createPost.yarnPh")}
+          className="border-stone-200"
+        />
+
+        <SmoothInput
+          label={t("community.needleSize")}
+          value={needleUsed}
+          onChange={(e) => setNeedleUsed(e.target.value)}
+          placeholder={t("createPost.needlePh")}
           className="border-stone-200"
         />
 

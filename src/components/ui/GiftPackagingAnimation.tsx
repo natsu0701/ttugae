@@ -1,10 +1,18 @@
 import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { CloseFillIcon } from "../icons/FillIcons.tsx";
+import SmoothInput from "./SmoothInput.tsx";
+import type { PatternCollection } from "../../utils/collectionStorage.ts";
+import { UNFILED_COLLECTION_ID } from "../../utils/collectionStorage.ts";
 
 type GiftPackagingAnimationProps = {
   isOpen: boolean;
   onClose: () => void;
   patternTitle: string;
+  onTitleChange: (title: string) => void;
+  collections: PatternCollection[];
+  collectionId: string;
+  onCollectionChange: (id: string) => void;
   onGoVault?: () => void;
 };
 
@@ -34,6 +42,10 @@ function GiftPackagingAnimation({
   isOpen,
   onClose,
   patternTitle,
+  onTitleChange,
+  collections,
+  collectionId,
+  onCollectionChange,
   onGoVault,
 }: GiftPackagingAnimationProps) {
   const { t } = useTranslation();
@@ -48,19 +60,19 @@ function GiftPackagingAnimation({
     return () => window.clearTimeout(timer);
   }, [isOpen]);
 
-  const displayTitle = patternTitle.trim() || t("gift.untitled");
-
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fade-in fixed inset-0 z-[120] flex items-center justify-center bg-stone-950/70 p-6"
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full max-w-md rounded-xl bg-[#F7F5F0] px-8 py-10 text-center"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fade-in fixed inset-0 z-[120] flex items-center justify-center bg-stone-950/70 p-6">
+      <div className="relative w-full max-w-md rounded-xl bg-[#F7F5F0] px-8 py-10 text-center">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-stone-400 hover:bg-white hover:text-stone-700"
+          aria-label={t("common.close")}
+        >
+          <CloseFillIcon className="h-4 w-4" />
+        </button>
         <div className="relative mx-auto h-52 w-52">
           <div className="gift-box" />
           <div className="gift-ribbon-v" />
@@ -73,20 +85,35 @@ function GiftPackagingAnimation({
           </div>
         </div>
 
-        <div
-          className={`transition-all duration-300 ${
-            packed ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
-          }`}
-        >
+        <div className={packed ? "opacity-100" : "opacity-0"}>
           <p className="font-sans text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
-            Pattern packed
+            {t("gift.packedChip")}
           </p>
           <h2 className="mt-2 font-sans text-xl font-bold text-stone-950">
             {t("gift.done")}
           </h2>
-          <p className="mt-2 line-clamp-2 font-sans text-sm font-normal text-stone-500">
-            {displayTitle}
-          </p>
+          <div className="mt-4 space-y-3 text-left">
+            <SmoothInput
+              label={t("editor.patternName")}
+              value={patternTitle}
+              onChange={(e) => onTitleChange(e.target.value)}
+            />
+            <label className="block font-sans text-sm text-stone-600">
+              {t("gift.collection")}
+              <select
+                className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-800"
+                value={collectionId}
+                onChange={(e) => onCollectionChange(e.target.value)}
+              >
+                <option value={UNFILED_COLLECTION_ID}>{t("mypage.patterns.unfiled")}</option>
+                {collections.map((folder) => (
+                  <option key={folder.id} value={folder.id}>
+                    {folder.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
 
           <div className="mt-8 flex flex-col gap-2">
             <button
@@ -99,7 +126,7 @@ function GiftPackagingAnimation({
             <button
               type="button"
               onClick={onClose}
-              className="h-11 rounded-xl border border-stone-200 bg-white px-5 font-sans text-sm font-medium text-stone-600 transition-colors hover:bg-stone-50"
+              className="h-11 rounded-xl border border-stone-200 bg-white px-5 font-sans text-sm font-medium text-stone-600 hover:bg-stone-50"
             >
               {t("gift.backEditor")}
             </button>

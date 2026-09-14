@@ -9,6 +9,7 @@ import {
   formatNeedleBadge,
   type NeedleSpec,
 } from "../data/knittingMetadataLibrary.ts";
+import { currentUserNickname } from "./identity.ts";
 
 const SHARED_KEY = "ttugae.community.shared.v1";
 
@@ -69,7 +70,9 @@ function yarnSummary(yarns: EditorYarn[]) {
 
 export type PublishPostMeta = {
   title: string;
-  yarnNeedle: string;
+  yarn?: string;
+  needleText?: string;
+  yarnNeedle?: string;
   review: string;
   finishedPhotoDataUrl?: string;
 };
@@ -104,23 +107,23 @@ export function publishPatternToCommunity(input: {
 
   const prev = loadSharedCommunityPatterns().find((p) => p.id === communityId);
   const title = input.meta?.title.trim() || input.title.trim() || "새 도안";
-  const yarnNeedle = input.meta?.yarnNeedle.trim() || "";
   const review = input.meta?.review.trim() || "";
   const defaultYarn =
     input.yarns.map((y) => `${y.brand} ${y.label}`).join(" · ") || "미지정";
-
+  const needle = input.needle ?? prev?.needle ?? DEFAULT_NEEDLE;
+  const needleBadge = formatNeedleBadge(needle);
+  const yarnNeedle = input.meta?.yarnNeedle?.trim() || "";
+  const yarnText = input.meta?.yarn?.trim() || yarnNeedle || defaultYarn;
+  const needleText = input.meta?.needleText?.trim() || needleBadge;
   const finishedImage =
     input.meta?.finishedPhotoDataUrl ??
     prev?.finishedImage ??
     "completed_muffler_rainbow.jpg";
 
-  const needle = input.needle ?? prev?.needle ?? DEFAULT_NEEDLE;
-  const needleBadge = formatNeedleBadge(needle);
-
   const pattern: CommunityPattern = {
     id: communityId,
     title,
-    author: "나",
+    author: currentUserNickname(),
     likes: prev?.likes ?? 0,
     scraps: prev?.scraps ?? 0,
     category: "showcase",
@@ -138,8 +141,8 @@ export function publishPatternToCommunity(input: {
       review ||
       (yarnNeedle ? `${yarnNeedle}` : `사용 실: ${yarnSummary(input.yarns)}.`),
     finishedDetail: {
-      yarn: yarnNeedle || defaultYarn,
-      needle: needleBadge,
+      yarn: yarnText,
+      needle: needleText,
       duration: prev?.finishedDetail.duration ?? "—",
       review: review || "에디터에서 공유한 도안입니다.",
     },
