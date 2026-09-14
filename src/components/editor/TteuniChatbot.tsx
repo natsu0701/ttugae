@@ -69,7 +69,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
 
   return (
     <div className={`${editorPanel} p-4`}>
-      <p className="mb-3 font-sans text-sm font-bold text-white">{t("editor.tteuniAi")}</p>
+      <p className="mb-3 font-sans text-base font-bold text-white">{t("editor.tteuniAi")}</p>
 
       <div
         ref={listRef}
@@ -83,7 +83,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
               className="h-10 w-10 shrink-0 object-contain"
             />
             <div className="rounded-2xl rounded-tl-sm border border-stone-600/80 bg-stone-700 px-3 py-2.5">
-              <p className="font-seoyun text-sm font-normal leading-relaxed text-stone-100">
+              <p className="font-seoyun text-base font-normal leading-relaxed text-stone-100">
                 {t("editor.tteuniHint")}
               </p>
             </div>
@@ -110,7 +110,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
                 }`}
               >
                 <p
-                  className={`font-seoyun text-sm font-normal leading-relaxed ${
+                  className={`font-seoyun text-base font-normal leading-relaxed ${
                     msg.role === "user" ? "text-white" : "text-stone-100"
                   }`}
                 >
@@ -130,7 +130,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder={t("editor.tteuniPlaceholder")}
-          className="min-w-0 flex-1 rounded-xl border-stone-700/80 px-3 py-2.5 text-sm"
+          className="min-w-0 flex-1 rounded-xl border-stone-700/80 px-3 py-2.5 text-base"
         />
         <button
           type="button"

@@ -237,7 +237,7 @@ function PreviewLoadingFallback({ itemType }: { itemType: KnitItemType }) {
     <Html center>
       <div className="flex flex-col items-center gap-3">
         <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
-        <span className="whitespace-nowrap font-sans text-xs font-light text-stone-400">
+        <span className="whitespace-nowrap font-sans text-sm font-light text-stone-400">
           {loadingCopy(t, itemType)}
         </span>
       </div>
@@ -400,7 +400,9 @@ function GarmentModel({
     return clone;
   }, [scene, normalTexture]);
   const invalidate = useThree((state) => state.invalidate);
-  const [colorTexture, setColorTexture] = useState<THREE.CanvasTexture | null>(null);
+  const atlasRef = useRef<{ canvas: HTMLCanvasElement; texture: THREE.CanvasTexture } | null>(null);
+  const lastPaintKeyRef = useRef("");
+  const lastSceneRef = useRef<THREE.Object3D | null>(null);
 
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
@@ -433,36 +435,59 @@ function GarmentModel({
 
   useEffect(() => {
     const face = 1024;
-    const canvas = document.createElement("canvas");
-    canvas.width = splitFaces ? face * 2 : face;
-    canvas.height = face;
-    const ctx = canvas.getContext("2d");
-    if (!ctx || cells.length === 0) return;
-
-    paintSymbolChart(ctx, cells, colorMap, 0, 0, face, face);
-    if (splitFaces) {
-      paintSymbolChart(ctx, backCells && backCells.length > 0 ? backCells : cells, colorMap, face, 0, face, face);
+    const wantW = splitFaces ? face * 2 : face;
+    let atlas = atlasRef.current;
+    if (!atlas || atlas.canvas.width !== wantW) {
+      atlas?.texture.dispose();
+      const canvas = document.createElement("canvas");
+      canvas.width = wantW;
+      canvas.height = face;
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      atlas = { canvas, texture };
+      atlasRef.current = atlas;
+      lastPaintKeyRef.current = "";
     }
 
-    const next = new THREE.CanvasTexture(canvas);
-    next.colorSpace = THREE.SRGBColorSpace;
-    next.minFilter = THREE.LinearFilter;
-    next.magFilter = THREE.LinearFilter;
-    next.wrapS = THREE.ClampToEdgeWrapping;
-    next.wrapT = THREE.ClampToEdgeWrapping;
-    next.needsUpdate = true;
-    setColorTexture(next);
+    const paintKey = `${chartKey}|${wantW}`;
+    const sceneChanged = lastSceneRef.current !== clonedScene;
+    const needPaint = lastPaintKeyRef.current !== paintKey;
+    if (!needPaint && !sceneChanged) return;
 
-    return () => {
-      next.dispose();
-    };
-  }, [cells, backCells, splitFaces, colorMap, chartKey]);
+    if (needPaint) {
+      const ctx = atlas.canvas.getContext("2d");
+      if (!ctx || cells.length === 0) return;
+      paintSymbolChart(ctx, cells, colorMap, 0, 0, face, face);
+      if (splitFaces) {
+        paintSymbolChart(
+          ctx,
+          backCells && backCells.length > 0 ? backCells : cells,
+          colorMap,
+          face,
+          0,
+          face,
+          face,
+        );
+      }
+      atlas.texture.needsUpdate = true;
+      lastPaintKeyRef.current = paintKey;
+    }
+
+    applyPatternMap(clonedScene, atlas.texture);
+    lastSceneRef.current = clonedScene;
+    invalidate();
+  }, [clonedScene, cells, backCells, splitFaces, colorMap, chartKey, invalidate]);
 
   useEffect(() => {
-    if (!clonedScene || !colorTexture) return;
-    applyPatternMap(clonedScene, colorTexture);
-    invalidate();
-  }, [clonedScene, colorTexture, invalidate]);
+    return () => {
+      atlasRef.current?.texture.dispose();
+      atlasRef.current = null;
+    };
+  }, []);
 
   return (
     <group ref={wrapRef}>
@@ -576,7 +601,7 @@ function Knitting3DCanvas({
           </Suspense>
         </Canvas>
       ) : (
-        <div className="flex h-full w-full items-center justify-center bg-stone-700 text-[11px] text-stone-300">
+        <div className="flex h-full w-full items-center justify-center bg-stone-700 text-sm text-stone-300">
           {t("editor.pausePreview")}
         </div>
       )}
@@ -584,7 +609,7 @@ function Knitting3DCanvas({
       {!normalTexture && active ? (
         <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 bg-stone-700 text-stone-300">
           <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
-          <span className="font-sans text-xs font-light">
+          <span className="font-sans text-sm font-light">
             {loadingCopy(t, itemType)}
           </span>
         </div>

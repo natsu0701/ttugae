@@ -214,7 +214,7 @@ const SmoothInput = forwardRef<HTMLInputElement, SmoothInputProps>(function Smoo
     <div className="w-full">
       <label
         htmlFor={inputId}
-        className={`mb-2 block font-sans text-sm font-normal ${
+        className={`mb-2 block font-sans text-base font-normal ${
           tone === "dark" ? "text-stone-300" : "text-gray-700"
         }`}
       >

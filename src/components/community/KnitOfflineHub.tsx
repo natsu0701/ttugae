@@ -419,13 +419,13 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
     <div className="w-full select-none rounded-xl border border-stone-200/50 bg-[#FFFBF7] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.015)] md:p-8">
       <div className="mb-8 flex flex-col justify-between gap-6 border-b border-stone-200/40 pb-6 md:flex-row md:items-center">
         <div>
-          <span className="rounded-full bg-coral/10 px-3.5 py-1 font-sans text-[10px] font-bold uppercase tracking-widest text-coral">
+          <span className="rounded-full bg-coral/10 px-3.5 py-1 font-sans text-sm font-bold uppercase tracking-widest text-coral">
             Offline Connection
           </span>
           <h3 className="mt-2 font-sans text-xl font-black tracking-tight text-stone-900">
             {t("offline.title")}
           </h3>
-          <p className="mt-1 break-keep font-seoyun text-sm font-normal text-stone-500">
+          <p className="mt-1 break-keep font-seoyun text-base font-normal text-stone-500">
             {t("offline.subtitle")}
           </p>
         </div>
@@ -441,7 +441,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               key={id}
               type="button"
               onClick={() => setActiveTab(id)}
-              className={`rounded-xl px-4 py-2 font-sans text-xs font-bold transition-all ${
+              className={`rounded-xl px-4 py-2 font-sans text-sm font-bold transition-all ${
                 activeTab === id ? "bg-white text-stone-900 shadow-sm" : "text-stone-500 hover:text-stone-800"
               }`}
             >
@@ -455,7 +455,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
         {activeTab === "map" ? (
           <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
             <div className="flex h-auto w-full flex-col space-y-4 lg:col-span-8 lg:h-[560px]">
-              <span className="block font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
+              <span className="block font-sans text-sm font-bold uppercase tracking-wider text-stone-400">
                 {t("offline.mapLabel")}
               </span>
               <div className="relative min-h-[320px] flex-1 overflow-hidden rounded-xl bg-[#ECE6DC] shadow-inner">
@@ -463,7 +463,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 {!leafletLoaded ? (
                   <div className="absolute inset-0 z-20 flex flex-col items-center justify-center space-y-3 bg-stone-50">
                     <SpinnerFillIcon className="h-8 w-8 animate-spin text-coral" />
-                    <span className="font-sans text-xs font-bold tracking-wide text-stone-400">
+                    <span className="font-sans text-sm font-bold tracking-wide text-stone-400">
                       {t("offline.mapLoading")}
                     </span>
                   </div>
@@ -475,7 +475,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       type="text"
                       readOnly
                       placeholder={t("offline.mapSearchPh")}
-                      className="w-full border-none bg-transparent font-sans text-[11px] font-medium text-stone-700 outline-none"
+                      className="w-full border-none bg-transparent font-sans text-sm font-medium text-stone-700 outline-none"
                     />
                   </div>
                 </div>
@@ -507,14 +507,14 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     <CompassFillIcon className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="absolute bottom-3 left-4 z-20 rounded-lg bg-stone-900/60 px-2.5 py-1 font-sans text-[10px] tracking-tight text-stone-200">
+                <div className="absolute bottom-3 left-4 z-20 rounded-lg bg-stone-900/60 px-2.5 py-1 font-sans text-sm tracking-tight text-stone-200">
                   {t("offline.mapHint")}
                 </div>
               </div>
             </div>
 
             <div className="flex h-auto w-full flex-col space-y-4 lg:col-span-4 lg:h-[560px]">
-              <span className="block font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
+              <span className="block font-sans text-sm font-bold uppercase tracking-wider text-stone-400">
                 {t("offline.detailLabel")}
               </span>
               <div className="flex flex-1 flex-col justify-between overflow-y-auto rounded-xl bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.01)]">
@@ -525,7 +525,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                         key={event.id}
                         type="button"
                         onClick={() => setSelectedEventId(event.id)}
-                        className={`rounded-full px-2.5 py-1 font-sans text-[10px] font-bold ${
+                        className={`rounded-full px-2.5 py-1 font-sans text-sm font-bold ${
                           selectedEventId === event.id
                             ? "bg-coral text-white"
                             : "bg-stone-100 text-stone-500 hover:bg-stone-200"
@@ -539,7 +539,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     <h4 className="break-keep font-sans text-base font-black leading-snug text-stone-900">
                       {selectedEvent.title}
                     </h4>
-                    <p className="break-keep border-b border-stone-100 pb-2 font-seoyun text-xs leading-relaxed text-stone-500">
+                    <p className="break-keep border-b border-stone-100 pb-2 font-seoyun text-sm leading-relaxed text-stone-500">
                       {selectedEvent.description}
                     </p>
                   </div>
@@ -547,15 +547,15 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     <div className="flex items-start gap-3 rounded-2xl bg-stone-50 p-4">
                       <CalendarFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                       <div className="font-sans">
-                        <span className="block text-[9px] font-bold uppercase text-stone-400">{t("offline.dateLabel")}</span>
-                        <span className="text-xs font-semibold text-stone-700">{selectedEvent.date}</span>
+                        <span className="block text-2xs font-bold uppercase text-stone-400">{t("offline.dateLabel")}</span>
+                        <span className="text-sm font-semibold text-stone-700">{selectedEvent.date}</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 rounded-2xl bg-stone-50 p-4">
                       <PinFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                       <div className="min-w-0 font-sans">
-                        <span className="block text-[9px] font-bold uppercase text-stone-400">{t("offline.placeLabel")}</span>
-                        <span className="break-all text-xs font-semibold leading-normal text-stone-700">
+                        <span className="block text-2xs font-bold uppercase text-stone-400">{t("offline.placeLabel")}</span>
+                        <span className="break-all text-sm font-semibold leading-normal text-stone-700">
                           {selectedEvent.location}
                         </span>
                       </div>
@@ -563,7 +563,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   </div>
                 </div>
                 <div className="mt-4 space-y-4 border-t border-stone-100 pt-4">
-                  <div className="space-y-1.5 font-sans text-xs text-stone-500">
+                  <div className="space-y-1.5 font-sans text-sm text-stone-500">
                     <div className="flex justify-between gap-2">
                       <span className="text-stone-400">{t("offline.yarnMatch")}</span>
                       <strong className="whitespace-normal break-all text-right text-stone-700">
@@ -578,14 +578,14 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   <button
                     type="button"
                     onClick={() => handleIssueTicket(selectedEvent)}
-                    className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-coral text-xs font-bold text-white shadow-[0_4px_12px_rgba(252,95,83,0.15)] transition-all hover:bg-coral/90"
+                    className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-coral text-sm font-bold text-white shadow-[0_4px_12px_rgba(252,95,83,0.15)] transition-all hover:bg-coral/90"
                   >
                     <QrFillIcon className="h-4 w-4" />
                     <span>{t("offline.ticket")}</span>
                   </button>
                 </div>
               </div>
-              <div className="break-keep rounded-2xl bg-stone-50/60 p-4 font-seoyun text-[10px] leading-relaxed text-stone-500">
+              <div className="break-keep rounded-2xl bg-stone-50/60 p-4 font-seoyun text-sm leading-relaxed text-stone-500">
                 {t("offline.passHint")}
               </div>
             </div>
@@ -595,10 +595,10 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
         {activeTab === "meetup" ? (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <span className="font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
+              <span className="font-sans text-sm font-bold uppercase tracking-wider text-stone-400">
                 {t("offline.meetupLabel")}
               </span>
-              <span className="font-sans text-xs text-stone-400">{t("offline.meetupRegion")}</span>
+              <span className="font-sans text-sm text-stone-400">{t("offline.meetupRegion")}</span>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {meetups.map((meetRaw) => {
@@ -616,31 +616,31 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     }`}
                   >
                     <div className="space-y-2">
-                      <span className="inline-block rounded bg-stone-100 px-2 py-0.5 font-sans text-[10px] font-bold text-stone-400">
+                      <span className="inline-block rounded bg-stone-100 px-2 py-0.5 font-sans text-sm font-bold text-stone-400">
                         {meet.region}
                       </span>
-                      <h4 className="min-h-[40px] break-keep font-sans text-sm font-bold leading-snug text-stone-900">
+                      <h4 className="min-h-[40px] break-keep font-sans text-base font-bold leading-snug text-stone-900">
                         {meet.title}
                       </h4>
                     </div>
-                    <div className="mt-4 space-y-1.5 border-t border-stone-100 pt-3 font-sans text-xs text-stone-500">
+                    <div className="mt-4 space-y-1.5 border-t border-stone-100 pt-3 font-sans text-sm text-stone-500">
                       <div className="flex justify-between gap-2">
-                        <span className="text-[10px] text-stone-400">{t("offline.needleNeeded")}</span>
+                        <span className="text-sm text-stone-400">{t("offline.needleNeeded")}</span>
                         <span className="font-semibold text-stone-700">{meet.requiredNeedle}</span>
                       </div>
                       <div className="flex justify-between gap-2">
-                        <span className="text-[10px] text-stone-400">{t("offline.yarnRecommended")}</span>
+                        <span className="text-sm text-stone-400">{t("offline.yarnRecommended")}</span>
                         <span className="whitespace-normal break-all text-right font-semibold leading-normal text-stone-700">
                           {meet.requiredYarn}
                         </span>
                       </div>
                       <div className="flex justify-between gap-2">
-                        <span className="text-[10px] text-stone-400">{t("offline.meetupCycle")}</span>
+                        <span className="text-sm text-stone-400">{t("offline.meetupCycle")}</span>
                         <span className="font-semibold text-stone-700">{meet.date}</span>
                       </div>
                     </div>
                     <div className="mt-5 space-y-2">
-                      <div className="flex justify-between font-sans text-[10px] font-bold text-stone-400">
+                      <div className="flex justify-between font-sans text-sm font-bold text-stone-400">
                         <span>
                           {t("offline.capacity", {
                             current: meet.currentMembers,
@@ -662,7 +662,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       type="button"
                       disabled={isFull && !meet.isJoined}
                       onClick={() => handleToggleJoinMeetup(meet.id)}
-                      className={`mt-4 flex h-10 w-full items-center justify-center gap-1.5 rounded-xl font-sans text-xs font-bold transition-colors ${
+                      className={`mt-4 flex h-10 w-full items-center justify-center gap-1.5 rounded-xl font-sans text-sm font-bold transition-colors ${
                         meet.isJoined
                           ? "bg-coral/10 text-coral hover:bg-coral/15"
                           : isFull
@@ -691,10 +691,10 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
         {activeTab === "reviews" ? (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <span className="font-sans text-xs font-bold uppercase tracking-wider text-stone-400">
+              <span className="font-sans text-sm font-bold uppercase tracking-wider text-stone-400">
                 {t("offline.reviewLabel")}
               </span>
-              <span className="font-sans text-xs text-stone-400">
+              <span className="font-sans text-sm text-stone-400">
                 {t("offline.reviewCount", { count: OFFLINE_REVIEWS.length })}
               </span>
             </div>
@@ -702,13 +702,13 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 <div
                   className="fade-in flex flex-col items-start justify-between gap-3 rounded-xl bg-stone-900 px-5 py-3 text-stone-100 shadow-lg sm:flex-row sm:items-center"
                 >
-                  <span className="whitespace-normal break-all font-sans text-xs font-bold leading-normal">
+                  <span className="whitespace-normal break-all font-sans text-sm font-bold leading-normal">
                     {t("offline.cloneDone", { name: clonedSuccessMsg })}
                   </span>
                   <button
                     type="button"
                     onClick={() => onGoEditor?.()}
-                    className="flex shrink-0 items-center gap-1 rounded-lg bg-coral/10 px-3 py-1.5 font-sans text-[11px] font-black text-coral transition-colors hover:bg-coral/20"
+                    className="flex shrink-0 items-center gap-1 rounded-lg bg-coral/10 px-3 py-1.5 font-sans text-sm font-black text-coral transition-colors hover:bg-coral/20"
                   >
                     <span>{t("offline.goNow")}</span>
                     <ChevronRightFillIcon className="h-3.5 w-3.5" />
@@ -726,10 +726,10 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   <div className="space-y-5">
                     <div className="flex items-start justify-between gap-4">
                       <div className="space-y-1">
-                        <span className="inline-block whitespace-normal break-all rounded bg-coral/5 px-2.5 py-0.5 font-sans text-[10px] font-bold leading-normal text-coral">
+                        <span className="inline-block whitespace-normal break-all rounded bg-coral/5 px-2.5 py-0.5 font-sans text-sm font-bold leading-normal text-coral">
                           {rev.eventTitle}
                         </span>
-                        <h5 className="mt-1 font-sans text-xs font-bold text-stone-400">
+                        <h5 className="mt-1 font-sans text-sm font-bold text-stone-400">
                           {t("offline.author", { name: rev.author })}
                         </h5>
                       </div>
@@ -744,7 +744,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                         ))}
                       </div>
                     </div>
-                    <p className="whitespace-normal break-words font-seoyun text-sm font-normal leading-relaxed text-stone-600">
+                    <p className="whitespace-normal break-words font-seoyun text-base font-normal leading-relaxed text-stone-600">
                       {rev.content}
                     </p>
                     {rev.hasPattern ? (
@@ -754,13 +754,13 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                             <FileTextFillIcon className="h-5 w-5" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <span className="block font-sans text-[9px] font-bold uppercase tracking-wide text-stone-400">
+                            <span className="block font-sans text-2xs font-bold uppercase tracking-wide text-stone-400">
                               {t("offline.patternAttach")}
                             </span>
-                            <span className="mt-0.5 block whitespace-normal break-all font-sans text-sm font-black leading-snug text-stone-900">
+                            <span className="mt-0.5 block whitespace-normal break-all font-sans text-base font-black leading-snug text-stone-900">
                               {rev.attachedPatternName}
                             </span>
-                            <span className="mt-1 block whitespace-normal break-all font-seoyun text-xs font-normal leading-normal text-stone-500">
+                            <span className="mt-1 block whitespace-normal break-all font-seoyun text-sm font-normal leading-normal text-stone-500">
                               {rev.attachedPatternDesc}
                             </span>
                           </div>
@@ -768,7 +768,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                         <button
                           type="button"
                           onClick={() => handleForkPattern(rev)}
-                          className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-xl bg-stone-950 px-5 py-3 font-sans text-[11px] font-bold text-stone-100 transition-all hover:bg-stone-800 md:w-auto"
+                          className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-xl bg-stone-950 px-5 py-3 font-sans text-sm font-bold text-stone-100 transition-all hover:bg-stone-800 md:w-auto"
                         >
                           <span>{t("offline.cloneEditor")}</span>
                           <ChevronRightFillIcon className="h-3.5 w-3.5" />
@@ -776,7 +776,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       </div>
                     ) : null}
                   </div>
-                  <div className="mt-5 flex items-center gap-4 border-t border-stone-100 pt-4 font-sans text-xs text-stone-400">
+                  <div className="mt-5 flex items-center gap-4 border-t border-stone-100 pt-4 font-sans text-sm text-stone-400">
                     <span className="flex items-center gap-1">
                       <HeartFillIcon className="h-3.5 w-3.5" />
                       <span>4</span>
@@ -806,13 +806,13 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               className="relative z-10 w-full max-w-sm space-y-6 rounded-xl bg-white p-6 text-center shadow-[0_30px_70px_rgba(0,0,0,0.15)]"
             >
               <div className="space-y-1.5">
-                <span className="rounded-full bg-coral/10 px-3.5 py-0.5 font-sans text-[9px] font-bold uppercase tracking-widest text-coral">
+                <span className="rounded-full bg-coral/10 px-3.5 py-0.5 font-sans text-2xs font-bold uppercase tracking-widest text-coral">
                   Mobile Entrance Pass
                 </span>
                 <h4 className="font-sans text-base font-black leading-snug text-stone-900">
                   {t("offline.ticketTitle")}
                 </h4>
-                <p className="mx-auto max-w-[240px] break-keep font-seoyun text-xs text-stone-400">
+                <p className="mx-auto max-w-[240px] break-keep font-seoyun text-sm text-stone-400">
                   {t("offline.ticketBody")}
                 </p>
               </div>
@@ -828,11 +828,11 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     )}
                   </svg>
                 </div>
-                <div className="font-sans text-xs leading-relaxed text-stone-600">
+                <div className="font-sans text-sm leading-relaxed text-stone-600">
                   <span className="block font-black text-stone-900">
                     {localizedEvent(t, activeModalTicket).title}
                   </span>
-                  <span className="mt-1 block break-all font-sans text-[10px] text-stone-400">
+                  <span className="mt-1 block break-all font-sans text-sm text-stone-400">
                     {issuedTicket?.ticketCode ?? "TTEU-PASS-2026"}
                   </span>
                 </div>
@@ -840,7 +840,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               <button
                 type="button"
                 onClick={() => setActiveModalTicket(null)}
-                className="h-11 w-full rounded-xl bg-stone-950 font-sans text-xs font-bold text-white transition-colors hover:bg-stone-800"
+                className="h-11 w-full rounded-xl bg-stone-950 font-sans text-sm font-bold text-white transition-colors hover:bg-stone-800"
               >
                 {t("offline.ticketClose")}
               </button>

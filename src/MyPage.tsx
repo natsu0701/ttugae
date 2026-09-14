@@ -140,7 +140,7 @@ function PatternGallery({
     return (
       <div className="rounded-2xl bg-gray-50 p-10 text-center">
         <p className="font-sans text-xl font-bold text-gray-900">{emptyTitle}</p>
-        <p className="mt-2 font-sans text-sm font-normal text-gray-500">{emptyDesc}</p>
+        <p className="mt-2 font-sans text-base font-normal text-gray-500">{emptyDesc}</p>
       </div>
     );
   }
@@ -252,7 +252,7 @@ function ProfileInfoPanel({
     <div className="space-y-6">
       <div>
         <h2 className="text-title text-gray-900">{t("mypage.profile.title")}</h2>
-        <p className="mt-1 font-seoyun text-sm text-stone-500">{t("mypage.profile.profileHint")}</p>
+        <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.profile.profileHint")}</p>
       </div>
 
       <div className="rounded-xl border border-stone-200 bg-white p-6 md:p-8">
@@ -281,23 +281,23 @@ function ProfileInfoPanel({
           </div>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <span className="font-sans text-lg font-bold leading-7 text-stone-900">{nickname}</span>
-            <span className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-[11px] font-bold text-white">
+            <span className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-sm font-bold text-white">
               Lv.{level.level}
             </span>
             {showEquippedBadge && equippedBadge ? (
               <span className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2 py-0.5">
                 <img src={equippedBadge.imageSrc} alt="" className="h-5 w-5 object-contain" />
-                <span className="font-sans text-[11px] font-bold text-stone-700">
+                <span className="font-sans text-sm font-bold text-stone-700">
                   {badgeName(t, equippedBadge.id, equippedBadge.name)}
                 </span>
               </span>
             ) : null}
           </div>
-          <p className="mt-1.5 font-sans text-sm leading-5 text-stone-500">@{handle}</p>
-          <p className="mt-1 font-sans text-xs leading-5 text-stone-400">{level.title}</p>
+          <p className="mt-1.5 font-sans text-base leading-5 text-stone-500">@{handle}</p>
+          <p className="mt-1 font-sans text-sm leading-5 text-stone-400">{level.title}</p>
           <div className="mt-4 w-full max-w-xl rounded-lg bg-stone-50 p-4 text-left">
-            <p className="font-sans text-xs font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
-            <ul className="mt-2 space-y-1 font-sans text-xs text-stone-500">
+            <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
+            <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
               <li>{t("mypage.level.criteria")}</li>
               <li>{t("mypage.level.period", { days: LEVEL_PERIOD_DAYS })}</li>
               <li>{t("mypage.level.score", { score: level.score.toLocaleString() })}</li>
@@ -308,7 +308,7 @@ function ProfileInfoPanel({
               </li>
             </ul>
           </div>
-          <div className="mt-4 flex gap-4 text-sm">
+          <div className="mt-4 flex gap-4 text-base">
             <button type="button" className="hover:text-coral" onClick={() => setFollowOpen("following")}>
               {t("mypage.follow.followingCount", { count: following.length })}
             </button>
@@ -337,11 +337,11 @@ function ProfileInfoPanel({
             }}
           />
         </div>
-        {handleError ? <p className="mt-2 text-xs text-coral">{handleError}</p> : null}
+        {handleError ? <p className="mt-2 text-sm text-coral">{handleError}</p> : null}
 
         <div className="mt-8">
-          <h3 className="font-sans text-sm font-bold">{t("mypage.profile.regionTitle")}</h3>
-          <p className="mt-1 font-seoyun text-xs text-stone-500">{t("mypage.profile.regionHint")}</p>
+          <h3 className="font-sans text-base font-bold">{t("mypage.profile.regionTitle")}</h3>
+          <p className="mt-1 font-seoyun text-sm text-stone-500">{t("mypage.profile.regionHint")}</p>
           <div className="mt-3">
             <RegionPicker
               value={activityRegion}
@@ -355,10 +355,10 @@ function ProfileInfoPanel({
 
         <div className="mt-6 flex items-center justify-between gap-4 rounded-lg bg-stone-50 px-4 py-3">
           <div>
-            <p className="font-sans text-sm leading-5 text-stone-800">
+            <p className="font-sans text-base leading-5 text-stone-800">
               {isPublic ? t("mypage.profile.publicOn") : t("mypage.profile.publicOff")}
             </p>
-            <p className="mt-1 font-sans text-xs leading-4 text-stone-400">
+            <p className="mt-1 font-sans text-sm leading-4 text-stone-400">
               {t("mypage.profile.publicHint")}
             </p>
           </div>
@@ -381,7 +381,7 @@ function ProfileInfoPanel({
         </div>
 
         <div className="mt-6 flex justify-end">
-          <Button type="button" className="px-5 py-2.5 text-sm" onClick={saveAll}>
+          <Button type="button" className="px-5 py-2.5 text-base" onClick={saveAll}>
             {t("mypage.profile.save")}
           </Button>
         </div>
@@ -389,7 +389,7 @@ function ProfileInfoPanel({
 
       <div className="rounded-xl border border-stone-200 bg-white p-6 md:p-8">
         <h3 className="text-title">{t("mypage.badgeVault")}</h3>
-        <p className="mt-2 font-sans text-sm leading-6 text-stone-500">{t("mypage.badgeVaultHint")}</p>
+        <p className="mt-2 font-sans text-base leading-6 text-stone-500">{t("mypage.badgeVaultHint")}</p>
         <div className="mt-5">
           <ProfileBadgeCustomizer
             unlocks={badgeUnlocks}
@@ -413,26 +413,26 @@ function ProfileInfoPanel({
               value={followQuery}
               onChange={(e) => setFollowQuery(e.target.value)}
               placeholder={t("mypage.follow.searchPh")}
-              className="mt-3 w-full rounded-lg border border-stone-200 px-3 py-2 text-sm"
+              className="mt-3 w-full rounded-lg border border-stone-200 px-3 py-2 text-base"
             />
             <ul className="mt-3 max-h-72 space-y-2 overflow-auto">
               {followPeople.length === 0 ? (
-                <li className="px-1 py-6 text-center text-sm text-stone-400">{t("mypage.follow.empty")}</li>
+                <li className="px-1 py-6 text-center text-base text-stone-400">{t("mypage.follow.empty")}</li>
               ) : (
                 followPeople.map((author) => {
                   const followingThem = isFollowing(author.handle);
                   return (
                     <li
                       key={author.handle}
-                      className="flex items-center justify-between gap-3 rounded-lg bg-stone-50 px-3 py-2 text-sm"
+                      className="flex items-center justify-between gap-3 rounded-lg bg-stone-50 px-3 py-2 text-base"
                     >
                       <div className="min-w-0">
                         <p className="truncate font-medium leading-5">{author.nickname}</p>
-                        <p className="truncate text-xs leading-4 text-stone-400">@{author.handle}</p>
+                        <p className="truncate text-sm leading-4 text-stone-400">@{author.handle}</p>
                       </div>
                       <button
                         type="button"
-                        className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
+                        className={`shrink-0 rounded-full px-3 py-1 text-sm font-bold ${
                           followingThem ? "bg-stone-200 text-stone-600" : "bg-coral text-white"
                         }`}
                         onClick={() => toggleFollow(author.handle)}
@@ -476,7 +476,7 @@ function GaugeTab() {
         }}
       />
       <div className="mt-4 flex justify-end">
-        <Button type="button" className="px-5 py-2.5 text-sm" onClick={saveGauge}>
+        <Button type="button" className="px-5 py-2.5 text-base" onClick={saveGauge}>
           {t("mypage.profile.save")}
         </Button>
       </div>
@@ -499,14 +499,14 @@ function AccountMenu({
 }) {
   const { t } = useTranslation();
   const itemClass =
-    "flex w-full items-center gap-2.5 px-3 py-2.5 text-left font-sans text-sm font-normal text-stone-700 hover:bg-stone-50";
+    "flex w-full items-center gap-2.5 px-3 py-2.5 text-left font-sans text-base font-normal text-stone-700 hover:bg-stone-50";
 
   return (
     <div className="relative mt-2 md:w-full">
       <button
         type="button"
         onClick={onToggle}
-        className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-sm font-normal md:w-full ${tabButtonBase} ${tabButtonClass(open)}`}
+        className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(open)}`}
         aria-expanded={open}
       >
         <AccountFillIcon className="h-5 w-5 shrink-0" />
@@ -525,7 +525,7 @@ function AccountMenu({
           <button
             type="button"
             onClick={onWithdraw}
-            className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left font-sans text-sm font-normal text-coral hover:bg-stone-50"
+            className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left font-sans text-base font-normal text-coral hover:bg-stone-50"
           >
             <WithdrawFillIcon className="h-4 w-4 shrink-0" />
             {t("mypage.account.withdraw")}
@@ -606,7 +606,7 @@ export default function MyPage({
                   key={id}
                   type="button"
                   onClick={() => selectTab(id)}
-                  className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-sm font-normal md:w-full ${tabButtonBase} ${tabButtonClass(active)}`}
+                  className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(active)}`}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
                   {t(labelKey)}
@@ -624,7 +624,7 @@ export default function MyPage({
             <div className="space-y-6">
               <div>
                 <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.tabs.summary")}</h2>
-                <p className="mt-1 font-sans text-sm text-gray-600">{t("mypage.profile.statsHint")}</p>
+                <p className="mt-1 font-sans text-base text-gray-600">{t("mypage.profile.statsHint")}</p>
               </div>
               <KnitAchievementDashboard
                 totalStitches={achievementStats.totalStitches}

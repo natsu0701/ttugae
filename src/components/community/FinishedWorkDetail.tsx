@@ -47,7 +47,7 @@ function AiPredictedImage({ filename }: { filename: string }) {
   if (failed) {
     return (
       <div className="flex min-h-[200px] items-center justify-center rounded-xl bg-gray-50 p-6">
-        <p className="font-sans text-sm font-normal text-gray-500">{filename}</p>
+        <p className="font-sans text-base font-normal text-gray-500">{filename}</p>
       </div>
     );
   }
@@ -130,19 +130,19 @@ export default function FinishedWorkDetail({
               <NeedleBadge
                 spec={pattern.needle}
                 needleText={d.needle}
-                className="mt-3 bg-gray-100 px-3 py-1 text-xs text-gray-600"
+                className="mt-3 bg-gray-100 px-3 py-1 text-sm text-gray-600"
               />
             </div>
             <div className="flex flex-wrap gap-2">
               {(onEdit || onDelete) && (
                 <>
                   {onEdit && (
-                    <Button type="button" variant="secondary" className="px-4 py-2 text-sm" onClick={onEdit}>
+                    <Button type="button" variant="secondary" className="px-4 py-2 text-base" onClick={onEdit}>
                       {t("common.edit")}
                     </Button>
                   )}
                   {onDelete && (
-                    <Button type="button" variant="ghost" className="px-4 py-2 text-sm" onClick={onDelete}>
+                    <Button type="button" variant="ghost" className="px-4 py-2 text-base" onClick={onDelete}>
                       {t("common.delete")}
                     </Button>
                   )}
@@ -151,7 +151,7 @@ export default function FinishedWorkDetail({
               <button
                 type="button"
                 onClick={() => setReportTarget({ type: "post", id: pattern.id })}
-                className="rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-coral"
+                className="rounded-lg px-3 py-2 text-base text-stone-500 hover:text-coral"
               >
                 {t("report.action")}
               </button>
@@ -159,22 +159,22 @@ export default function FinishedWorkDetail({
           </div>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <button type="button" onClick={openAuthor} className="flex items-center gap-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 font-sans text-sm font-bold text-coral">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 font-sans text-base font-bold text-coral">
                 {displayAuthor(t, pattern.author).slice(0, 1)}
               </span>
               <div>
-                <p className="flex items-center gap-1.5 font-sans text-sm font-normal text-gray-800">
+                <p className="flex items-center gap-1.5 font-sans text-base font-normal text-gray-800">
                   @{displayAuthor(t, pattern.author)}
                   <EquippedAuthorChip author={pattern.author} />
                 </p>
-                <p className="font-sans text-xs font-normal text-gray-500">{pattern.publishedAt}</p>
+                <p className="font-sans text-sm font-normal text-gray-500">{pattern.publishedAt}</p>
               </div>
             </button>
             <div className="ml-auto flex items-center gap-4">
               <button
                 type="button"
                 onClick={() => toggleLike(pattern.id)}
-                className={`flex items-center gap-1.5 text-sm ${liked ? "font-semibold text-coral" : "text-stone-600"}`}
+                className={`flex items-center gap-1.5 text-base ${liked ? "font-semibold text-coral" : "text-stone-600"}`}
                 aria-pressed={liked}
               >
                 <HeartFillIcon className="h-4 w-4" filled={liked} />
@@ -184,7 +184,7 @@ export default function FinishedWorkDetail({
               <button
                 type="button"
                 onClick={() => toggleSave(pattern.id)}
-                className={`flex items-center gap-1.5 text-sm ${saved ? "font-semibold text-stone-800" : "text-stone-600"}`}
+                className={`flex items-center gap-1.5 text-base ${saved ? "font-semibold text-stone-800" : "text-stone-600"}`}
                 aria-pressed={saved}
               >
                 <BookmarkFillIcon className="h-4 w-4" filled={saved} />
@@ -198,7 +198,7 @@ export default function FinishedWorkDetail({
         <div className="mt-8 overflow-hidden rounded-xl bg-gray-50">
           {imageFailed ? (
             <div className="flex min-h-[320px] items-center justify-center p-8 text-center">
-              <p className="font-sans text-sm font-normal text-gray-500">{pattern.finishedImage}</p>
+              <p className="font-sans text-base font-normal text-gray-500">{pattern.finishedImage}</p>
             </div>
           ) : (
             <img
@@ -216,16 +216,16 @@ export default function FinishedWorkDetail({
           </p>
           <div className="grid gap-4 rounded-xl bg-gray-50 p-6 sm:grid-cols-3">
             <div>
-              <p className="font-sans text-xs uppercase tracking-wide text-gray-500">{t("community.yarnUsed")}</p>
-              <p className="mt-1 font-sans text-sm text-gray-800">{d.yarn}</p>
+              <p className="font-sans text-sm uppercase tracking-wide text-gray-500">{t("community.yarnUsed")}</p>
+              <p className="mt-1 font-sans text-base text-gray-800">{d.yarn}</p>
             </div>
             <div>
-              <p className="font-sans text-xs uppercase tracking-wide text-gray-500">{t("community.needleSize")}</p>
-              <p className="mt-1 font-sans text-sm text-gray-800">{d.needle}</p>
+              <p className="font-sans text-sm uppercase tracking-wide text-gray-500">{t("community.needleSize")}</p>
+              <p className="mt-1 font-sans text-base text-gray-800">{d.needle}</p>
             </div>
             <div>
-              <p className="font-sans text-xs uppercase tracking-wide text-gray-500">{t("community.duration")}</p>
-              <p className="mt-1 font-sans text-sm text-gray-800">{d.duration}</p>
+              <p className="font-sans text-sm uppercase tracking-wide text-gray-500">{t("community.duration")}</p>
+              <p className="mt-1 font-sans text-base text-gray-800">{d.duration}</p>
             </div>
           </div>
           <div className="rounded-xl bg-gray-50 p-6">
@@ -238,7 +238,7 @@ export default function FinishedWorkDetail({
           {pattern.hasAttachedPattern ? (
             <>
               <h2 className="font-sans text-xl font-bold text-gray-900">{t("community.attachedPattern")}</h2>
-              <p className="mt-2 font-sans text-sm text-gray-500">
+              <p className="mt-2 font-sans text-base text-gray-500">
                 {t("community.attachedHint", { cols: pattern.gridCols, rows: pattern.gridRows })}
               </p>
               <div className="mt-4">
@@ -251,7 +251,7 @@ export default function FinishedWorkDetail({
           ) : (
             <>
               <h2 className="font-sans text-xl font-bold text-gray-900">{t("community.aiAnalyzed")}</h2>
-              <p className="mt-2 font-sans text-sm text-gray-500">{t("community.noPatternOnlyPhoto")}</p>
+              <p className="mt-2 font-sans text-base text-gray-500">{t("community.noPatternOnlyPhoto")}</p>
               <div className="mt-4">
                 <AiPredictedImage filename={pattern.aiPredictedImage ?? "completed_muffler_rainbow.jpg"} />
               </div>
@@ -269,7 +269,7 @@ export default function FinishedWorkDetail({
               const mine = isOwnAuthor(c.author) || c.author === myHandle;
               return (
                 <li key={c.id} className="rounded-xl bg-gray-50 p-4">
-                  <div className="flex flex-wrap items-center gap-2 font-sans text-xs text-gray-500">
+                  <div className="flex flex-wrap items-center gap-2 font-sans text-sm text-gray-500">
                     <span className="text-gray-700">
                       @{c.author === "나" ? myHandle : comment.author.replace(/^@/, "")}
                     </span>
@@ -291,7 +291,7 @@ export default function FinishedWorkDetail({
                       />
                       <Button
                         type="button"
-                        className="px-3 py-2 text-sm"
+                        className="px-3 py-2 text-base"
                         onClick={() => {
                           updateComment(c.id, editDraft);
                           setEditingId(null);
@@ -303,20 +303,20 @@ export default function FinishedWorkDetail({
                       <Button
                         type="button"
                         variant="secondary"
-                        className="px-3 py-2 text-sm"
+                        className="px-3 py-2 text-base"
                         onClick={() => setEditingId(null)}
                       >
                         {t("common.cancel")}
                       </Button>
                     </div>
                   ) : (
-                    <p className="mt-2 font-sans text-sm leading-relaxed text-gray-700">{comment.body}</p>
+                    <p className="mt-2 font-sans text-base leading-relaxed text-gray-700">{comment.body}</p>
                   )}
                   {mine ? (
                     <div className="mt-2 flex gap-2">
                       <button
                         type="button"
-                        className="text-xs text-stone-500 hover:text-coral"
+                        className="text-sm text-stone-500 hover:text-coral"
                         onClick={() => {
                           setEditingId(c.id);
                           setEditDraft(c.body);
@@ -326,7 +326,7 @@ export default function FinishedWorkDetail({
                       </button>
                       <button
                         type="button"
-                        className="text-xs text-stone-500 hover:text-coral"
+                        className="text-sm text-stone-500 hover:text-coral"
                         onClick={() => {
                           deleteComment(c.id);
                           refreshComments();
@@ -346,18 +346,18 @@ export default function FinishedWorkDetail({
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((n) => Math.max(1, n - 1))}
-                className="rounded-lg px-3 py-1 text-sm disabled:opacity-40"
+                className="rounded-lg px-3 py-1 text-base disabled:opacity-40"
               >
                 {t("community.prevPage")}
               </button>
-              <span className="text-xs text-stone-500">
+              <span className="text-sm text-stone-500">
                 {page} / {pages}
               </span>
               <button
                 type="button"
                 disabled={page >= pages}
                 onClick={() => setPage((n) => Math.min(pages, n + 1))}
-                className="rounded-lg px-3 py-1 text-sm disabled:opacity-40"
+                className="rounded-lg px-3 py-1 text-base disabled:opacity-40"
               >
                 {t("community.nextPage")}
               </button>
@@ -365,8 +365,8 @@ export default function FinishedWorkDetail({
           ) : null}
 
           <form onSubmit={handleComment} className="mt-6 rounded-xl bg-gray-50 p-5">
-            <label className="font-sans text-sm text-gray-700">{t("community.writeComment")}</label>
-            <p className="mt-1 font-sans text-xs text-stone-500">
+            <label className="font-sans text-base text-gray-700">{t("community.writeComment")}</label>
+            <p className="mt-1 font-sans text-sm text-stone-500">
               {loggedIn ? t("community.commentAs", { handle: myHandle }) : t("community.commentNeedLogin")}
             </p>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">

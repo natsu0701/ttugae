@@ -1,18 +1,38 @@
-import { useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowUpFillIcon, ChatFillIcon } from "../icons/FillIcons.tsx";
 import TteuniChatWidget from "./TteuniChatWidget.tsx";
 
-export default function FloatingDock() {
+function FloatingDock() {
   const { t } = useTranslation();
   const [chatOpen, setChatOpen] = useState(false);
   const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setShowTop(window.scrollY > 240);
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setShowTop(window.scrollY > 240);
+        ticking = false;
+      });
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const toggleChat = useCallback(() => {
+    setChatOpen((open) => !open);
+  }, []);
+
+  const closeChat = useCallback(() => {
+    setChatOpen(false);
   }, []);
 
   return (
@@ -21,7 +41,7 @@ export default function FloatingDock() {
         {showTop ? (
           <button
             type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={scrollTop}
             className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-700 shadow-md hover:border-coral hover:text-coral"
             aria-label={t("chat.scrollTop")}
           >
@@ -30,7 +50,7 @@ export default function FloatingDock() {
         ) : null}
         <button
           type="button"
-          onClick={() => setChatOpen((open) => !open)}
+          onClick={toggleChat}
           className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full bg-coral text-white shadow-md hover:bg-black"
           aria-label={t("chat.open")}
           aria-expanded={chatOpen}
@@ -38,7 +58,9 @@ export default function FloatingDock() {
           <ChatFillIcon className="h-5 w-5" />
         </button>
       </div>
-      <TteuniChatWidget open={chatOpen} onClose={() => setChatOpen(false)} />
+      <TteuniChatWidget open={chatOpen} onClose={closeChat} />
     </>
   );
 }
+
+export default memo(FloatingDock);

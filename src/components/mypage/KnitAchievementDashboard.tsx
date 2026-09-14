@@ -154,13 +154,13 @@ function KnitAchievementDashboard({
           {summaryItems.map((item) => (
             <div key={item.label} className="rounded-xl bg-stone-50 px-4 py-4">
               <item.icon className="h-5 w-5 text-coral" />
-              <p className="mt-3 font-sans text-xs leading-5 text-stone-500">{item.label}</p>
+              <p className="mt-3 font-sans text-sm leading-5 text-stone-500">{item.label}</p>
               <p className="mt-1.5 font-sans text-xl font-bold leading-7 text-stone-900">{item.value}</p>
             </div>
           ))}
         </div>
         <div className="mt-5">
-          <div className="mb-2 flex justify-between gap-3 text-xs leading-5">
+          <div className="mb-2 flex justify-between gap-3 text-sm leading-5">
             <span>{t("mypage.level.next", { remaining: level.remaining.toLocaleString() })}</span>
             <span className="shrink-0 text-coral">{level.progress}%</span>
           </div>
@@ -173,22 +173,22 @@ function KnitAchievementDashboard({
       <div className="rounded-xl border border-stone-200 bg-white p-6">
         <div className="flex items-center gap-2">
           <StatsFillIcon className="h-5 w-5 text-coral" />
-          <h4 className="font-sans text-sm font-bold text-stone-900">{t("mypage.statsMonthly")}</h4>
+          <h4 className="font-sans text-base font-bold text-stone-900">{t("mypage.statsMonthly")}</h4>
         </div>
-        <p className="mt-2 font-sans text-xs leading-5 text-stone-400">{t("mypage.statsMonthlyHint")}</p>
+        <p className="mt-2 font-sans text-sm leading-5 text-stone-400">{t("mypage.statsMonthlyHint")}</p>
         <div className="mt-4 flex h-40 items-end justify-between gap-2">
           {monthlyData.map((item) => {
             const height = maxMonthly > 0 ? (item.value / maxMonthly) * 100 : 0;
             return (
               <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center gap-2">
-                <span className="font-sans text-xs font-bold text-coral">{item.value}</span>
+                <span className="font-sans text-sm font-bold text-coral">{item.value}</span>
                 <div className="flex h-24 w-full items-end justify-center">
                   <div
                     className="w-full max-w-[2.5rem] rounded-t-xl bg-coral"
                     style={{ height: `${Math.max(height, 8)}%` }}
                   />
                 </div>
-                <span className="font-seoyun text-[10px] leading-4 text-gray-500">{item.label}</span>
+                <span className="font-seoyun text-sm leading-4 text-gray-500">{item.label}</span>
               </div>
             );
           })}
@@ -198,21 +198,21 @@ function KnitAchievementDashboard({
       <div className="rounded-xl border border-stone-200 bg-white p-6">
         <div className="flex items-center gap-2">
           <BrushFillIcon className="h-5 w-5 text-coral" />
-          <h4 className="font-sans text-sm font-bold text-stone-900">{t("mypage.statsColors")}</h4>
+          <h4 className="font-sans text-base font-bold text-stone-900">{t("mypage.statsColors")}</h4>
         </div>
-        <p className="mt-2 font-sans text-xs leading-5 text-stone-400">{t("mypage.statsColorsHint")}</p>
+        <p className="mt-2 font-sans text-sm leading-5 text-stone-400">{t("mypage.statsColorsHint")}</p>
         <ul className="mt-5 space-y-4">
           {DEMO_COLOR_USAGE.map((color) => (
             <li key={color.nameKey}>
               <div className="mb-1.5 flex items-center justify-between gap-3">
-                <span className="flex items-center gap-2 font-sans text-sm leading-5 text-gray-800">
+                <span className="flex items-center gap-2 font-sans text-base leading-5 text-gray-800">
                   <span
                     className="h-4 w-4 shrink-0 rounded-full"
                     style={{ backgroundColor: color.hex }}
                   />
                   {t(color.nameKey)}
                 </span>
-                <span className="font-sans text-sm font-bold text-coral">{color.percent}%</span>
+                <span className="font-sans text-base font-bold text-coral">{color.percent}%</span>
               </div>
               <div className="h-2.5 overflow-hidden rounded-full bg-gray-100">
                 <div className="h-full rounded-full bg-coral" style={{ width: `${color.percent}%` }} />
@@ -223,7 +223,7 @@ function KnitAchievementDashboard({
       </div>
 
       <div className="rounded-xl border border-stone-200 bg-white p-6">
-        <h4 className="mb-4 font-sans text-xs font-black uppercase tracking-wider text-stone-400">
+        <h4 className="mb-4 font-sans text-sm font-black uppercase tracking-wider text-stone-400">
           {t("mypage.achBadgeStatus")}
         </h4>
         <div className="mb-4 flex flex-wrap gap-2">
@@ -232,7 +232,7 @@ function KnitAchievementDashboard({
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`rounded-lg px-4 py-2 font-sans text-xs font-bold ${
+              className={`rounded-lg px-4 py-2 font-sans text-sm font-bold ${
                 activeTab === tab.id ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-500"
               }`}
             >
@@ -242,7 +242,7 @@ function KnitAchievementDashboard({
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {filteredBadges.length === 0 ? (
-            <p className="col-span-full py-8 text-center text-sm text-stone-400">{t("mypage.achEmpty")}</p>
+            <p className="col-span-full py-8 text-center text-base text-stone-400">{t("mypage.achEmpty")}</p>
           ) : (
             filteredBadges.map((badge) => {
               const unlock = unlocks[badge.id];
@@ -256,8 +256,8 @@ function KnitAchievementDashboard({
                 >
                   <img src={badge.imageSrc} alt="" className={`h-16 w-16 object-contain ${isUnlocked ? "" : "grayscale"}`} />
                   <div className="min-w-0">
-                    <h5 className="truncate text-sm font-bold leading-5">{badgeName(t, badge.id, badge.name)}</h5>
-                    <p className="mt-1.5 text-xs leading-5 text-stone-400">{badgeDesc(t, badge.id, badge.description)}</p>
+                    <h5 className="truncate text-base font-bold leading-5">{badgeName(t, badge.id, badge.name)}</h5>
+                    <p className="mt-1.5 text-sm leading-5 text-stone-400">{badgeDesc(t, badge.id, badge.description)}</p>
                   </div>
                 </div>
               );

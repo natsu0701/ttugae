@@ -42,7 +42,7 @@ function ReportModal({ open, targetType, targetId, onClose }: ReportModalProps) 
             <p className="mt-2 text-body text-stone-500">{t("report.hint")}</p>
             <div className="mt-4 space-y-2">
               {REPORT_REASONS.map((id) => (
-                <label key={id} className="flex items-center gap-2 text-sm text-stone-700">
+                <label key={id} className="flex items-center gap-2 text-base text-stone-700">
                   <input
                     type="radio"
                     name="report-reason"
@@ -57,17 +57,17 @@ function ReportModal({ open, targetType, targetId, onClose }: ReportModalProps) 
               value={detail}
               onChange={(e) => setDetail(e.target.value)}
               rows={3}
-              className="mt-4 w-full rounded-lg border border-stone-200 px-3 py-2 text-sm outline-none focus:border-coral"
+              className="mt-4 w-full rounded-lg border border-stone-200 px-3 py-2 text-base outline-none focus:border-coral"
               placeholder={t("report.detailPh")}
             />
           </>
         )}
         <div className="mt-5 flex justify-end gap-2">
-          <Button type="button" variant="secondary" className="px-4 py-2 text-sm" onClick={onClose}>
+          <Button type="button" variant="secondary" className="px-4 py-2 text-base" onClick={onClose}>
             {done ? t("common.close") : t("common.cancel")}
           </Button>
           {!done ? (
-            <Button type="button" className="px-4 py-2 text-sm" onClick={submit}>
+            <Button type="button" className="px-4 py-2 text-base" onClick={submit}>
               {t("report.submit")}
             </Button>
           ) : null}

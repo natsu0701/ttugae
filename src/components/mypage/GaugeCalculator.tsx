@@ -37,7 +37,7 @@ function GaugeCalculator({ gauge, onChange }: GaugeCalculatorProps) {
   return (
     <div className="rounded-xl border border-stone-200 bg-white p-6">
       <h2 className="text-title text-gray-900">{t("mypage.profile.gaugeTitle")}</h2>
-      <p className="mt-1 font-seoyun text-sm text-stone-500">{t("mypage.profile.gaugeHint")}</p>
+      <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.profile.gaugeHint")}</p>
       <div className="mt-5 grid grid-cols-2 gap-3">
         <SmoothInput
           label={t("mypage.profile.gaugeBeforeSts")}
@@ -73,11 +73,11 @@ function GaugeCalculator({ gauge, onChange }: GaugeCalculatorProps) {
         />
       </div>
       <div className="mt-5 rounded-lg bg-stone-50 p-4">
-        <p className="font-sans text-sm font-bold text-stone-800">{t("mypage.gauge.resultTitle")}</p>
+        <p className="font-sans text-base font-bold text-stone-800">{t("mypage.gauge.resultTitle")}</p>
         <p className="mt-2 text-body text-stone-600">
           {t("mypage.gauge.resultLine", { sts: recSts, rows: recRows, cm: target })}
         </p>
-        <p className="mt-1 font-sans text-xs text-stone-400">
+        <p className="mt-1 font-sans text-sm text-stone-400">
           {t("mypage.gauge.ratioLine", {
             sts: ratioSts.toFixed(2),
             rows: ratioRows.toFixed(2),

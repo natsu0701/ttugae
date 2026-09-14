@@ -78,13 +78,13 @@ function FeatureInteractiveTabs() {
                   />
                   <div className="min-w-0">
                     <span
-                      className={`block font-sans text-sm font-bold transition-colors ${
+                      className={`block font-sans text-base font-bold transition-colors ${
                         isActive ? "text-stone-900" : "text-stone-600 group-hover:text-stone-900"
                       }`}
                     >
                       {t(TAB_COPY[item.id]?.title ?? item.title)}
                     </span>
-                    <span className="mt-0.5 block font-sans text-[10px] font-light text-stone-400">
+                    <span className="mt-0.5 block font-sans text-sm font-light text-stone-400">
                       {t(TAB_COPY[item.id]?.sub ?? item.subtitle)}
                     </span>
                   </div>

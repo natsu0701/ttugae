@@ -14,7 +14,7 @@ const socialBtnBase =
 
 function KakaoIcon() {
   return (
-    <span className="font-sans text-sm font-bold text-gray-900" aria-hidden>
+    <span className="font-sans text-base font-bold text-gray-900" aria-hidden>
       K
     </span>
   );
@@ -86,7 +86,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           <BrandTextLogo className="h-7 w-auto object-contain" />
           {t("login.title")}
         </h2>
-        <p className="mt-2 font-seoyun text-sm text-gray-600">
+        <p className="mt-2 font-seoyun text-base text-gray-600">
           {t("login.subtitle")}
         </p>
 
@@ -114,7 +114,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           <div className="absolute inset-0 flex items-center">
             <div className="h-px w-full bg-gray-200" />
           </div>
-          <p className="relative mx-auto w-fit bg-gray-50 px-4 font-seoyun text-sm text-gray-500">
+          <p className="relative mx-auto w-fit bg-gray-50 px-4 font-seoyun text-base text-gray-500">
             {t("login.orSocial")}
           </p>
         </div>

@@ -33,7 +33,7 @@ export default function ChartTabs({
             key={chart.id}
             type="button"
             onClick={() => onSelect(chart.id)}
-            className={`max-w-[7.5rem] shrink-0 truncate rounded-full px-2.5 py-1 font-sans text-[11px] font-normal ${
+            className={`max-w-[7.5rem] shrink-0 truncate rounded-full px-2.5 py-1 font-sans text-sm font-normal ${
               active ? "border border-coral bg-coral text-white" : editorChromeTone
             }`}
             title={`${chart.name} · ${chartPartLabel(t, chart.targetPart, CHART_PART_LABELS[chart.targetPart])}`}

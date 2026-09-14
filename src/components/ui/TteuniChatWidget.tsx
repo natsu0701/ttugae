@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { memo, useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 import { getTteuniReply } from "../../utils/aiPatternApply.ts";
@@ -17,7 +17,7 @@ type TteuniChatWidgetProps = {
   onClose: () => void;
 };
 
-export default function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
+function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
   const { t } = useTranslation();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -69,8 +69,8 @@ export default function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProp
       <div className="flex items-center gap-2 border-b border-stone-100 px-4 py-3">
         <img src={TTEUNI_IMAGES.chatProfile} alt="" className="h-8 w-8 object-contain" />
         <div className="min-w-0 flex-1">
-          <p className="font-sans text-sm font-bold text-stone-900">{t("chat.widgetTitle")}</p>
-          <p className="font-sans text-[11px] text-stone-500">{t("chat.widgetHint")}</p>
+          <p className="font-sans text-base font-bold text-stone-900">{t("chat.widgetTitle")}</p>
+          <p className="font-sans text-sm text-stone-500">{t("chat.widgetHint")}</p>
         </div>
         <button
           type="button"
@@ -85,13 +85,13 @@ export default function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProp
         {messages.length === 0 ? (
           <div className="flex gap-2">
             <ChatFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-coral" />
-            <p className="font-seoyun text-sm leading-relaxed text-stone-600">{t("editor.tteuniHint")}</p>
+            <p className="font-seoyun text-base leading-relaxed text-stone-600">{t("editor.tteuniHint")}</p>
           </div>
         ) : (
           messages.map((msg) => (
             <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+                className={`max-w-[85%] rounded-2xl px-3 py-2 text-base leading-relaxed ${
                   msg.role === "user" ? "bg-coral text-white" : "bg-stone-100 text-stone-800"
                 }`}
               >
@@ -108,7 +108,7 @@ export default function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProp
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder={t("editor.tteuniPlaceholder")}
-          className="min-w-0 flex-1 rounded-xl border-stone-200 px-3 py-2 text-sm"
+          className="min-w-0 flex-1 rounded-xl border-stone-200 px-3 py-2 text-base"
         />
         <button
           type="button"
@@ -124,3 +124,5 @@ export default function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProp
     </div>
   );
 }
+
+export default memo(TteuniChatWidget);

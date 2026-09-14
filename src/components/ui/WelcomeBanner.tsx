@@ -4,6 +4,8 @@
  * - 좌측: 카테고리 칩 → 타이틀(문경감홍사과체) → 서브타이틀 계층
  * - 우측: 몽글몽글 부유하는 뜨니 페르소나
  */
+import { memo } from "react";
+
 type WelcomeBannerProps = {
   chip: string;
   title: string;
@@ -12,7 +14,7 @@ type WelcomeBannerProps = {
   image: string;
 };
 
-export default function WelcomeBanner({
+function WelcomeBanner({
   chip,
   title,
   subtitle,
@@ -21,11 +23,11 @@ export default function WelcomeBanner({
   return (
     <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-xl bg-[#FFFBF7] p-8 shadow-sm sm:p-10 md:flex-row">
       <div className="w-full min-w-0 md:flex-1">
-        <span className="mb-3 block w-fit rounded-full bg-[#FC5F53]/10 px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-widest text-[#FC5F53]">
+        <span className="mb-3 block w-fit rounded-full bg-[#FC5F53]/10 px-3 py-1 font-sans text-sm font-bold uppercase tracking-widest text-[#FC5F53] md:text-base">
           {chip}
         </span>
         <h1
-          className="break-keep font-gamhong text-2xl font-normal tracking-tight text-stone-900 sm:text-3xl"
+          className="break-keep font-gamhong text-2xl font-normal tracking-tight text-stone-900 sm:text-3xl md:text-4xl"
           style={{
             fontFamily: "Mungyeong-Gamhong-Apple, sans-serif",
             fontWeight: 400,
@@ -35,7 +37,7 @@ export default function WelcomeBanner({
         >
           {title}
         </h1>
-        <p className="mt-2.5 max-w-xl break-keep font-seoyun text-base font-normal leading-relaxed text-stone-500 sm:text-lg">
+        <p className="mt-2.5 max-w-xl break-keep font-seoyun text-lg font-normal leading-relaxed text-stone-500 sm:text-xl">
           {subtitle}
         </p>
       </div>
@@ -44,10 +46,12 @@ export default function WelcomeBanner({
         <img
           src={image}
           alt=""
-          className="h-28 w-28 object-contain md:h-32 md:w-32"
+          className="gpu-float h-28 w-28 object-contain md:h-32 md:w-32"
           style={{ animation: "tteuni-float 2.8s ease-in-out infinite" }}
         />
       </div>
     </div>
   );
 }
+
+export default memo(WelcomeBanner);

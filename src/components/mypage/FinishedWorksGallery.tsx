@@ -39,7 +39,7 @@ function FinishedWorkCard({
     <article className="flex flex-col overflow-hidden rounded-2xl bg-gray-50 transition-colors hover:bg-gray-100">
       {failed ? (
         <div className="flex h-48 items-center justify-center bg-gray-100 p-4 text-center">
-          <p className="font-sans text-xs font-normal text-gray-500">
+          <p className="font-sans text-sm font-normal text-gray-500">
             {t("community.photoFail")}
           </p>
         </div>
@@ -53,10 +53,10 @@ function FinishedWorkCard({
       )}
       <div className="flex flex-1 flex-col p-4">
         <h3 className="font-sans text-lg font-bold text-gray-900">{work.title}</h3>
-        <p className="mt-1 font-sans text-xs font-normal text-gray-500">
+        <p className="mt-1 font-sans text-sm font-normal text-gray-500">
           {work.completedAt}
         </p>
-        <p className="mt-3 flex-1 font-sans text-sm font-normal leading-relaxed text-gray-600">
+        <p className="mt-3 flex-1 font-sans text-base font-normal leading-relaxed text-gray-600">
           {work.caption}
         </p>
         {canManage && (
@@ -65,7 +65,7 @@ function FinishedWorkCard({
               <Button
                 type="button"
                 variant="secondary"
-                className="flex-1 py-2 text-sm"
+                className="flex-1 py-2 text-base"
                 onClick={onEdit}
               >
                 {t("common.edit")}
@@ -74,7 +74,7 @@ function FinishedWorkCard({
             <Button
               type="button"
               variant="ghost"
-              className="flex-1 py-2 text-sm text-gray-600"
+              className="flex-1 py-2 text-base text-gray-600"
               onClick={onDelete}
             >
               {t("common.delete")}
@@ -117,7 +117,7 @@ export default function FinishedWorksGallery({ onEditPost }: FinishedWorksGaller
     return (
       <div className="rounded-2xl bg-gray-50 p-10 text-center">
         <p className="font-sans text-xl font-bold text-gray-900">{t("mypage.finishedEmptyTitle")}</p>
-        <p className="mt-2 font-sans text-sm font-normal text-gray-500">
+        <p className="mt-2 font-sans text-base font-normal text-gray-500">
           {t("mypage.finishedEmptyDesc")}
         </p>
       </div>

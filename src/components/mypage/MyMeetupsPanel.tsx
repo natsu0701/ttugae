@@ -105,11 +105,11 @@ export default function MyMeetupsPanel() {
   return (
     <div>
       <h2 className="text-title text-gray-900">{t("mypage.meetupsTitle")}</h2>
-      <p className="mt-1 font-seoyun text-sm text-stone-500">{t("mypage.meetupsSubtitle")}</p>
+      <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.meetupsSubtitle")}</p>
       {empty ? (
         <div className="mt-6 rounded-xl bg-gray-50 p-10 text-center">
           <p className="font-sans text-xl font-bold text-gray-900">{t("mypage.meetupsEmptyTitle")}</p>
-          <p className="mt-2 font-seoyun text-sm text-gray-500">{t("mypage.meetupsEmptyDesc")}</p>
+          <p className="mt-2 font-seoyun text-base text-gray-500">{t("mypage.meetupsEmptyDesc")}</p>
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-4">
@@ -134,12 +134,12 @@ export default function MyMeetupsPanel() {
                 }}
                 className="rounded-xl border border-stone-200 bg-stone-50 p-5 text-left hover:border-coral/40 hover:bg-white"
               >
-                <p className="font-sans text-[11px] leading-4 text-stone-400">{meetup.region}</p>
+                <p className="font-sans text-sm leading-4 text-stone-400">{meetup.region}</p>
                 <h3 className="mt-1.5 font-sans text-lg font-bold leading-7">{meetup.title}</h3>
-                <p className="mt-3 font-seoyun text-xs leading-5 text-stone-500">
+                <p className="mt-3 font-seoyun text-sm leading-5 text-stone-500">
                   {t("mypage.meetupsJoined", { max: meetup.maxCapacity ?? 0, joined })}
                 </p>
-                <p className="mt-2 font-sans text-xs font-medium text-coral">
+                <p className="mt-2 font-sans text-sm font-medium text-coral">
                   {isMeetupHost(meetup, handle) ? t("mypage.meetups.openHost") : t("mypage.meetups.openGuest")}
                 </p>
               </button>
@@ -162,15 +162,15 @@ export default function MyMeetupsPanel() {
             <h3 className="text-title">{active.title}</h3>
             {host ? (
               <div className="mt-4">
-                <p className="text-sm font-medium">{t("mypage.meetups.qrHost")}</p>
+                <p className="text-base font-medium">{t("mypage.meetups.qrHost")}</p>
                 <img src={qrImageUrl(payload)} alt="" className="mx-auto mt-3 h-48 w-48" />
-                <p className="mt-2 break-all text-center text-[11px] text-stone-400">{payload}</p>
+                <p className="mt-2 break-all text-center text-sm text-stone-400">{payload}</p>
               </div>
             ) : (
               <div className="mt-4">
                 <Button
                   type="button"
-                  className="px-4 py-2 text-sm"
+                  className="px-4 py-2 text-base"
                   onClick={() => {
                     checkInMeetup(active.meetupId);
                     setTick((n) => n + 1);
@@ -181,8 +181,8 @@ export default function MyMeetupsPanel() {
               </div>
             )}
             <div className="mt-6">
-              <h4 className="font-sans text-sm font-bold">{t("mypage.meetups.diaryTitle")}</h4>
-              <p className="mt-1 font-sans text-xs leading-5 text-stone-400">{t("mypage.meetups.diaryHint")}</p>
+              <h4 className="font-sans text-base font-bold">{t("mypage.meetups.diaryTitle")}</h4>
+              <p className="mt-1 font-sans text-sm leading-5 text-stone-400">{t("mypage.meetups.diaryHint")}</p>
               <input
                 ref={photoRef}
                 type="file"
@@ -196,7 +196,7 @@ export default function MyMeetupsPanel() {
               />
               <button
                 type="button"
-                className="mt-3 rounded-lg border border-dashed border-stone-200 px-3 py-2 font-sans text-xs text-stone-500"
+                className="mt-3 rounded-lg border border-dashed border-stone-200 px-3 py-2 font-sans text-sm text-stone-500"
                 onClick={() => photoRef.current?.click()}
               >
                 {t("mypage.meetups.diaryPhoto")}
@@ -212,7 +212,7 @@ export default function MyMeetupsPanel() {
               />
               <Button
                 type="button"
-                className="mt-2 px-4 py-2 text-sm"
+                className="mt-2 px-4 py-2 text-base"
                 onClick={() => {
                   if (!diaryBody.trim() && !diaryPhoto) return;
                   saveMeetupDiary({
@@ -228,8 +228,8 @@ export default function MyMeetupsPanel() {
               </Button>
               <ul className="mt-4 space-y-3">
                 {diaries.map((entry) => (
-                  <li key={entry.id} className="rounded-lg bg-stone-50 p-3 text-sm">
-                    <p className="text-xs leading-4 text-stone-400">@{entry.author}</p>
+                  <li key={entry.id} className="rounded-lg bg-stone-50 p-3 text-base">
+                    <p className="text-sm leading-4 text-stone-400">@{entry.author}</p>
                     {entry.photoUrl ? (
                       <img src={entry.photoUrl} alt="" className="mt-2 max-h-40 rounded-lg object-cover" />
                     ) : null}

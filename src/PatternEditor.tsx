@@ -12,7 +12,8 @@ import EditorHeader from "./components/editor/EditorHeader.tsx";
 import CastOnModal from "./components/editor/CastOnModal.tsx";
 import NeedleSpecFields from "./components/editor/NeedleSpecFields.tsx";
 import ChartTabs from "./components/editor/ChartTabs.tsx";
-import CanvasToolDock from "./components/editor/CanvasToolDock.tsx";
+import EditorCanvasStage from "./components/editor/EditorCanvasStage.tsx";
+import PatternGrid from "./components/editor/PatternGrid.tsx";
 import ColorChipMenu from "./components/editor/ColorChipMenu.tsx";
 import WorkshopPalettePanel from "./components/editor/WorkshopPalettePanel.tsx";
 import TteuniChatbot from "./components/editor/TteuniChatbot.tsx";
@@ -23,7 +24,6 @@ import { applyAiPatternFromMessage, getTteuniReply } from "./utils/aiPatternAppl
 import { editorChromeBtn, editorChromeBtnActive, editorChromeTone, editorPanel } from "./components/ui/tabButtonStyles.ts";
 import { STITCHES, stitchSymbol } from "./data/stitchSymbols.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
-import { symbolColorForBackground } from "./utils/colorContrast.ts";
 import {
   createRealisticDemoGrid,
   emptyGrid,
@@ -182,10 +182,7 @@ export default function PatternEditor({
   const [activeColor, setActiveColor] = useState<string>("coral");
   const [activeStitch, setActiveStitch] = useState<string>("knit");
   const [tool, setTool] = useState<Tool>("paint");
-  const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
   const [spacePan, setSpacePan] = useState(false);
-  const [isPanning, setIsPanning] = useState(false);
   const [saveCollectionId, setSaveCollectionId] = useState(() =>
     collectionIdForPattern(initialPattern?.id ?? ""),
   );
@@ -203,9 +200,6 @@ export default function PatternEditor({
   );
   const [customH, setCustomH] = useState(String(seeded.charts[0]?.gridData.length ?? 14));
   const dragStart = useRef<{ r: number; c: number } | null>(null);
-  const panDrag = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
   const leftToolbarRef = useRef<HTMLElement>(null);
   const chatbotPanelRef = useRef<HTMLDivElement>(null);
   const sizeMenuRef = useRef<HTMLDivElement>(null);
@@ -270,18 +264,6 @@ export default function PatternEditor({
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
     };
-  }, []);
-
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el) return;
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? -0.1 : 0.1;
-      setZoom((z) => Math.min(3, Math.max(0.4, Number((z + delta).toFixed(2)))));
-    };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
   const colorMap = useMemo(
@@ -439,7 +421,7 @@ export default function PatternEditor({
     });
   }, [selection, activeColor, activeStitch, tool, patchActiveGrid]);
 
-  const handlePointerDown = (r: number, c: number) => {
+  const handlePointerDown = useCallback((r: number, c: number) => {
     if (tool === "pan" || spacePan) return;
     if (tool === "paint" || tool === "eraser" || tool === "checker") {
       setIsDragging(true);
@@ -449,9 +431,9 @@ export default function PatternEditor({
     dragStart.current = { r, c };
     setSelection({ r0: r, c0: c, r1: r, c1: c });
     setIsDragging(true);
-  };
+  }, [tool, spacePan, applyCell]);
 
-  const handlePointerEnter = (r: number, c: number) => {
+  const handlePointerEnter = useCallback((r: number, c: number) => {
     if ((tool === "paint" || tool === "eraser" || tool === "checker") && isDragging) {
       applyCell(r, c);
     }
@@ -463,12 +445,21 @@ export default function PatternEditor({
         c1: c,
       });
     }
-  };
+  }, [tool, isDragging, applyCell]);
 
-  const endDrag = () => {
+  const endDrag = useCallback(() => {
     setIsDragging(false);
     dragStart.current = null;
-  };
+  }, []);
+
+  const handleToolChange = useCallback((next: Tool) => {
+    setTool(next);
+    setToolHintOpen(true);
+  }, []);
+
+  const dismissToolHint = useCallback(() => {
+    setToolHintOpen(false);
+  }, []);
 
   const addYarnToPalette = (yarn: EditorYarn) => {
     setPaletteYarns((prev) => {
@@ -620,16 +611,8 @@ export default function PatternEditor({
     }
   }, [patternText]);
 
-  const inSelection = (r: number, c: number) => {
-    if (!selection) return false;
-    const rMin = Math.min(selection.r0, selection.r1);
-    const rMax = Math.max(selection.r0, selection.r1);
-    const cMin = Math.min(selection.c0, selection.c1);
-    const cMax = Math.max(selection.c0, selection.c1);
-    return r >= rMin && r <= rMax && c >= cMin && c <= cMax;
-  };
-
   const toolHint = t(`editor.toolHints.${tool}`);
+  const panEnabled = tool === "pan" || spacePan;
 
   return (
     <div
@@ -693,7 +676,7 @@ export default function PatternEditor({
           className="scrollbar-thin flex h-[calc(100vh-4rem)] w-[200px] shrink-0 flex-col gap-4 overflow-y-auto border-r border-stone-800/80 bg-stone-800 p-3 pb-8 md:p-5 md:pb-8"
         >
           <div>
-            <p className="mb-2 font-sans text-xs font-normal uppercase tracking-wide text-stone-400">
+            <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-400">
               {t("editor.symbolPalette")}
             </p>
             <div className="grid grid-cols-2 gap-1.5">
@@ -702,12 +685,12 @@ export default function PatternEditor({
                   key={s.id}
                   type="button"
                   onClick={() => setActiveStitch(s.id)}
-                  className={`flex flex-col items-center px-1.5 py-2 font-sans text-xs font-normal ${
+                  className={`flex flex-col items-center px-1.5 py-2 font-sans text-sm font-normal ${
                     activeStitch === s.id ? editorChromeBtnActive : editorChromeBtn
                   }`}
                 >
                   <span className="flex h-6 items-center justify-center text-base leading-none">{s.symbol}</span>
-                  <span className="mt-0.5 truncate text-[9px]">
+                  <span className="mt-0.5 truncate text-2xs">
                     {t(`editor.stitches.${s.id}`)}
                   </span>
                 </button>
@@ -718,12 +701,12 @@ export default function PatternEditor({
                   setCastOnMode("replace");
                   setCastOnOpen(true);
                 }}
-                className="flex flex-col items-center rounded-xl border border-stone-500 bg-transparent px-1.5 py-2 font-sans text-xs font-normal text-stone-100 transition-colors hover:border-stone-400 hover:bg-stone-700/40"
+                className="flex flex-col items-center rounded-xl border border-stone-500 bg-transparent px-1.5 py-2 font-sans text-sm font-normal text-stone-100 transition-colors hover:border-stone-400 hover:bg-stone-700/40"
                 aria-label={t("editor.castOnButton")}
                 title={t("editor.castOnButton")}
               >
                 <span className="flex h-6 items-center justify-center text-2xl leading-none">+</span>
-                <span className="mt-0.5 truncate text-[9px]">
+                <span className="mt-0.5 truncate text-2xs">
                   {t("editor.stitches.caston")}
                 </span>
               </button>
@@ -734,7 +717,7 @@ export default function PatternEditor({
                 setCastOnMode("gauge");
                 setCastOnOpen(true);
               }}
-              className={`mt-2 w-full px-3 py-2.5 font-sans text-xs font-normal ${editorChromeBtn}`}
+              className={`mt-2 w-full px-3 py-2.5 font-sans text-sm font-normal ${editorChromeBtn}`}
             >
               {t("editor.gaugeButton")}
             </button>
@@ -746,7 +729,7 @@ export default function PatternEditor({
           </div>
 
           <div ref={yarnPaletteRef} className="relative">
-            <p className="mb-2 font-sans text-xs font-normal uppercase tracking-wide text-stone-400">
+            <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-400">
               {t("editor.yarnColors")}
             </p>
             <div className="grid grid-cols-3 gap-1.5">
@@ -781,123 +764,30 @@ export default function PatternEditor({
         </aside>
 
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#F7F5F0]">
-        <div
-          ref={stageRef}
-          className={`flex min-h-0 flex-1 items-center justify-center overflow-hidden p-4 md:p-8 ${
-            tool === "pan" || spacePan
-              ? isPanning
-                ? "cursor-grabbing"
-                : "cursor-grab"
-              : ""
-          }`}
-          onPointerDown={(e) => {
-            if (tool !== "pan" && !spacePan) return;
-            e.currentTarget.setPointerCapture(e.pointerId);
-            setIsPanning(true);
-            panDrag.current = { x: e.clientX, y: e.clientY, panX: pan.x, panY: pan.y };
-          }}
-          onPointerMove={(e) => {
-            const drag = panDrag.current;
-            if (!drag) return;
-            setPan({
-              x: drag.panX + (e.clientX - drag.x),
-              y: drag.panY + (e.clientY - drag.y),
-            });
-          }}
-          onPointerUp={() => {
-            panDrag.current = null;
-            setIsPanning(false);
+        <EditorCanvasStage
+          panEnabled={panEnabled}
+          dock={{
+            tool,
+            onToolChange: handleToolChange,
+            showFillSelection: tool === "select" && Boolean(selection),
+            onFillSelection: fillSelection,
+            hint: toolHint,
+            hintOpen: toolHintOpen,
+            onDismissHint: dismissToolHint,
           }}
         >
-        <div
-          className="flex h-full w-full items-center justify-center"
-          style={{
-            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-            transformOrigin: "center center",
-          }}
-        >
-          <div
-            ref={canvasRef}
-            className="max-h-full max-w-full rounded-xl bg-white p-3 shadow-sm"
-            style={{
-              aspectRatio: `${gridCols} / ${gridRows}`,
-              width: gridCols >= gridRows ? "100%" : "auto",
-              height: gridRows > gridCols ? "100%" : "auto",
-            }}
-          >
-            <div
-              className={`h-full w-full ${tool === "pan" || spacePan ? "pointer-events-none" : ""}`}
-              style={{ aspectRatio: `${gridCols} / ${gridRows}` }}
-            >
-              <div
-                className="grid h-full w-full gap-px rounded-xl bg-stone-200/70 p-1"
-                style={{
-                  gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
-                  gridTemplateRows: `repeat(${gridRows}, minmax(0, 1fr))`,
-                }}
-              >
-                {grid.map((row, r) =>
-                  row.map((cell, c) => {
-                const selected = inSelection(r, c);
-                const bgHex = colorMap[cell.colorId] ?? "#FFFFFF";
-                const symbolColor = symbolColorForBackground(bgHex);
-                return (
-                  <button
-                    key={`${r}-${c}`}
-                    type="button"
-                    className={`relative h-full w-full min-w-0 rounded-sm ${
-                      gridCols > 30
-                        ? "text-[6px]"
-                        : gridCols > 20
-                          ? "text-[7px]"
-                          : "text-[10px]"
-                    }`}
-                    style={{ backgroundColor: bgHex }}
-                    onPointerDown={(e) => {
-                      e.preventDefault();
-                      handlePointerDown(r, c);
-                    }}
-                    onPointerEnter={() => handlePointerEnter(r, c)}
-                  >
-                    {selected && (
-                      <span
-                        className="pointer-events-none absolute inset-0 rounded-sm bg-coral/40"
-                        aria-hidden
-                      />
-                    )}
-                    <span
-                      className="pointer-events-none relative z-[1] font-sans font-normal"
-                      style={{ color: symbolColor }}
-                    >
-                      {stitchSymbol(cell.stitchId)}
-                    </span>
-                  </button>
-                );
-                  }),
-                )}
-              </div>
-            </div>
-          </div>
-        {facesIndependent ? (
-          <p className="mt-3 font-seoyun text-sm font-normal text-stone-400">{faceHint}</p>
-        ) : null}
-        </div>
-        </div>
-        <CanvasToolDock
-          tool={tool}
-          onToolChange={(next) => {
-            setTool(next);
-            setToolHintOpen(true);
-          }}
-          showFillSelection={tool === "select" && Boolean(selection)}
-          onFillSelection={fillSelection}
-          hint={toolHint}
-          hintOpen={toolHintOpen}
-          onDismissHint={() => setToolHintOpen(false)}
-          zoom={zoom}
-          onZoomIn={() => setZoom((z) => Math.min(3, Number((z + 0.15).toFixed(2))))}
-          onZoomOut={() => setZoom((z) => Math.max(0.4, Number((z - 0.15).toFixed(2))))}
-        />
+          <PatternGrid
+            grid={grid}
+            colorMap={colorMap}
+            selection={selection}
+            pointerDisabled={panEnabled}
+            onCellPointerDown={handlePointerDown}
+            onCellPointerEnter={handlePointerEnter}
+          />
+          {facesIndependent ? (
+            <p className="mt-3 font-seoyun text-base font-normal text-stone-400">{faceHint}</p>
+          ) : null}
+        </EditorCanvasStage>
         </main>
 
         <EditorRightSidebar>
@@ -917,8 +807,8 @@ export default function PatternEditor({
               <TteuniChatbot onUserMessage={handleAiMessage} />
             </div>
             <div className={`${editorPanel} p-4`}>
-              <p className="mb-1 font-sans text-sm font-bold text-white">{t("editor.needlePanelTitle")}</p>
-              <p className="mb-3 font-seoyun text-[11px] font-normal text-stone-400">
+              <p className="mb-1 font-sans text-base font-bold text-white">{t("editor.needlePanelTitle")}</p>
+              <p className="mb-3 font-seoyun text-sm font-normal text-stone-400">
                 {t("editor.needlePanelHint")}
               </p>
               <NeedleSpecFields
@@ -940,7 +830,7 @@ export default function PatternEditor({
             />
             <div className={`relative min-w-0 p-4 ${editorPanel}`}>
               <div className="mb-2 flex shrink-0 items-center justify-between gap-2">
-                <p className="font-sans text-xs font-normal uppercase tracking-wide text-stone-400">
+                <p className="font-sans text-sm font-normal uppercase tracking-wide text-stone-400">
                   {t("editor.narrativePreview")}
                 </p>
                 <button
@@ -956,13 +846,13 @@ export default function PatternEditor({
                     <CopyFillIcon className="h-3.5 w-3.5" />
                   )}
                   {patternCopyDone ? (
-                    <span className="absolute -bottom-8 right-0 z-10 whitespace-nowrap rounded-full bg-stone-800 px-2.5 py-1 font-sans text-[10px] font-medium text-white shadow-md">
+                    <span className="absolute -bottom-8 right-0 z-10 whitespace-nowrap rounded-full bg-stone-800 px-2.5 py-1 font-sans text-sm font-medium text-white shadow-md">
                       {t("editor.copied")}
                     </span>
                   ) : null}
                 </button>
               </div>
-              <pre className="scrollbar-thin max-h-[200px] min-w-0 overflow-x-hidden overflow-y-auto break-keep break-words whitespace-pre-wrap font-sans text-xs font-normal leading-relaxed text-stone-200 md:max-h-[240px]">
+              <pre className="scrollbar-thin max-h-[200px] min-w-0 overflow-x-hidden overflow-y-auto break-keep break-words whitespace-pre-wrap font-sans text-sm font-normal leading-relaxed text-stone-200 md:max-h-[240px]">
                 {patternText}
               </pre>
             </div>

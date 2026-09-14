@@ -23,7 +23,7 @@ export default function NeedleBadge({ spec, needleText, className = "" }: Needle
 
   return (
     <span
-      className={`inline-flex items-center rounded-full bg-white/90 px-2.5 py-0.5 font-sans text-[10px] font-medium tracking-wide text-stone-600 backdrop-blur-sm ${className}`}
+      className={`inline-flex items-center rounded-full bg-white/90 px-2.5 py-0.5 font-sans text-sm font-medium tracking-wide text-stone-600 backdrop-blur-sm ${className}`}
     >
       {label}
     </span>

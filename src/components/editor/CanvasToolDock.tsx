@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   BrushFillIcon,
@@ -34,7 +35,7 @@ type CanvasToolDockProps = {
   onZoomOut: () => void;
 };
 
-export default function CanvasToolDock({
+function CanvasToolDock({
   tool,
   onToolChange,
   showFillSelection,
@@ -55,7 +56,7 @@ export default function CanvasToolDock({
           className="flex max-w-[min(100%,28rem)] items-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 py-2 shadow-sm"
           role="status"
         >
-          <p className="min-w-0 flex-1 font-seoyun text-sm font-normal leading-none text-stone-500">
+          <p className="min-w-0 flex-1 font-seoyun text-base font-normal leading-none text-stone-500">
             {hint}
           </p>
           <button
@@ -70,7 +71,7 @@ export default function CanvasToolDock({
       ) : null}
 
       <div className="flex items-center gap-2 rounded-2xl border border-stone-600/80 bg-stone-800 px-3 py-2 shadow-sm">
-        <p className="mr-1 hidden font-sans text-[10px] font-normal tracking-wide text-stone-400 sm:block">
+        <p className="mr-1 hidden font-sans text-sm font-normal tracking-wide text-stone-400 sm:block">
           {t("editor.drawingTools")}
         </p>
         <div className="flex items-center gap-1.5">
@@ -85,7 +86,7 @@ export default function CanvasToolDock({
                 onClick={() => onToolChange(toolItem.id)}
                 title={label}
                 aria-label={label}
-                className={`flex h-10 w-10 items-center justify-center px-2.5 font-sans text-sm font-normal ${
+                className={`flex h-10 w-10 items-center justify-center px-2.5 font-sans text-base font-normal ${
                   isActive ? editorChromeBtnActive : editorChromeBtn
                 }`}
               >
@@ -98,7 +99,7 @@ export default function CanvasToolDock({
           <button
             type="button"
             onClick={onFillSelection}
-            className={`ml-1 px-3 py-2 font-sans text-xs font-normal ${editorChromeBtn}`}
+            className={`ml-1 px-3 py-2 font-sans text-sm font-normal ${editorChromeBtn}`}
           >
             {t("editor.fillSelection")}
           </button>
@@ -112,7 +113,7 @@ export default function CanvasToolDock({
         >
           <ZoomOutFillIcon className="h-5 w-5" />
         </button>
-        <span className="min-w-[2.5rem] text-center font-sans text-xs text-stone-300">
+        <span className="min-w-[2.5rem] text-center font-sans text-sm text-stone-300">
           {Math.round(zoom * 100)}%
         </span>
         <button
@@ -127,3 +128,5 @@ export default function CanvasToolDock({
     </div>
   );
 }
+
+export default memo(CanvasToolDock);

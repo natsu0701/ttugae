@@ -45,7 +45,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
           <Reveal delay={0.4}>
             <h1 className="break-keep">
               {/* 1줄 리드 카피 - 슬림하고 세련된 고딕 */}
-              <span className="block font-sans text-lg font-semibold leading-relaxed tracking-[0.04em] text-white/80 [text-shadow:0_1px_3px_rgba(0,0,0,0.12),0_6px_24px_rgba(0,0,0,0.18)] sm:text-xl md:text-2xl">
+              <span className="block font-sans text-xl font-semibold leading-relaxed tracking-[0.04em] text-white/80 [text-shadow:0_1px_3px_rgba(0,0,0,0.12),0_6px_24px_rgba(0,0,0,0.18)] sm:text-2xl md:text-3xl">
                 {t("landing.heroLead")}
               </span>
 
@@ -80,7 +80,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
 
         {/* 3줄 서브 설명 */}
         <Reveal delay={0.75}>
-          <p className="mx-auto mt-0.5 max-w-xl font-seoyun text-lg font-light leading-tight tracking-[0.05em] text-white/60 [text-shadow:0_1px_2px_rgba(0,0,0,0.14),0_4px_16px_rgba(0,0,0,0.16)] sm:text-xl md:mt-1 md:text-[1.3rem]">
+          <p className="mx-auto mt-0.5 max-w-xl font-seoyun text-lg font-light leading-tight tracking-[0.05em] text-white/60 [text-shadow:0_1px_2px_rgba(0,0,0,0.14),0_4px_16px_rgba(0,0,0,0.16)] sm:text-xl md:mt-1 md:text-xl">
             {t("landing.heroSub")}
           </p>
         </Reveal>

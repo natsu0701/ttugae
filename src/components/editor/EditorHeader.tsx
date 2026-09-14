@@ -1,4 +1,4 @@
-import type { ReactNode, RefObject } from "react";
+import { memo, type ReactNode, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
@@ -34,7 +34,7 @@ type EditorHeaderProps = {
   chartTabs?: ReactNode;
 };
 
-export default function EditorHeader({
+function EditorHeader({
   title,
   onTitleChange,
   gridCols,
@@ -68,13 +68,13 @@ export default function EditorHeader({
         onChange={(e) => onTitleChange(e.target.value)}
         placeholder={t("editor.patternNamePlaceholder")}
         aria-label={t("editor.patternName")}
-        className="h-10 w-40 rounded-xl border-stone-700/80 bg-stone-950 px-3 py-1.5 text-sm font-semibold tracking-normal placeholder:text-stone-500 md:w-56"
+        className="h-10 w-40 rounded-xl border-stone-700/80 bg-stone-950 px-3 py-1.5 text-base font-semibold tracking-normal placeholder:text-stone-500 md:w-56"
       />
 
       <button
         type="button"
         onClick={onAddChart}
-        className={`flex shrink-0 items-center gap-1 px-3 py-1.5 font-sans text-xs font-medium ${editorChromeBtn}`}
+        className={`flex shrink-0 items-center gap-1 px-3 py-1.5 font-sans text-sm font-medium ${editorChromeBtn}`}
       >
         <PlusFillIcon className="h-3.5 w-3.5" />
         {t("editor.castOn.addAction")}
@@ -86,13 +86,13 @@ export default function EditorHeader({
         <button
           type="button"
           onClick={onToggleSizeMenu}
-          className={`${editorChromeBtn} whitespace-nowrap px-3 py-1.5 font-sans text-xs font-medium`}
+          className={`${editorChromeBtn} whitespace-nowrap px-3 py-1.5 font-sans text-sm font-medium`}
         >
           {t("editor.sizeLabel", { cols: gridCols, rows: gridRows })}
         </button>
         {sizeMenuOpen && (
           <div className="absolute left-0 top-full z-30 mt-2 w-56 rounded-2xl border border-stone-600/80 bg-stone-700 p-3">
-            <p className="mb-2 font-sans text-xs font-normal text-stone-400">
+            <p className="mb-2 font-sans text-sm font-normal text-stone-400">
               {t("editor.sizePresetsTitle")}
             </p>
             {SIZE_PRESETS.map((preset) => {
@@ -102,7 +102,7 @@ export default function EditorHeader({
                   key={preset.label}
                   type="button"
                   onClick={() => onApplySize(preset.w, preset.h)}
-                  className={`mb-1 w-full px-3 py-2 text-left font-sans text-sm font-normal ${
+                  className={`mb-1 w-full px-3 py-2 text-left font-sans text-base font-normal ${
                     active ? editorChromeBtnActive : editorChromeBtn
                   }`}
                 >
@@ -110,7 +110,7 @@ export default function EditorHeader({
                 </button>
               );
             })}
-            <p className="mb-2 mt-3 font-sans text-xs font-normal text-stone-400">
+            <p className="mb-2 mt-3 font-sans text-sm font-normal text-stone-400">
               {t("editor.sizeCustomTitle")}
             </p>
             <div className="flex gap-2">
@@ -119,7 +119,7 @@ export default function EditorHeader({
                 value={customW}
                 onChange={(e) => onCustomWChange(e.target.value)}
                 placeholder="W"
-                className="rounded-xl border-stone-700/80 py-1.5 text-sm"
+                className="rounded-xl border-stone-700/80 py-1.5 text-base"
                 inputMode="numeric"
               />
               <SmoothInput
@@ -127,14 +127,14 @@ export default function EditorHeader({
                 value={customH}
                 onChange={(e) => onCustomHChange(e.target.value)}
                 placeholder="H"
-                className="rounded-xl border-stone-700/80 py-1.5 text-sm"
+                className="rounded-xl border-stone-700/80 py-1.5 text-base"
                 inputMode="numeric"
               />
             </div>
             <Button
               variant="primary"
               fullWidth
-              className="mt-2 py-2 text-sm"
+              className="mt-2 py-2 text-base"
               onClick={() => {
                 const w = parseInt(customW, 10);
                 const h = parseInt(customH, 10);
@@ -147,10 +147,10 @@ export default function EditorHeader({
         )}
       </div>
 
-      <p className="hidden truncate font-sans text-[11px] text-stone-400 lg:block">
+      <p className="hidden truncate font-sans text-sm text-stone-400 lg:block">
         {t("editor.needleShort")}: {needleLabel}
       </p>
-      <p className="hidden max-w-[12rem] truncate font-sans text-[11px] text-stone-400 xl:block">
+      <p className="hidden max-w-[12rem] truncate font-sans text-sm text-stone-400 xl:block">
         {t("editor.yarnShort")}: {yarnLabel}
       </p>
 
@@ -158,14 +158,14 @@ export default function EditorHeader({
         <button
           type="button"
           onClick={onSave}
-          className={`${editorChromeBtn} px-4 py-2 font-sans text-sm font-semibold`}
+          className={`${editorChromeBtn} px-4 py-2 font-sans text-base font-semibold`}
         >
           {t("editor.save")}
         </button>
         <button
           type="button"
           onClick={onShare}
-          className="rounded-xl bg-coral px-4 py-2 font-sans text-sm font-bold text-white transition-colors hover:bg-black"
+          className="rounded-xl bg-coral px-4 py-2 font-sans text-base font-bold text-white transition-colors hover:bg-black"
         >
           {t("editor.share")}
         </button>
@@ -173,3 +173,5 @@ export default function EditorHeader({
     </header>
   );
 }
+
+export default memo(EditorHeader);

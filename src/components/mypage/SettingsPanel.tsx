@@ -64,8 +64,8 @@ function SettingsCard({
 }) {
   return (
     <div className={`mt-6 rounded-2xl bg-white p-6 ${softShadow}`}>
-      <h3 className="font-sans text-sm font-bold text-gray-900">{title}</h3>
-      <p className="mt-1 font-seoyun text-xs font-normal text-gray-500">{hint}</p>
+      <h3 className="font-sans text-base font-bold text-gray-900">{title}</h3>
+      <p className="mt-1 font-seoyun text-sm font-normal text-gray-500">{hint}</p>
       <div className="mt-4">{children}</div>
     </div>
   );
@@ -163,11 +163,11 @@ export default function SettingsPanel() {
       <h2 className="font-sans text-2xl font-bold text-gray-900">
         {t("mypage.settings.title")}
       </h2>
-      <p className="mt-1 font-sans text-sm font-normal text-gray-600">
+      <p className="mt-1 font-sans text-base font-normal text-gray-600">
         {t("mypage.settings.subtitle")}
       </p>
       {savedHint ? (
-        <p className="mt-3 font-sans text-xs font-medium text-coral">{savedHint}</p>
+        <p className="mt-3 font-sans text-sm font-medium text-coral">{savedHint}</p>
       ) : null}
 
       <SettingsCard
@@ -176,8 +176,8 @@ export default function SettingsPanel() {
       >
         <div className="flex items-center justify-between rounded-xl border border-stone-100 bg-stone-50 p-3.5">
           <div className="flex flex-col">
-            <span className="font-sans text-xs font-bold text-stone-700">{t("mypage.settings.yarnTrail")}</span>
-            <span className="mt-0.5 text-[10px] text-stone-400">
+            <span className="font-sans text-sm font-bold text-stone-700">{t("mypage.settings.yarnTrail")}</span>
+            <span className="mt-0.5 text-sm text-stone-400">
               {t("mypage.settings.yarnTrailHint")}
             </span>
           </div>
@@ -204,19 +204,19 @@ export default function SettingsPanel() {
         <div className="mt-4">
           <label
             htmlFor="language-select"
-            className="flex items-center gap-2 font-sans text-sm font-bold text-gray-900"
+            className="flex items-center gap-2 font-sans text-base font-bold text-gray-900"
           >
             <GlobeFillIcon className="h-5 w-5 text-stone-500" />
             {t("mypage.settings.languageLabel")}
           </label>
-          <p className="mt-2 font-seoyun text-xs font-normal text-gray-500">
+          <p className="mt-2 font-seoyun text-sm font-normal text-gray-500">
             {t("mypage.settings.appliedHint")}
           </p>
           <select
             id="language-select"
             value={current}
             onChange={(e) => handleLanguageChange(e.target.value as AppLanguage)}
-            className={`mt-4 w-full rounded-xl bg-gray-50 px-4 py-3 font-sans text-sm font-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow}`}
+            className={`mt-4 w-full rounded-xl bg-gray-50 px-4 py-3 font-sans text-base font-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow}`}
           >
             {LANG_OPTIONS.map((lang) => (
               <option key={lang.id} value={lang.id}>
@@ -239,10 +239,10 @@ export default function SettingsPanel() {
                 className="flex items-center justify-between gap-3 rounded-xl bg-gray-50 px-3 py-2.5"
               >
                 <span className="min-w-0">
-                  <span className="block truncate font-sans text-sm font-medium text-gray-900">
+                  <span className="block truncate font-sans text-base font-medium text-gray-900">
                     {yarn.name}
                   </span>
-                  <span className="block font-sans text-[11px] font-normal text-gray-500">
+                  <span className="block font-sans text-sm font-normal text-gray-500">
                     {[yarn.grams && `${yarn.grams}g`, yarn.meters && `${yarn.meters}m`, yarn.needle]
                       .filter(Boolean)
                       .join(" · ")}
@@ -251,7 +251,7 @@ export default function SettingsPanel() {
                 <button
                   type="button"
                   onClick={() => removeYarn(yarn.id)}
-                  className="shrink-0 font-sans text-xs text-gray-400 transition-colors hover:text-coral"
+                  className="shrink-0 font-sans text-sm text-gray-400 transition-colors hover:text-coral"
                 >
                   {t("common.delete")}
                 </button>
@@ -259,7 +259,7 @@ export default function SettingsPanel() {
             ))}
           </ul>
         ) : (
-          <p className="mb-4 font-seoyun text-xs font-normal text-gray-500">
+          <p className="mb-4 font-seoyun text-sm font-normal text-gray-500">
             {t("mypage.settings.yarnEmpty")}
           </p>
         )}
@@ -293,7 +293,7 @@ export default function SettingsPanel() {
             className="border-stone-200"
           />
         </div>
-        <Button type="button" onClick={addYarn} className="mt-4 px-5 py-2.5 text-sm">
+        <Button type="button" onClick={addYarn} className="mt-4 px-5 py-2.5 text-base">
           {t("mypage.settings.yarnAdd")}
         </Button>
       </SettingsCard>
@@ -310,11 +310,11 @@ export default function SettingsPanel() {
                 className="flex items-center justify-between gap-3 rounded-xl bg-gray-50 px-3 py-2.5"
               >
                 <span className="min-w-0">
-                  <span className="block truncate font-sans text-sm font-medium text-gray-900">
+                  <span className="block truncate font-sans text-base font-medium text-gray-900">
                     {formatNeedleBadge(item)}
                   </span>
                   {needleDetailLabel(item) ? (
-                    <span className="block font-sans text-[11px] font-normal text-gray-500">
+                    <span className="block font-sans text-sm font-normal text-gray-500">
                       {needleDetailLabel(item)}
                     </span>
                   ) : null}
@@ -322,7 +322,7 @@ export default function SettingsPanel() {
                 <button
                   type="button"
                   onClick={() => removeNeedle(item.id)}
-                  className="shrink-0 font-sans text-xs text-gray-400 transition-colors hover:text-coral"
+                  className="shrink-0 font-sans text-sm text-gray-400 transition-colors hover:text-coral"
                 >
                   {t("common.delete")}
                 </button>
@@ -330,12 +330,12 @@ export default function SettingsPanel() {
             ))}
           </ul>
         ) : (
-          <p className="mb-4 font-seoyun text-xs font-normal text-gray-500">
+          <p className="mb-4 font-seoyun text-sm font-normal text-gray-500">
             {t("mypage.settings.needleEmpty")}
           </p>
         )}
         <NeedleSpecFields value={needleDraft} onChange={setNeedleDraft} tone="light" />
-        <Button type="button" onClick={addNeedle} className="mt-4 px-5 py-2.5 text-sm">
+        <Button type="button" onClick={addNeedle} className="mt-4 px-5 py-2.5 text-base">
           {t("mypage.settings.needleAdd")}
         </Button>
       </SettingsCard>
@@ -344,14 +344,14 @@ export default function SettingsPanel() {
         title={t("mypage.settings.tasteTitle")}
         hint={t("mypage.settings.tasteHint")}
       >
-        <p className="mb-2 font-sans text-xs font-medium text-gray-700">{t("mypage.settings.skillLabel")}</p>
+        <p className="mb-2 font-sans text-sm font-medium text-gray-700">{t("mypage.settings.skillLabel")}</p>
         <div className="flex flex-wrap gap-2">
           {SKILL_OPTIONS.map((level) => (
             <button
               key={level}
               type="button"
               onClick={() => changeSkill(level)}
-              className={`rounded-full px-3.5 py-1.5 font-sans text-xs font-medium transition-colors ${
+              className={`rounded-full px-3.5 py-1.5 font-sans text-sm font-medium transition-colors ${
                 taste.skill === level
                   ? "bg-coral text-white"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -361,7 +361,7 @@ export default function SettingsPanel() {
             </button>
           ))}
         </div>
-        <p className="mb-2 mt-4 font-sans text-xs font-medium text-gray-700">{t("mypage.settings.styleLabel")}</p>
+        <p className="mb-2 mt-4 font-sans text-sm font-medium text-gray-700">{t("mypage.settings.styleLabel")}</p>
         <div className="flex flex-wrap gap-2">
           {STYLE_OPTIONS.map((style) => {
             const on = taste.styles.includes(style);
@@ -370,7 +370,7 @@ export default function SettingsPanel() {
                 key={style}
                 type="button"
                 onClick={() => toggleStyle(style)}
-                className={`rounded-full px-3.5 py-1.5 font-sans text-xs font-medium transition-colors ${
+                className={`rounded-full px-3.5 py-1.5 font-sans text-sm font-medium transition-colors ${
                   on ? "bg-stone-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >

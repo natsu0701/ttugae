@@ -125,7 +125,7 @@ function PatternCard({
 
           {rank != null && rank <= 10 ? (
             <span
-              className={`pointer-events-none absolute left-3.5 top-3.5 z-[2] rounded-lg px-2.5 py-1 font-sans text-sm font-bold text-white ${
+              className={`pointer-events-none absolute left-3.5 top-3.5 z-[2] rounded-lg px-2.5 py-1 font-sans text-base font-bold text-white ${
                 rank === 1
                   ? "bg-coral"
                   : rank === 2
@@ -138,17 +138,17 @@ function PatternCard({
               {t("community.rank", { rank })}
             </span>
           ) : (
-            <span className="pointer-events-none absolute left-3.5 top-3.5 z-[2] rounded-lg bg-stone-950/80 px-2.5 py-1 font-sans text-[10px] font-bold tracking-wider text-white backdrop-blur-sm">
+            <span className="pointer-events-none absolute left-3.5 top-3.5 z-[2] rounded-lg bg-stone-950/80 px-2.5 py-1 font-sans text-sm font-bold tracking-wider text-white backdrop-blur-sm">
               {sizeLabel}
             </span>
           )}
         </div>
 
         <div className="bg-white p-4">
-          <h3 className="line-clamp-1 font-sans text-sm font-bold text-stone-900 transition-colors group-hover:text-coral">
+          <h3 className="line-clamp-1 font-sans text-base font-bold text-stone-900 transition-colors group-hover:text-coral">
             {view.title}
           </h3>
-          <p className="mt-2 flex items-center gap-1.5 font-sans text-xs font-medium text-stone-500">
+          <p className="mt-2 flex items-center gap-1.5 font-sans text-sm font-medium text-stone-500">
             <button
               type="button"
               className="hover:text-coral"
@@ -165,7 +165,7 @@ function PatternCard({
             </span>
             <time dateTime={pattern.publishedAt}>{pattern.publishedAt}</time>
           </p>
-          <dl className="mt-3 grid grid-cols-2 gap-2 font-sans text-[11px] text-stone-500">
+          <dl className="mt-3 grid grid-cols-2 gap-2 font-sans text-sm text-stone-500">
             <div>
               <dt className="text-stone-400">{t("community.yarnUsed")}</dt>
               <dd className="mt-0.5 truncate font-medium text-stone-700">{view.finishedDetail.yarn}</dd>
@@ -183,7 +183,7 @@ function PatternCard({
           <button
             type="button"
             onClick={() => onImport(pattern)}
-            className="rounded-full bg-stone-900 px-3 py-1.5 font-sans text-[11px] font-bold text-white hover:bg-coral"
+            className="rounded-full bg-stone-900 px-3 py-1.5 font-sans text-sm font-bold text-white hover:bg-coral"
           >
             {t("community.importToEditor")}
           </button>
@@ -194,7 +194,7 @@ function PatternCard({
         <button
           type="button"
           onClick={() => toggleLike(pattern.id)}
-          className={`flex items-center gap-1.5 text-xs ${
+          className={`flex items-center gap-1.5 text-sm ${
             liked ? "font-semibold text-coral" : "text-stone-400 hover:text-stone-600"
           }`}
           aria-pressed={liked}
@@ -206,7 +206,7 @@ function PatternCard({
         <button
           type="button"
           onClick={() => toggleSave(pattern.id)}
-          className={`flex items-center gap-1.5 text-xs ${
+          className={`flex items-center gap-1.5 text-sm ${
             saved ? "font-semibold text-stone-800" : "text-stone-400 hover:text-stone-600"
           }`}
           aria-pressed={saved}

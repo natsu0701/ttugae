@@ -12,11 +12,33 @@ type PatternChartGridProps = {
 };
 
 function symbolFontPx(cols: number) {
-  if (cols > 40) return 4;
-  if (cols > 28) return 5;
-  if (cols > 20) return 7;
-  if (cols > 14) return 8;
-  return 10;
+  if (cols > 40) return 5;
+  if (cols > 28) return 6;
+  if (cols > 20) return 8;
+  if (cols > 14) return 10;
+  return 12;
+}
+
+function chartPaintKey(
+  cells: EditorCell[][],
+  colorMap: Record<string, string>,
+  cssW: number,
+  cssH: number,
+) {
+  const rows = cells.length;
+  const cols = cells[0]?.length ?? 0;
+  let key = `${cssW}x${cssH}|${rows}x${cols}|`;
+  for (let r = 0; r < rows; r++) {
+    const row = cells[r];
+    for (let c = 0; c < cols; c++) {
+      key += `${row[c].colorId}:${row[c].stitchId},`;
+    }
+    key += "|";
+  }
+  for (const id of Object.keys(colorMap)) {
+    key += `${id}:${colorMap[id]};`;
+  }
+  return key;
 }
 
 function paintChart(
@@ -86,6 +108,7 @@ function PatternChartGrid({
   fit = "fill",
 }: PatternChartGridProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const paintKeyRef = useRef("");
   const rows = cells.length;
   const cols = cells[0]?.length ?? 1;
   const squareCells = fit === "cells";
@@ -94,7 +117,12 @@ function PatternChartGrid({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const draw = () => paintChart(canvas, cells, colorMap);
+    const draw = () => {
+      const nextKey = chartPaintKey(cells, colorMap, canvas.clientWidth, canvas.clientHeight);
+      if (nextKey === paintKeyRef.current && canvas.width > 0) return;
+      paintKeyRef.current = nextKey;
+      paintChart(canvas, cells, colorMap);
+    };
     draw();
 
     const ro = new ResizeObserver(draw);

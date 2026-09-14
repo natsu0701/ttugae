@@ -24,14 +24,14 @@ type NeedleSpecFieldsProps = {
 
 function fieldClass(tone: "light" | "dark") {
   return tone === "dark"
-    ? "w-full rounded-xl border border-stone-600/80 bg-stone-800 px-3 py-2 font-sans text-sm text-stone-100 outline-none"
-    : "w-full rounded-2xl border border-stone-200 bg-white px-3 py-2 font-sans text-sm text-gray-800 outline-none";
+    ? "w-full rounded-xl border border-stone-600/80 bg-stone-800 px-3 py-2 font-sans text-base text-stone-100 outline-none"
+    : "w-full rounded-2xl border border-stone-200 bg-white px-3 py-2 font-sans text-base text-gray-800 outline-none";
 }
 
 function labelClass(tone: "light" | "dark") {
   return tone === "dark"
-    ? "mb-1.5 block font-sans text-xs font-normal text-stone-400"
-    : "mb-1.5 block font-sans text-xs font-normal text-gray-600";
+    ? "mb-1.5 block font-sans text-sm font-normal text-stone-400"
+    : "mb-1.5 block font-sans text-sm font-normal text-gray-600";
 }
 
 export default function NeedleSpecFields({
@@ -73,7 +73,7 @@ export default function NeedleSpecFields({
                 key={type}
                 type="button"
                 onClick={() => setType(type)}
-                className={`rounded-full px-3 py-2 font-sans text-xs font-medium transition-colors ${
+                className={`rounded-full px-3 py-2 font-sans text-sm font-medium transition-colors ${
                   active
                     ? "bg-coral text-white"
                     : tone === "dark"

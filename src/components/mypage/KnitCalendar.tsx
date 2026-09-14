@@ -39,24 +39,24 @@ function KnitCalendar({ events }: KnitCalendarProps) {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className="rounded-lg px-2 py-1 text-sm hover:bg-stone-100"
+            className="rounded-lg px-2 py-1 text-base hover:bg-stone-100"
             onClick={() => setCursor(new Date(year, month - 1, 1))}
           >
             {t("community.prevPage")}
           </button>
-          <span className="font-sans text-sm font-medium">
+          <span className="font-sans text-base font-medium">
             {year}.{String(month + 1).padStart(2, "0")}
           </span>
           <button
             type="button"
-            className="rounded-lg px-2 py-1 text-sm hover:bg-stone-100"
+            className="rounded-lg px-2 py-1 text-base hover:bg-stone-100"
             onClick={() => setCursor(new Date(year, month + 1, 1))}
           >
             {t("community.nextPage")}
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-7 gap-1 text-center font-sans text-[11px] text-stone-400">
+      <div className="grid grid-cols-7 gap-1 text-center font-sans text-sm text-stone-400">
         {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
           <span key={`${d}-${i}`}>{d}</span>
         ))}
@@ -73,9 +73,9 @@ function KnitCalendar({ events }: KnitCalendarProps) {
                 hits.length ? "border-coral/40 bg-coral/5" : "border-transparent bg-stone-50"
               }`}
             >
-              <p className="font-sans text-[11px] font-medium text-stone-600">{day}</p>
+              <p className="font-sans text-sm font-medium text-stone-600">{day}</p>
               {hits.slice(0, 2).map((event) => (
-                <p key={`${event.kind}-${event.title}`} className="truncate font-sans text-[10px] text-stone-500">
+                <p key={`${event.kind}-${event.title}`} className="truncate font-sans text-sm text-stone-500">
                   {event.title}
                 </p>
               ))}
@@ -83,7 +83,7 @@ function KnitCalendar({ events }: KnitCalendarProps) {
           );
         })}
       </div>
-      <ul className="mt-4 space-y-1 font-sans text-xs text-stone-500">
+      <ul className="mt-4 space-y-1 font-sans text-sm text-stone-500">
         <li>{t("mypage.calendar.legendFinished")}</li>
         <li>{t("mypage.calendar.legendBadge")}</li>
         <li>{t("mypage.calendar.legendMeetup")}</li>

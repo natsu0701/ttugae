@@ -53,7 +53,7 @@ export default function MyProjectsPanel({
   const renderList = (items: StoredPattern[], completed: boolean) => {
     if (items.length === 0) {
       return (
-        <p className="rounded-xl bg-stone-50 px-4 py-8 text-center font-sans text-sm text-stone-400">
+        <p className="rounded-xl bg-stone-50 px-4 py-8 text-center font-sans text-base text-stone-400">
           {completed ? t("mypage.projects.completedEmpty") : t("mypage.projects.progressEmpty")}
         </p>
       );
@@ -64,12 +64,12 @@ export default function MyProjectsPanel({
           <article key={pattern.id} className="rounded-xl border border-stone-200 bg-white p-4">
             <button type="button" className="w-full text-left" onClick={() => onOpen(pattern.id)}>
               <h3 className="truncate font-sans text-lg font-bold text-gray-900">{pattern.title}</h3>
-              <p className="mt-1 font-sans text-xs text-gray-500">{formatDate(pattern.updatedAt)}</p>
-              <p className="mt-2 font-sans text-sm text-gray-600">
+              <p className="mt-1 font-sans text-sm text-gray-500">{formatDate(pattern.updatedAt)}</p>
+              <p className="mt-2 font-sans text-base text-gray-600">
                 {pattern.grid[0]?.length ?? pattern.gridSize}x{pattern.grid.length}
               </p>
             </button>
-            <label className="mt-3 flex items-center gap-2 font-sans text-sm text-stone-700">
+            <label className="mt-3 flex items-center gap-2 font-sans text-base text-stone-700">
               <input
                 type="checkbox"
                 checked={completed}
@@ -83,7 +83,7 @@ export default function MyProjectsPanel({
               <Button
                 type="button"
                 variant="secondary"
-                className="flex-1 py-2 text-sm"
+                className="flex-1 py-2 text-base"
                 onClick={() => onOpen(pattern.id)}
               >
                 {t("common.edit")}
@@ -91,7 +91,7 @@ export default function MyProjectsPanel({
               <Button
                 type="button"
                 variant="ghost"
-                className="flex-1 py-2 text-sm"
+                className="flex-1 py-2 text-base"
                 onClick={() => {
                   if (window.confirm(t("common.deletePatternConfirm", { title: pattern.title }))) {
                     onDelete(pattern.id);
@@ -112,20 +112,20 @@ export default function MyProjectsPanel({
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.projects.title")}</h2>
-          <p className="mt-1 font-sans text-sm text-gray-600">{t("mypage.projects.subtitle")}</p>
+          <p className="mt-1 font-sans text-base text-gray-600">{t("mypage.projects.subtitle")}</p>
         </div>
         <Button variant="primary" onClick={onCreateNew} className="px-6 py-3">
           {t("mypage.patterns.createNew")}
         </Button>
       </div>
       <section>
-        <h3 className="mb-3 font-sans text-sm font-bold text-stone-800">
+        <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
           {t("mypage.projects.inProgress")}
         </h3>
         {renderList(grouped.inProgress, false)}
       </section>
       <section>
-        <h3 className="mb-3 font-sans text-sm font-bold text-stone-800">
+        <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
           {t("mypage.projects.completed")}
         </h3>
         {renderList(grouped.completed, true)}

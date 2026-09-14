@@ -28,7 +28,7 @@ export default function PatternThumbnailPreview({
         />
       ) : (
         <div className="p-4">
-          <p className="mb-3 font-sans text-xs font-normal text-gray-500">
+          <p className="mb-3 font-sans text-sm font-normal text-gray-500">
             {t("community.patternPreview")}
           </p>
           <div className="mx-auto max-w-xs overflow-hidden rounded-xl bg-gray-200 p-1">

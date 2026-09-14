@@ -86,7 +86,7 @@ function GiftPackagingAnimation({
         </div>
 
         <div className={packed ? "opacity-100" : "opacity-0"}>
-          <p className="font-sans text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
+          <p className="font-sans text-sm font-medium uppercase tracking-[0.18em] text-stone-400">
             {t("gift.packedChip")}
           </p>
           <h2 className="mt-2 font-sans text-xl font-bold text-stone-950">
@@ -98,10 +98,10 @@ function GiftPackagingAnimation({
               value={patternTitle}
               onChange={(e) => onTitleChange(e.target.value)}
             />
-            <label className="block font-sans text-sm text-stone-600">
+            <label className="block font-sans text-base text-stone-600">
               {t("gift.collection")}
               <select
-                className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-800"
+                className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2 text-base text-stone-800"
                 value={collectionId}
                 onChange={(e) => onCollectionChange(e.target.value)}
               >
@@ -119,14 +119,14 @@ function GiftPackagingAnimation({
             <button
               type="button"
               onClick={onGoVault}
-              className="h-11 rounded-xl bg-stone-950 px-5 font-sans text-sm font-semibold text-white transition-colors hover:bg-coral"
+              className="h-11 rounded-xl bg-stone-950 px-5 font-sans text-base font-semibold text-white transition-colors hover:bg-coral"
             >
               {t("gift.toVault")}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="h-11 rounded-xl border border-stone-200 bg-white px-5 font-sans text-sm font-medium text-stone-600 hover:bg-stone-50"
+              className="h-11 rounded-xl border border-stone-200 bg-white px-5 font-sans text-base font-medium text-stone-600 hover:bg-stone-50"
             >
               {t("gift.backEditor")}
             </button>

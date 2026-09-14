@@ -181,7 +181,7 @@ export default function CreatePostPage({
     return (
       <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900">
         <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6">
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-base text-gray-600">
             {t("createPost.noDraft")}
           </p>
           <Button
@@ -225,11 +225,11 @@ export default function CreatePostPage({
         className="mx-auto max-w-2xl space-y-8 px-5 py-8 md:px-8"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-sans text-sm font-normal text-gray-600">{t("createPost.attached")}</p>
+          <p className="font-sans text-base font-normal text-gray-600">{t("createPost.attached")}</p>
           <Button
             type="button"
             variant="secondary"
-            className="px-4 py-2 text-sm"
+            className="px-4 py-2 text-base"
             onClick={() => setPatternModalOpen(true)}
           >
             <FolderFillIcon className="mr-1.5 inline h-4 w-4" />
@@ -245,7 +245,7 @@ export default function CreatePostPage({
         />
 
         <div>
-          <p className="mb-2 font-sans text-sm font-normal text-gray-600">
+          <p className="mb-2 font-sans text-base font-normal text-gray-600">
             {t("createPost.photo")}
           </p>
           <input
@@ -258,7 +258,7 @@ export default function CreatePostPage({
           <Button
             type="button"
             variant="secondary"
-            className="px-4 py-2 text-sm"
+            className="px-4 py-2 text-base"
             onClick={() => photoInputRef.current?.click()}
           >
             {t("createPost.photoUpload")}

@@ -23,7 +23,7 @@ export function tabButtonClass(active: boolean, variant: "fill" | "outline" = "f
 }
 
 export const tabButtonBase =
-  `rounded-full px-5 py-2.5 font-sans text-sm font-normal transition-colors duration-200 ${softShadow}`;
+  `rounded-full px-5 py-2.5 font-sans text-base font-normal leading-5 transition-colors duration-200 md:text-lg ${softShadow}`;
 
 export const tabButtonCompactBase =
-  `rounded-xl px-3 py-2 font-sans text-sm font-normal transition-colors duration-200 ${softShadow}`;
+  `rounded-xl px-3 py-2 font-sans text-base font-normal leading-5 transition-colors duration-200 md:text-lg ${softShadow}`;

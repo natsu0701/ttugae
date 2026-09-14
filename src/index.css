@@ -22,36 +22,36 @@
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 @media (min-width: 640px) {
-  html {
-    font-size: 15px;
-  }
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 15.5px;
-  }
-}
-
-@media (min-width: 1024px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-@media (min-width: 1280px) {
   html {
     font-size: 16.5px;
   }
 }
 
-@media (min-width: 1536px) {
+@media (min-width: 768px) {
   html {
     font-size: 17px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 17.5px;
+  }
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 1536px) {
+  html {
+    font-size: 18.5px;
   }
 }
 
@@ -95,7 +95,7 @@ body {
     box-shadow: none;
     outline: none;
     font-family: "Noto Sans KR", system-ui, sans-serif;
-    font-size: clamp(0.8125rem, 0.15vw + 0.78rem, 0.875rem);
+    font-size: clamp(0.9375rem, 0.2vw + 0.88rem, 1.0625rem);
     font-weight: 400;
     line-height: 1.5;
     cursor: pointer;
@@ -145,18 +145,23 @@ body {
   }
 
   .text-display {
-    font-size: clamp(1.375rem, 1.4vw + 0.9rem, 2.5rem);
+    font-size: clamp(1.5rem, 1.5vw + 1rem, 2.75rem);
     line-height: 1.25;
   }
 
   .text-title {
-    font-size: clamp(1.125rem, 0.7vw + 0.95rem, 1.5rem);
+    font-size: clamp(1.25rem, 0.75vw + 1.05rem, 1.75rem);
     line-height: 1.35;
   }
 
   .text-body {
-    font-size: clamp(0.875rem, 0.2vw + 0.82rem, 1rem);
-    line-height: 1.6;
+    font-size: clamp(1rem, 0.22vw + 0.94rem, 1.125rem);
+    line-height: 1.65;
+  }
+
+  .text-caption {
+    font-size: clamp(0.875rem, 0.18vw + 0.84rem, 0.9375rem);
+    line-height: 1.5;
   }
 
   .fade-in {
@@ -188,13 +193,25 @@ body {
   }
 
   .hero-floater {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
     animation: hero-floater var(--float-dur, 4s) ease-in-out var(--float-delay, 0s) infinite;
   }
 
   .tteuni-peek {
+    transform: translate3d(0, 8px, 0);
+    will-change: transform;
+    backface-visibility: hidden;
     animation:
       tteuni-peek-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards,
       tteuni-peek-float 3.2s ease-in-out 0.7s infinite;
+  }
+
+  .gpu-float {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
   }
 
   .input-caret {
@@ -248,8 +265,8 @@ body.yarn-trail-active {
 }
 
 @keyframes tteuni-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -6px, 0); }
 }
 
 @keyframes fade-in {
@@ -263,18 +280,18 @@ body.yarn-trail-active {
 }
 
 @keyframes hero-floater {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(var(--float-y, -12px)) rotate(4deg); }
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, var(--float-y, -12px), 0) rotate(4deg); }
 }
 
 @keyframes tteuni-peek-in {
-  from { transform: translateY(72px); }
-  to { transform: translateY(8px); }
+  from { transform: translate3d(0, 72px, 0); }
+  to { transform: translate3d(0, 8px, 0); }
 }
 
 @keyframes tteuni-peek-float {
-  0%, 100% { transform: translateY(8px); }
-  50% { transform: translateY(2px); }
+  0%, 100% { transform: translate3d(0, 8px, 0); }
+  50% { transform: translate3d(0, 2px, 0); }
 }
 
 @keyframes caret-blink {
@@ -398,8 +415,14 @@ body.yarn-trail-active {
     transition: none;
   }
 
+  .hero-floater,
+  .tteuni-peek,
+  .gpu-float {
+    will-change: auto;
+  }
+
   .tteuni-peek {
-    transform: translateY(8px);
+    transform: translate3d(0, 8px, 0);
   }
 }
 

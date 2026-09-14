@@ -109,10 +109,10 @@ export default function YarnSearchPopover({
       role="dialog"
       aria-label={t("editor.yarnSearch")}
     >
-      <label className="mb-1.5 block font-sans text-xs font-bold text-stone-100">
+      <label className="mb-1.5 block font-sans text-sm font-bold text-stone-100">
         {t("editor.yarnSearch")}
       </label>
-      <p className="mb-2 font-seoyun text-[11px] font-normal text-stone-400">
+      <p className="mb-2 font-seoyun text-sm font-normal text-stone-400">
         {t("editor.yarnSearchHint")}
       </p>
       <SmoothInput
@@ -126,12 +126,12 @@ export default function YarnSearchPopover({
         }}
         onKeyDown={onKeyDown}
         placeholder={t("editor.yarnSearchPh")}
-        className="rounded-xl border-stone-700/80 px-3 py-2.5 text-sm"
+        className="rounded-xl border-stone-700/80 px-3 py-2.5 text-base"
       />
 
       <ul className="mt-2 max-h-48 overflow-y-auto hide-scrollbar" role="listbox">
         {results.length === 0 ? (
-          <li className="px-2 py-3 font-seoyun text-xs font-normal text-stone-500">
+          <li className="px-2 py-3 font-seoyun text-sm font-normal text-stone-500">
             {t("editor.yarnSearchEmpty")}
           </li>
         ) : (
@@ -155,10 +155,10 @@ export default function YarnSearchPopover({
                     style={{ backgroundColor: entry.hex }}
                   />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-sans text-sm font-normal text-stone-100">
+                    <span className="block truncate font-sans text-base font-normal text-stone-100">
                       {loc(t, `content.yarns.${entry.id}.name`, entry.name)}
                     </span>
-                    <span className="block truncate font-seoyun text-[11px] font-normal text-stone-400">
+                    <span className="block truncate font-seoyun text-sm font-normal text-stone-400">
                       {loc(t, `content.yarns.${entry.id}.brand`, entry.brand)} ·{" "}
                       {loc(t, `content.yarns.${entry.id}.fiber`, entry.fiberType)}
                       {added ? t("editor.inPalette") : ""}

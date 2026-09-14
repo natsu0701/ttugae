@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "./Button.tsx";
 import { CloseFillIcon, FolderFillIcon, PlusFillIcon } from "../icons/FillIcons.tsx";
@@ -11,7 +12,7 @@ type EditorEntryModalProps = {
   onLoadExisting: (id: string) => void;
 };
 
-export default function EditorEntryModal({
+function EditorEntryModal({
   open,
   patterns,
   onClose,
@@ -41,16 +42,16 @@ export default function EditorEntryModal({
           <CloseFillIcon className="h-4 w-4" />
         </button>
         <h2 className="pr-10 font-sans text-xl font-bold text-stone-900">{t("editor.entryTitle")}</h2>
-        <p className="mt-2 font-sans text-sm text-stone-500">{t("editor.entryHint")}</p>
+        <p className="mt-2 font-sans text-base text-stone-500">{t("editor.entryHint")}</p>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          <Button type="button" className="h-auto px-4 py-4 text-sm" onClick={onCreateNew}>
+          <Button type="button" className="h-auto px-4 py-4 text-base" onClick={onCreateNew}>
             <PlusFillIcon className="mr-2 h-4 w-4" />
             {t("editor.entryNew")}
           </Button>
           <Button
             type="button"
             variant="secondary"
-            className="h-auto px-4 py-4 text-sm"
+            className="h-auto px-4 py-4 text-base"
             disabled={sorted.length === 0}
             onClick={() => {
               document.getElementById("editor-entry-patterns")?.scrollIntoView({
@@ -75,10 +76,10 @@ export default function EditorEntryModal({
                   onClick={() => onLoadExisting(pattern.id)}
                   className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-white"
                 >
-                  <span className="truncate font-sans text-sm font-medium text-stone-800">
+                  <span className="truncate font-sans text-base font-medium text-stone-800">
                     {pattern.title}
                   </span>
-                  <span className="ml-3 shrink-0 font-sans text-[11px] text-stone-400">
+                  <span className="ml-3 shrink-0 font-sans text-sm text-stone-400">
                     {pattern.grid[0]?.length ?? pattern.gridSize}x{pattern.grid.length}
                   </span>
                 </button>
@@ -86,9 +87,11 @@ export default function EditorEntryModal({
             ))}
           </ul>
         ) : (
-          <p className="mt-5 font-sans text-sm text-stone-500">{t("editor.entryEmpty")}</p>
+          <p className="mt-5 font-sans text-base text-stone-500">{t("editor.entryEmpty")}</p>
         )}
       </div>
     </div>
   );
 }
+
+export default memo(EditorEntryModal);

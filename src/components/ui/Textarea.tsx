@@ -13,14 +13,14 @@ export default function Textarea({ label, className = "", id, ...props }: Textar
       {label && (
         <label
           htmlFor={inputId}
-          className="mb-1.5 block font-sans text-sm font-normal text-gray-700"
+          className="mb-1.5 block font-sans text-base font-normal text-gray-700"
         >
           {label}
         </label>
       )}
       <textarea
         id={inputId}
-        className={`min-h-[120px] w-full resize-y rounded-xl bg-gray-50 px-4 py-3 font-sans text-sm font-normal leading-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow} ${className}`}
+        className={`min-h-[120px] w-full resize-y rounded-xl bg-gray-50 px-4 py-3 font-sans text-base font-normal leading-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow} ${className}`}
         {...props}
       />
     </div>

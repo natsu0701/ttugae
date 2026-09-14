@@ -57,9 +57,9 @@ export default function AuthorProfilePage({
           />
           <div className="min-w-0 flex-1">
             <h1 className="text-title text-gray-900">{author.nickname}</h1>
-            <p className="mt-1 font-sans text-sm text-stone-500">@{author.handle}</p>
+            <p className="mt-1 font-sans text-base text-stone-500">@{author.handle}</p>
             <p className="mt-2 text-body text-stone-600">{author.bio}</p>
-            <p className="mt-3 font-sans text-xs text-stone-500">
+            <p className="mt-3 font-sans text-sm text-stone-500">
               {t("community.followCounts", {
                 following: listFollowing(resolvedHandle).length,
                 followers: listFollowers(resolvedHandle).length,
@@ -69,7 +69,7 @@ export default function AuthorProfilePage({
           {!mine ? (
             <Button
               type="button"
-              className="px-4 py-2 text-sm"
+              className="px-4 py-2 text-base"
               onClick={() => {
                 toggleFollow(resolvedHandle);
                 setTick((n) => n + 1);
@@ -80,7 +80,7 @@ export default function AuthorProfilePage({
           ) : null}
         </div>
         {mine && loadProfile().isPublic === false ? (
-          <p className="mt-4 rounded-lg bg-stone-50 px-3 py-2 font-sans text-xs leading-5 text-stone-500">
+          <p className="mt-4 rounded-lg bg-stone-50 px-3 py-2 font-sans text-sm leading-5 text-stone-500">
             {t("mypage.profile.publicOff")} — {t("mypage.profile.publicHint")}
           </p>
         ) : null}

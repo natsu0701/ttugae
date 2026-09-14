@@ -137,7 +137,7 @@ function ProfileMenu({
             type="button"
             role="menuitem"
             onClick={go(onGoMypage)}
-            className="flex w-full px-4 py-2.5 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
+            className="flex w-full px-4 py-2.5 text-left font-sans text-base text-stone-700 hover:bg-stone-50"
           >
             {t("nav.mypage")}
           </button>
@@ -145,7 +145,7 @@ function ProfileMenu({
             type="button"
             role="menuitem"
             onClick={go(onLogout)}
-            className="flex w-full items-center gap-2 px-4 py-2.5 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left font-sans text-base text-stone-700 hover:bg-stone-50"
           >
             <LogoutFillIcon className="h-4 w-4" />
             {t("nav.logout")}
@@ -157,14 +157,14 @@ function ProfileMenu({
               setMenuOpen(false);
               onAddAccount();
             }}
-            className="flex w-full items-center gap-2 px-4 py-2.5 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left font-sans text-base text-stone-700 hover:bg-stone-50"
           >
             <UserPlusFillIcon className="h-4 w-4" />
             {t("nav.addAccount")}
           </button>
           {otherAccounts.length > 0 ? (
             <div className="border-t border-stone-100 py-1">
-              <p className="px-4 py-1.5 font-sans text-[11px] font-medium text-stone-400">
+              <p className="px-4 py-1.5 font-sans text-sm font-medium text-stone-400">
                 {t("nav.switchAccount")}
               </p>
               {otherAccounts.map((account) => (
@@ -176,7 +176,7 @@ function ProfileMenu({
                     setMenuOpen(false);
                     onSwitchAccount?.(account.id);
                   }}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-left font-sans text-sm text-stone-700 hover:bg-stone-50"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-left font-sans text-base text-stone-700 hover:bg-stone-50"
                 >
                   <SwitchFillIcon className="h-4 w-4" />
                   @{account.handle}

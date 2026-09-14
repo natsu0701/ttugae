@@ -47,7 +47,7 @@ function FilterColumn({
   const { t } = useTranslation();
   return (
     <div className="space-y-2">
-      <p className="block font-sans text-[11px] font-medium uppercase tracking-wider text-gray-400">
+      <p className="block font-sans text-sm font-medium uppercase tracking-wider text-gray-400">
         {label}
       </p>
       <div className="flex flex-col gap-1">
@@ -58,7 +58,7 @@ function FilterColumn({
               key={opt.id}
               type="button"
               onClick={() => onSelect(opt.id)}
-              className={`flex items-center justify-between rounded-lg px-3.5 py-2 text-left font-sans text-xs transition-colors ${
+              className={`flex items-center justify-between rounded-lg px-3.5 py-2 text-left font-sans text-sm transition-colors ${
                 active
                   ? "bg-gray-900 font-medium text-white"
                   : "bg-transparent font-normal text-gray-600 hover:bg-gray-50"
@@ -109,7 +109,7 @@ function CommunityFilterBar({
             value={filters.query}
             onChange={(e) => patch({ query: e.target.value })}
             placeholder={t("community.filterSearch")}
-            className="w-full bg-transparent font-sans text-sm font-normal text-gray-800 outline-none placeholder:text-gray-400"
+            className="w-full bg-transparent font-sans text-base font-normal text-gray-800 outline-none placeholder:text-gray-400"
           />
         </label>
         <button
@@ -130,7 +130,7 @@ function CommunityFilterBar({
         {t("community.searchResultCount", { count: resultCount })}
       </p>
       {searching ? (
-        <p className="mt-1 font-sans text-xs font-medium leading-5 text-stone-500">
+        <p className="mt-1 font-sans text-sm font-medium leading-5 text-stone-500">
           {t("community.searchIncludesAuthor")}
         </p>
       ) : null}
@@ -142,7 +142,7 @@ function CommunityFilterBar({
               <button
                 type="button"
                 onClick={() => onChange({ ...DEFAULT_LOUNGE_FILTERS, query: filters.query })}
-                className="flex items-center gap-1 rounded-full px-3 py-2 font-sans text-xs font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                className="flex items-center gap-1 rounded-full px-3 py-2 font-sans text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
               >
                 <RefreshFillIcon className="h-3 w-3" />
                 {t("community.filterReset")}

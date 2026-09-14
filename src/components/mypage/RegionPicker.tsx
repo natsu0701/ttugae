@@ -32,10 +32,10 @@ function RegionPicker({ value, onChange }: RegionPickerProps) {
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-        <label className="text-xs text-stone-500">
+        <label className="text-sm text-stone-500">
           {t("mypage.region.province")}
           <select
-            className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-base"
             value={province.name}
             onChange={(e) => setPart({ province: e.target.value, city: undefined, dong: undefined })}
           >
@@ -46,10 +46,10 @@ function RegionPicker({ value, onChange }: RegionPickerProps) {
             ))}
           </select>
         </label>
-        <label className="text-xs text-stone-500">
+        <label className="text-sm text-stone-500">
           {t("mypage.region.city")}
           <select
-            className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-base"
             value={city.name}
             onChange={(e) => setPart({ city: e.target.value, dong: undefined })}
           >
@@ -60,10 +60,10 @@ function RegionPicker({ value, onChange }: RegionPickerProps) {
             ))}
           </select>
         </label>
-        <label className="text-xs text-stone-500">
+        <label className="text-sm text-stone-500">
           {t("mypage.region.dong")}
           <select
-            className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-base"
             value={parsed.dong || city.dongs[0]}
             onChange={(e) => setPart({ dong: e.target.value })}
           >
@@ -79,7 +79,7 @@ function RegionPicker({ value, onChange }: RegionPickerProps) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={t("mypage.region.searchPh")}
-        className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm outline-none focus:border-coral"
+        className="w-full rounded-lg border border-stone-200 px-3 py-2 text-base outline-none focus:border-coral"
       />
       {query && hits.length > 0 ? (
         <ul className="overflow-hidden rounded-lg border border-stone-200">
@@ -89,7 +89,7 @@ function RegionPicker({ value, onChange }: RegionPickerProps) {
               <li key={label}>
                 <button
                   type="button"
-                  className="w-full px-3 py-2 text-left text-sm hover:bg-stone-50"
+                  className="w-full px-3 py-2 text-left text-base hover:bg-stone-50"
                   onClick={() => {
                     onChange(label);
                     setQuery("");

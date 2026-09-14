@@ -106,7 +106,7 @@ export default function MyPatternsPanel({
           <h2 className="font-sans text-2xl font-bold text-gray-900">
             {t("mypage.patterns.title")}
           </h2>
-          <p className="mt-1 font-sans text-sm font-normal text-gray-600">
+          <p className="mt-1 font-sans text-base font-normal text-gray-600">
             {t("mypage.patterns.subtitle")}
           </p>
         </div>
@@ -126,7 +126,7 @@ export default function MyPatternsPanel({
           <button
             type="button"
             onClick={() => setFolderId("all")}
-            className={`rounded-full px-3 py-1.5 font-sans text-xs ${
+            className={`rounded-full px-3 py-1.5 font-sans text-sm ${
               folderId === "all" ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"
             }`}
           >
@@ -135,7 +135,7 @@ export default function MyPatternsPanel({
           <button
             type="button"
             onClick={() => setFolderId(UNFILED_COLLECTION_ID)}
-            className={`rounded-full px-3 py-1.5 font-sans text-xs ${
+            className={`rounded-full px-3 py-1.5 font-sans text-sm ${
               folderId === UNFILED_COLLECTION_ID ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"
             }`}
           >
@@ -146,7 +146,7 @@ export default function MyPatternsPanel({
               key={folder.id}
               type="button"
               onClick={() => setFolderId(folder.id)}
-              className={`rounded-full px-3 py-1.5 font-sans text-xs ${
+              className={`rounded-full px-3 py-1.5 font-sans text-sm ${
                 folderId === folder.id ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"
               }`}
             >
@@ -164,7 +164,7 @@ export default function MyPatternsPanel({
           <Button
             type="button"
             variant="secondary"
-            className="px-3 py-2 text-sm"
+            className="px-3 py-2 text-base"
             onClick={() => {
               if (!newFolder.trim()) return;
               addCollection(newFolder);
@@ -177,7 +177,7 @@ export default function MyPatternsPanel({
             <Button
               type="button"
               variant="ghost"
-              className="px-3 py-2 text-sm"
+              className="px-3 py-2 text-base"
               onClick={() => {
                 deleteCollection(folderId);
                 setFolderId("all");
@@ -194,7 +194,7 @@ export default function MyPatternsPanel({
           <p className="font-sans text-xl font-bold text-gray-900">
             {t("mypage.patterns.emptyTitle")}
           </p>
-          <p className="mt-2 font-seoyun text-sm text-gray-600">
+          <p className="mt-2 font-seoyun text-base text-gray-600">
             {t("mypage.patterns.emptyDesc")}
           </p>
         </div>
@@ -212,18 +212,18 @@ export default function MyPatternsPanel({
                   <h3 className="truncate font-sans text-lg font-bold text-gray-900">
                     {pattern.title}
                   </h3>
-                  <p className="mt-1 font-sans text-xs font-normal text-gray-500">
+                  <p className="mt-1 font-sans text-sm font-normal text-gray-500">
                     {formatDate(pattern.updatedAt)}
                   </p>
-                  <p className="mt-2 font-sans text-sm font-normal text-gray-600">
+                  <p className="mt-2 font-sans text-base font-normal text-gray-600">
                     {pattern.grid[0]?.length ?? pattern.gridSize}x{pattern.grid.length}
                   </p>
                 </div>
               </button>
-              <label className="font-sans text-xs text-stone-500">
+              <label className="font-sans text-sm text-stone-500">
                 {t("mypage.patterns.moveFolder")}
                 <select
-                  className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-sm text-stone-800"
+                  className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-base text-stone-800"
                   value={collectionIdForPattern(pattern.id)}
                   onChange={(e) => assignPatternCollection(pattern.id, e.target.value)}
                 >
@@ -239,7 +239,7 @@ export default function MyPatternsPanel({
                 <Button
                   type="button"
                   variant="secondary"
-                  className="flex-1 py-2 text-sm"
+                  className="flex-1 py-2 text-base"
                   onClick={() => onOpen(pattern.id)}
                 >
                   {t("common.edit")}
@@ -247,7 +247,7 @@ export default function MyPatternsPanel({
                 <Button
                   type="button"
                   variant="ghost"
-                  className="flex-1 py-2 text-sm text-gray-600"
+                  className="flex-1 py-2 text-base text-gray-600"
                   onClick={() => handleDelete(pattern.id, pattern.title)}
                 >
                   {t("common.delete")}

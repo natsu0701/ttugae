@@ -32,13 +32,13 @@ function ConfirmDialog({
         <h2 className="text-title font-sans text-gray-900">{title}</h2>
         <p className="mt-3 text-body text-stone-600">{body}</p>
         <div className="mt-6 flex flex-wrap justify-end gap-2">
-          <Button type="button" variant="secondary" className="px-4 py-2 text-sm" onClick={onCancel}>
+          <Button type="button" variant="secondary" className="px-4 py-2 text-base" onClick={onCancel}>
             {t("common.cancel")}
           </Button>
-          <Button type="button" variant="ghost" className="px-4 py-2 text-sm" onClick={onDiscard}>
+          <Button type="button" variant="ghost" className="px-4 py-2 text-base" onClick={onDiscard}>
             {discardLabel ?? t("unsaved.discard")}
           </Button>
-          <Button type="button" className="px-4 py-2 text-sm" onClick={onConfirm}>
+          <Button type="button" className="px-4 py-2 text-base" onClick={onConfirm}>
             {confirmLabel ?? t("unsaved.save")}
           </Button>
         </div>

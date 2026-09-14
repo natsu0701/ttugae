@@ -21,15 +21,15 @@ export default function SelectionColorsPanel({
 
   return (
     <div className="rounded-2xl border border-stone-600/80 bg-stone-700 p-3">
-      <p className="mb-0.5 font-sans text-[11px] font-normal uppercase tracking-[0.14em] text-stone-400">
+      <p className="mb-0.5 font-sans text-sm font-normal uppercase tracking-[0.14em] text-stone-400">
         Selection Colors
       </p>
-      <p className="mb-3 font-seoyun text-[10px] font-normal text-stone-500">
+      <p className="mb-3 font-seoyun text-sm font-normal text-stone-500">
         {t("editor.usedColorsHint")}
       </p>
 
       {usedYarns.length === 0 ? (
-        <p className="font-seoyun text-xs font-normal text-stone-500">
+        <p className="font-seoyun text-sm font-normal text-stone-500">
           {t("editor.usedColorsEmpty")}
         </p>
       ) : (

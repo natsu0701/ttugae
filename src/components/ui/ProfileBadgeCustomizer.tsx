@@ -55,7 +55,7 @@ function ProfileBadgeCustomizer({
             key={tab.id}
             type="button"
             onClick={() => setFilter(tab.id)}
-            className={`rounded-lg px-4 py-2 font-sans text-xs font-bold ${
+            className={`rounded-lg px-4 py-2 font-sans text-sm font-bold ${
               filter === tab.id ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-500"
             }`}
           >
@@ -65,7 +65,7 @@ function ProfileBadgeCustomizer({
       </div>
 
       {filteredBadges.length === 0 ? (
-        <p className="py-10 text-center font-sans text-sm text-stone-400">{t("mypage.achEmpty")}</p>
+        <p className="py-10 text-center font-sans text-base text-stone-400">{t("mypage.achEmpty")}</p>
       ) : (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {filteredBadges.map((item) => {
@@ -97,10 +97,10 @@ function ProfileBadgeCustomizer({
                   )}
                 </div>
                 <div className="min-w-0 flex-1 pr-8">
-                  <span className="block truncate font-sans text-xs font-bold leading-5 text-stone-900">
+                  <span className="block truncate font-sans text-sm font-bold leading-5 text-stone-900">
                     {name}
                   </span>
-                  <p className="mt-1 line-clamp-2 font-sans text-[11px] leading-4 text-stone-400">
+                  <p className="mt-1 line-clamp-2 font-sans text-sm leading-4 text-stone-400">
                     {unlocked ? desc : progressText ?? t("common.locked")}
                   </p>
                 </div>

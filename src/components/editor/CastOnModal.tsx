@@ -134,7 +134,7 @@ export default function CastOnModal({
                   ? t("editor.castOn.addTitle")
                   : t("editor.castOn.title")}
             </h2>
-            <p className="mt-2 font-seoyun text-sm font-normal text-gray-600">
+            <p className="mt-2 font-seoyun text-base font-normal text-gray-600">
               {isGauge
                 ? t("editor.castOn.gaugeHint")
                 : isAdd
@@ -145,18 +145,18 @@ export default function CastOnModal({
             {isAdd && (
               <div className="mt-5 space-y-3">
                 <div>
-                  <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
+                  <label className="mb-1.5 block font-sans text-sm font-normal text-gray-600">
                     {t("editor.castOn.nameLabel")}
                   </label>
                   <SmoothInput
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={chartPartLabel(t, targetPart, CHART_PART_LABELS[targetPart])}
-                    className="border-stone-200 bg-white py-2 text-sm"
+                    className="border-stone-200 bg-white py-2 text-base"
                   />
                 </div>
                 <div>
-                  <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
+                  <label className="mb-1.5 block font-sans text-sm font-normal text-gray-600">
                     {t("editor.castOn.partLabel")}
                   </label>
                   <select
@@ -164,7 +164,7 @@ export default function CastOnModal({
                     onChange={(e) =>
                       setTargetPart(e.target.value as ChartTargetPart)
                     }
-                    className="w-full rounded-2xl bg-white px-3 py-2 font-sans text-sm text-gray-800 outline-none"
+                    className="w-full rounded-2xl bg-white px-3 py-2 font-sans text-base text-gray-800 outline-none"
                   >
                     {PARTS.map((part) => (
                       <option key={part} value={part}>
@@ -180,7 +180,7 @@ export default function CastOnModal({
             <div className="mt-5 rounded-2xl bg-stone-100/80 p-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="mb-2 font-sans text-[11px] font-normal text-gray-600">
+                  <p className="mb-2 font-sans text-sm font-normal text-gray-600">
                     {t("editor.castOn.gaugeBefore")}
                   </p>
                   <div className="flex gap-2">
@@ -189,7 +189,7 @@ export default function CastOnModal({
                       onChange={(e) => setBeforeSts(e.target.value)}
                       inputMode="numeric"
           placeholder={t("common.sts")}
-                      className="border-stone-200 bg-white py-1.5 text-sm"
+                      className="border-stone-200 bg-white py-1.5 text-base"
                       aria-label={t("editor.castOn.gaugeSts")}
                     />
                     <SmoothInput
@@ -197,13 +197,13 @@ export default function CastOnModal({
                       onChange={(e) => setBeforeRows(e.target.value)}
                       inputMode="numeric"
                       placeholder={t("common.rows")}
-                      className="border-stone-200 bg-white py-1.5 text-sm"
+                      className="border-stone-200 bg-white py-1.5 text-base"
                       aria-label={t("editor.castOn.gaugeRows")}
                     />
                   </div>
                 </div>
                 <div>
-                  <p className="mb-2 font-sans text-[11px] font-normal text-gray-600">
+                  <p className="mb-2 font-sans text-sm font-normal text-gray-600">
                     {t("editor.castOn.gaugeAfter")}
                   </p>
                   <div className="flex gap-2">
@@ -212,7 +212,7 @@ export default function CastOnModal({
                       onChange={(e) => setAfterSts(e.target.value)}
                       inputMode="numeric"
           placeholder={t("common.sts")}
-                      className="border-stone-200 bg-white py-1.5 text-sm"
+                      className="border-stone-200 bg-white py-1.5 text-base"
                       aria-label={t("editor.castOn.gaugeSts")}
                     />
                     <SmoothInput
@@ -220,17 +220,17 @@ export default function CastOnModal({
                       onChange={(e) => setAfterRows(e.target.value)}
                       inputMode="numeric"
                       placeholder={t("common.rows")}
-                      className="border-stone-200 bg-white py-1.5 text-sm"
+                      className="border-stone-200 bg-white py-1.5 text-base"
                       aria-label={t("editor.castOn.gaugeRows")}
                     />
                   </div>
                 </div>
               </div>
               <div className="mt-3 rounded-xl bg-white px-3 py-2.5">
-                <p className="font-sans text-[11px] font-normal text-gray-500">
+                <p className="font-sans text-sm font-normal text-gray-500">
                   {t("editor.castOn.recommended")}
                 </p>
-                <p className="mt-0.5 font-sans text-sm font-semibold text-coral">
+                <p className="mt-0.5 font-sans text-base font-semibold text-coral">
                   {recommended.startSts > 0
                     ? t("editor.castOn.recommendedValue", {
                         sts: recommended.startSts,
@@ -239,7 +239,7 @@ export default function CastOnModal({
                     : "—"}
                 </p>
                 {recommended.beforeStartSts > 0 ? (
-                  <p className="mt-0.5 font-seoyun text-[10px] text-gray-400">
+                  <p className="mt-0.5 font-seoyun text-sm text-gray-400">
                     {t("editor.castOn.recommendedBefore", {
                       sts: recommended.beforeStartSts,
                       rows: recommended.beforeStartRows,
@@ -250,7 +250,7 @@ export default function CastOnModal({
               <button
                 type="button"
                 onClick={applyRecommended}
-                className="mt-2 w-full rounded-full bg-white px-3 py-2 font-sans text-xs font-normal text-gray-900 transition-colors hover:bg-black hover:text-white"
+                className="mt-2 w-full rounded-full bg-white px-3 py-2 font-sans text-sm font-normal text-gray-900 transition-colors hover:bg-black hover:text-white"
               >
                 {t("editor.castOn.applyRecommended")}
               </button>
@@ -259,10 +259,10 @@ export default function CastOnModal({
             <>
             {!isAdd ? (
             <div className="mt-5 rounded-2xl bg-stone-100/80 p-4">
-              <p className="font-sans text-xs font-normal uppercase tracking-wide text-gray-500">
+              <p className="font-sans text-sm font-normal uppercase tracking-wide text-gray-500">
                 {t("editor.castOn.needleTitle")}
               </p>
-              <p className="mt-1 font-seoyun text-[11px] font-normal text-gray-500">
+              <p className="mt-1 font-seoyun text-sm font-normal text-gray-500">
                 {t("editor.castOn.needleHint")}
               </p>
               <div className="mt-3">
@@ -277,7 +277,7 @@ export default function CastOnModal({
 
             <div className="mt-5 flex gap-3">
               <div className="flex-1">
-                <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
+                <label className="mb-1.5 block font-sans text-sm font-normal text-gray-600">
                   {t("editor.castOn.widthLabel")}
                 </label>
                 <SmoothInput
@@ -285,11 +285,11 @@ export default function CastOnModal({
                   onChange={(e) => setW(e.target.value)}
                   inputMode="numeric"
                   placeholder="W"
-                  className="border-stone-200 bg-white py-2 text-sm"
+                  className="border-stone-200 bg-white py-2 text-base"
                 />
               </div>
               <div className="flex-1">
-                <label className="mb-1.5 block font-sans text-xs font-normal text-gray-600">
+                <label className="mb-1.5 block font-sans text-sm font-normal text-gray-600">
                   {t("editor.castOn.heightLabel")}
                 </label>
                 <SmoothInput
@@ -297,7 +297,7 @@ export default function CastOnModal({
                   onChange={(e) => setH(e.target.value)}
                   inputMode="numeric"
                   placeholder="H"
-                  className="border-stone-200 bg-white py-2 text-sm"
+                  className="border-stone-200 bg-white py-2 text-base"
                 />
               </div>
             </div>

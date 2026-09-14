@@ -49,7 +49,7 @@ export default function WorkshopPalettePanel({
   };
   return (
     <div className="mt-6 rounded-2xl border border-stone-600/80 bg-stone-700 p-4">
-      <p className="mb-3 font-sans text-xs font-normal tracking-wide text-stone-300">
+      <p className="mb-3 font-sans text-sm font-normal tracking-wide text-stone-300">
         {t("editor.workshopTitle")}
       </p>
 
@@ -67,11 +67,11 @@ export default function WorkshopPalettePanel({
               }`}
             >
               <span className="min-w-0">
-                <span className="block truncate font-sans text-[11px] font-normal text-inherit">
+                <span className="block truncate font-sans text-sm font-normal text-inherit">
                   {paletteTitle(palette.id, palette.name)}
                 </span>
                 <span
-                  className={`block truncate font-sans text-[9px] font-normal uppercase tracking-wide ${
+                  className={`block truncate font-sans text-2xs font-normal uppercase tracking-wide ${
                     active ? "text-white/80" : "text-stone-400"
                   }`}
                 >

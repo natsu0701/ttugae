@@ -98,12 +98,12 @@ function QaDetail({ post, onBack }: QaDetailProps) {
             <button
               type="button"
               onClick={() => setReportTarget({ type: "post", id: post.id })}
-              className="shrink-0 rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-coral"
+              className="shrink-0 rounded-lg px-3 py-2 text-base text-stone-500 hover:text-coral"
             >
               {t("report.action")}
             </button>
           </div>
-          <div className="mt-4 flex flex-wrap gap-3 font-sans text-sm font-normal text-gray-500">
+          <div className="mt-4 flex flex-wrap gap-3 font-sans text-base font-normal text-gray-500">
             <span>@{displayAuthor(t, post.author)}</span>
             <span>{post.createdAt}</span>
           </div>
@@ -133,14 +133,14 @@ function QaDetail({ post, onBack }: QaDetailProps) {
                         <button
                           type="button"
                           onClick={() => startEdit(ans)}
-                          className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
+                          className="font-sans text-sm font-normal text-gray-500 transition-colors hover:text-coral"
                         >
                           {t("common.edit")}
                         </button>
                         <button
                           type="button"
                           onClick={() => deleteAnswer(ans.id)}
-                          className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
+                          className="font-sans text-sm font-normal text-gray-500 transition-colors hover:text-coral"
                         >
                           {t("common.delete")}
                         </button>
@@ -149,13 +149,13 @@ function QaDetail({ post, onBack }: QaDetailProps) {
                     <button
                       type="button"
                       onClick={() => setReportTarget({ type: "comment", id: ans.id })}
-                      className="font-sans text-xs font-normal text-gray-500 transition-colors hover:text-coral"
+                      className="font-sans text-sm font-normal text-gray-500 transition-colors hover:text-coral"
                     >
                       {t("report.action")}
                     </button>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 pr-28 font-sans text-xs font-normal text-gray-500">
+                  <div className="flex flex-wrap items-center gap-2 pr-28 font-sans text-sm font-normal text-gray-500">
                     <span className="font-normal text-gray-700">@{displayAuthor(t, ans.author)}</span>
                     <span>{ans.createdAt}</span>
                   </div>
@@ -166,13 +166,13 @@ function QaDetail({ post, onBack }: QaDetailProps) {
                         value={editDraft}
                         onChange={(e) => setEditDraft(e.target.value)}
                         rows={3}
-                        className="w-full rounded-xl bg-white px-4 py-3 font-sans text-sm font-normal leading-normal text-gray-700 outline-none focus:bg-gray-100"
+                        className="w-full rounded-xl bg-white px-4 py-3 font-sans text-base font-normal leading-normal text-gray-700 outline-none focus:bg-gray-100"
                       />
                       <div className="mt-2 flex gap-2">
                         <Button
                           type="button"
                           variant="primary"
-                          className="px-4 py-2 text-sm"
+                          className="px-4 py-2 text-base"
                           onClick={() => saveEdit(ans.id)}
                         >
                           {t("common.save")}
@@ -180,7 +180,7 @@ function QaDetail({ post, onBack }: QaDetailProps) {
                         <Button
                           type="button"
                           variant="ghost"
-                          className="px-4 py-2 text-sm"
+                          className="px-4 py-2 text-base"
                           onClick={() => {
                             setEditingId(null);
                             setEditDraft("");
@@ -191,7 +191,7 @@ function QaDetail({ post, onBack }: QaDetailProps) {
                       </div>
                     </div>
                   ) : (
-                    <p className="mt-3 whitespace-pre-wrap font-sans text-sm font-normal leading-relaxed text-gray-700">
+                    <p className="mt-3 whitespace-pre-wrap font-sans text-base font-normal leading-relaxed text-gray-700">
                       {displayAns.body}
                     </p>
                   )}
@@ -204,7 +204,7 @@ function QaDetail({ post, onBack }: QaDetailProps) {
             onSubmit={handleSubmit}
             className="mt-8 rounded-xl bg-gray-50 p-5"
           >
-            <label className="font-sans text-sm font-normal text-gray-700">
+            <label className="font-sans text-base font-normal text-gray-700">
               {t("community.writeAnswer")}
             </label>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">

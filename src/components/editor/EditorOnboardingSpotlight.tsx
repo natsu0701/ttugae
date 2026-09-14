@@ -182,7 +182,7 @@ export default function EditorOnboardingSpotlight({
           className="fade-in pointer-events-auto absolute z-10 max-w-xs -translate-x-1/2 rounded-xl bg-white px-4 py-4"
           style={{ top: bubbleTop, left: bubbleLeft }}
         >
-          <p className="relative font-sans text-sm font-normal leading-relaxed text-gray-800">
+          <p className="relative font-sans text-base font-normal leading-relaxed text-gray-800">
             <span
               className="absolute -top-2 left-6 h-3 w-3 -translate-y-full rotate-45 bg-white"
               aria-hidden
@@ -195,7 +195,7 @@ export default function EditorOnboardingSpotlight({
             <Button
               type="button"
               variant="ghost"
-              className="px-3 py-2 text-sm"
+              className="px-3 py-2 text-base"
               onClick={finish}
             >
               {t("editor.onboardSkipShort")}
@@ -203,13 +203,13 @@ export default function EditorOnboardingSpotlight({
             {step === 1 ? (
               <Button
                 type="button"
-                className="px-4 py-2 text-sm"
+                className="px-4 py-2 text-base"
                 onClick={() => setStep(2)}
               >
                 {t("editor.onboardNext")}
               </Button>
             ) : (
-              <Button type="button" className="px-4 py-2 text-sm" onClick={finish}>
+              <Button type="button" className="px-4 py-2 text-base" onClick={finish}>
                 {t("editor.onboardStart")}
               </Button>
             )}

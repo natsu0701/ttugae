@@ -82,13 +82,13 @@ function ShowcaseFeedCard({
           className="flex min-w-0 items-center gap-3 text-left"
           onClick={() => onOpenAuthor?.(pattern)}
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral/15 font-sans text-sm font-bold text-coral">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral/15 font-sans text-base font-bold text-coral">
             {pattern.author.slice(0, 1)}
           </span>
-          <p className="min-w-0 truncate font-sans text-sm font-semibold text-stone-800">
+          <p className="min-w-0 truncate font-sans text-base font-semibold text-stone-800">
             {pattern.author}
           </p>
-          <time className="shrink-0 font-sans text-[11px] text-stone-400" dateTime={pattern.publishedAt}>
+          <time className="shrink-0 font-sans text-sm text-stone-400" dateTime={pattern.publishedAt}>
             {pattern.publishedAt}
           </time>
         </button>
@@ -102,7 +102,7 @@ function ShowcaseFeedCard({
       >
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-stone-100">
           {imageFailed ? (
-            <div className="flex h-full items-center justify-center font-sans text-sm text-stone-400">
+            <div className="flex h-full items-center justify-center font-sans text-base text-stone-400">
               {t("community.photoFail")}
             </div>
           ) : (
@@ -127,7 +127,7 @@ function ShowcaseFeedCard({
           <h3 className="font-sans text-base font-bold text-stone-900">
             {view.title}
           </h3>
-          <dl className="mt-2 grid grid-cols-2 gap-2 font-sans text-[11px] text-stone-500">
+          <dl className="mt-2 grid grid-cols-2 gap-2 font-sans text-sm text-stone-500">
             <div>
               <dt className="text-stone-400">{t("community.yarnUsed")}</dt>
               <dd className="mt-0.5 truncate font-medium text-stone-700">{view.finishedDetail.yarn}</dd>
@@ -137,7 +137,7 @@ function ShowcaseFeedCard({
               <dd className="mt-0.5 truncate font-medium text-stone-700">{view.finishedDetail.needle}</dd>
             </div>
           </dl>
-          <p className="mt-2 font-sans text-sm font-light leading-relaxed text-stone-500">
+          <p className="mt-2 font-sans text-base font-light leading-relaxed text-stone-500">
             {body}
           </p>
         </div>
@@ -146,7 +146,7 @@ function ShowcaseFeedCard({
             <button
               type="button"
               onClick={() => onImport(pattern)}
-              className="rounded-full bg-stone-900 px-3 py-1.5 font-sans text-[11px] font-bold text-white hover:bg-coral"
+              className="rounded-full bg-stone-900 px-3 py-1.5 font-sans text-sm font-bold text-white hover:bg-coral"
             >
               {t("community.importToEditor")}
             </button>
@@ -155,7 +155,7 @@ function ShowcaseFeedCard({
           <button
             type="button"
             onClick={() => toggleLike(pattern.id)}
-            className={`flex items-center gap-1 text-xs ${
+            className={`flex items-center gap-1 text-sm ${
               liked ? "font-semibold text-coral" : "text-stone-400 hover:text-stone-600"
             }`}
             aria-pressed={liked}
@@ -167,7 +167,7 @@ function ShowcaseFeedCard({
           <button
             type="button"
             onClick={() => toggleSave(pattern.id)}
-            className={`flex items-center gap-1 text-xs ${
+            className={`flex items-center gap-1 text-sm ${
               saved ? "font-semibold text-stone-800" : "text-stone-400 hover:text-stone-600"
             }`}
             aria-pressed={saved}
@@ -179,7 +179,7 @@ function ShowcaseFeedCard({
           <button
             type="button"
             onClick={() => onOpenFinished?.(pattern)}
-            className="flex items-center gap-1 text-xs text-stone-400 hover:text-stone-600"
+            className="flex items-center gap-1 text-sm text-stone-400 hover:text-stone-600"
             aria-label={t("community.comment")}
           >
             <ChatFillIcon className="h-4 w-4" />

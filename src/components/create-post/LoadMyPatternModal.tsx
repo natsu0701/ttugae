@@ -77,14 +77,14 @@ export default function LoadMyPatternModal({
               >
                 {t("createPost.loadMine")}
               </h2>
-              <p className="mt-1 font-sans text-sm font-normal text-gray-500">
+              <p className="mt-1 font-sans text-base font-normal text-gray-500">
                 {t("createPost.loadMineHint")}
               </p>
             </div>
 
             <ul className="max-h-[min(60vh,24rem)] overflow-y-auto px-3 py-3">
               {sorted.length === 0 ? (
-                <li className="px-3 py-8 text-center font-sans text-sm text-gray-500">
+                <li className="px-3 py-8 text-center font-sans text-base text-gray-500">
                   {t("createPost.loadMineEmpty")}
                 </li>
               ) : (
@@ -100,10 +100,10 @@ export default function LoadMyPatternModal({
                     >
                       <PatternThumb pattern={pattern} />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-sans text-sm font-bold text-gray-900">
+                        <p className="truncate font-sans text-base font-bold text-gray-900">
                           {pattern.title}
                         </p>
-                        <p className="mt-0.5 font-sans text-xs font-normal text-gray-500">
+                        <p className="mt-0.5 font-sans text-sm font-normal text-gray-500">
                           {formatDate(pattern.updatedAt)} · {pattern.grid[0]?.length ?? pattern.gridSize}
                           ×{pattern.grid.length}
                         </p>
@@ -118,7 +118,7 @@ export default function LoadMyPatternModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full rounded-full py-2.5 font-sans text-sm font-normal text-gray-600 transition-colors hover:bg-gray-100"
+                className="w-full rounded-full py-2.5 font-sans text-base font-normal text-gray-600 transition-colors hover:bg-gray-100"
               >
                 {t("common.close")}
               </button>
