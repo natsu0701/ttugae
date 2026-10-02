@@ -37,7 +37,7 @@ function FloatingDock() {
 
   return (
     <>
-      <div className="pointer-events-none fixed bottom-5 right-5 z-[65] flex flex-col items-end gap-2">
+      <div className="pointer-events-none fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
         {showTop ? (
           <button
             type="button"
