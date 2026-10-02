@@ -229,16 +229,19 @@ export default function AppShell({
       <header
         className={
           isOverlayHeader
-            ? "absolute inset-x-0 top-0 z-50 m-0 w-full overflow-visible border-none bg-transparent p-0"
+            ? "pointer-events-none absolute inset-x-0 top-0 z-50 m-0 w-full overflow-visible border-none bg-transparent p-0"
             : "relative inset-x-0 top-0 z-50 m-0 w-full overflow-visible bg-white p-0"
         }
       >
-        <div
-          aria-hidden
-          className="nav-lace pointer-events-none absolute inset-x-0 top-0 z-0 w-full"
-          style={{ backgroundImage: `url(${assetUrl("/images/nav_lace.png")})` }}
-        />
-        <div className="nav-shell relative z-10 flex h-20 w-full items-center justify-between gap-3 md:h-24 md:gap-6">
+        <div aria-hidden className="nav-lace pointer-events-none absolute inset-x-0 top-0 z-0 w-full">
+          <img
+            src={assetUrl("/images/nav_lace.png")}
+            alt=""
+            className="nav-lace-img"
+            draggable={false}
+          />
+        </div>
+        <div className="nav-shell pointer-events-auto relative z-10 flex h-20 w-full items-center justify-between gap-3 md:h-24 md:gap-6">
           <button
             type="button"
             onClick={go(onGoHome)}

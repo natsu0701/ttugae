@@ -23,8 +23,8 @@ const FLOATERS: Floater[] = [
     duration: 4.4,
     delay: 0.15,
     y: -14,
-    depthX: 22,
-    depthY: 16,
+    depthX: 64,
+    depthY: 42,
   },
   {
     src: asset("Stroked Image2.png"),
@@ -33,8 +33,8 @@ const FLOATERS: Floater[] = [
     duration: 5.1,
     delay: 0.6,
     y: -11,
-    depthX: -20,
-    depthY: 14,
+    depthX: -60,
+    depthY: 38,
   },
   {
     src: asset("Star 1.png"),
@@ -43,8 +43,8 @@ const FLOATERS: Floater[] = [
     duration: 3.2,
     delay: 0.05,
     y: -10,
-    depthX: 16,
-    depthY: 20,
+    depthX: 48,
+    depthY: 56,
   },
   {
     src: asset("Star 2.png"),
@@ -53,8 +53,8 @@ const FLOATERS: Floater[] = [
     duration: 3.8,
     delay: 0.9,
     y: -12,
-    depthX: -14,
-    depthY: 18,
+    depthX: -44,
+    depthY: 52,
   },
   {
     src: asset("Ellipse 2.png"),
@@ -63,8 +63,8 @@ const FLOATERS: Floater[] = [
     duration: 4.8,
     delay: 0.35,
     y: -13,
-    depthX: 12,
-    depthY: 10,
+    depthX: 36,
+    depthY: 28,
   },
   {
     src: asset("Ellipse 3.png"),
@@ -73,8 +73,8 @@ const FLOATERS: Floater[] = [
     duration: 3.6,
     delay: 1.1,
     y: -9,
-    depthX: -12,
-    depthY: 11,
+    depthX: -36,
+    depthY: 30,
   },
   {
     src: asset("Ellipse 4.png"),
@@ -83,15 +83,15 @@ const FLOATERS: Floater[] = [
     duration: 5.0,
     delay: 0.45,
     y: -16,
-    depthX: 10,
-    depthY: 14,
+    depthX: 32,
+    depthY: 40,
   },
 ];
 
 function HeroDecorations() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[5] h-full w-full overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-[5] h-full w-full overflow-visible"
       aria-hidden
     >
       {FLOATERS.map((item) => (
