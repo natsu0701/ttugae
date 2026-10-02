@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import PatternCard from "./components/community/PatternCard.tsx";
 import KnitBagPanel from "./components/mypage/KnitBagPanel.tsx";
@@ -165,34 +166,56 @@ function PatternGallery({
 
 function LevelGuidePopover({ level }: { level: KnitLevel }) {
   const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+
+  const show = () => {
+    const node = buttonRef.current;
+    if (!node) return;
+    const box = node.getBoundingClientRect();
+    setPos({ top: box.top, left: box.right + 8 });
+    setOpen(true);
+  };
 
   return (
-    <div className="group relative z-[70]">
+    <>
       <button
+        ref={buttonRef}
         type="button"
-        aria-describedby="knit-level-guide"
+        aria-describedby={open ? "knit-level-guide" : undefined}
         className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-sm font-bold text-white"
+        onMouseEnter={show}
+        onMouseLeave={() => setOpen(false)}
+        onFocus={show}
+        onBlur={() => setOpen(false)}
       >
         Lv.{level.level}
       </button>
-      <div
-        id="knit-level-guide"
-        role="tooltip"
-        className="pointer-events-none invisible absolute left-1/2 top-full z-[70] mt-2 w-72 -translate-x-1/2 rounded-xl border border-stone-200 bg-white p-4 text-left opacity-0 shadow-lg transition-opacity duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 md:left-0 md:translate-x-0"
-      >
-        <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
-        <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
-          <li>{t("mypage.level.criteria")}</li>
-          <li>{t("mypage.level.period", { days: LEVEL_PERIOD_DAYS })}</li>
-          <li>{t("mypage.level.score", { score: level.score.toLocaleString() })}</li>
-          <li>
-            {level.nextScore
-              ? t("mypage.level.next", { remaining: level.remaining.toLocaleString() })
-              : t("mypage.level.max")}
-          </li>
-        </ul>
-      </div>
-    </div>
+      {open
+        ? createPortal(
+            <div
+              id="knit-level-guide"
+              role="tooltip"
+              style={{ top: pos.top, left: pos.left }}
+              className="pointer-events-none fixed z-[80] w-72 rounded-xl border border-stone-200 bg-white p-4 text-left shadow-lg"
+            >
+              <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
+              <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
+                <li>{t("mypage.level.criteria")}</li>
+                <li>{t("mypage.level.period", { days: LEVEL_PERIOD_DAYS })}</li>
+                <li>{t("mypage.level.score", { score: level.score.toLocaleString() })}</li>
+                <li>
+                  {level.nextScore
+                    ? t("mypage.level.next", { remaining: level.remaining.toLocaleString() })
+                    : t("mypage.level.max")}
+                </li>
+              </ul>
+            </div>,
+            document.body,
+          )
+        : null}
+    </>
   );
 }
 
@@ -282,7 +305,7 @@ function ProfileInfoPanel({
         <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.profile.profileHint")}</p>
       </div>
 
-      <div className="relative rounded-xl border border-stone-200 bg-white p-6 md:p-8">
+      <div className="relative overflow-visible rounded-xl border border-stone-200 bg-white p-6 md:p-8">
         <input
           ref={avatarInputRef}
           type="file"
