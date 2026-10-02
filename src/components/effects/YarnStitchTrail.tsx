@@ -16,18 +16,23 @@ const RECORD_THROTTLE_MS = 24;
 const BASE_COLOR = "#FC5F53";
 const HALO_COLOR = "#FF8A9B";
 const MAX_OPACITY = 0.45;
-const POINTER_QUERY = "(hover: hover), (any-hover: hover), (pointer: fine), (any-pointer: fine)";
 
 export const CURSOR_HOTSPOT = { x: 21, y: 5 } as const;
 
 function canDrawYarnTrail(): boolean {
   if (typeof window === "undefined") return false;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
-  return window.matchMedia(POINTER_QUERY).matches;
+  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+function readCssSize(canvas: HTMLCanvasElement): { w: number; h: number } {
+  return {
+    w: canvas.clientWidth || window.innerWidth,
+    h: canvas.clientHeight || window.innerHeight,
+  };
+}
+
+function paintTrail(ctx: CanvasRenderingContext2D, points: Point[], cssW: number, cssH: number) {
+  ctx.clearRect(0, 0, cssW, cssH);
   if (points.length < 2) return;
 
   ctx.lineCap = "round";
@@ -60,12 +65,24 @@ function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
   ctx.globalAlpha = 1;
 }
 
+function eventPoint(e: Event): { x: number; y: number } | null {
+  if (e instanceof TouchEvent) {
+    const touch = e.touches[0] || e.changedTouches[0];
+    if (touch) return { x: touch.clientX, y: touch.clientY };
+    return null;
+  }
+  if (e instanceof PointerEvent || e instanceof MouseEvent) {
+    return { x: e.clientX, y: e.clientY };
+  }
+  return null;
+}
+
 type YarnStitchTrailProps = {
   disabled?: boolean;
 };
 
 function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
-  const [pointerOk, setPointerOk] = useState(canDrawYarnTrail);
+  const [motionOk, setMotionOk] = useState(canDrawYarnTrail);
   const [prefEnabled, setPrefEnabled] = useState(loadYarnTrailEnabled);
 
   const pointsRef = useRef<Point[]>([]);
@@ -74,24 +91,19 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const lastRecordRef = useRef(0);
-  const lastSizeRef = useRef({ w: 0, h: 0 });
+  const lastPointRef = useRef({ x: Number.NaN, y: Number.NaN });
+  const lastSizeRef = useRef({ w: 0, h: 0, dpr: 0 });
   const drawingRef = useRef(false);
-  const inactive = disabled || !prefEnabled || !pointerOk;
+  const inactive = disabled || !prefEnabled || !motionOk;
 
   useEffect(() => subscribeYarnTrail(setPrefEnabled), []);
 
   useEffect(() => {
-    const media = window.matchMedia(POINTER_QUERY);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setPointerOk(canDrawYarnTrail());
-    media.addEventListener("change", sync);
+    const sync = () => setMotionOk(canDrawYarnTrail());
     reduced.addEventListener("change", sync);
-    window.addEventListener("pointermove", sync, { once: true, passive: true });
     sync();
-    return () => {
-      media.removeEventListener("change", sync);
-      reduced.removeEventListener("change", sync);
-    };
+    return () => reduced.removeEventListener("change", sync);
   }, []);
 
   useEffect(() => {
@@ -103,7 +115,11 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
         rafIdRef.current = null;
       }
       const ctx = ctxRef.current;
-      if (ctx) ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      const canvas = canvasRef.current;
+      if (ctx && canvas) {
+        const size = readCssSize(canvas);
+        ctx.clearRect(0, 0, size.w, size.h);
+      }
       document.body.classList.remove("yarn-trail-active");
       return;
     }
@@ -119,11 +135,17 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
     const syncSize = () => {
       const nextW = window.innerWidth;
       const nextH = window.innerHeight;
-      if (lastSizeRef.current.w === nextW && lastSizeRef.current.h === nextH) return;
-      lastSizeRef.current = { w: nextW, h: nextH };
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(nextW * dpr);
-      canvas.height = Math.floor(nextH * dpr);
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      if (
+        lastSizeRef.current.w === nextW &&
+        lastSizeRef.current.h === nextH &&
+        lastSizeRef.current.dpr === dpr
+      ) {
+        return;
+      }
+      lastSizeRef.current = { w: nextW, h: nextH, dpr };
+      canvas.width = Math.max(1, Math.floor(nextW * dpr));
+      canvas.height = Math.max(1, Math.floor(nextH * dpr));
       canvas.style.width = `${nextW}px`;
       canvas.style.height = `${nextH}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -139,7 +161,8 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       const now = Date.now();
       const validPoints = pointsRef.current.filter((p) => now - p.time < POINT_LIFETIME);
       pointsRef.current = validPoints;
-      paintTrail(ctx, validPoints);
+      const size = lastSizeRef.current;
+      paintTrail(ctx, validPoints, size.w, size.h);
       if (validPoints.length === 0) {
         stopLoop();
         return;
@@ -153,37 +176,60 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       rafIdRef.current = requestAnimationFrame(updateTrail);
     };
 
-    const handleMouseMove = (e: PointerEvent | MouseEvent) => {
-      if ("pointerType" in e && e.pointerType === "touch") return;
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${e.clientX - CURSOR_HOTSPOT.x}px, ${e.clientY - CURSOR_HOTSPOT.y}px, 0)`;
+    const handleMove = (e: Event) => {
+      const point = eventPoint(e);
+      if (!point) return;
+
+      const finePointer = window.matchMedia("(pointer: fine)").matches;
+      if (finePointer && cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${point.x - CURSOR_HOTSPOT.x}px, ${point.y - CURSOR_HOTSPOT.y}px, 0)`;
+        cursorRef.current.style.opacity = "1";
+      } else if (cursorRef.current) {
+        cursorRef.current.style.opacity = "0";
       }
 
       const now = Date.now();
+      const lastPoint = lastPointRef.current;
+      const sameSpot =
+        Number.isFinite(lastPoint.x) &&
+        Math.abs(lastPoint.x - point.x) < 0.5 &&
+        Math.abs(lastPoint.y - point.y) < 0.5;
+      if (sameSpot && now - lastRecordRef.current < RECORD_THROTTLE_MS) return;
       if (now - lastRecordRef.current < RECORD_THROTTLE_MS) return;
       lastRecordRef.current = now;
+      lastPointRef.current = point;
 
       pointsRef.current = [
         ...pointsRef.current,
-        { x: e.clientX, y: e.clientY, time: now },
+        { x: point.x, y: point.y, time: now },
       ].slice(-MAX_POINTS);
       startLoop();
     };
 
-    const handleMouseLeave = () => {
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.relatedTarget) return;
       pointsRef.current = [];
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const size = lastSizeRef.current;
+      ctx.clearRect(0, 0, size.w, size.h);
       stopLoop();
     };
 
     syncSize();
-    window.addEventListener("pointermove", handleMouseMove, { passive: true });
+    window.addEventListener("pointermove", handleMove, { passive: true });
+    window.addEventListener("mousemove", handleMove, { passive: true });
+    window.addEventListener("touchmove", handleMove, { passive: true });
     window.addEventListener("resize", syncSize);
+    window.addEventListener("orientationchange", syncSize);
+    window.visualViewport?.addEventListener("resize", syncSize);
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
-      window.removeEventListener("pointermove", handleMouseMove);
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("touchmove", handleMove);
       window.removeEventListener("resize", syncSize);
+      window.removeEventListener("orientationchange", syncSize);
+      window.visualViewport?.removeEventListener("resize", syncSize);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       stopLoop();
       document.body.classList.remove("yarn-trail-active");
@@ -197,19 +243,19 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-[9998] h-[100dvh] w-screen overflow-hidden yarn-trail-layer"
+      className="pointer-events-none fixed inset-0 z-50 h-[100dvh] w-screen overflow-hidden yarn-trail-layer"
       aria-hidden
     >
       <canvas
         ref={canvasRef}
-        className="yarn-trail-svg pointer-events-none h-full w-full"
-        style={{ mixBlendMode: "normal" }}
+        className="yarn-trail-svg pointer-events-none fixed inset-0 z-50 h-full w-full"
+        style={{ mixBlendMode: "normal", pointerEvents: "none" }}
         aria-hidden
       />
 
       <div
         ref={cursorRef}
-        className="yarn-cursor pointer-events-none fixed left-0 top-0 z-[9999] transform-gpu will-change-transform"
+        className="yarn-cursor pointer-events-none fixed left-0 top-0 z-50 transform-gpu will-change-transform opacity-0"
         aria-hidden
       >
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">

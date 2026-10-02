@@ -313,6 +313,13 @@ body.yarn-trail-active {
 .yarn-trail-svg {
   overflow: visible;
   mix-blend-mode: normal;
+  pointer-events: none;
+}
+
+.yarn-trail-layer,
+.yarn-trail-layer canvas,
+.yarn-trail-layer * {
+  pointer-events: none;
 }
 
 @keyframes tteuni-float {

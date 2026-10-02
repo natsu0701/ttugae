@@ -73,7 +73,7 @@ import {
 } from "./utils/followStorage.ts";
 import { findLoungeAuthor, searchLoungeAuthors } from "./data/loungeAuthors.ts";
 import { currentUserHandle } from "./utils/identity.ts";
-import { resolveKnitLevel, LEVEL_PERIOD_DAYS } from "./utils/knitLevel.ts";
+import { resolveKnitLevel, LEVEL_PERIOD_DAYS, type KnitLevel } from "./utils/knitLevel.ts";
 import { loadKnitCalendarEvents, loadKnitMinutes } from "./utils/knittingLogStorage.ts";
 import { getAchievementBadge } from "./data/achievementBadges.ts";
 import { loadEquippedBadgeId, saveEquippedBadgeId } from "./utils/equippedBadgeStorage.ts";
@@ -160,6 +160,55 @@ function PatternGallery({
         />
       )}
     />
+  );
+}
+
+function LevelGuidePopover({ level }: { level: KnitLevel }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => {
+        if (window.matchMedia("(hover: hover)").matches) setOpen(true);
+      }}
+      onMouseLeave={() => {
+        if (window.matchMedia("(hover: hover)").matches) setOpen(false);
+      }}
+    >
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-sm font-bold text-white"
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onClick={() => {
+          if (!window.matchMedia("(hover: hover)").matches) setOpen((value) => !value);
+        }}
+      >
+        Lv.{level.level}
+      </button>
+      <div
+        role="tooltip"
+        className={`absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-xl border border-stone-200 bg-white p-4 text-left shadow-lg transition-opacity duration-200 md:left-0 md:translate-x-0 ${
+          open ? "visible opacity-100" : "invisible opacity-0"
+        }`}
+      >
+        <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
+        <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
+          <li>{t("mypage.level.criteria")}</li>
+          <li>{t("mypage.level.period", { days: LEVEL_PERIOD_DAYS })}</li>
+          <li>{t("mypage.level.score", { score: level.score.toLocaleString() })}</li>
+          <li>
+            {level.nextScore
+              ? t("mypage.level.next", { remaining: level.remaining.toLocaleString() })
+              : t("mypage.level.max")}
+          </li>
+        </ul>
+      </div>
+    </div>
   );
 }
 
@@ -257,31 +306,9 @@ function ProfileInfoPanel({
           className="hidden"
           onChange={(e) => handleAvatarChange(e.target.files?.[0])}
         />
-        <div className="absolute right-6 top-6 z-10 flex items-center gap-2">
-          <span className="font-sans text-sm font-bold text-stone-600">
-            {t("mypage.profile.privateToggle")}
-          </span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={!isPublic}
-            aria-label={t("mypage.profile.privateToggle")}
-            onClick={() => {
-              setIsPublic((value) => !value);
-              markDirty();
-            }}
-            className={`relative h-6 w-11 shrink-0 rounded-full ${!isPublic ? "bg-coral" : "bg-stone-300"}`}
-          >
-            <span
-              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white ${
-                !isPublic ? "left-5" : "left-0.5"
-              }`}
-            />
-          </button>
-        </div>
 
-        <div className="grid gap-8 pt-8 md:grid-cols-2 md:items-start">
-          <div className="flex flex-col items-start">
+        <div className="grid gap-8 md:grid-cols-2 md:items-start">
+          <div className="flex flex-col items-center md:items-start">
             <div className="relative h-28 w-28">
               <img
                 src={avatarUrl || TTEUNI_IMAGES.chatProfile}
@@ -297,38 +324,72 @@ function ProfileInfoPanel({
                 <PencilFillIcon className="h-4 w-4" />
               </button>
             </div>
-            <div className="mt-4 flex flex-wrap items-center justify-start gap-2">
-              <span className="font-sans text-lg font-bold leading-7 text-stone-900">{nickname}</span>
-              <span className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-sm font-bold text-white">
-                Lv.{level.level}
-              </span>
-              {showEquippedBadge && equippedBadge ? (
-                <span className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2 py-0.5">
-                  <img src={equippedBadge.imageSrc} alt="" className="h-5 w-5 object-contain" />
-                  <span className="font-sans text-sm font-bold text-stone-700">
-                    {badgeName(t, equippedBadge.id, equippedBadge.name)}
+            <div className="mt-4 flex flex-col items-center md:items-start">
+              <div className="flex flex-wrap items-center justify-center gap-2 md:justify-start">
+                <input
+                  value={nickname}
+                  size={Math.max(nickname.length, 2)}
+                  aria-label={t("mypage.profile.nickname")}
+                  onChange={(e) => {
+                    setNickname(e.target.value);
+                    markDirty();
+                  }}
+                  className="max-w-full border-0 bg-transparent p-0 text-center font-sans text-lg font-bold leading-7 text-stone-900 outline-none md:text-left"
+                />
+                <LevelGuidePopover level={level} />
+                {showEquippedBadge && equippedBadge ? (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2 py-0.5">
+                    <img src={equippedBadge.imageSrc} alt="" className="h-5 w-5 object-contain" />
+                    <span className="font-sans text-sm font-bold text-stone-700">
+                      {badgeName(t, equippedBadge.id, equippedBadge.name)}
+                    </span>
                   </span>
-                </span>
-              ) : null}
-            </div>
-            <p className="mt-1 font-sans text-sm leading-5 text-stone-400">{level.title}</p>
-            <div className="mt-4 w-full rounded-lg bg-stone-50 p-4 text-left">
-              <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
-              <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
-                <li>{t("mypage.level.criteria")}</li>
-                <li>{t("mypage.level.period", { days: LEVEL_PERIOD_DAYS })}</li>
-                <li>{t("mypage.level.score", { score: level.score.toLocaleString() })}</li>
-                <li>
-                  {level.nextScore
-                    ? t("mypage.level.next", { remaining: level.remaining.toLocaleString() })
-                    : t("mypage.level.max")}
-                </li>
-              </ul>
+                ) : null}
+              </div>
+              <div className="mt-1 flex items-center justify-center font-sans text-sm leading-5 text-stone-400 md:justify-start">
+                <span>@</span>
+                <input
+                  value={handle}
+                  size={Math.max(handle.length, 2)}
+                  aria-label={t("mypage.account.handle")}
+                  onChange={(e) => {
+                    const next = e.target.value.replace(/^@/, "");
+                    setHandle(next);
+                    setHandleError(isValidHandle(next) ? "" : t("mypage.account.handleInvalid"));
+                    markDirty();
+                  }}
+                  className="max-w-full border-0 bg-transparent p-0 font-sans text-sm leading-5 text-stone-400 outline-none"
+                />
+              </div>
+              {handleError ? <p className="mt-2 text-sm text-coral">{handleError}</p> : null}
+              <p className="mt-1 font-sans text-sm leading-5 text-stone-400">{level.title}</p>
             </div>
           </div>
 
           <div className="flex min-w-0 flex-col items-stretch">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center justify-end gap-2">
+              <span className="font-sans text-sm font-bold text-stone-600">
+                {t("mypage.profile.privateToggle")}
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={!isPublic}
+                aria-label={t("mypage.profile.privateToggle")}
+                onClick={() => {
+                  setIsPublic((value) => !value);
+                  markDirty();
+                }}
+                className={`relative h-6 w-11 shrink-0 rounded-full ${!isPublic ? "bg-coral" : "bg-stone-300"}`}
+              >
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white ${
+                    !isPublic ? "left-5" : "left-0.5"
+                  }`}
+                />
+              </button>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3">
               <button
                 type="button"
                 className="rounded-xl bg-stone-50 px-4 py-3 text-left"
@@ -346,48 +407,19 @@ function ProfileInfoPanel({
                 <p className="mt-1 font-sans text-2xl font-bold text-stone-900">{followers.length}</p>
               </button>
             </div>
-            <label className="mt-6 block">
-              <span className="font-sans text-sm font-bold text-stone-500">
-                {t("mypage.profile.nickname")}
-              </span>
-              <input
-                value={nickname}
-                onChange={(e) => {
-                  setNickname(e.target.value);
-                  markDirty();
-                }}
-                className="mt-1 w-full border-0 bg-transparent p-0 font-sans text-xl font-bold text-stone-800 outline-none"
-              />
-            </label>
-            <label className="mt-4 block">
-              <span className="font-sans text-sm font-bold text-stone-500">
-                {t("mypage.account.handle")}
-              </span>
-              <input
-                value={handle}
-                onChange={(e) => {
-                  setHandle(e.target.value);
-                  setHandleError(isValidHandle(e.target.value) ? "" : t("mypage.account.handleInvalid"));
-                  markDirty();
-                }}
-                className="mt-1 w-full border-0 bg-transparent p-0 font-sans text-lg font-bold text-stone-500 outline-none"
-              />
-            </label>
-            {handleError ? <p className="mt-2 text-sm text-coral">{handleError}</p> : null}
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <h3 className="font-sans text-base font-bold">{t("mypage.profile.regionTitle")}</h3>
-          <p className="mt-1 font-seoyun text-sm text-stone-500">{t("mypage.profile.regionHint")}</p>
-          <div className="mt-3">
-            <RegionPicker
-              value={activityRegion}
-              onChange={(next) => {
-                setActivityRegion(next);
-                markDirty();
-              }}
-            />
+            <div className="mt-6">
+              <h3 className="font-sans text-base font-bold">{t("mypage.profile.regionTitle")}</h3>
+              <p className="mt-1 font-seoyun text-sm text-stone-500">{t("mypage.profile.regionHint")}</p>
+              <div className="mt-3">
+                <RegionPicker
+                  value={activityRegion}
+                  onChange={(next) => {
+                    setActivityRegion(next);
+                    markDirty();
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -507,16 +539,21 @@ function GaugeTab() {
           {t("mypage.gauge.empty")}
         </p>
       ) : (
-        <ul className="space-y-4">
+        <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {entries.map((entry, index) => (
-            <li key={entry.id} className="rounded-xl border border-stone-200 bg-white p-5">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <p className="font-sans text-base font-bold text-stone-800">
-                  {t("mypage.gauge.entryTitle", { n: index + 1 })}
-                </p>
+            <li key={entry.id} className="flex h-full flex-col rounded-xl border border-stone-200 bg-white p-5">
+              <div className="mb-4 flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <SmoothInput
+                    label={t("mypage.gauge.name")}
+                    value={entry.title}
+                    onChange={(e) => patchEntry(entry.id, { title: e.target.value })}
+                    placeholder={t("mypage.gauge.namePh")}
+                  />
+                </div>
                 <button
                   type="button"
-                  className="font-sans text-sm text-stone-400 hover:text-coral"
+                  className="mt-7 shrink-0 font-sans text-sm text-stone-400 hover:text-coral"
                   onClick={() => {
                     setEntries((list) => list.filter((item) => item.id !== entry.id));
                     setDirty(true);
@@ -525,6 +562,9 @@ function GaugeTab() {
                   {t("mypage.gauge.remove")}
                 </button>
               </div>
+              <p className="mb-3 font-sans text-sm text-stone-400">
+                {t("mypage.gauge.entryTitle", { n: index + 1 })}
+              </p>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <SmoothInput
                   label={t("mypage.gauge.yarn")}
