@@ -40,14 +40,15 @@ function FeatureInteractiveTabs() {
 
   return (
     <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-      <div className="flex w-full items-center justify-center lg:sticky lg:top-28 lg:col-span-7">
-        <div className="relative flex aspect-[4/3] w-full items-center justify-center">
-          <div key={active.id} className="relative z-10 flex h-full w-full items-center justify-center fade-in">
+      <div className="flex w-full items-start justify-center lg:sticky lg:top-28 lg:col-span-7">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-stone-100">
+          <div key={active.id} className="absolute inset-0 fade-in">
             <SafePublicImage
               src={encodeURI(active.imagePath)}
               alt={t(TAB_COPY[active.id]?.title ?? "landing.tabEditorTitle")}
-              className="h-auto max-h-full w-auto max-w-full rounded-xl object-contain"
+              className="absolute inset-0 h-full w-full rounded-xl object-contain object-top"
               fallbackLabel={active.imagePath}
+              fallbackClassName="absolute inset-0 flex items-start justify-center rounded-xl bg-gray-50 p-8"
             />
           </div>
         </div>

@@ -229,13 +229,13 @@ export default function AppShell({
       <header
         className={
           isOverlayHeader
-            ? "absolute left-0 top-0 z-50 w-full border-none bg-transparent"
-            : "relative z-50 w-full bg-white"
+            ? "absolute inset-x-0 top-0 z-50 m-0 w-full overflow-visible border-none bg-transparent p-0"
+            : "relative inset-x-0 top-0 z-50 m-0 w-full overflow-visible bg-white p-0"
         }
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[170px] w-full bg-cover bg-top bg-no-repeat md:h-[190px]"
+          className="nav-lace pointer-events-none absolute inset-x-0 top-0 z-0 w-full"
           style={{ backgroundImage: `url(${assetUrl("/images/nav_lace.png")})` }}
         />
         <div className="nav-shell relative z-10 flex h-20 w-full items-center justify-between gap-3 md:h-24 md:gap-6">
@@ -283,10 +283,18 @@ export default function AppShell({
       {isOverlayHeader ? (
         children
       ) : (
-        <div className="relative z-10 pt-20 md:pt-24">{children}</div>
+        <div className="relative z-10 pt-[var(--nav-lace-height)]">{children}</div>
       )}
       <FloatingDock />
-      <LandingFooter />
+      <LandingFooter
+        variant={isOverlayHeader ? "home" : "compact"}
+        isLoggedIn={isLoggedIn}
+        onGoHome={go(onGoHome)}
+        onGoEditor={go(onGoEditor)}
+        onGoCommunity={go(onGoCommunity)}
+        onGoMypage={go(onGoMypage)}
+        onLogin={onLogin}
+      />
     </div>
   );
 }
