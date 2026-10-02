@@ -639,10 +639,21 @@
     "loggedIn": "You are logged in"
   },
   "chat": {
-    "widgetTitle": "Tteuni chat (AI)",
-    "widgetHint": "Ask about color pairing, chart edits, or yarn choices.",
+    "widgetTitle": "Tteuni chat (AI knitting assistant)",
+    "widgetHint": "Ask with a full sentence or a single keyword.",
     "scrollTop": "Back to top",
-    "open": "Open Tteuni chat (AI)"
+    "open": "Open Tteuni chat (AI)",
+    "startHint": "A single word like knit, gauge, dropped stitch, top-down, or magic ring is enough.",
+    "placeholder": "Type a keyword or a question",
+    "loading": "Tteuni is reading your chart and yarn",
+    "cardGaugeTitle": "Gauge auto-convert",
+    "cardGaugePrompt": "Convert stitch counts to my tension",
+    "cardPurlTitle": "Fix a dropped stitch",
+    "cardPurlPrompt": "Pick up a missed stitch without ripping",
+    "cardYarnTitle": "Yarn and needle pick",
+    "cardYarnPrompt": "Best yarn for a fall cardigan?",
+    "cardPreviewTitle": "AR knit nav and 3D preview",
+    "cardPreviewPrompt": "Scan a chart into a 3D sweater"
   },
   "login": {
     "title": "Get started",
@@ -675,6 +686,9 @@
     "promoNext": "Next mockup",
     "promoAlt": "Tteuni AR app mockup {{n}}",
     "footerTag": "One more stitch, together",
+    "footerExplore": "Explore",
+    "footerCommunity": "Community",
+    "footerAccount": "Account",
     "scrollHint": "Scroll to stitch the lettering",
     "tabEditorTitle": "Pattern editor",
     "tabEditorSub": "2D grid editor",

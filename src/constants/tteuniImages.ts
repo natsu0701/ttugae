@@ -9,6 +9,8 @@ export const TTEUNI_IMAGES = {
   hero: assetUrl("/뜨니_메인반신.svg"),
   /** 에디터 AI 챗봇 아바타 */
   chatProfile: assetUrl("/뜨니_챗봇프로필.svg"),
+  /** 뜨니챗 답변 생성 중 로딩 */
+  loading: assetUrl("/images/tteuni_loading_state.png"),
   /** 커뮤니티 히어로 옆 장식 */
   community: assetUrl("/뜨니_커뮤니티.svg"),
   /** 랜딩 기능( AI 챗 등) 설명용 */

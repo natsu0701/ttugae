@@ -11,7 +11,11 @@ const FACE_CROP_HEIGHT = "167%";
 function TteuniHeroPeek() {
   return (
     <div
-      className="pointer-events-none relative z-10 mx-auto mt-auto flex min-h-0 w-full min-w-0 flex-1 basis-0 items-start justify-center overflow-hidden"
+      className="hero-parallax-layer pointer-events-none relative z-10 mx-auto mt-auto flex min-h-0 w-full min-w-0 flex-1 basis-0 items-start justify-center overflow-hidden"
+      style={{
+        ["--depth-x" as string]: "8",
+        ["--depth-y" as string]: "6",
+      }}
       aria-hidden
     >
       <img
