@@ -7,6 +7,7 @@ import QaDetail from "./components/community/QaDetail.tsx";
 import FinishedWorkDetail from "./components/community/FinishedWorkDetail.tsx";
 import AuthorProfilePage from "./components/community/AuthorProfilePage.tsx";
 import CommunityFilterBar from "./components/ui/CommunityFilterBar.tsx";
+import PagedCardGrid from "./components/ui/PagedCardGrid.tsx";
 import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.ts";
 import {
   COMMUNITY_PATTERNS,
@@ -327,36 +328,29 @@ export default function Community({
                     {t("community.tasteHint")}
                   </p>
                 ) : null}
-                <div
-                  className={
-                    activeTab === "showcase"
-                      ? "mx-auto grid w-full grid-cols-1 md:grid-cols-2 md:gap-8"
-                      : activeTab === "best"
-                        ? "grid grid-cols-1 gap-4 md:grid-cols-3"
-                        : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+                <PagedCardGrid
+                  items={filtered}
+                  getKey={(pattern) => pattern.id}
+                  resetKey={`${activeTab}:${JSON.stringify(loungeFilters)}`}
+                  renderItem={(pattern, index) =>
+                    activeTab === "showcase" ? (
+                      <ShowcaseFeedCard
+                        pattern={pattern}
+                        onImport={onImportToEditor}
+                        onOpenFinished={openWork}
+                        onOpenAuthor={openAuthor}
+                      />
+                    ) : (
+                      <PatternCard
+                        pattern={pattern}
+                        rank={activeTab === "best" ? index + 1 : undefined}
+                        onImport={onImportToEditor}
+                        onOpenFinished={openWork}
+                        onOpenAuthor={openAuthor}
+                      />
+                    )
                   }
-                >
-                    {filtered.map((pattern, index) =>
-                      activeTab === "showcase" ? (
-                        <ShowcaseFeedCard
-                          key={pattern.id}
-                          pattern={pattern}
-                          onImport={onImportToEditor}
-                          onOpenFinished={openWork}
-                          onOpenAuthor={openAuthor}
-                        />
-                      ) : (
-                        <PatternCard
-                          key={pattern.id}
-                          pattern={pattern}
-                          rank={activeTab === "best" ? index + 1 : undefined}
-                          onImport={onImportToEditor}
-                          onOpenFinished={openWork}
-                          onOpenAuthor={openAuthor}
-                        />
-                      ),
-                    )}
-                </div>
+                />
               </>
             )}
           </>

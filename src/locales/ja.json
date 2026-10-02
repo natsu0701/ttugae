@@ -614,6 +614,8 @@
     "cancel": "キャンセル",
     "close": "閉じる",
     "save": "保存",
+    "pagination": "ページ一覧",
+    "pageN": "{{n}}ページ",
     "me": "自分",
     "back": "戻る",
     "send": "送信",

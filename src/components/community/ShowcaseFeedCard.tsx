@@ -75,7 +75,7 @@ function ShowcaseFeedCard({
   };
 
   return (
-    <article className="mb-8 rounded-xl bg-stone-50/60 p-5 shadow-sm">
+    <article className="h-full rounded-xl bg-stone-50/60 p-5 shadow-sm">
       <div className="mb-4 flex items-center gap-3">
         <button
           type="button"

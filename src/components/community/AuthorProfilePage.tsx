@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import BackButton from "../ui/BackButton.tsx";
 import Button from "../ui/Button.tsx";
 import PatternCard from "./PatternCard.tsx";
+import PagedCardGrid from "../ui/PagedCardGrid.tsx";
 import { resolveLoungeAuthor, patternsByAuthorHandle } from "../../data/loungeAuthors.ts";
 import { loadSharedCommunityPatterns } from "../../utils/communityShare.ts";
 import { isFollowing, listFollowers, listFollowing, toggleFollow } from "../../utils/followStorage.ts";
@@ -90,15 +91,18 @@ export default function AuthorProfilePage({
         {patterns.length === 0 ? (
           <p className="mt-4 text-body text-stone-500">{t("community.authorEmpty")}</p>
         ) : (
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {patterns.map((pattern) => (
-              <PatternCard
-                key={pattern.id}
-                pattern={pattern}
-                onImport={onImportToEditor}
-                onOpenFinished={onOpenFinished}
-              />
-            ))}
+          <div className="mt-4">
+            <PagedCardGrid
+              items={patterns}
+              getKey={(pattern) => pattern.id}
+              renderItem={(pattern) => (
+                <PatternCard
+                  pattern={pattern}
+                  onImport={onImportToEditor}
+                  onOpenFinished={onOpenFinished}
+                />
+              )}
+            />
           </div>
         )}
       </section>

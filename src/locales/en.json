@@ -614,6 +614,8 @@
     "cancel": "Cancel",
     "close": "Close",
     "save": "Save",
+    "pagination": "Page list",
+    "pageN": "Page {{n}}",
     "me": "Me",
     "back": "Back",
     "send": "Send",

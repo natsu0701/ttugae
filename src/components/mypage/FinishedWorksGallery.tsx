@@ -13,6 +13,7 @@ import {
 } from "../../utils/myFinishedWorksStore.ts";
 import { deleteSharedCommunityPattern } from "../../utils/communityShare.ts";
 import { getCommunityPattern } from "../../data/communityPatterns.ts";
+import PagedCardGrid from "../ui/PagedCardGrid.tsx";
 
 type FinishedWorksGalleryProps = {
   onEditPost: (pattern: CommunityPattern) => void;
@@ -36,7 +37,7 @@ function FinishedWorkCard({
     : finishedWorkImageUrl(work.image);
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl bg-gray-50 transition-colors hover:bg-gray-100">
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-gray-50 transition-colors hover:bg-gray-100">
       {failed ? (
         <div className="flex h-48 items-center justify-center bg-gray-100 p-4 text-center">
           <p className="font-sans text-sm font-normal text-gray-500">
@@ -125,19 +126,20 @@ export default function FinishedWorksGallery({ onEditPost }: FinishedWorksGaller
   }
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {works.map((work) => {
+    <PagedCardGrid
+      items={works}
+      getKey={(work) => work.id}
+      renderItem={(work) => {
         const isUserPost = work.id.startsWith("fw-user-");
         return (
           <FinishedWorkCard
-            key={work.id}
             work={work}
             canManage
             onEdit={isUserPost ? () => handleEdit(work) : undefined}
             onDelete={() => handleDelete(work)}
           />
         );
-      })}
-    </div>
+      }}
+    />
   );
 }
