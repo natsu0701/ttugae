@@ -165,36 +165,20 @@ function PatternGallery({
 
 function LevelGuidePopover({ level }: { level: KnitLevel }) {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
 
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => {
-        if (window.matchMedia("(hover: hover)").matches) setOpen(true);
-      }}
-      onMouseLeave={() => {
-        if (window.matchMedia("(hover: hover)").matches) setOpen(false);
-      }}
-    >
+    <div className="group relative z-[70]">
       <button
         type="button"
-        aria-expanded={open}
-        aria-haspopup="dialog"
+        aria-describedby="knit-level-guide"
         className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-sm font-bold text-white"
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-        onClick={() => {
-          if (!window.matchMedia("(hover: hover)").matches) setOpen((value) => !value);
-        }}
       >
         Lv.{level.level}
       </button>
       <div
+        id="knit-level-guide"
         role="tooltip"
-        className={`absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-xl border border-stone-200 bg-white p-4 text-left shadow-lg transition-opacity duration-200 md:left-0 md:translate-x-0 ${
-          open ? "visible opacity-100" : "invisible opacity-0"
-        }`}
+        className="pointer-events-none invisible absolute left-1/2 top-full z-[70] mt-2 w-72 -translate-x-1/2 rounded-xl border border-stone-200 bg-white p-4 text-left opacity-0 shadow-lg transition-opacity duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 md:left-0 md:translate-x-0"
       >
         <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
         <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
