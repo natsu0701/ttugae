@@ -1,5 +1,10 @@
 import { tteuniFaqData, type TteuniFaqItem } from "../data/tteuniFaqData.ts";
 
+export type TteuniChatImage = {
+  mime: string;
+  dataUrl: string;
+};
+
 function normalize(value: string) {
   return value
     .toLowerCase()
@@ -52,12 +57,21 @@ export function matchTteuniFaq(query: string): TteuniFaqItem | null {
   return best.item;
 }
 
-type GeminiPart = { text?: string };
+type GeminiPart = {
+  text?: string;
+  inline_data?: { mime_type: string; data: string };
+};
 type GeminiResponse = {
-  candidates?: Array<{ content?: { parts?: GeminiPart[] } }>;
+  candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
 };
 
-async function fetchGeminiReply(query: string): Promise<string | null> {
+function dataUrlToInline(dataUrl: string) {
+  const match = /^data:([^;]+);base64,(.+)$/.exec(dataUrl);
+  if (!match) return null;
+  return { mime_type: match[1], data: match[2] };
+}
+
+async function fetchGeminiReply(query: string, image?: TteuniChatImage | null): Promise<string | null> {
   const key = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
   if (!key) return null;
 
@@ -65,22 +79,28 @@ async function fetchGeminiReply(query: string): Promise<string | null> {
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent" +
     `?key=${encodeURIComponent(key)}`;
 
+  const prompt = image
+    ? "너는 뜨개 도우미 뜨니야. 한국어로 짧고 친절하게 답해. 이모티콘은 쓰지 마. 첨부된 편물이나 도안 사진을 보고 코, 장력, 실, 바늘 관점에서 조언해.\n질문: " +
+      (query.trim() || "이 사진을 분석해 줘.")
+    : "너는 뜨개 도우미 뜨니야. 한국어로 짧고 친절하게 답해. 이모티콘은 쓰지 마.\n질문: " + query;
+
+  const parts: GeminiPart[] = [{ text: prompt }];
+  if (image) {
+    const inline = dataUrlToInline(image.dataUrl);
+    if (inline) {
+      parts.push({
+        inline_data: {
+          mime_type: image.mime || inline.mime_type,
+          data: inline.data,
+        },
+      });
+    }
+  }
+
   const response = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            {
-              text:
-                "너는 뜨개 도우미 뜨니야. 한국어로 짧고 친절하게 답해. 이모티콘은 쓰지 마.\n질문: " +
-                query,
-            },
-          ],
-        },
-      ],
-    }),
+    body: JSON.stringify({ contents: [{ parts }] }),
   });
   if (!response.ok) return null;
   const data = (await response.json()) as GeminiResponse;
@@ -95,7 +115,14 @@ export function getTteuniMockFallback(query: string) {
   );
 }
 
-export async function resolveTteuniChatReply(query: string): Promise<{
+export function getTteuniPhotoMock() {
+  return "올려 주신 편물/도안 사진을 살펴봤어요. 코 간격과 장력이 고른 편입니다. 게이지(Gauge)나 궁금한 코를 알려 주시면 더 맞춰 드릴게요.";
+}
+
+export async function resolveTteuniChatReply(
+  query: string,
+  image?: TteuniChatImage | null,
+): Promise<{
   answer: string;
   source: "faq" | "gemini" | "mock";
 }> {
@@ -105,10 +132,14 @@ export async function resolveTteuniChatReply(query: string): Promise<{
   }
 
   try {
-    const gemini = await fetchGeminiReply(query);
+    const gemini = await fetchGeminiReply(query, image);
     if (gemini) return { answer: gemini, source: "gemini" };
   } catch {
     /* 목업 폴백 */
+  }
+
+  if (image) {
+    return { answer: getTteuniPhotoMock(), source: "mock" };
   }
 
   return { answer: getTteuniMockFallback(query), source: "mock" };

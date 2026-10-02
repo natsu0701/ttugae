@@ -90,6 +90,19 @@ export function ImageFillIcon({ className = "h-5 w-5" }: IconProps) {
   );
 }
 
+export function CameraFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M9.15 4.35 7.8 6.1H5.6A2.6 2.6 0 0 0 3 8.7v8.7A2.6 2.6 0 0 0 5.6 20h12.8a2.6 2.6 0 0 0 2.6-2.6V8.7a2.6 2.6 0 0 0-2.6-2.6h-2.2l-1.35-1.75A2.1 2.1 0 0 0 13.15 3.5h-2.2a2.1 2.1 0 0 0-1.8.85z"
+      />
+      <circle cx="12" cy="13.1" r="3.35" fill="white" />
+      <circle cx="12" cy="13.1" r="1.7" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function HeartFillIcon({
   className = "h-5 w-5",
   filled = false,
