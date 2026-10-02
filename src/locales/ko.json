@@ -638,10 +638,21 @@
     "loggedIn": "로그인되었습니다"
   },
   "chat": {
-    "widgetTitle": "뜨니챗(AI)",
-    "widgetHint": "배색, 도안 수정, 실 고르기를 물어보세요.",
+    "widgetTitle": "뜨니챗(AI 뜨개 보조 챗봇)",
+    "widgetHint": "키워드나 문장으로 물어보세요.",
     "scrollTop": "맨 위로 이동",
-    "open": "뜨니챗(AI) 열기"
+    "open": "뜨니챗(AI) 열기",
+    "startHint": "겉뜨기, 게이지(Gauge), 푸르시오, 탑다운, 매직링처럼 단어만 입력해도 바로 찾아 드려요.",
+    "placeholder": "키워드 또는 질문을 입력하세요",
+    "loading": "뜨니가 도안과 털실을 분석하고 있어요",
+    "cardGaugeTitle": "게이지(Gauge) 자동 환산",
+    "cardGaugePrompt": "내 땀 장력에 맞춰 코수 변환해줘",
+    "cardPurlTitle": "푸르시오 없는 코 복구",
+    "cardPurlPrompt": "놓친 코 안 풀고 올리는 법",
+    "cardYarnTitle": "맞춤 실&바늘 추천",
+    "cardYarnPrompt": "가을 가디건에 어울리는 실은?",
+    "cardPreviewTitle": "AR 뜨개내비 & 3D 미리보기",
+    "cardPreviewPrompt": "도안 스캔해서 3D 스웨터로 보기"
   },
   "login": {
     "title": "시작하기",

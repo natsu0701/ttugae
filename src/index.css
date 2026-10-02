@@ -417,7 +417,8 @@ body.yarn-trail-active {
   .hero-overlay,
   .hero-floater,
   .tteuni-peek,
-  .input-caret {
+  .input-caret,
+  .tteuni-loading-mascot {
     animation: none !important;
   }
 
@@ -498,6 +499,33 @@ body.yarn-trail-active {
 .scrollbar-thin::-webkit-scrollbar-thumb {
   border-radius: 999px;
   background: rgba(252, 95, 83, 0.35);
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.tteuni-loading-mascot.animate-bounce {
+  animation: bounce 1s infinite, tteuni-loading-glow 1.15s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes tteuni-loading-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 6px 10px rgba(252, 95, 83, 0.28));
+  }
+  50% {
+    filter: drop-shadow(0 12px 18px rgba(252, 95, 83, 0.5));
+  }
 }
 
 /* Leaflet: Tailwind preflight 타일 왜곡 차단 + 브랜드 핀 배경 제거 */
