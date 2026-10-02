@@ -518,6 +518,13 @@ body.yarn-trail-active {
   transform-origin: center bottom;
 }
 
+.tteuni-faq-card,
+.tteuni-faq-card span {
+  word-break: keep-all;
+  overflow-wrap: normal;
+  line-break: strict;
+}
+
 @keyframes tteuni-loading-glow {
   0%,
   100% {

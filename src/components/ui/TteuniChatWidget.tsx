@@ -53,6 +53,9 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
       setIsSearching(true);
       setInput("");
       setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: "user", text }]);
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      });
 
       const started = Date.now();
       let reply = (await resolveTteuniChatReply(text)).answer;
@@ -76,7 +79,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
         }
       }
 
-      const wait = Math.max(0, 1400 - (Date.now() - started));
+      const wait = Math.max(400, 1600 - (Date.now() - started));
       await new Promise((resolve) => window.setTimeout(resolve, wait));
       setMessages((prev) => [...prev, { id: `t-${Date.now()}`, role: "tteuni", text: reply }]);
       setIsSearching(false);
@@ -108,7 +111,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
   });
 
   return (
-    <div className="fixed bottom-24 right-5 z-[70] flex w-[min(100vw-2.5rem,24rem)] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-lg">
+    <div className="fixed bottom-24 right-5 z-[70] flex w-[min(100vw-2.5rem,26rem)] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-lg">
       <div className="flex items-center gap-2 border-b border-stone-100 px-4 py-3">
         <img src={TTEUNI_IMAGES.chatProfile} alt="" className="h-8 w-8 object-contain" />
         <div className="min-w-0 flex-1">
@@ -146,7 +149,11 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
         )}
 
         {isSearching ? (
-          <div className="flex items-center gap-3 rounded-2xl bg-stone-50 px-3 py-3" role="status">
+          <div
+            className="flex items-center gap-3 rounded-2xl bg-stone-50 px-3 py-3"
+            role="status"
+            data-testid="tteuni-loading"
+          >
             <img
               src={LOADING_SOURCES[loadingSrcIndex]}
               alt=""
@@ -189,12 +196,12 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
                 setInput(card.prompt);
                 void ask(card.prompt);
               }}
-              className="flex h-full min-h-[5rem] flex-col rounded-xl border border-stone-200 bg-stone-50 px-2.5 py-2 text-left transition-colors hover:border-coral hover:bg-white disabled:opacity-60"
+              className="tteuni-faq-card flex h-full min-h-[5rem] flex-col rounded-xl border border-stone-200 bg-stone-50 px-2.5 py-2 text-left transition-colors hover:border-coral hover:bg-white disabled:opacity-60"
             >
-              <span className="block break-keep font-sans text-xs font-bold leading-snug text-stone-800 md:text-sm">
+              <span className="block font-sans text-xs font-bold leading-snug text-stone-800 md:text-sm">
                 {card.title}
               </span>
-              <span className="mt-1 block break-keep font-seoyun text-xs leading-snug text-stone-500">
+              <span className="mt-1 block font-seoyun text-xs leading-snug text-stone-500">
                 {card.prompt}
               </span>
             </button>
