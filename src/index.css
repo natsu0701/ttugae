@@ -23,7 +23,7 @@ html {
   scroll-behavior: smooth;
   overflow-x: clip;
   font-size: 16px;
-  --nav-lace-height: clamp(5rem, calc(100vw * 297 / 3278), 12.5rem);
+  --nav-lace-height: clamp(5.25rem, calc(100vw * 297 / 2200), 13.5rem);
   --hero-mx: 0;
   --hero-my: 0;
 }
@@ -89,9 +89,24 @@ body {
 
   .nav-lace {
     height: var(--nav-lace-height);
-    background-repeat: repeat-x;
-    background-position: top center;
-    background-size: auto 100%;
+    overflow: hidden;
+    inset-inline: 0;
+    top: 0;
+  }
+
+  .nav-lace-img {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    display: block;
+    width: 168%;
+    max-width: none;
+    height: 228%;
+    object-fit: cover;
+    object-position: 50% 46%;
+    transform: translateX(-50%) translateY(-30%);
+    pointer-events: none;
+    user-select: none;
   }
 
   .nav-text-item {

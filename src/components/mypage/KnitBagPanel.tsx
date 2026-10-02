@@ -4,7 +4,7 @@ import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import NeedleSpecFields from "../editor/NeedleSpecFields.tsx";
 import {
-  loadGaugeProfile,
+  loadGaugeEntries,
   loadNeedleInventory,
   loadYarnInventory,
   saveNeedleInventory,
@@ -29,7 +29,7 @@ function KnitBagPanel() {
     meters: "",
     needle: "",
   });
-  const gauge = loadGaugeProfile();
+  const gauges = loadGaugeEntries();
 
   const addYarn = () => {
     const name = yarnDraft.name.trim();
@@ -58,14 +58,19 @@ function KnitBagPanel() {
     setNeedleDraft(DEFAULT_NEEDLE);
   };
 
-  const gaugeRows = useMemo(
-    () => [
-      { label: t("mypage.profile.gaugeBeforeSts"), value: gauge?.beforeSts || "-" },
-      { label: t("mypage.profile.gaugeBeforeRows"), value: gauge?.beforeRows || "-" },
-      { label: t("mypage.profile.gaugeAfterSts"), value: gauge?.afterSts || "-" },
-      { label: t("mypage.profile.gaugeAfterRows"), value: gauge?.afterRows || "-" },
-    ],
-    [gauge, t],
+  const gaugeCards = useMemo(
+    () =>
+      gauges.map((entry, index) => ({
+        id: entry.id,
+        title: [entry.yarn, entry.needle].filter(Boolean).join(" / ") || t("mypage.gauge.entryTitle", { n: index + 1 }),
+        rows: [
+          { label: t("mypage.profile.gaugeBeforeSts"), value: entry.beforeSts || "-" },
+          { label: t("mypage.profile.gaugeBeforeRows"), value: entry.beforeRows || "-" },
+          { label: t("mypage.profile.gaugeAfterSts"), value: entry.afterSts || "-" },
+          { label: t("mypage.profile.gaugeAfterRows"), value: entry.afterRows || "-" },
+        ],
+      })),
+    [gauges, t],
   );
 
   return (
@@ -176,14 +181,25 @@ function KnitBagPanel() {
       <section className="rounded-xl border border-stone-200 bg-white p-6">
         <h3 className="font-sans text-base font-bold text-stone-900">{t("mypage.bag.gaugeList")}</h3>
         <p className="mt-1 font-sans text-sm text-stone-500">{t("mypage.bag.gaugeHint")}</p>
-        <ul className="mt-4 grid grid-cols-2 gap-3">
-          {gaugeRows.map((row) => (
-            <li key={row.label} className="rounded-lg bg-stone-50 px-3 py-3">
-              <p className="font-sans text-sm text-stone-500">{row.label}</p>
-              <p className="mt-1 font-sans text-lg font-bold text-stone-900">{row.value}</p>
-            </li>
-          ))}
-        </ul>
+        {gaugeCards.length === 0 ? (
+          <p className="mt-4 font-sans text-base text-stone-400">{t("mypage.gauge.empty")}</p>
+        ) : (
+          <ul className="mt-4 space-y-4">
+            {gaugeCards.map((card) => (
+              <li key={card.id}>
+                <p className="font-sans text-sm font-bold text-stone-700">{card.title}</p>
+                <ul className="mt-2 grid grid-cols-2 gap-3">
+                  {card.rows.map((row) => (
+                    <li key={row.label} className="rounded-lg bg-stone-50 px-3 py-3">
+                      <p className="font-sans text-sm text-stone-500">{row.label}</p>
+                      <p className="mt-1 font-sans text-lg font-bold text-stone-900">{row.value}</p>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </div>
   );

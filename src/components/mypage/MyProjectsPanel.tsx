@@ -2,22 +2,28 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import type { StoredPattern } from "../../types/storedPattern.ts";
+import type { CommunityPattern } from "../../data/communityPatterns.ts";
 import {
   getPatternStatus,
   PATTERN_META_CHANGED_EVENT,
   setPatternStatus,
 } from "../../utils/patternMetaStorage.ts";
+import { tabButtonBase, tabButtonClass } from "../ui/tabButtonStyles.ts";
+import FinishedWorksGallery from "./FinishedWorksGallery.tsx";
 
 function formatDate(ts: number) {
   const d = new Date(ts);
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
 }
 
+type ProjectView = "progress" | "finished";
+
 type MyProjectsPanelProps = {
   patterns: StoredPattern[];
   onCreateNew: () => void;
   onOpen: (id: string) => void;
   onDelete: (id: string) => void;
+  onEditPost: (pattern: CommunityPattern) => void;
 };
 
 export default function MyProjectsPanel({
@@ -25,9 +31,11 @@ export default function MyProjectsPanel({
   onCreateNew,
   onOpen,
   onDelete,
+  onEditPost,
 }: MyProjectsPanelProps) {
   const { t } = useTranslation();
   const [tick, setTick] = useState(0);
+  const [view, setView] = useState<ProjectView>("progress");
 
   useEffect(() => {
     const refresh = () => setTick((n) => n + 1);
@@ -115,21 +123,45 @@ export default function MyProjectsPanel({
           <p className="mt-1 font-sans text-base text-gray-600">{t("mypage.projects.subtitle")}</p>
         </div>
         <Button variant="primary" onClick={onCreateNew} className="px-6 py-3">
-          {t("mypage.patterns.createNew")}
+          {t("mypage.projects.create")}
         </Button>
       </div>
-      <section>
-        <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
+
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => setView("progress")}
+          className={`${tabButtonBase} ${tabButtonClass(view === "progress")}`}
+        >
           {t("mypage.projects.inProgress")}
-        </h3>
-        {renderList(grouped.inProgress, false)}
-      </section>
-      <section>
-        <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
-          {t("mypage.projects.completed")}
-        </h3>
-        {renderList(grouped.completed, true)}
-      </section>
+        </button>
+        <button
+          type="button"
+          onClick={() => setView("finished")}
+          className={`${tabButtonBase} ${tabButtonClass(view === "finished")}`}
+        >
+          {t("mypage.tabs.finished")}
+        </button>
+      </div>
+
+      {view === "progress" ? (
+        <section>{renderList(grouped.inProgress, false)}</section>
+      ) : (
+        <div className="space-y-8">
+          <section>
+            <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
+              {t("mypage.projects.completed")}
+            </h3>
+            {renderList(grouped.completed, true)}
+          </section>
+          <section>
+            <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
+              {t("mypage.finishedTitle")}
+            </h3>
+            <FinishedWorksGallery onEditPost={onEditPost} />
+          </section>
+        </div>
+      )}
     </div>
   );
 }

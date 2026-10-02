@@ -70,6 +70,7 @@
       "publicOn": "프로필 전체 공개",
       "publicOff": "비공개 (Private)",
       "publicHint": "비공개로 두면 다른 뜨개러에게 내 프로필이 보이지 않습니다.",
+      "privateToggle": "비공개 전환",
       "gaugeBeforeSts": "세탁 전 코",
       "gaugeBeforeRows": "세탁 전 단",
       "gaugeAfterSts": "세탁 후 코",
@@ -101,7 +102,8 @@
     },
     "projects": {
       "title": "내 프로젝트",
-      "subtitle": "진행 중인 도안과 완성작을 나눠 관리하세요.",
+      "subtitle": "진행 중인 프로젝트와 완성작을 한곳에서 조회하세요.",
+      "create": "프로젝트 생성",
       "inProgress": "진행 중",
       "completed": "완성작",
       "completeToggle": "완성 체크",
@@ -191,14 +193,27 @@
     },
     "region": {
       "province": "도 / 시",
-      "city": "시 / 구",
-      "dong": "동",
-      "searchPh": "동 이름으로 검색"
+      "city": "시 / 군 / 구",
+      "dong": "읍 / 면 / 동",
+      "searchPh": "시군구나 읍면동 이름으로 검색"
     },
     "gauge": {
+      "add": "추가",
+      "remove": "삭제",
+      "empty": "저장된 게이지(Gauge)가 없어요. 추가를 눌러 등록해 보세요.",
+      "entryTitle": "게이지(Gauge) {{n}}",
+      "yarn": "실 종류",
+      "needle": "바늘 치수",
+      "calculatorTitle": "게이지(Gauge) 계산기",
+      "calculatorHint": "10cm 스와치 코·단 수와 목표 가로·세로를 넣으면 필요 코·단이 바로 계산됩니다.",
+      "swatchSts": "10cm 코 수",
+      "swatchRows": "10cm 단 수",
+      "targetWidth": "목표 가로 (cm)",
+      "targetHeight": "목표 세로 (cm)",
       "targetCm": "목표 폭 (cm)",
-      "resultTitle": "추천 코·단",
+      "resultTitle": "필요 코·단",
       "resultLine": "{{cm}}cm 기준 약 {{sts}}코, {{rows}}단",
+      "resultSize": "{{width}} x {{height}}cm 기준 약 {{sts}}코, {{rows}}단",
       "ratioLine": "수축 비율 코 {{sts}} / 단 {{rows}}"
     },
     "calendar": {

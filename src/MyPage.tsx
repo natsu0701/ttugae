@@ -34,8 +34,10 @@ import {
 } from "./utils/profileStorage.ts";
 import { isValidHandle, updateActiveAccount } from "./utils/accountStorage.ts";
 import {
-  loadGaugeProfile,
-  saveGaugeProfile,
+  createGaugeEntry,
+  loadGaugeEntries,
+  saveGaugeEntries,
+  type GaugeEntry,
 } from "./utils/personalizationStorage.ts";
 import {
   loadActivityRegion,
@@ -159,16 +161,6 @@ function PatternGallery({
   );
 }
 
-function loadCompactGauge() {
-  const gauge = loadGaugeProfile();
-  return {
-    beforeSts: gauge?.beforeSts || "24",
-    beforeRows: gauge?.beforeRows || "32",
-    afterSts: gauge?.afterSts || "",
-    afterRows: gauge?.afterRows || "",
-  };
-}
-
 function ProfileInfoPanel({
   patterns,
 }: {
@@ -255,7 +247,7 @@ function ProfileInfoPanel({
         <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.profile.profileHint")}</p>
       </div>
 
-      <div className="rounded-xl border border-stone-200 bg-white p-6 md:p-8">
+      <div className="relative rounded-xl border border-stone-200 bg-white p-6 md:p-8">
         <input
           ref={avatarInputRef}
           type="file"
@@ -263,81 +255,125 @@ function ProfileInfoPanel({
           className="hidden"
           onChange={(e) => handleAvatarChange(e.target.files?.[0])}
         />
-        <div className="flex flex-col items-center">
-          <div className="relative h-28 w-28">
-            <img
-              src={avatarUrl || TTEUNI_IMAGES.chatProfile}
-              alt=""
-              className="h-full w-full rounded-full object-cover"
+        <div className="absolute right-6 top-6 z-10 flex items-center gap-2">
+          <span className="font-sans text-sm font-bold text-stone-600">
+            {t("mypage.profile.privateToggle")}
+          </span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={!isPublic}
+            aria-label={t("mypage.profile.privateToggle")}
+            onClick={() => {
+              setIsPublic((value) => !value);
+              markDirty();
+            }}
+            className={`relative h-6 w-11 shrink-0 rounded-full ${!isPublic ? "bg-coral" : "bg-stone-300"}`}
+          >
+            <span
+              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white ${
+                !isPublic ? "left-5" : "left-0.5"
+              }`}
             />
-            <button
-              type="button"
-              onClick={() => avatarInputRef.current?.click()}
-              className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-coral text-white shadow"
-              aria-label={t("mypage.profile.changeAvatar")}
-            >
-              <PencilFillIcon className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-            <span className="font-sans text-lg font-bold leading-7 text-stone-900">{nickname}</span>
-            <span className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-sm font-bold text-white">
-              Lv.{level.level}
-            </span>
-            {showEquippedBadge && equippedBadge ? (
-              <span className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2 py-0.5">
-                <img src={equippedBadge.imageSrc} alt="" className="h-5 w-5 object-contain" />
-                <span className="font-sans text-sm font-bold text-stone-700">
-                  {badgeName(t, equippedBadge.id, equippedBadge.name)}
-                </span>
-              </span>
-            ) : null}
-          </div>
-          <p className="mt-1.5 font-sans text-base leading-5 text-stone-500">@{handle}</p>
-          <p className="mt-1 font-sans text-sm leading-5 text-stone-400">{level.title}</p>
-          <div className="mt-4 w-full max-w-xl rounded-lg bg-stone-50 p-4 text-left">
-            <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
-            <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
-              <li>{t("mypage.level.criteria")}</li>
-              <li>{t("mypage.level.period", { days: LEVEL_PERIOD_DAYS })}</li>
-              <li>{t("mypage.level.score", { score: level.score.toLocaleString() })}</li>
-              <li>
-                {level.nextScore
-                  ? t("mypage.level.next", { remaining: level.remaining.toLocaleString() })
-                  : t("mypage.level.max")}
-              </li>
-            </ul>
-          </div>
-          <div className="mt-4 flex gap-4 text-base">
-            <button type="button" className="hover:text-coral" onClick={() => setFollowOpen("following")}>
-              {t("mypage.follow.followingCount", { count: following.length })}
-            </button>
-            <button type="button" className="hover:text-coral" onClick={() => setFollowOpen("followers")}>
-              {t("mypage.follow.followerCount", { count: followers.length })}
-            </button>
-          </div>
+          </button>
         </div>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <SmoothInput
-            label={t("mypage.profile.nickname")}
-            value={nickname}
-            onChange={(e) => {
-              setNickname(e.target.value);
-              markDirty();
-            }}
-          />
-          <SmoothInput
-            label={t("mypage.account.handle")}
-            value={handle}
-            onChange={(e) => {
-              setHandle(e.target.value);
-              setHandleError(isValidHandle(e.target.value) ? "" : t("mypage.account.handleInvalid"));
-              markDirty();
-            }}
-          />
+        <div className="grid gap-8 pt-8 md:grid-cols-2 md:items-start">
+          <div className="flex flex-col items-start">
+            <div className="relative h-28 w-28">
+              <img
+                src={avatarUrl || TTEUNI_IMAGES.chatProfile}
+                alt=""
+                className="h-full w-full rounded-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
+                className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-coral text-white shadow"
+                aria-label={t("mypage.profile.changeAvatar")}
+              >
+                <PencilFillIcon className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="mt-4 flex flex-wrap items-center justify-start gap-2">
+              <span className="font-sans text-lg font-bold leading-7 text-stone-900">{nickname}</span>
+              <span className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-sm font-bold text-white">
+                Lv.{level.level}
+              </span>
+              {showEquippedBadge && equippedBadge ? (
+                <span className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2 py-0.5">
+                  <img src={equippedBadge.imageSrc} alt="" className="h-5 w-5 object-contain" />
+                  <span className="font-sans text-sm font-bold text-stone-700">
+                    {badgeName(t, equippedBadge.id, equippedBadge.name)}
+                  </span>
+                </span>
+              ) : null}
+            </div>
+            <p className="mt-1 font-sans text-sm leading-5 text-stone-400">{level.title}</p>
+            <div className="mt-4 w-full rounded-lg bg-stone-50 p-4 text-left">
+              <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
+              <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
+                <li>{t("mypage.level.criteria")}</li>
+                <li>{t("mypage.level.period", { days: LEVEL_PERIOD_DAYS })}</li>
+                <li>{t("mypage.level.score", { score: level.score.toLocaleString() })}</li>
+                <li>
+                  {level.nextScore
+                    ? t("mypage.level.next", { remaining: level.remaining.toLocaleString() })
+                    : t("mypage.level.max")}
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex min-w-0 flex-col items-stretch">
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                className="rounded-xl bg-stone-50 px-4 py-3 text-left"
+                onClick={() => setFollowOpen("following")}
+              >
+                <p className="font-sans text-sm text-stone-500">{t("mypage.follow.following")}</p>
+                <p className="mt-1 font-sans text-2xl font-bold text-stone-900">{following.length}</p>
+              </button>
+              <button
+                type="button"
+                className="rounded-xl bg-stone-50 px-4 py-3 text-left"
+                onClick={() => setFollowOpen("followers")}
+              >
+                <p className="font-sans text-sm text-stone-500">{t("mypage.follow.followers")}</p>
+                <p className="mt-1 font-sans text-2xl font-bold text-stone-900">{followers.length}</p>
+              </button>
+            </div>
+            <label className="mt-6 block">
+              <span className="font-sans text-sm font-bold text-stone-500">
+                {t("mypage.profile.nickname")}
+              </span>
+              <input
+                value={nickname}
+                onChange={(e) => {
+                  setNickname(e.target.value);
+                  markDirty();
+                }}
+                className="mt-1 w-full border-0 bg-transparent p-0 font-sans text-xl font-bold text-stone-800 outline-none"
+              />
+            </label>
+            <label className="mt-4 block">
+              <span className="font-sans text-sm font-bold text-stone-500">
+                {t("mypage.account.handle")}
+              </span>
+              <input
+                value={handle}
+                onChange={(e) => {
+                  setHandle(e.target.value);
+                  setHandleError(isValidHandle(e.target.value) ? "" : t("mypage.account.handleInvalid"));
+                  markDirty();
+                }}
+                className="mt-1 w-full border-0 bg-transparent p-0 font-sans text-lg font-bold text-stone-500 outline-none"
+              />
+            </label>
+            {handleError ? <p className="mt-2 text-sm text-coral">{handleError}</p> : null}
+          </div>
         </div>
-        {handleError ? <p className="mt-2 text-sm text-coral">{handleError}</p> : null}
 
         <div className="mt-8">
           <h3 className="font-sans text-base font-bold">{t("mypage.profile.regionTitle")}</h3>
@@ -351,33 +387,6 @@ function ProfileInfoPanel({
               }}
             />
           </div>
-        </div>
-
-        <div className="mt-6 flex items-center justify-between gap-4 rounded-lg bg-stone-50 px-4 py-3">
-          <div>
-            <p className="font-sans text-base leading-5 text-stone-800">
-              {isPublic ? t("mypage.profile.publicOn") : t("mypage.profile.publicOff")}
-            </p>
-            <p className="mt-1 font-sans text-sm leading-4 text-stone-400">
-              {t("mypage.profile.publicHint")}
-            </p>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={isPublic}
-            onClick={() => {
-              setIsPublic((value) => !value);
-              markDirty();
-            }}
-            className={`relative h-6 w-11 shrink-0 rounded-full ${isPublic ? "bg-coral" : "bg-stone-300"}`}
-          >
-            <span
-              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white ${
-                isPublic ? "left-5" : "left-0.5"
-              }`}
-            />
-          </button>
         </div>
 
         <div className="mt-6 flex justify-end">
@@ -454,28 +463,113 @@ function ProfileInfoPanel({
 function GaugeTab() {
   const { t } = useTranslation();
   const { setDirty, registerSaver } = useUnsavedChanges();
-  const [gauge, setGauge] = useState(loadCompactGauge);
+  const [entries, setEntries] = useState<GaugeEntry[]>(() => loadGaugeEntries());
 
   const saveGauge = useCallback(() => {
-    saveGaugeProfile(gauge);
+    saveGaugeEntries(entries);
     setDirty(false);
-  }, [gauge, setDirty]);
+  }, [entries, setDirty]);
 
   useEffect(() => {
     registerSaver(saveGauge);
     return () => registerSaver(() => undefined);
   }, [registerSaver, saveGauge]);
 
+  const patchEntry = (id: string, next: Partial<GaugeEntry>) => {
+    setEntries((list) => list.map((item) => (item.id === id ? { ...item, ...next } : item)));
+    setDirty(true);
+  };
+
   return (
-    <div>
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-title text-gray-900">{t("mypage.profile.gaugeTitle")}</h2>
+          <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.profile.gaugeHint")}</p>
+        </div>
+        <Button
+          type="button"
+          variant="secondary"
+          className="px-4 py-2 text-base"
+          onClick={() => {
+            setEntries((list) => [...list, createGaugeEntry()]);
+            setDirty(true);
+          }}
+        >
+          {t("mypage.gauge.add")}
+        </Button>
+      </div>
+
+      {entries.length === 0 ? (
+        <p className="rounded-xl bg-stone-50 px-4 py-8 text-center font-sans text-base text-stone-400">
+          {t("mypage.gauge.empty")}
+        </p>
+      ) : (
+        <ul className="space-y-4">
+          {entries.map((entry, index) => (
+            <li key={entry.id} className="rounded-xl border border-stone-200 bg-white p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <p className="font-sans text-base font-bold text-stone-800">
+                  {t("mypage.gauge.entryTitle", { n: index + 1 })}
+                </p>
+                <button
+                  type="button"
+                  className="font-sans text-sm text-stone-400 hover:text-coral"
+                  onClick={() => {
+                    setEntries((list) => list.filter((item) => item.id !== entry.id));
+                    setDirty(true);
+                  }}
+                >
+                  {t("mypage.gauge.remove")}
+                </button>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <SmoothInput
+                  label={t("mypage.gauge.yarn")}
+                  value={entry.yarn}
+                  onChange={(e) => patchEntry(entry.id, { yarn: e.target.value })}
+                />
+                <SmoothInput
+                  label={t("mypage.gauge.needle")}
+                  value={entry.needle}
+                  onChange={(e) => patchEntry(entry.id, { needle: e.target.value })}
+                />
+                <SmoothInput
+                  label={t("mypage.profile.gaugeBeforeSts")}
+                  value={entry.beforeSts}
+                  onChange={(e) => patchEntry(entry.id, { beforeSts: e.target.value })}
+                  inputMode="numeric"
+                />
+                <SmoothInput
+                  label={t("mypage.profile.gaugeBeforeRows")}
+                  value={entry.beforeRows}
+                  onChange={(e) => patchEntry(entry.id, { beforeRows: e.target.value })}
+                  inputMode="numeric"
+                />
+                <SmoothInput
+                  label={t("mypage.profile.gaugeAfterSts")}
+                  value={entry.afterSts}
+                  onChange={(e) => patchEntry(entry.id, { afterSts: e.target.value })}
+                  inputMode="numeric"
+                />
+                <SmoothInput
+                  label={t("mypage.profile.gaugeAfterRows")}
+                  value={entry.afterRows}
+                  onChange={(e) => patchEntry(entry.id, { afterRows: e.target.value })}
+                  inputMode="numeric"
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
       <GaugeCalculator
-        gauge={gauge}
-        onChange={(next) => {
-          setGauge(next);
-          setDirty(true);
-        }}
+        defaultSts={entries[0]?.beforeSts || "24"}
+        defaultRows={entries[0]?.beforeRows || "32"}
       />
-      <div className="mt-4 flex justify-end">
+
+      <div className="flex justify-end">
         <Button type="button" className="px-5 py-2.5 text-base" onClick={saveGauge}>
           {t("mypage.profile.save")}
         </Button>
@@ -664,6 +758,7 @@ export default function MyPage({
               onCreateNew={onCreateNew}
               onOpen={onOpenPattern}
               onDelete={onDeletePattern}
+              onEditPost={onEditCommunityPost}
             />
           ) : null}
 

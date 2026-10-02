@@ -23,9 +23,15 @@ function RegionPicker({ value, onChange }: RegionPickerProps) {
   const setPart = (next: { province?: string; city?: string; dong?: string }) => {
     const p = next.province ?? parsed.province ?? KOREA_REGIONS[0].name;
     const prov = KOREA_REGIONS.find((item) => item.name === p) ?? KOREA_REGIONS[0];
-    const c = next.city ?? parsed.city ?? prov.cities[0].name;
-    const cit = prov.cities.find((item) => item.name === c) ?? prov.cities[0];
-    const d = next.dong ?? parsed.dong ?? cit.dongs[0];
+    const requestedCity = next.province ? undefined : (next.city ?? parsed.city);
+    const cit = prov.cities.find((item) => item.name === requestedCity) ?? prov.cities[0];
+    const requestedDong =
+      next.dong !== undefined
+        ? next.dong
+        : next.province || next.city !== undefined
+          ? undefined
+          : parsed.dong;
+    const d = cit.dongs.find((item) => item === requestedDong) ?? cit.dongs[0];
     onChange(formatRegion(prov.name, cit.name, d));
   };
 
