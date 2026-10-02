@@ -23,7 +23,7 @@ html {
   scroll-behavior: smooth;
   overflow-x: clip;
   font-size: 16px;
-  --nav-lace-height: clamp(5rem, calc(100vw * 297 / 3278), 12.5rem);
+  --nav-lace-height: clamp(5.5rem, calc(100vw * 297 / 2800), 13.5rem);
   --hero-mx: 0;
   --hero-my: 0;
 }
@@ -89,9 +89,24 @@ body {
 
   .nav-lace {
     height: var(--nav-lace-height);
-    background-repeat: repeat-x;
-    background-position: top center;
-    background-size: auto 100%;
+    overflow: hidden;
+    inset-inline: 0;
+    top: 0;
+  }
+
+  .nav-lace-img {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    display: block;
+    width: 132%;
+    max-width: none;
+    height: 162%;
+    object-fit: cover;
+    object-position: 47% 20%;
+    transform: translateX(-50%) translateY(-11%);
+    pointer-events: none;
+    user-select: none;
   }
 
   .nav-text-item {
@@ -211,28 +226,35 @@ body {
 
   .hero-parallax-layer {
     transform: translate3d(
-      calc(var(--hero-mx, 0) * var(--depth-x, 12) * 1px),
-      calc(var(--hero-my, 0) * var(--depth-y, 8) * 1px),
+      calc(var(--hero-mx, 0) * var(--depth-x, 36) * 1px),
+      calc(var(--hero-my, 0) * var(--depth-y, 24) * 1px),
       0
     );
     will-change: transform;
     backface-visibility: hidden;
-    transition: transform 0.18s ease-out;
+    transition: transform 0.08s linear;
   }
 
   .hero-slogan-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     color: #ffffff;
     -webkit-text-fill-color: #ffffff;
     -webkit-text-stroke: 0 transparent;
     paint-order: stroke fill;
+    transform: scale(1);
+    transform-origin: center;
     transition:
-      -webkit-text-stroke-width 0.2s ease,
-      -webkit-text-stroke-color 0.2s ease;
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      -webkit-text-stroke-width 0.22s ease,
+      -webkit-text-stroke-color 0.22s ease;
   }
 
   .hero-slogan-group:hover,
   .hero-slogan-group:focus-visible {
-    -webkit-text-stroke: 0.055em #111111;
+    transform: scale(1.12);
+    -webkit-text-stroke: 0.11em #111111;
   }
 
   .tteuni-peek {

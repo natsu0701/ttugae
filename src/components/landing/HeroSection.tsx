@@ -22,28 +22,38 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const apply = (mx: number, my: number) => {
-      section.style.setProperty("--hero-mx", mx.toFixed(4));
-      section.style.setProperty("--hero-my", my.toFixed(4));
+      const x = mx.toFixed(4);
+      const y = my.toFixed(4);
+      section.style.setProperty("--hero-mx", x);
+      section.style.setProperty("--hero-my", y);
+      document.documentElement.style.setProperty("--hero-mx", x);
+      document.documentElement.style.setProperty("--hero-my", y);
+      section.querySelectorAll<HTMLElement>(".hero-parallax-layer").forEach((el) => {
+        const dx = Number.parseFloat(el.style.getPropertyValue("--depth-x")) || 36;
+        const dy = Number.parseFloat(el.style.getPropertyValue("--depth-y")) || 24;
+        el.style.transform = `translate3d(${mx * dx}px, ${my * dy}px, 0)`;
+      });
     };
 
     const onMove = (event: MouseEvent) => {
       if (reduced.matches) return;
       const rect = section.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
-      const mx = (event.clientX - rect.left) / rect.width - 0.5;
-      const my = (event.clientY - rect.top) / rect.height - 0.5;
+      const mx = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - 0.5) * 2.4));
+      const my = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - 0.5) * 2.4));
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
-      frameRef.current = requestAnimationFrame(() => apply(mx * 2, my * 2));
+      frameRef.current = requestAnimationFrame(() => apply(mx, my));
     };
 
     const onLeave = () => apply(0, 0);
 
-    section.addEventListener("mousemove", onMove);
-    section.addEventListener("mouseleave", onLeave);
+    window.addEventListener("mousemove", onMove, { passive: true });
+    document.addEventListener("mouseleave", onLeave);
     return () => {
-      section.removeEventListener("mousemove", onMove);
-      section.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseleave", onLeave);
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
+      apply(0, 0);
     };
   }, []);
 
@@ -75,16 +85,20 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
               </span>
 
               <span
-                className="hero-slogan-group hero-parallax-layer mt-3 flex cursor-pointer flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] sm:text-5xl md:mt-4 md:gap-1 md:text-6xl lg:text-7xl xl:text-7xl 2xl:text-[clamp(3rem,4vw,4.5rem)]"
+                className="hero-parallax-layer mt-3 block overflow-visible"
                 style={{
-                  fontFamily: "Mungyeong-Gamhong-Apple, sans-serif",
-                  ["--depth-x" as string]: "10",
-                  ["--depth-y" as string]: "6",
+                  ["--depth-x" as string]: "18",
+                  ["--depth-y" as string]: "12",
                 }}
-                tabIndex={0}
               >
-                <span className="block overflow-visible py-0.5">{t("landing.heroLine1")}</span>
-                <span className="block overflow-visible py-0.5">{t("landing.heroLine2")}</span>
+                <span
+                  className="hero-slogan-group flex cursor-pointer flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] sm:text-5xl md:gap-1 md:text-6xl lg:text-7xl xl:text-7xl 2xl:text-[clamp(3rem,4vw,4.5rem)]"
+                  style={{ fontFamily: "Mungyeong-Gamhong-Apple, sans-serif" }}
+                  tabIndex={0}
+                >
+                  <span className="block overflow-visible py-0.5">{t("landing.heroLine1")}</span>
+                  <span className="block overflow-visible py-0.5">{t("landing.heroLine2")}</span>
+                </span>
               </span>
             </h1>
           </Reveal>
