@@ -2,6 +2,7 @@ import type { NeedleSpec } from "../data/knittingMetadataLibrary.ts";
 import { parseNeedleFromText } from "../data/knittingMetadataLibrary.ts";
 
 const GAUGE_KEY = "ttugae.settings.gauge.v1";
+const GAUGE_LIST_KEY = "ttugae.settings.gaugeList.v1";
 const YARN_KEY = "ttugae.settings.yarnInventory.v1";
 const NEEDLE_KEY = "ttugae.settings.needleInventory.v1";
 const TASTE_KEY = "ttugae.settings.taste.v1";
@@ -13,6 +14,12 @@ export type GaugeProfile = {
   beforeRows: string;
   afterSts: string;
   afterRows: string;
+};
+
+export type GaugeEntry = GaugeProfile & {
+  id: string;
+  yarn: string;
+  needle: string;
 };
 
 export type NeedleStock = NeedleSpec & { id: string };
@@ -54,14 +61,78 @@ function readJson<T>(key: string, fallback: T): T {
   }
 }
 
+function isGaugeProfile(value: unknown): value is GaugeProfile {
+  if (!value || typeof value !== "object") return false;
+  const item = value as GaugeProfile;
+  return (
+    typeof item.beforeSts === "string" &&
+    typeof item.beforeRows === "string" &&
+    typeof item.afterSts === "string" &&
+    typeof item.afterRows === "string"
+  );
+}
+
+export function createGaugeEntry(partial?: Partial<GaugeEntry>): GaugeEntry {
+  return {
+    id: partial?.id || `gauge-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    yarn: partial?.yarn ?? "",
+    needle: partial?.needle ?? "",
+    beforeSts: partial?.beforeSts ?? "24",
+    beforeRows: partial?.beforeRows ?? "32",
+    afterSts: partial?.afterSts ?? "",
+    afterRows: partial?.afterRows ?? "",
+  };
+}
+
 export function loadGaugeProfile(): GaugeProfile | null {
   const data = readJson<GaugeProfile | null>(GAUGE_KEY, null);
-  if (!data) return null;
+  if (!isGaugeProfile(data)) return null;
   return data;
 }
 
 export function saveGaugeProfile(profile: GaugeProfile): void {
   localStorage.setItem(GAUGE_KEY, JSON.stringify(profile));
+}
+
+function profileFromEntry(entry: GaugeEntry): GaugeProfile {
+  return {
+    beforeSts: entry.beforeSts,
+    beforeRows: entry.beforeRows,
+    afterSts: entry.afterSts,
+    afterRows: entry.afterRows,
+  };
+}
+
+export function loadGaugeEntries(): GaugeEntry[] {
+  const list = readJson<unknown>(GAUGE_LIST_KEY, []);
+  if (Array.isArray(list) && list.length > 0) {
+    return list
+      .filter((item): item is GaugeEntry => {
+        if (!isGaugeProfile(item) || typeof item !== "object" || item == null) return false;
+        const entry = item as GaugeEntry;
+        return typeof entry.id === "string";
+      })
+      .map((item) =>
+        createGaugeEntry({
+          id: item.id,
+          yarn: typeof item.yarn === "string" ? item.yarn : "",
+          needle: typeof item.needle === "string" ? item.needle : "",
+          beforeSts: item.beforeSts,
+          beforeRows: item.beforeRows,
+          afterSts: item.afterSts,
+          afterRows: item.afterRows,
+        }),
+      );
+  }
+  const legacy = loadGaugeProfile();
+  if (legacy) return [createGaugeEntry({ id: "gauge-legacy", ...legacy })];
+  return [createGaugeEntry({ id: "gauge-default" })];
+}
+
+export function saveGaugeEntries(entries: GaugeEntry[]): void {
+  localStorage.setItem(GAUGE_LIST_KEY, JSON.stringify(entries));
+  const first = entries[0];
+  if (first) saveGaugeProfile(profileFromEntry(first));
 }
 
 export function loadYarnInventory(): YarnStock[] {

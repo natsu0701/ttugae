@@ -75,7 +75,8 @@
       "publicToggle": "プロフィール公開",
       "publicOn": "プロフィール公開",
       "publicOff": "非公開 (Private)",
-      "publicHint": "非公開にすると他の人にはプロフィールが見えません。"
+      "publicHint": "非公開にすると他の人にはプロフィールが見えません。",
+      "privateToggle": "非公開に切替"
     },
     "patterns": {
       "title": "マイ編み図",
@@ -101,7 +102,8 @@
     },
     "projects": {
       "title": "マイプロジェクト",
-      "subtitle": "進行中の編み図と完成作品を分けて管理します。",
+      "subtitle": "進行中のプロジェクトと完成作品をまとめて確認します。",
+      "create": "プロジェクト作成",
       "inProgress": "進行中",
       "completed": "完成作品",
       "completeToggle": "完成チェック",
@@ -244,14 +246,27 @@
     },
     "region": {
       "province": "道 / 市",
-      "city": "市 / 区",
-      "dong": "洞",
-      "searchPh": "洞名で検索"
+      "city": "市 / 郡 / 区",
+      "dong": "邑 / 面 / 洞",
+      "searchPh": "市郡区や邑面洞名で検索"
     },
     "gauge": {
+      "add": "追加",
+      "remove": "削除",
+      "empty": "保存したゲージ (Gauge) はまだありません。追加で登録してください。",
+      "entryTitle": "ゲージ (Gauge) {{n}}",
+      "yarn": "糸の種類",
+      "needle": "針のサイズ",
+      "calculatorTitle": "ゲージ (Gauge) 計算機",
+      "calculatorHint": "10cmスワッチの目・段と目標の縦横を入れると、必要な目・段がすぐに出ます。",
+      "swatchSts": "10cmの目",
+      "swatchRows": "10cmの段",
+      "targetWidth": "目標の横 (cm)",
+      "targetHeight": "目標の縦 (cm)",
       "targetCm": "目標幅 (cm)",
-      "resultTitle": "おすすめ目数",
+      "resultTitle": "必要な目・段",
       "resultLine": "{{cm}}cm あたり 約{{sts}}目、{{rows}}段",
+      "resultSize": "{{width}} x {{height}}cm あたり 約{{sts}}目、{{rows}}段",
       "ratioLine": "収縮比 目 {{sts}} / 段 {{rows}}"
     },
     "calendar": {

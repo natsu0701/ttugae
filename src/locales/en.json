@@ -75,7 +75,8 @@
       "publicToggle": "Public profile",
       "publicOn": "Public profile",
       "publicOff": "Private",
-      "publicHint": "A private profile is hidden from other knitters."
+      "publicHint": "A private profile is hidden from other knitters.",
+      "privateToggle": "Switch to private"
     },
     "patterns": {
       "title": "My Patterns",
@@ -101,7 +102,8 @@
     },
     "projects": {
       "title": "My projects",
-      "subtitle": "Keep in-progress charts separate from finished work.",
+      "subtitle": "See in-progress projects and finished work in one place.",
+      "create": "Create project",
       "inProgress": "In progress",
       "completed": "Finished",
       "completeToggle": "Mark complete",
@@ -244,14 +246,27 @@
     },
     "region": {
       "province": "Province / city",
-      "city": "City / district",
-      "dong": "Neighborhood",
-      "searchPh": "Search neighborhood"
+      "city": "City / county / district",
+      "dong": "Town / township / neighborhood",
+      "searchPh": "Search city, county, or neighborhood"
     },
     "gauge": {
+      "add": "Add",
+      "remove": "Delete",
+      "empty": "No saved gauges yet. Tap Add to register one.",
+      "entryTitle": "Gauge {{n}}",
+      "yarn": "Yarn type",
+      "needle": "Needle size",
+      "calculatorTitle": "Gauge calculator",
+      "calculatorHint": "Enter 10cm swatch stitches and rows plus the target size to get the stitches and rows you need.",
+      "swatchSts": "Stitches in 10cm",
+      "swatchRows": "Rows in 10cm",
+      "targetWidth": "Target width (cm)",
+      "targetHeight": "Target height (cm)",
       "targetCm": "Target width (cm)",
-      "resultTitle": "Recommended stitches",
+      "resultTitle": "Stitches needed",
       "resultLine": "About {{sts}} sts, {{rows}} rows for {{cm}}cm",
+      "resultSize": "About {{sts}} sts, {{rows}} rows for {{width}} x {{height}}cm",
       "ratioLine": "Shrink ratio sts {{sts}} / rows {{rows}}"
     },
     "calendar": {
