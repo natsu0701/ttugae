@@ -55,7 +55,7 @@ export function finishedImageUrl(filename: string) {
   return assetUrl(`/images/${encodeURI(filename)}`);
 }
 
-export const COMMUNITY_PATTERNS: CommunityPattern[] = [
+const BASE_COMMUNITY_PATTERNS: CommunityPattern[] = [
   {
     id: "cp-1",
     title: "초보자용 체리 키링",
@@ -385,6 +385,31 @@ export const COMMUNITY_TABS: { id: CommunityCategory }[] = [
   { id: "showcase" },
   { id: "offline" },
 ];
+
+function expandCommunityPatterns(
+  list: CommunityPattern[],
+  minCount: number,
+): CommunityPattern[] {
+  if (list.length >= minCount) return list;
+  const extra: CommunityPattern[] = [];
+  let n = 0;
+  while (list.length + extra.length < minCount) {
+    const src = list[n % list.length];
+    const round = Math.floor(n / list.length) + 2;
+    extra.push({
+      ...src,
+      id: `${src.id}-g${round}`,
+      title: `${src.title} ${round}`,
+    });
+    n += 1;
+  }
+  return [...list, ...extra];
+}
+
+export const COMMUNITY_PATTERNS: CommunityPattern[] = expandCommunityPatterns(
+  BASE_COMMUNITY_PATTERNS,
+  48,
+);
 
 export function getCommunityPattern(id: string) {
   try {

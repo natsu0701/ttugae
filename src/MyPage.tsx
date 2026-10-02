@@ -15,6 +15,7 @@ import KnitCalendar from "./components/mypage/KnitCalendar.tsx";
 import RegionPicker from "./components/mypage/RegionPicker.tsx";
 import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
 import Button from "./components/ui/Button.tsx";
+import PagedCardGrid from "./components/ui/PagedCardGrid.tsx";
 import {
   buildBadgeUnlocks,
   computeAchievementStats,
@@ -148,16 +149,17 @@ function PatternGallery({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      {items.map((pattern) => (
+    <PagedCardGrid
+      items={items}
+      getKey={(pattern) => pattern.id}
+      renderItem={(pattern) => (
         <PatternCard
-          key={pattern.id}
           pattern={pattern}
           onImport={onImport}
           showImportOverlay
         />
-      ))}
-    </div>
+      )}
+    />
   );
 }
 

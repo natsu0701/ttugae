@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
+import PagedCardGrid from "../ui/PagedCardGrid.tsx";
 import type { StoredPattern } from "../../types/storedPattern.ts";
 import {
   addCollection,
@@ -199,9 +200,12 @@ export default function MyPatternsPanel({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {visible.map((pattern) => (
-            <article key={pattern.id} className="flex flex-col gap-3 rounded-xl bg-gray-50 p-4">
+        <PagedCardGrid
+          items={visible}
+          getKey={(pattern) => pattern.id}
+          resetKey={`${folderId}:${query}`}
+          renderItem={(pattern) => (
+            <article className="flex h-full flex-col gap-3 rounded-xl bg-gray-50 p-4">
               <button
                 type="button"
                 onClick={() => onOpen(pattern.id)}
@@ -254,8 +258,8 @@ export default function MyPatternsPanel({
                 </Button>
               </div>
             </article>
-          ))}
-        </div>
+          )}
+        />
       )}
     </div>
   );

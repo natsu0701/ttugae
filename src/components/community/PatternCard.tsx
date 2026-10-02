@@ -106,7 +106,7 @@ function PatternCard({
 
   return (
     <article
-      className="group overflow-hidden rounded-xl bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
+      className="group h-full overflow-hidden rounded-xl bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
       onPointerEnter={() => setHoverPhoto(true)}
       onPointerLeave={() => setHoverPhoto(false)}
     >

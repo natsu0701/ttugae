@@ -613,6 +613,8 @@
     "cancel": "취소",
     "close": "닫기",
     "save": "저장",
+    "pagination": "페이지 목록",
+    "pageN": "{{n}}페이지",
     "me": "나",
     "back": "돌아가기",
     "send": "전송",

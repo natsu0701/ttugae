@@ -26,6 +26,7 @@ import {
   withReservationState,
   type HubMeetup,
 } from "../../data/hubMeetups.ts";
+import PagedCardGrid from "../ui/PagedCardGrid.tsx";
 
 type OfflineEvent = {
   id: string;
@@ -600,8 +601,10 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               </span>
               <span className="font-sans text-sm text-stone-400">{t("offline.meetupRegion")}</span>
             </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {meetups.map((meetRaw) => {
+            <PagedCardGrid
+              items={meetups}
+              getKey={(meetRaw) => meetRaw.id}
+              renderItem={(meetRaw) => {
                 const meet = localizedMeetup(t, meetRaw);
                 const isFull = meet.currentMembers >= meet.maxCapacity;
                 const percent = Math.min(
@@ -610,8 +613,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 );
                 return (
                   <div
-                    key={meet.id}
-                    className={`relative flex flex-col justify-between rounded-xl bg-white p-5 ${
+                    className={`relative flex h-full flex-col justify-between rounded-xl bg-white p-5 ${
                       meet.isJoined ? "ring-1 ring-coral/20 shadow-sm" : "hover:shadow-md"
                     }`}
                   >
@@ -683,8 +685,8 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     </button>
                   </div>
                 );
-              })}
-            </div>
+              }}
+            />
           </div>
         ) : null}
 

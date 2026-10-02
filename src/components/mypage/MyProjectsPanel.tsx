@@ -10,6 +10,7 @@ import {
 } from "../../utils/patternMetaStorage.ts";
 import { tabButtonBase, tabButtonClass } from "../ui/tabButtonStyles.ts";
 import FinishedWorksGallery from "./FinishedWorksGallery.tsx";
+import PagedCardGrid from "../ui/PagedCardGrid.tsx";
 
 function formatDate(ts: number) {
   const d = new Date(ts);
@@ -67,9 +68,12 @@ export default function MyProjectsPanel({
       );
     }
     return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {items.map((pattern) => (
-          <article key={pattern.id} className="rounded-xl border border-stone-200 bg-white p-4">
+      <PagedCardGrid
+        items={items}
+        getKey={(pattern) => pattern.id}
+        resetKey={completed ? "completed" : "progress"}
+        renderItem={(pattern) => (
+          <article className="flex h-full flex-col rounded-xl border border-stone-200 bg-white p-4">
             <button type="button" className="w-full text-left" onClick={() => onOpen(pattern.id)}>
               <h3 className="truncate font-sans text-lg font-bold text-gray-900">{pattern.title}</h3>
               <p className="mt-1 font-sans text-sm text-gray-500">{formatDate(pattern.updatedAt)}</p>
@@ -110,8 +114,8 @@ export default function MyProjectsPanel({
               </Button>
             </div>
           </article>
-        ))}
-      </div>
+        )}
+      />
     );
   };
 
