@@ -208,7 +208,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
                   <img
                     src={msg.imageUrl}
                     alt=""
-                    className="max-h-40 w-full object-cover"
+                    className="max-h-32 w-full object-cover"
                   />
                 ) : null}
                 {msg.text ? (
