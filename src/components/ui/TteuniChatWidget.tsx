@@ -76,7 +76,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
         }
       }
 
-      const wait = Math.max(0, 720 - (Date.now() - started));
+      const wait = Math.max(0, 1400 - (Date.now() - started));
       await new Promise((resolve) => window.setTimeout(resolve, wait));
       setMessages((prev) => [...prev, { id: `t-${Date.now()}`, role: "tteuni", text: reply }]);
       setIsSearching(false);
@@ -189,12 +189,12 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
                 setInput(card.prompt);
                 void ask(card.prompt);
               }}
-              className="rounded-xl border border-stone-200 bg-stone-50 px-2.5 py-2 text-left transition-colors hover:border-coral hover:bg-white disabled:opacity-60"
+              className="flex h-full min-h-[5rem] flex-col rounded-xl border border-stone-200 bg-stone-50 px-2.5 py-2 text-left transition-colors hover:border-coral hover:bg-white disabled:opacity-60"
             >
-              <span className="block font-sans text-xs font-bold leading-snug text-stone-800 md:text-sm">
+              <span className="block break-keep font-sans text-xs font-bold leading-snug text-stone-800 md:text-sm">
                 {card.title}
               </span>
-              <span className="mt-1 block font-seoyun text-xs leading-snug text-stone-500">
+              <span className="mt-1 block break-keep font-seoyun text-xs leading-snug text-stone-500">
                 {card.prompt}
               </span>
             </button>
