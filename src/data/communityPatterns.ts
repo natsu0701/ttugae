@@ -386,30 +386,22 @@ export const COMMUNITY_TABS: { id: CommunityCategory }[] = [
   { id: "offline" },
 ];
 
-function expandCommunityPatterns(
-  list: CommunityPattern[],
-  minCount: number,
-): CommunityPattern[] {
-  if (list.length >= minCount) return list;
-  const extra: CommunityPattern[] = [];
-  let n = 0;
-  while (list.length + extra.length < minCount) {
-    const src = list[n % list.length];
-    const round = Math.floor(n / list.length) + 2;
-    extra.push({
-      ...src,
-      id: `${src.id}-g${round}`,
-      title: `${src.title} ${round}`,
-    });
-    n += 1;
-  }
-  return [...list, ...extra];
-}
+export const COMMUNITY_PATTERNS: CommunityPattern[] = BASE_COMMUNITY_PATTERNS;
 
-export const COMMUNITY_PATTERNS: CommunityPattern[] = expandCommunityPatterns(
-  BASE_COMMUNITY_PATTERNS,
-  48,
-);
+export function uniqueCommunityPatterns(list: CommunityPattern[]): CommunityPattern[] {
+  const seenIds = new Set<string>();
+  const seenLooks = new Set<string>();
+  const unique: CommunityPattern[] = [];
+  for (const pattern of list) {
+    if (seenIds.has(pattern.id)) continue;
+    const look = `${pattern.finishedImage}\0${pattern.title.replace(/\s+\d+$/, "")}`;
+    if (seenLooks.has(look)) continue;
+    seenIds.add(pattern.id);
+    seenLooks.add(look);
+    unique.push(pattern);
+  }
+  return unique;
+}
 
 export function getCommunityPattern(id: string) {
   try {
