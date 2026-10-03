@@ -159,7 +159,7 @@ export default function SettingsPanel() {
   const yarnRows = useMemo(() => yarns, [yarns]);
 
   return (
-    <div className="max-w-lg">
+    <div className="w-full">
       <h2 className="font-sans text-2xl font-bold text-gray-900">
         {t("mypage.settings.title")}
       </h2>

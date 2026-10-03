@@ -18,6 +18,7 @@ export type GaugeProfile = {
 
 export type GaugeEntry = GaugeProfile & {
   id: string;
+  title: string;
   yarn: string;
   needle: string;
 };
@@ -75,6 +76,7 @@ function isGaugeProfile(value: unknown): value is GaugeProfile {
 export function createGaugeEntry(partial?: Partial<GaugeEntry>): GaugeEntry {
   return {
     id: partial?.id || `gauge-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    title: partial?.title ?? "",
     yarn: partial?.yarn ?? "",
     needle: partial?.needle ?? "",
     beforeSts: partial?.beforeSts ?? "24",
@@ -115,6 +117,7 @@ export function loadGaugeEntries(): GaugeEntry[] {
       .map((item) =>
         createGaugeEntry({
           id: item.id,
+          title: typeof item.title === "string" ? item.title : "",
           yarn: typeof item.yarn === "string" ? item.yarn : "",
           needle: typeof item.needle === "string" ? item.needle : "",
           beforeSts: item.beforeSts,

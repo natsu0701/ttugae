@@ -13,6 +13,7 @@ import {
   COMMUNITY_PATTERNS,
   COMMUNITY_TABS,
   getCommunityPattern,
+  uniqueCommunityPatterns,
   type CommunityCategory,
   type CommunityPattern,
 } from "./data/communityPatterns.ts";
@@ -123,7 +124,7 @@ export default function Community({
   }, []);
 
   const allPatterns = useMemo(
-    () => [...sharedPatterns, ...COMMUNITY_PATTERNS],
+    () => uniqueCommunityPatterns([...sharedPatterns, ...COMMUNITY_PATTERNS]),
     [sharedPatterns],
   );
 
@@ -201,7 +202,7 @@ export default function Community({
     if (activeTab === "best") {
       ranked = [...allPatterns]
         .filter((p) => p.category === "best")
-        .sort((a, b) => b.likes - a.likes);
+        .sort((a, b) => b.likes - a.likes || a.id.localeCompare(b.id));
     } else {
       const base =
         activeTab === "all"

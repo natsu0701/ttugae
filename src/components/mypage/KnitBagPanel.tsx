@@ -62,7 +62,7 @@ function KnitBagPanel() {
     () =>
       gauges.map((entry, index) => ({
         id: entry.id,
-        title: [entry.yarn, entry.needle].filter(Boolean).join(" / ") || t("mypage.gauge.entryTitle", { n: index + 1 }),
+        title: entry.title.trim() || [entry.yarn, entry.needle].filter(Boolean).join(" / ") || t("mypage.gauge.entryTitle", { n: index + 1 }),
         rows: [
           { label: t("mypage.profile.gaugeBeforeSts"), value: entry.beforeSts || "-" },
           { label: t("mypage.profile.gaugeBeforeRows"), value: entry.beforeRows || "-" },

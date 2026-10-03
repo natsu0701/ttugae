@@ -11,6 +11,10 @@ import {
 import { tabButtonBase, tabButtonClass } from "../ui/tabButtonStyles.ts";
 import FinishedWorksGallery from "./FinishedWorksGallery.tsx";
 import PagedCardGrid from "../ui/PagedCardGrid.tsx";
+import {
+  loadMyFinishedWorks,
+  MY_FINISHED_UPDATED_EVENT,
+} from "../../utils/myFinishedWorksStore.ts";
 
 function formatDate(ts: number) {
   const d = new Date(ts);
@@ -41,7 +45,11 @@ export default function MyProjectsPanel({
   useEffect(() => {
     const refresh = () => setTick((n) => n + 1);
     window.addEventListener(PATTERN_META_CHANGED_EVENT, refresh);
-    return () => window.removeEventListener(PATTERN_META_CHANGED_EVENT, refresh);
+    window.addEventListener(MY_FINISHED_UPDATED_EVENT, refresh);
+    return () => {
+      window.removeEventListener(PATTERN_META_CHANGED_EVENT, refresh);
+      window.removeEventListener(MY_FINISHED_UPDATED_EVENT, refresh);
+    };
   }, []);
 
   const grouped = useMemo(() => {
@@ -59,8 +67,14 @@ export default function MyProjectsPanel({
     };
   }, [patterns, tick]);
 
-  const renderList = (items: StoredPattern[], completed: boolean) => {
+  const finishedGalleryCount = useMemo(() => {
+    void tick;
+    return loadMyFinishedWorks().length;
+  }, [tick]);
+
+  const renderList = (items: StoredPattern[], completed: boolean, showEmpty: boolean) => {
     if (items.length === 0) {
+      if (!showEmpty) return null;
       return (
         <p className="rounded-xl bg-stone-50 px-4 py-8 text-center font-sans text-base text-stone-400">
           {completed ? t("mypage.projects.completedEmpty") : t("mypage.projects.progressEmpty")}
@@ -81,16 +95,16 @@ export default function MyProjectsPanel({
                 {pattern.grid[0]?.length ?? pattern.gridSize}x{pattern.grid.length}
               </p>
             </button>
-            <label className="mt-3 flex items-center gap-2 font-sans text-base text-stone-700">
-              <input
-                type="checkbox"
-                checked={completed}
-                onChange={(e) =>
-                  setPatternStatus(pattern.id, e.target.checked ? "completed" : "in-progress")
-                }
-              />
-              {t("mypage.projects.completeToggle")}
-            </label>
+            <Button
+              type="button"
+              variant={completed ? "ghost" : "secondary"}
+              className="mt-3 w-full py-2 text-base"
+              onClick={() =>
+                setPatternStatus(pattern.id, completed ? "in-progress" : "completed")
+              }
+            >
+              {completed ? t("mypage.projects.completeUndo") : t("mypage.projects.completeToggle")}
+            </Button>
             <div className="mt-3 flex gap-2">
               <Button
                 type="button"
@@ -118,6 +132,9 @@ export default function MyProjectsPanel({
       />
     );
   };
+
+  const hasCompletedProjects = grouped.completed.length > 0;
+  const hasFinishedWorks = finishedGalleryCount > 0;
 
   return (
     <div className="space-y-8">
@@ -149,21 +166,30 @@ export default function MyProjectsPanel({
       </div>
 
       {view === "progress" ? (
-        <section>{renderList(grouped.inProgress, false)}</section>
+        <section>{renderList(grouped.inProgress, false, true)}</section>
       ) : (
         <div className="space-y-8">
-          <section>
-            <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
-              {t("mypage.projects.completed")}
-            </h3>
-            {renderList(grouped.completed, true)}
-          </section>
-          <section>
-            <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
-              {t("mypage.finishedTitle")}
-            </h3>
-            <FinishedWorksGallery onEditPost={onEditPost} />
-          </section>
+          {hasCompletedProjects ? (
+            <section>
+              <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
+                {t("mypage.projects.completed")}
+              </h3>
+              {renderList(grouped.completed, true, false)}
+            </section>
+          ) : null}
+          {hasFinishedWorks ? (
+            <section>
+              <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
+                {t("mypage.finishedTitle")}
+              </h3>
+              <FinishedWorksGallery onEditPost={onEditPost} />
+            </section>
+          ) : null}
+          {!hasCompletedProjects && !hasFinishedWorks ? (
+            <p className="rounded-xl bg-stone-50 px-4 py-8 text-center font-sans text-base text-stone-400">
+              {t("mypage.projects.completedEmpty")}
+            </p>
+          ) : null}
         </div>
       )}
     </div>
