@@ -92,7 +92,7 @@
       "addFolder": "コレクション追加",
       "deleteFolder": "コレクション削除",
       "moveFolder": "コレクションへ移動",
-      "openAr": "カメラで編む"
+      "openAr": "カメラオーバーレイ"
     },
     "bag": {
       "title": "編み物バッグ",
@@ -1176,21 +1176,25 @@
     "discard": "保存しない"
   },
   "ar": {
-    "demoTitle": "サンプル編み図",
-    "subtitle": "カメラに編み図を重ねて目を追います。",
+    "title": "カメラオーバーレイ",
+    "subtitle": "背景が透明な動画を入れるとカメラの上に重ねます。",
     "cameraLabel": "背面カメラ",
+    "overlayLabel": "透明動画オーバーレイ",
     "cameraStarting": "カメラを起動しています。",
     "cameraBlocked": "カメラの許可が必要です。ブラウザ設定で許可してから再試行してください。",
     "cameraMissing": "使えるカメラが見つかりませんでした。",
     "cameraUnsupported": "このブラウザはカメラプレビューに対応していません。",
     "cameraInsecure": "カメラは HTTPS または localhost でのみ起動できます。",
     "enableCamera": "カメラをオン",
-    "opacity": "編み図の濃度",
+    "opacity": "動画の濃度",
     "opacityFaint": "薄く",
     "opacitySolid": "濃く",
-    "nextStitch": "次の目",
-    "progress": "{{current}} / {{total}}目",
-    "stitchCoord": "{{row}}段 {{col}}目",
-    "noStitches": "表示できる目がありません"
+    "addVideo": "動画を入れる",
+    "replaceVideo": "動画を差し替え",
+    "removeVideo": "動画を外す",
+    "playVideo": "再生",
+    "pauseVideo": "一時停止",
+    "dropHint": "ここに動画をドロップ",
+    "videoTypeError": "動画ファイルのみ追加できます。アルファ付き WebM または HEVC MOV を推奨します。"
   }
 }

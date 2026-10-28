@@ -92,7 +92,7 @@
       "addFolder": "Add collection",
       "deleteFolder": "Delete collection",
       "moveFolder": "Move to collection",
-      "openAr": "Knit with camera"
+      "openAr": "Camera overlay"
     },
     "bag": {
       "title": "Knit bag",
@@ -1176,21 +1176,25 @@
     "discard": "Don't save"
   },
   "ar": {
-    "demoTitle": "Sample chart",
-    "subtitle": "Overlay the chart on the camera and follow each stitch.",
+    "title": "Camera overlay",
+    "subtitle": "Add a video with a transparent background to layer it on the camera.",
     "cameraLabel": "Rear camera",
+    "overlayLabel": "Transparent video overlay",
     "cameraStarting": "Turning the camera on.",
     "cameraBlocked": "Camera access is required. Allow the camera in browser settings, then try again.",
     "cameraMissing": "No camera was found.",
     "cameraUnsupported": "This browser cannot show a live camera preview.",
     "cameraInsecure": "The camera can only start on HTTPS or localhost.",
     "enableCamera": "Turn camera on",
-    "opacity": "Chart opacity",
+    "opacity": "Video opacity",
     "opacityFaint": "Faint",
     "opacitySolid": "Solid",
-    "nextStitch": "Next stitch",
-    "progress": "{{current}} / {{total}} sts",
-    "stitchCoord": "Row {{row}}, stitch {{col}}",
-    "noStitches": "No stitches to highlight"
+    "addVideo": "Add video",
+    "replaceVideo": "Replace video",
+    "removeVideo": "Remove video",
+    "playVideo": "Play",
+    "pauseVideo": "Pause",
+    "dropHint": "Drop a video here",
+    "videoTypeError": "Only video files can be added. Prefer WebM or HEVC MOV with an alpha channel."
   }
 }

@@ -109,7 +109,7 @@ type MyPageProps = {
   patterns: StoredPattern[];
   onCreateNew: () => void;
   onOpenPattern: (id: string) => void;
-  onOpenAr?: (id: string) => void;
+  onOpenAr?: () => void;
   onDeletePattern: (id: string) => void;
   onEditCommunityPost: (pattern: CommunityPattern) => void;
   onImportCommunity: (pattern: CommunityPattern) => void;

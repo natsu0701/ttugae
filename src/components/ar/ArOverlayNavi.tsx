@@ -1,28 +1,21 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { stitchSymbol } from "../../data/stitchSymbols.ts";
-import { symbolColorForBackground } from "../../utils/colorContrast.ts";
 import {
-  buildStitchPath,
-  loadStitchIndex,
-  nextStitchIndex,
-  persistStitchIndex,
-} from "../../utils/arStitchGuide.ts";
-import { EDITOR_COLOR_HEX, type EditorCell } from "../../utils/patternGrid.ts";
+  clearOverlayVideo,
+  isOverlayVideoFile,
+  loadOverlayVideo,
+  saveOverlayVideo,
+} from "../../utils/arOverlayVideo.ts";
 import BackButton from "../ui/BackButton.tsx";
 import { CameraFillIcon } from "../icons/FillIcons.tsx";
 
 export type ArOverlayNaviProps = {
-  title: string;
-  grid: EditorCell[][];
-  colorMap?: Record<string, string>;
-  patternId?: string;
   onExit: () => void;
 };
 
 type CameraStatus = "starting" | "live" | "blocked" | "missing" | "insecure" | "unsupported";
 
-const DEFAULT_OPACITY = 0.55;
+const DEFAULT_OPACITY = 1;
 
 function cameraErrorStatus(error: unknown): CameraStatus {
   const name =
@@ -34,101 +27,34 @@ function cameraErrorStatus(error: unknown): CameraStatus {
   return "missing";
 }
 
-function paintPatternOverlay(
-  canvas: HTMLCanvasElement,
-  cells: EditorCell[][],
-  colorMap: Record<string, string>,
-) {
-  const rows = cells.length;
-  const cols = cells[0]?.length ?? 0;
-  if (rows === 0 || cols === 0) return;
-
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const cssW = Math.max(1, canvas.clientWidth);
-  const cssH = Math.max(1, canvas.clientHeight);
-  const pixelW = Math.round(cssW * dpr);
-  const pixelH = Math.round(cssH * dpr);
-  if (canvas.width !== pixelW) canvas.width = pixelW;
-  if (canvas.height !== pixelH) canvas.height = pixelH;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.clearRect(0, 0, cssW, cssH);
-
-  const cellW = cssW / cols;
-  const cellH = cssH / rows;
-  const line = cellW > 10 ? 1 : 0.5;
-  const fontPx = Math.min(cellW * 0.62, cellH * 0.62, 14);
-
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.font = `600 ${fontPx}px ui-sans-serif, system-ui, sans-serif`;
-
-  for (let r = 0; r < rows; r += 1) {
-    for (let c = 0; c < cols; c += 1) {
-      const cell = cells[r][c];
-      const x = c * cellW;
-      const y = r * cellH;
-      const empty = cell.stitchId === "empty";
-      const bg = colorMap[cell.colorId] ?? "#FFFFFF";
-
-      if (!empty) {
-        ctx.globalAlpha = 0.92;
-        ctx.fillStyle = bg;
-        ctx.fillRect(x, y, cellW, cellH);
-        ctx.globalAlpha = 1;
-        const symbol = stitchSymbol(cell.stitchId);
-        if (symbol && fontPx >= 5) {
-          ctx.fillStyle = symbolColorForBackground(bg);
-          ctx.fillText(symbol, x + cellW / 2, y + cellH / 2 + 0.2);
-        }
-      }
-
-      ctx.strokeStyle = "rgba(255,255,255,0.38)";
-      ctx.lineWidth = line;
-      ctx.strokeRect(x + line / 2, y + line / 2, cellW - line, cellH - line);
-    }
-  }
+function prepareOverlayVideo(video: HTMLVideoElement) {
+  video.setAttribute("playsinline", "true");
+  video.setAttribute("webkit-playsinline", "true");
+  video.muted = true;
+  video.playsInline = true;
+  video.loop = true;
+  video.autoplay = true;
 }
 
-export default function ArOverlayNavi({
-  title,
-  grid,
-  colorMap,
-  patternId = "ar-demo",
-  onExit,
-}: ArOverlayNaviProps) {
+export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const { t } = useTranslation();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cameraRef = useRef<HTMLVideoElement>(null);
+  const overlayRef = useRef<HTMLVideoElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const overlayUrlRef = useRef<string | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [overlayOpacity, setOverlayOpacity] = useState(DEFAULT_OPACITY);
-
-  const mergedColorMap = useMemo(
-    () => ({ ...EDITOR_COLOR_HEX, ...colorMap }),
-    [colorMap],
-  );
-  const path = useMemo(() => buildStitchPath(grid), [grid]);
-  const rows = grid.length;
-  const cols = grid[0]?.length ?? 0;
-  const [stitchIndex, setStitchIndex] = useState(() =>
-    loadStitchIndex(patternId, path.length),
-  );
-
-  useEffect(() => {
-    setStitchIndex(loadStitchIndex(patternId, path.length));
-  }, [patternId, path.length]);
-
-  const active = path[stitchIndex] ?? null;
-  const displayTitle = title.trim() || t("ar.demoTitle");
+  const [overlayName, setOverlayName] = useState<string | null>(null);
+  const [hasOverlay, setHasOverlay] = useState(false);
+  const [overlayPaused, setOverlayPaused] = useState(false);
+  const [overlayError, setOverlayError] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
 
   const stopStream = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
-    const video = videoRef.current;
+    const video = cameraRef.current;
     if (video) video.srcObject = null;
   }, []);
 
@@ -146,7 +72,7 @@ export default function ArOverlayNavi({
     stopStream();
     setCameraStatus("starting");
 
-    const video = videoRef.current;
+    const video = cameraRef.current;
     if (video) {
       video.setAttribute("playsinline", "true");
       video.setAttribute("webkit-playsinline", "true");
@@ -190,25 +116,106 @@ export default function ArOverlayNavi({
     return () => stopStream();
   }, [startCamera, stopStream]);
 
+  const attachOverlay = useCallback(async (file: File) => {
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+    if (overlayUrlRef.current) {
+      URL.revokeObjectURL(overlayUrlRef.current);
+      overlayUrlRef.current = null;
+    }
+    const url = URL.createObjectURL(file);
+    overlayUrlRef.current = url;
+    prepareOverlayVideo(overlay);
+    overlay.src = url;
+    try {
+      await overlay.play();
+      setOverlayPaused(false);
+      setOverlayError(null);
+    } catch {
+      setOverlayPaused(true);
+    }
+    setHasOverlay(true);
+    setOverlayName(file.name);
+  }, []);
+
+  const applyOverlayFile = useCallback(
+    async (file: File | undefined | null) => {
+      if (!file) return;
+      if (!isOverlayVideoFile(file)) {
+        setOverlayError(t("ar.videoTypeError"));
+        return;
+      }
+      try {
+        await saveOverlayVideo(file);
+      } catch {
+        // still play even if storage is full
+      }
+      await attachOverlay(file);
+    },
+    [attachOverlay, t],
+  );
+
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || rows === 0 || cols === 0) return;
-
-    const draw = () => paintPatternOverlay(canvas, grid, mergedColorMap);
-    draw();
-    const observer = new ResizeObserver(draw);
-    observer.observe(canvas);
-    return () => observer.disconnect();
-  }, [grid, mergedColorMap, rows, cols]);
-
-  const advanceStitch = useCallback(() => {
-    if (path.length === 0) return;
-    setStitchIndex((current) => {
-      const next = nextStitchIndex(current, path.length);
-      persistStitchIndex(patternId, next);
-      return next;
+    let cancelled = false;
+    void loadOverlayVideo().then((stored) => {
+      if (cancelled || !stored) return;
+      const file = new File([stored.blob], stored.name || "overlay.webm", {
+        type: stored.type || stored.blob.type || "video/webm",
+      });
+      void attachOverlay(file);
     });
-  }, [path.length, patternId]);
+    return () => {
+      cancelled = true;
+      if (overlayUrlRef.current) {
+        URL.revokeObjectURL(overlayUrlRef.current);
+        overlayUrlRef.current = null;
+      }
+    };
+  }, [attachOverlay]);
+
+  const onPickFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    void applyOverlayFile(file);
+  };
+
+  const onDrop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setDragging(false);
+    void applyOverlayFile(event.dataTransfer.files?.[0]);
+  };
+
+  const removeOverlay = useCallback(async () => {
+    const overlay = overlayRef.current;
+    overlay?.pause();
+    overlay?.removeAttribute("src");
+    overlay?.load();
+    if (overlayUrlRef.current) {
+      URL.revokeObjectURL(overlayUrlRef.current);
+      overlayUrlRef.current = null;
+    }
+    setHasOverlay(false);
+    setOverlayName(null);
+    setOverlayPaused(false);
+    setOverlayError(null);
+    await clearOverlayVideo();
+  }, []);
+
+  const toggleOverlayPlayback = useCallback(async () => {
+    const overlay = overlayRef.current;
+    if (!overlay || !hasOverlay) return;
+    if (overlay.paused) {
+      try {
+        await overlay.play();
+        setOverlayPaused(false);
+      } catch {
+        setOverlayPaused(true);
+      }
+      return;
+    }
+    overlay.pause();
+    setOverlayPaused(true);
+  }, [hasOverlay]);
 
   const cameraMessage =
     cameraStatus === "insecure"
@@ -223,15 +230,18 @@ export default function ArOverlayNavi({
               ? t("ar.cameraStarting")
               : "";
 
-  const knitRow = active ? rows - active.row : 0;
-  const stitchLabel = active
-    ? t("ar.stitchCoord", { row: knitRow, col: active.col + 1 })
-    : t("ar.noStitches");
-
   return (
-    <div className="fixed inset-0 z-[90] h-[100dvh] w-full overflow-hidden bg-black text-white">
+    <div
+      className="fixed inset-0 z-[90] h-[100dvh] w-full overflow-hidden bg-black text-white"
+      onDragOver={(event) => {
+        event.preventDefault();
+        setDragging(true);
+      }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={onDrop}
+    >
       <video
-        ref={videoRef}
+        ref={cameraRef}
         className="absolute inset-0 h-full w-full object-cover"
         autoPlay
         muted
@@ -244,45 +254,36 @@ export default function ArOverlayNavi({
         <div className="absolute inset-0 bg-stone-950" aria-hidden />
       ) : null}
 
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 pb-[10.5rem] pt-20">
-        <div
-          className="relative max-h-full max-w-full"
-          style={{
-            aspectRatio: `${Math.max(1, cols)} / ${Math.max(1, rows)}`,
-            width: `min(100%, calc((100dvh - 14rem) * ${Math.max(1, cols)} / ${Math.max(1, rows)}))`,
-            height: "auto",
-          }}
-        >
-          <canvas
-            ref={canvasRef}
-            className="block h-full w-full"
-            style={{ opacity: overlayOpacity }}
-            aria-hidden
-          />
-          {active ? (
-            <div
-              className="ar-stitch-blink pointer-events-none absolute rounded-[3px]"
-              style={{
-                left: `${(active.col / cols) * 100}%`,
-                top: `${(active.row / rows) * 100}%`,
-                width: `${100 / cols}%`,
-                height: `${100 / rows}%`,
-              }}
-              aria-hidden
-            />
-          ) : null}
+      <video
+        ref={overlayRef}
+        className={`pointer-events-none absolute inset-0 h-full w-full bg-transparent object-contain ${
+          hasOverlay ? "visible" : "invisible"
+        }`}
+        style={{ opacity: overlayOpacity }}
+        muted
+        loop
+        playsInline
+        autoPlay
+        disablePictureInPicture
+        controls={false}
+        aria-hidden={!hasOverlay}
+        aria-label={t("ar.overlayLabel")}
+      />
+
+      {dragging ? (
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center border-4 border-dashed border-coral bg-black/40">
+          <p className="font-sans text-lg font-semibold text-white">{t("ar.dropHint")}</p>
         </div>
-      </div>
+      ) : null}
 
       <header className="absolute inset-x-0 top-0 z-10 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 pb-6 pt-[max(0.75rem,env(safe-area-inset-top))]">
         <BackButton onClick={onExit} tone="dark" className="text-white hover:bg-white/10" />
         <div className="min-w-0 flex-1">
-          <p className="truncate font-sans text-base font-semibold text-white">{displayTitle}</p>
-          <p className="truncate font-sans text-sm text-white/70">{t("ar.subtitle")}</p>
+          <p className="truncate font-sans text-base font-semibold text-white">{t("ar.title")}</p>
+          <p className="truncate font-sans text-sm text-white/70">
+            {overlayName ?? t("ar.subtitle")}
+          </p>
         </div>
-        <span className="shrink-0 rounded-full bg-white/12 px-3 py-1 font-sans text-sm text-white/80">
-          {t("ar.progress", { current: path.length ? stitchIndex + 1 : 0, total: path.length })}
-        </span>
       </header>
 
       {cameraStatus !== "live" ? (
@@ -302,6 +303,9 @@ export default function ArOverlayNavi({
       ) : null}
 
       <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 via-black/55 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-8">
+        {overlayError ? (
+          <p className="mb-3 font-sans text-sm text-coral">{overlayError}</p>
+        ) : null}
         <label className="block">
           <div className="mb-2 flex items-center justify-between font-sans text-sm text-white/80">
             <span>{t("ar.opacity")}</span>
@@ -326,16 +330,40 @@ export default function ArOverlayNavi({
           </div>
         </label>
 
-        <div className="mt-4 flex items-center gap-3">
-          <p className="min-w-0 flex-1 truncate font-sans text-sm text-white/80">{stitchLabel}</p>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="video/webm,video/mp4,video/quicktime,video/*"
+          className="hidden"
+          onChange={onPickFile}
+        />
+
+        <div className="mt-4 flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={advanceStitch}
-            disabled={path.length === 0}
-            className="shrink-0 rounded-full bg-coral px-6 py-3 font-sans text-base font-bold text-white hover:bg-white hover:text-gray-900 disabled:opacity-40"
+            onClick={() => fileInputRef.current?.click()}
+            className="rounded-full bg-coral px-5 py-3 font-sans text-base font-bold text-white hover:bg-white hover:text-gray-900"
           >
-            {t("ar.nextStitch")}
+            {hasOverlay ? t("ar.replaceVideo") : t("ar.addVideo")}
           </button>
+          {hasOverlay ? (
+            <>
+              <button
+                type="button"
+                onClick={() => void toggleOverlayPlayback()}
+                className="rounded-full bg-white/15 px-5 py-3 font-sans text-base font-semibold text-white hover:bg-white hover:text-gray-900"
+              >
+                {overlayPaused ? t("ar.playVideo") : t("ar.pauseVideo")}
+              </button>
+              <button
+                type="button"
+                onClick={() => void removeOverlay()}
+                className="rounded-full bg-white/15 px-5 py-3 font-sans text-base font-semibold text-white hover:bg-white hover:text-gray-900"
+              >
+                {t("ar.removeVideo")}
+              </button>
+            </>
+          ) : null}
         </div>
       </div>
     </div>

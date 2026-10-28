@@ -25,7 +25,6 @@ import { editorChromeBtn, editorChromeBtnActive, editorChromeTone, editorPanel }
 import { STITCHES, stitchSymbol } from "./data/stitchSymbols.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
 import {
-  cloneEditorGrid,
   createRealisticDemoGrid,
   emptyGrid,
   paletteYarnsForGrid,
@@ -97,12 +96,7 @@ type PatternEditorProps = {
   }) => void;
   onExit: () => void;
   onGoDashboard: () => void;
-  onOpenAr?: (payload: {
-    id: string;
-    title: string;
-    grid: EditorCell[][];
-    colorMap: Record<string, string>;
-  }) => void;
+  onOpenAr?: () => void;
 };
 
 function initGrid(initial: PatternEditorProps["initialPattern"]) {
@@ -529,13 +523,7 @@ export default function PatternEditor({
   }, [registerSaver, onSave, patternId, saveCollectionId, setDirty, title, charts, needle]);
 
   const handleOpenAr = () => {
-    if (!onOpenAr) return;
-    onOpenAr({
-      id: patternId,
-      title: title.trim() || t("editor.defaultTitle"),
-      grid: cloneEditorGrid(grid),
-      colorMap,
-    });
+    onOpenAr?.();
   };
 
   const handleShareToCommunity = () => {

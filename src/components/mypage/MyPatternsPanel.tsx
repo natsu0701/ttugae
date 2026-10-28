@@ -55,7 +55,7 @@ type MyPatternsPanelProps = {
   patterns: StoredPattern[];
   onCreateNew: () => void;
   onOpen: (id: string) => void;
-  onOpenAr?: (id: string) => void;
+  onOpenAr?: () => void;
   onDelete: (id: string) => void;
 };
 
@@ -251,7 +251,7 @@ export default function MyPatternsPanel({
                     type="button"
                     variant="secondary"
                     className="flex-1 py-2 text-base"
-                    onClick={() => onOpenAr(pattern.id)}
+                    onClick={() => onOpenAr()}
                   >
                     {t("mypage.patterns.openAr")}
                   </Button>

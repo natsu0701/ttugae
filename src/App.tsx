@@ -30,7 +30,6 @@ import { clearProfile } from "./utils/profileStorage.ts";
 import { consumeNavReturn, goBack, resolvePathFallback, setNavReturn } from "./utils/navReturn.ts";
 import { closeLoungeFilters } from "./utils/communityTabEvent.ts";
 import { appPath, currentRouteHref, routePath } from "./utils/appPath.ts";
-import { resolveArPattern, writeArSession, type ArSessionPattern } from "./utils/arPatternSession.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
 import {
   ACCOUNTS_CHANGED_EVENT,
@@ -178,15 +177,10 @@ function AppRoutes() {
     goBack(isLoggedIn ? "/mypage" : "/");
   }, [isLoggedIn]);
 
-  const openAr = useCallback(
-    (options?: { patternId?: string | null; session?: ArSessionPattern | null }) => {
-      rememberReturn();
-      if (options?.session) writeArSession(options.session);
-      const id = options?.patternId || options?.session?.id;
-      navigate("ar", id ? `/ar?id=${encodeURIComponent(id)}` : "/ar");
-    },
-    [navigate, rememberReturn],
-  );
+  const openAr = useCallback(() => {
+    rememberReturn();
+    navigate("ar");
+  }, [navigate, rememberReturn]);
 
   const requestMypage = useCallback(() => {
     if (!isLoggedIn) {
@@ -371,18 +365,11 @@ function AppRoutes() {
   const yarnTrail = <YarnStitchTrail disabled={yarnTrailDisabled} />;
 
   if (view === "ar") {
-    const arPattern = resolveArPattern(window.location.search);
     return (
       <>
         {yarnTrail}
         <Suspense fallback={<RouteFallback dark />}>
-          <ArOverlayNavi
-            patternId={arPattern.id}
-            title={arPattern.title}
-            grid={arPattern.grid}
-            colorMap={arPattern.colorMap}
-            onExit={leaveAr}
-          />
+          <ArOverlayNavi onExit={leaveAr} />
         </Suspense>
         <Toast message={toastMessage ?? ""} visible={Boolean(toastMessage)} />
       </>
@@ -440,7 +427,7 @@ function AppRoutes() {
           <PatternEditor
             initialPattern={initial}
             onExit={leaveEditor}
-            onOpenAr={(session) => openAr({ patternId: session.id, session })}
+            onOpenAr={openAr}
             onGoDashboard={() => {
               setIncomingShare(null);
               setActivePatternId(null);
@@ -519,7 +506,7 @@ function AppRoutes() {
               onDeleteAccount={handleDeleteAccount}
               onCreateNew={() => openEditor({ patternId: null, share: null })}
               onOpenPattern={(id) => openEditor({ patternId: id, share: null })}
-              onOpenAr={(id) => openAr({ patternId: id })}
+              onOpenAr={openAr}
               onDeletePattern={(id) => {
                 persistPatterns(patterns.filter((p) => p.id !== id));
                 showToast(t("toast.patternDeleted"));
