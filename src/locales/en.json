@@ -91,7 +91,8 @@
       "newFolderPh": "New collection name",
       "addFolder": "Add collection",
       "deleteFolder": "Delete collection",
-      "moveFolder": "Move to collection"
+      "moveFolder": "Move to collection",
+      "openAr": "Knit with camera"
     },
     "bag": {
       "title": "Knit bag",
@@ -387,6 +388,8 @@
     "apply": "Apply",
     "save": "Save",
     "share": "Share",
+    "openAr": "Camera guide",
+    "openArShort": "AR",
     "mypageAria": "My page",
     "drawingTools": "Drawing tools",
     "symbolPalette": "Stitch palette",
@@ -1171,5 +1174,23 @@
     "body": "If you leave without saving, your edits will be lost.",
     "save": "Save",
     "discard": "Don't save"
+  },
+  "ar": {
+    "demoTitle": "Sample chart",
+    "subtitle": "Overlay the chart on the camera and follow each stitch.",
+    "cameraLabel": "Rear camera",
+    "cameraStarting": "Turning the camera on.",
+    "cameraBlocked": "Camera access is required. Allow the camera in browser settings, then try again.",
+    "cameraMissing": "No camera was found.",
+    "cameraUnsupported": "This browser cannot show a live camera preview.",
+    "cameraInsecure": "The camera can only start on HTTPS or localhost.",
+    "enableCamera": "Turn camera on",
+    "opacity": "Chart opacity",
+    "opacityFaint": "Faint",
+    "opacitySolid": "Solid",
+    "nextStitch": "Next stitch",
+    "progress": "{{current}} / {{total}} sts",
+    "stitchCoord": "Row {{row}}, stitch {{col}}",
+    "noStitches": "No stitches to highlight"
   }
 }

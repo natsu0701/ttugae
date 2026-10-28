@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import BackButton from "../ui/BackButton.tsx";
-import { PlusFillIcon } from "../icons/FillIcons.tsx";
+import { CameraFillIcon, PlusFillIcon } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
 
 const SIZE_PRESETS = [
@@ -26,6 +26,7 @@ type EditorHeaderProps = {
   onApplySize: (w: number, h: number) => void;
   onSave: () => void;
   onShare: () => void;
+  onOpenAr?: () => void;
   onExit: () => void;
   onAddChart: () => void;
   sizeMenuRef: RefObject<HTMLDivElement>;
@@ -48,6 +49,7 @@ function EditorHeader({
   onApplySize,
   onSave,
   onShare,
+  onOpenAr,
   onExit,
   onAddChart,
   sizeMenuRef,
@@ -155,6 +157,18 @@ function EditorHeader({
       </p>
 
       <div className="ml-auto flex shrink-0 items-center gap-2">
+        {onOpenAr ? (
+          <button
+            type="button"
+            onClick={onOpenAr}
+            className={`${editorChromeBtn} flex items-center gap-1.5 px-3 py-2 font-sans text-base font-semibold`}
+            aria-label={t("editor.openAr")}
+          >
+            <CameraFillIcon className="h-4 w-4" />
+            <span className="hidden sm:inline">{t("editor.openAr")}</span>
+            <span className="sm:hidden">{t("editor.openArShort")}</span>
+          </button>
+        ) : null}
         <button
           type="button"
           onClick={onSave}

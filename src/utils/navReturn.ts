@@ -7,7 +7,8 @@ export type NavReturnView =
   | "mypage"
   | "community"
   | "editor"
-  | "create-post";
+  | "create-post"
+  | "ar";
 
 export type NavReturn = {
   view: NavReturnView;
@@ -62,6 +63,9 @@ export function resolvePathFallback(pathname: string): NavReturn {
     return { view: "community", path: "/community" };
   }
   if (path.startsWith("/editor")) {
+    return { view: "landing", path: "/" };
+  }
+  if (path.startsWith("/ar")) {
     return { view: "landing", path: "/" };
   }
   if (path.startsWith("/community")) {

@@ -469,3 +469,52 @@ body.yarn-trail-active {
   background: transparent;
   border: none;
 }
+
+@keyframes ar-stitch-blink {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 3px #fc5f53, 0 0 0 2px rgba(255, 255, 255, 0.95);
+    background: rgba(252, 95, 83, 0.12);
+  }
+  50% {
+    box-shadow: inset 0 0 0 2px rgba(252, 95, 83, 0.2), 0 0 0 2px rgba(255, 255, 255, 0.2);
+    background: transparent;
+  }
+}
+
+.ar-stitch-blink {
+  animation: ar-stitch-blink 0.9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ar-stitch-blink {
+    animation: none;
+    box-shadow: inset 0 0 0 3px #fc5f53, 0 0 0 2px #fff;
+    background: rgba(252, 95, 83, 0.16);
+  }
+}
+
+.ar-opacity-slider {
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.25), #fc5f53);
+  outline: none;
+}
+
+.ar-opacity-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #fc5f53;
+}
+
+.ar-opacity-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #fc5f53;
+}

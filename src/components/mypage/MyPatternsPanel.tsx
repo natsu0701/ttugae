@@ -55,6 +55,7 @@ type MyPatternsPanelProps = {
   patterns: StoredPattern[];
   onCreateNew: () => void;
   onOpen: (id: string) => void;
+  onOpenAr?: (id: string) => void;
   onDelete: (id: string) => void;
 };
 
@@ -62,6 +63,7 @@ export default function MyPatternsPanel({
   patterns,
   onCreateNew,
   onOpen,
+  onOpenAr,
   onDelete,
 }: MyPatternsPanelProps) {
   const { t } = useTranslation();
@@ -235,7 +237,7 @@ export default function MyPatternsPanel({
                   ))}
                 </select>
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   type="button"
                   variant="secondary"
@@ -244,6 +246,16 @@ export default function MyPatternsPanel({
                 >
                   {t("common.edit")}
                 </Button>
+                {onOpenAr ? (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="flex-1 py-2 text-base"
+                    onClick={() => onOpenAr(pattern.id)}
+                  >
+                    {t("mypage.patterns.openAr")}
+                  </Button>
+                ) : null}
                 <Button
                   type="button"
                   variant="ghost"

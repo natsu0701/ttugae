@@ -91,7 +91,8 @@
       "newFolderPh": "새 컬렉션 이름",
       "addFolder": "컬렉션 추가",
       "deleteFolder": "컬렉션 삭제",
-      "moveFolder": "컬렉션 이동"
+      "moveFolder": "컬렉션 이동",
+      "openAr": "카메라로 뜨기"
     },
     "bag": {
       "title": "뜨개 가방",
@@ -386,6 +387,8 @@
     "apply": "적용",
     "save": "저장",
     "share": "공유",
+    "openAr": "카메라 가이드",
+    "openArShort": "AR",
     "mypageAria": "마이페이지",
     "drawingTools": "그리기 도구",
     "symbolPalette": "기호 팔레트",
@@ -1170,5 +1173,23 @@
     "body": "저장하지 않으면 수정한 내용이 사라집니다.",
     "save": "저장",
     "discard": "저장하지 않음"
+  },
+  "ar": {
+    "demoTitle": "샘플 도안",
+    "subtitle": "카메라 위에 도안을 겹쳐 코를 따라가세요.",
+    "cameraLabel": "후면 카메라",
+    "cameraStarting": "카메라를 켜는 중이에요.",
+    "cameraBlocked": "카메라 권한이 필요해요. 브라우저 설정에서 카메라를 허용한 뒤 다시 시도해 주세요.",
+    "cameraMissing": "사용할 수 있는 카메라를 찾지 못했어요.",
+    "cameraUnsupported": "이 브라우저는 카메라 미리보기를 지원하지 않아요.",
+    "cameraInsecure": "카메라는 HTTPS 또는 localhost에서만 켤 수 있어요.",
+    "enableCamera": "카메라 켜기",
+    "opacity": "도안 투명도",
+    "opacityFaint": "흐리게",
+    "opacitySolid": "진하게",
+    "nextStitch": "다음 코",
+    "progress": "{{current}} / {{total}}코",
+    "stitchCoord": "{{row}}단 {{col}}코",
+    "noStitches": "표시할 코가 없어요"
   }
 }

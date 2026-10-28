@@ -91,7 +91,8 @@
       "newFolderPh": "新しいコレクション名",
       "addFolder": "コレクション追加",
       "deleteFolder": "コレクション削除",
-      "moveFolder": "コレクションへ移動"
+      "moveFolder": "コレクションへ移動",
+      "openAr": "カメラで編む"
     },
     "bag": {
       "title": "編み物バッグ",
@@ -387,6 +388,8 @@
     "apply": "適用",
     "save": "保存",
     "share": "共有",
+    "openAr": "カメラガイド",
+    "openArShort": "AR",
     "mypageAria": "マイページ",
     "drawingTools": "描画ツール",
     "symbolPalette": "記号パレット",
@@ -1171,5 +1174,23 @@
     "body": "保存せずに移動すると変更が消えます。",
     "save": "保存",
     "discard": "保存しない"
+  },
+  "ar": {
+    "demoTitle": "サンプル編み図",
+    "subtitle": "カメラに編み図を重ねて目を追います。",
+    "cameraLabel": "背面カメラ",
+    "cameraStarting": "カメラを起動しています。",
+    "cameraBlocked": "カメラの許可が必要です。ブラウザ設定で許可してから再試行してください。",
+    "cameraMissing": "使えるカメラが見つかりませんでした。",
+    "cameraUnsupported": "このブラウザはカメラプレビューに対応していません。",
+    "cameraInsecure": "カメラは HTTPS または localhost でのみ起動できます。",
+    "enableCamera": "カメラをオン",
+    "opacity": "編み図の濃度",
+    "opacityFaint": "薄く",
+    "opacitySolid": "濃く",
+    "nextStitch": "次の目",
+    "progress": "{{current}} / {{total}}目",
+    "stitchCoord": "{{row}}段 {{col}}目",
+    "noStitches": "表示できる目がありません"
   }
 }

@@ -25,6 +25,7 @@ import { editorChromeBtn, editorChromeBtnActive, editorChromeTone, editorPanel }
 import { STITCHES, stitchSymbol } from "./data/stitchSymbols.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
 import {
+  cloneEditorGrid,
   createRealisticDemoGrid,
   emptyGrid,
   paletteYarnsForGrid,
@@ -96,6 +97,12 @@ type PatternEditorProps = {
   }) => void;
   onExit: () => void;
   onGoDashboard: () => void;
+  onOpenAr?: (payload: {
+    id: string;
+    title: string;
+    grid: EditorCell[][];
+    colorMap: Record<string, string>;
+  }) => void;
 };
 
 function initGrid(initial: PatternEditorProps["initialPattern"]) {
@@ -155,6 +162,7 @@ export default function PatternEditor({
   onShare,
   onExit,
   onGoDashboard,
+  onOpenAr,
 }: PatternEditorProps) {
   const { t } = useTranslation();
   const { setDirty, registerSaver, requestLeave } = useUnsavedChanges();
@@ -520,6 +528,16 @@ export default function PatternEditor({
     return () => registerSaver(() => undefined);
   }, [registerSaver, onSave, patternId, saveCollectionId, setDirty, title, charts, needle]);
 
+  const handleOpenAr = () => {
+    if (!onOpenAr) return;
+    onOpenAr({
+      id: patternId,
+      title: title.trim() || t("editor.defaultTitle"),
+      grid: cloneEditorGrid(grid),
+      colorMap,
+    });
+  };
+
   const handleShareToCommunity = () => {
     const payload = buildPatternPayload();
     onSave(payload);
@@ -637,6 +655,7 @@ export default function PatternEditor({
         onApplySize={applySize}
         onSave={handleSave}
         onShare={handleShareToCommunity}
+        onOpenAr={onOpenAr ? handleOpenAr : undefined}
         onExit={() => requestLeave(onExit)}
         onAddChart={() => {
           setCastOnMode("add");

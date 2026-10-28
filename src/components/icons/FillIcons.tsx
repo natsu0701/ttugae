@@ -528,3 +528,14 @@ export function BagFillIcon({ className = "h-5 w-5" }: IconProps) {
     </svg>
   );
 }
+
+export function CameraFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M9.1 4.2h5.8l1.2 1.7h2.4A2.7 2.7 0 0121.2 8.6v8.8a2.7 2.7 0 01-2.7 2.7H5.5A2.7 2.7 0 012.8 17.4V8.6A2.7 2.7 0 015.5 5.9h2.4l1.2-1.7zM12 9.1a4.5 4.5 0 100 9 4.5 4.5 0 000-9zm0 2.1a2.4 2.4 0 110 4.8 2.4 2.4 0 010-4.8z"
+      />
+    </svg>
+  );
+}

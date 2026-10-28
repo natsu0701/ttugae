@@ -109,6 +109,7 @@ type MyPageProps = {
   patterns: StoredPattern[];
   onCreateNew: () => void;
   onOpenPattern: (id: string) => void;
+  onOpenAr?: (id: string) => void;
   onDeletePattern: (id: string) => void;
   onEditCommunityPost: (pattern: CommunityPattern) => void;
   onImportCommunity: (pattern: CommunityPattern) => void;
@@ -540,6 +541,7 @@ export default function MyPage({
   patterns,
   onCreateNew,
   onOpenPattern,
+  onOpenAr,
   onDeletePattern,
   onEditCommunityPost,
   onImportCommunity,
@@ -672,6 +674,7 @@ export default function MyPage({
               patterns={patterns}
               onCreateNew={onCreateNew}
               onOpen={onOpenPattern}
+              onOpenAr={onOpenAr}
               onDelete={onDeletePattern}
             />
           ) : null}
