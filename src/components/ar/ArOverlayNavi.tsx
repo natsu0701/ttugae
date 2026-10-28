@@ -242,7 +242,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     >
       <video
         ref={cameraRef}
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 z-0 h-full w-full object-cover"
         autoPlay
         muted
         playsInline
@@ -251,15 +251,15 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         aria-label={t("ar.cameraLabel")}
       />
       {cameraStatus !== "live" ? (
-        <div className="absolute inset-0 bg-stone-950" aria-hidden />
+        <div className="absolute inset-0 z-0 bg-stone-950" aria-hidden />
       ) : null}
 
       <video
         ref={overlayRef}
-        className={`pointer-events-none absolute inset-0 h-full w-full bg-transparent object-contain ${
+        className={`pointer-events-none absolute inset-0 z-[1] h-full w-full bg-transparent object-contain ${
           hasOverlay ? "visible" : "invisible"
         }`}
-        style={{ opacity: overlayOpacity }}
+        style={{ opacity: overlayOpacity, mixBlendMode: "normal" }}
         muted
         loop
         playsInline
