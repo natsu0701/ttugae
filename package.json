@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build && cp dist/index.html dist/404.html && touch dist/.nojekyll",
+    "build": "tsc --noEmit && vite build && cp dist/index.html dist/404.html && cp dist/index.html dist/ar.html && mkdir -p dist/ar && cp dist/index.html dist/ar/index.html && touch dist/.nojekyll",
     "preview": "vite preview"
   },
   "dependencies": {

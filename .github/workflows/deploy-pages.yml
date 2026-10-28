@@ -36,5 +36,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # Branch-source Jekyll publish races this job and can overwrite dist with raw index.html.
+      - name: Wait for branch Pages publish to finish
+        run: sleep 90
       - id: deployment
         uses: actions/deploy-pages@v4
