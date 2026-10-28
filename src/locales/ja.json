@@ -1201,6 +1201,7 @@
     "copyLink": "リンクをコピー",
     "linkCopied": "コピーしました",
     "ipadHint": "iPadのSafariでこのアドレスを開くとカメラオーバーレイが始まります。",
-    "qrAlt": "iPadカメラオーバーレイのQRコード"
+    "qrAlt": "iPadカメラオーバーレイのQRコード",
+    "seek": "再生位置"
   }
 }

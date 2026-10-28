@@ -1201,6 +1201,7 @@
     "copyLink": "Copy link",
     "linkCopied": "Copied",
     "ipadHint": "Open this address in iPad Safari to start the camera overlay.",
-    "qrAlt": "QR code for the iPad camera overlay"
+    "qrAlt": "QR code for the iPad camera overlay",
+    "seek": "Playback position"
   }
 }

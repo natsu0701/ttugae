@@ -494,3 +494,32 @@ body.yarn-trail-active {
   background: #fff;
   border: 2px solid #fc5f53;
 }
+
+.ar-seek-slider {
+  appearance: none;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #fc5f53 var(--progress, 0%),
+    rgba(255, 255, 255, 0.28) var(--progress, 0%)
+  );
+  outline: none;
+}
+
+.ar-seek-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: #fc5f53;
+  border: 2px solid #fff;
+}
+
+.ar-seek-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: #fc5f53;
+  border: 2px solid #fff;
+}

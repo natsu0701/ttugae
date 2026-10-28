@@ -17,6 +17,18 @@ type CameraStatus = "starting" | "live" | "blocked" | "missing" | "insecure" | "
 
 const DEFAULT_OPACITY = 1;
 
+function formatClock(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
+  const total = Math.floor(seconds);
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const secs = total % 60;
+  if (hours > 0) {
+    return `${hours}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  }
+  return `${minutes}:${String(secs).padStart(2, "0")}`;
+}
+
 function cameraErrorStatus(error: unknown): CameraStatus {
   const name =
     error && typeof error === "object" && "name" in error
@@ -51,6 +63,9 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [overlayError, setOverlayError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [playhead, setPlayhead] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const seekingRef = useRef(false);
 
   const stopStream = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -135,6 +150,8 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     } catch {
       setOverlayPaused(true);
     }
+    setPlayhead(0);
+    setDuration(Number.isFinite(overlay.duration) ? overlay.duration : 0);
     setHasOverlay(true);
     setOverlayName(file.name);
   }, []);
@@ -199,6 +216,8 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     setOverlayName(null);
     setOverlayPaused(false);
     setOverlayError(null);
+    setPlayhead(0);
+    setDuration(0);
     await clearOverlayVideo();
   }, []);
 
@@ -217,6 +236,50 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     overlay.pause();
     setOverlayPaused(true);
   }, [hasOverlay]);
+
+  useEffect(() => {
+    const video = overlayRef.current;
+    if (!video || !hasOverlay) return;
+
+    const sync = () => {
+      const nextDuration = Number.isFinite(video.duration) ? video.duration : 0;
+      setDuration(nextDuration);
+      if (!seekingRef.current) {
+        setPlayhead(Number.isFinite(video.currentTime) ? video.currentTime : 0);
+      }
+    };
+
+    video.addEventListener("timeupdate", sync);
+    video.addEventListener("loadedmetadata", sync);
+    video.addEventListener("durationchange", sync);
+    video.addEventListener("seeked", sync);
+    sync();
+    return () => {
+      video.removeEventListener("timeupdate", sync);
+      video.removeEventListener("loadedmetadata", sync);
+      video.removeEventListener("durationchange", sync);
+      video.removeEventListener("seeked", sync);
+    };
+  }, [hasOverlay]);
+
+  const seekTo = useCallback((next: number) => {
+    const video = overlayRef.current;
+    const max = Number.isFinite(duration) && duration > 0 ? duration : 0;
+    const clamped = Math.min(Math.max(next, 0), max);
+    setPlayhead(clamped);
+    if (video && Number.isFinite(clamped)) video.currentTime = clamped;
+  }, [duration]);
+
+  const onSeekInput = (event: ChangeEvent<HTMLInputElement>) => {
+    seekingRef.current = true;
+    seekTo(Number(event.target.value));
+  };
+
+  const onSeekEnd = () => {
+    seekingRef.current = false;
+    const video = overlayRef.current;
+    if (video && Number.isFinite(video.currentTime)) setPlayhead(video.currentTime);
+  };
 
   const copyIpadLink = useCallback(async () => {
     try {
@@ -322,6 +385,37 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 via-black/55 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-8">
         {overlayError ? (
           <p className="mb-3 font-sans text-sm text-coral">{overlayError}</p>
+        ) : null}
+        {hasOverlay ? (
+          <div className="mb-4">
+            <input
+              type="range"
+              min={0}
+              max={duration > 0 ? duration : 1}
+              step={0.05}
+              value={Math.min(playhead, duration > 0 ? duration : 1)}
+              disabled={duration <= 0}
+              onChange={onSeekInput}
+              onPointerDown={() => {
+                seekingRef.current = true;
+              }}
+              onPointerUp={onSeekEnd}
+              onPointerCancel={onSeekEnd}
+              onTouchEnd={onSeekEnd}
+              className="ar-seek-slider w-full"
+              style={{
+                ["--progress" as string]: `${duration > 0 ? (playhead / duration) * 100 : 0}%`,
+              }}
+              aria-valuemin={0}
+              aria-valuemax={duration > 0 ? duration : 0}
+              aria-valuenow={playhead}
+              aria-label={t("ar.seek")}
+            />
+            <div className="mt-1 flex items-center justify-between font-sans text-sm tabular-nums text-white/90">
+              <span>{formatClock(playhead)}</span>
+              <span>{formatClock(duration)}</span>
+            </div>
+          </div>
         ) : null}
         <label className="block">
           <div className="mb-2 flex items-center justify-between font-sans text-sm text-white/80">
