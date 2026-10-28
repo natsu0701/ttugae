@@ -248,13 +248,17 @@ export default function ArOverlayNavi({
         <div
           className="relative max-h-full max-w-full"
           style={{
-            opacity: overlayOpacity,
             aspectRatio: `${Math.max(1, cols)} / ${Math.max(1, rows)}`,
             width: `min(100%, calc((100dvh - 14rem) * ${Math.max(1, cols)} / ${Math.max(1, rows)}))`,
             height: "auto",
           }}
         >
-          <canvas ref={canvasRef} className="block h-full w-full" aria-hidden />
+          <canvas
+            ref={canvasRef}
+            className="block h-full w-full"
+            style={{ opacity: overlayOpacity }}
+            aria-hidden
+          />
           {active ? (
             <div
               className="ar-stitch-blink pointer-events-none absolute rounded-[3px]"
