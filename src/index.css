@@ -480,17 +480,17 @@ body.yarn-trail-active {
 
 .ar-opacity-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 22px;
+  width: 14px;
   height: 22px;
-  border-radius: 999px;
+  border-radius: 4px;
   background: #fff;
   border: 2px solid #fc5f53;
 }
 
 .ar-opacity-slider::-moz-range-thumb {
-  width: 22px;
+  width: 14px;
   height: 22px;
-  border-radius: 999px;
+  border-radius: 4px;
   background: #fff;
   border: 2px solid #fc5f53;
 }

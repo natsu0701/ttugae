@@ -27,6 +27,7 @@ type AppShellProps = {
   onGoCommunity: () => void;
   onGoMypage: () => void;
   onGoEditor: () => void;
+  onGoAr?: () => void;
   onLogin: () => void;
   onLogout: () => void;
   onAddAccount: () => void;
@@ -201,6 +202,7 @@ export default function AppShell({
   onGoCommunity,
   onGoMypage,
   onGoEditor,
+  onGoAr,
   onLogin,
   onLogout,
   onAddAccount,
@@ -267,6 +269,13 @@ export default function AppShell({
               overlay={isOverlayHeader}
               onClick={go(onGoEditor)}
             />
+            {onGoAr ? (
+              <NavTextItem
+                label={t("nav.ar")}
+                overlay={isOverlayHeader}
+                onClick={go(onGoAr)}
+              />
+            ) : null}
             {isLoggedIn ? (
               profileBtn
             ) : (

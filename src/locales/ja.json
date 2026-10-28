@@ -4,6 +4,7 @@
     "home": "ホーム",
     "community": "トゥゲラウンジ",
     "startEditor": "編み図を描く",
+    "ar": "カメラ",
     "login": "ログイン",
     "logout": "ログアウト",
     "mypageAria": "マイページ",
@@ -670,14 +671,15 @@
     "feature2Title": "エディター中心のスマート編み物プラットフォーム",
     "feature2Body": "手計算だらけの準備をウェブエディターとトゥゲラウンジにまとめ、創作に没頭できます。",
     "promoLine1": "本番の編み物はトゥニと一緒に！",
-    "promoLine2": "ARナビゲーションアプリ",
-    "promoBody1": "ウェブで描いた編み図をアプリに連携。",
-    "promoBody2": "カメラを向けると次の目を案内します。",
+    "promoLine2": "iPadカメラオーバーレイ",
+    "promoBody1": "iPadのSafariで下のリンクを開くだけです。",
+    "promoBody2": "背景が透明な動画をカメラに重ねます。",
     "promoAria": "アプリ紹介モックアップ",
     "promoPrev": "前のモックアップ",
     "promoNext": "次のモックアップ",
     "promoAlt": "トゥニARアプリのモックアップ{{n}}",
     "footerTag": "今日も一目、いっしょに",
+    "footerArTitle": "iPadカメラリンク",
     "scrollHint": "スクロールして文字を縫ってみてください",
     "tabEditorTitle": "編み図エディター",
     "tabEditorSub": "2Dグリッドエディター",
@@ -1195,6 +1197,10 @@
     "playVideo": "再生",
     "pauseVideo": "一時停止",
     "dropHint": "ここに動画をドロップ",
-    "videoTypeError": "動画ファイルのみ追加できます。アルファ付き WebM または HEVC MOV を推奨します。"
+    "videoTypeError": "動画ファイルのみ追加できます。アルファ付き WebM または HEVC MOV を推奨します。",
+    "copyLink": "リンクをコピー",
+    "linkCopied": "コピーしました",
+    "ipadHint": "iPadのSafariでこのアドレスを開くとカメラオーバーレイが始まります。",
+    "qrAlt": "iPadカメラオーバーレイのQRコード"
   }
 }

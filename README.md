@@ -5,6 +5,8 @@ React + Tailwind CSS + Framer Motion 랜딩·에디터 페이지입니다.
 
 배포 URL: [https://natsu0701.github.io/ttugae/](https://natsu0701.github.io/ttugae/)
 
+아이패드 카메라 오버레이: [https://natsu0701.github.io/ttugae/ar](https://natsu0701.github.io/ttugae/ar)
+
 ## 로컬 실행
 
 ```bash

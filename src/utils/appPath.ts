@@ -1,6 +1,9 @@
 /** Vite `base`, always with a trailing slash (`/` or `/ttugae/`). */
 export const BASE_URL = import.meta.env.BASE_URL;
 
+/** iPad Safari에서 카메라 오버레이를 여는 공개 주소. */
+export const PUBLIC_AR_URL = "https://natsu0701.github.io/ttugae/ar";
+
 function stripTrailingSlash(value: string): string {
   return value.endsWith("/") ? value.slice(0, -1) : value;
 }

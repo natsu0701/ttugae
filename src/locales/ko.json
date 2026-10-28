@@ -4,6 +4,7 @@
     "home": "홈",
     "community": "뜨개라운지",
     "startEditor": "도안 그리기",
+    "ar": "카메라",
     "login": "로그인",
     "logout": "로그아웃",
     "mypage": "마이페이지",
@@ -669,14 +670,15 @@
     "feature2Title": "에디터 중심의 지능형 뜨개 통합 플랫폼",
     "feature2Body": "수작업으로 복잡하게 계산하던 준비 과정을 웹 스마트 에디터와 뜨개라운지로 통합하여, 창작의 몰입감과 즐거움을 극대화합니다.",
     "promoLine1": "실전 뜨개질은 뜨니와 함께!",
-    "promoLine2": "AR 내비게이션 앱",
-    "promoBody1": "웹에서 그린 도안을 앱으로 연동해 보세요.",
-    "promoBody2": "카메라로 비추면 다음 코를 안내해 줍니다.",
+    "promoLine2": "아이패드 카메라 오버레이",
+    "promoBody1": "아이패드 사파리에서 아래 링크만 열면 됩니다.",
+    "promoBody2": "카메라 위에 배경이 투명한 영상을 겹칩니다.",
     "promoAria": "앱 홍보 목업",
     "promoPrev": "이전 목업",
     "promoNext": "다음 목업",
     "promoAlt": "뜨니 AR 앱 모바일 목업 {{n}}",
     "footerTag": "오늘도 한 땀, 함께해요",
+    "footerArTitle": "아이패드 카메라 링크",
     "scrollHint": "스크롤하여 글씨를 꿰매 보세요",
     "tabEditorTitle": "도안 에디터",
     "tabEditorSub": "2D 격자 에디터",
@@ -1194,6 +1196,10 @@
     "playVideo": "재생",
     "pauseVideo": "일시정지",
     "dropHint": "여기에 영상을 놓아 주세요",
-    "videoTypeError": "영상 파일만 넣을 수 있어요. 알파가 있는 WebM 또는 HEVC MOV를 권장합니다."
+    "videoTypeError": "영상 파일만 넣을 수 있어요. 알파가 있는 WebM 또는 HEVC MOV를 권장합니다.",
+    "copyLink": "링크 복사",
+    "linkCopied": "복사됨",
+    "ipadHint": "아이패드 사파리에서 이 주소를 열면 카메라 오버레이가 시작됩니다.",
+    "qrAlt": "아이패드 카메라 오버레이 QR 코드"
   }
 }

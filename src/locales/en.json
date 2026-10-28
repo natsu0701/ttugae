@@ -4,6 +4,7 @@
     "home": "Home",
     "community": "Tteugae Lounge",
     "startEditor": "Draw pattern",
+    "ar": "Camera",
     "login": "Log in",
     "logout": "Log out",
     "mypageAria": "My page",
@@ -670,14 +671,15 @@
     "feature2Title": "An editor-first smart knitting platform",
     "feature2Body": "Skip the fiddly prep math. The web editor and Tteugae Lounge keep you in the flow of making.",
     "promoLine1": "Knit in real life with Tteuni",
-    "promoLine2": "AR navigation app",
-    "promoBody1": "Sync charts from the web to the app.",
-    "promoBody2": "Point the camera and get the next stitch.",
+    "promoLine2": "iPad camera overlay",
+    "promoBody1": "Open the link below in iPad Safari.",
+    "promoBody2": "A transparent video layers on the camera.",
     "promoAria": "App promo mockups",
     "promoPrev": "Previous mockup",
     "promoNext": "Next mockup",
     "promoAlt": "Tteuni AR app mockup {{n}}",
     "footerTag": "One more stitch, together",
+    "footerArTitle": "iPad camera link",
     "scrollHint": "Scroll to stitch the lettering",
     "tabEditorTitle": "Pattern editor",
     "tabEditorSub": "2D grid editor",
@@ -1195,6 +1197,10 @@
     "playVideo": "Play",
     "pauseVideo": "Pause",
     "dropHint": "Drop a video here",
-    "videoTypeError": "Only video files can be added. Prefer WebM or HEVC MOV with an alpha channel."
+    "videoTypeError": "Only video files can be added. Prefer WebM or HEVC MOV with an alpha channel.",
+    "copyLink": "Copy link",
+    "linkCopied": "Copied",
+    "ipadHint": "Open this address in iPad Safari to start the camera overlay.",
+    "qrAlt": "QR code for the iPad camera overlay"
   }
 }

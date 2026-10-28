@@ -6,8 +6,8 @@ import {
   loadOverlayVideo,
   saveOverlayVideo,
 } from "../../utils/arOverlayVideo.ts";
+import { PUBLIC_AR_URL } from "../../utils/appPath.ts";
 import BackButton from "../ui/BackButton.tsx";
-import { CameraFillIcon } from "../icons/FillIcons.tsx";
 
 export type ArOverlayNaviProps = {
   onExit: () => void;
@@ -50,6 +50,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [overlayPaused, setOverlayPaused] = useState(false);
   const [overlayError, setOverlayError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const stopStream = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -217,6 +218,16 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     setOverlayPaused(true);
   }, [hasOverlay]);
 
+  const copyIpadLink = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(PUBLIC_AR_URL);
+      setLinkCopied(true);
+      window.setTimeout(() => setLinkCopied(false), 2000);
+    } catch {
+      window.prompt(t("ar.copyLink"), PUBLIC_AR_URL);
+    }
+  }, [t]);
+
   const cameraMessage =
     cameraStatus === "insecure"
       ? t("ar.cameraInsecure")
@@ -284,17 +295,23 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
             {overlayName ?? t("ar.subtitle")}
           </p>
         </div>
+        <button
+          type="button"
+          onClick={() => void copyIpadLink()}
+          className="shrink-0 rounded-xl bg-white/15 px-3 py-2 font-sans text-sm font-semibold text-white hover:bg-white hover:text-gray-900"
+        >
+          {linkCopied ? t("ar.linkCopied") : t("ar.copyLink")}
+        </button>
       </header>
 
       {cameraStatus !== "live" ? (
         <div className="absolute inset-x-0 top-24 z-10 mx-auto max-w-md px-6 text-center">
-          <CameraFillIcon className="mx-auto h-8 w-8 text-white/80" />
-          <p className="mt-3 font-sans text-base text-white/90">{cameraMessage}</p>
+          <p className="font-sans text-base text-white/90">{cameraMessage}</p>
           {cameraStatus !== "starting" ? (
             <button
               type="button"
               onClick={() => void startCamera()}
-              className="pointer-events-auto mt-4 rounded-full bg-coral px-5 py-2.5 font-sans text-base font-semibold text-white hover:bg-white hover:text-gray-900"
+              className="pointer-events-auto mt-4 rounded-xl bg-coral px-5 py-2.5 font-sans text-base font-semibold text-white hover:bg-white hover:text-gray-900"
             >
               {t("ar.enableCamera")}
             </button>
@@ -342,7 +359,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-full bg-coral px-5 py-3 font-sans text-base font-bold text-white hover:bg-white hover:text-gray-900"
+            className="rounded-xl bg-coral px-5 py-3 font-sans text-base font-bold text-white hover:bg-white hover:text-gray-900"
           >
             {hasOverlay ? t("ar.replaceVideo") : t("ar.addVideo")}
           </button>
@@ -351,14 +368,14 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
               <button
                 type="button"
                 onClick={() => void toggleOverlayPlayback()}
-                className="rounded-full bg-white/15 px-5 py-3 font-sans text-base font-semibold text-white hover:bg-white hover:text-gray-900"
+                className="rounded-xl bg-white/15 px-5 py-3 font-sans text-base font-semibold text-white hover:bg-white hover:text-gray-900"
               >
                 {overlayPaused ? t("ar.playVideo") : t("ar.pauseVideo")}
               </button>
               <button
                 type="button"
                 onClick={() => void removeOverlay()}
-                className="rounded-full bg-white/15 px-5 py-3 font-sans text-base font-semibold text-white hover:bg-white hover:text-gray-900"
+                className="rounded-xl bg-white/15 px-5 py-3 font-sans text-base font-semibold text-white hover:bg-white hover:text-gray-900"
               >
                 {t("ar.removeVideo")}
               </button>

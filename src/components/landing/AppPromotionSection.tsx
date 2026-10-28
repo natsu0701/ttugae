@@ -6,6 +6,7 @@ import type { Swiper as SwiperClass } from "swiper";
 import { ChevronLeftFillIcon, ChevronRightFillIcon } from "../icons/FillIcons.tsx";
 import Reveal from "./Reveal.tsx";
 import { assetUrl } from "../../utils/appPath.ts";
+import ArIpadLink from "../ar/ArIpadLink.tsx";
 
 import "swiper/css";
 import "swiper/css/effect-creative";
@@ -30,24 +31,24 @@ const css = `
     height: auto;
   }
   .app-promo-pagination .swiper-pagination-bullet {
-    width: 8px;
-    height: 8px;
+    width: 16px;
+    height: 4px;
     background: rgba(252, 95, 83, 0.25);
     opacity: 1;
-    border-radius: 9999px;
+    border-radius: 2px;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     border: none;
     cursor: pointer;
     margin: 0 4px !important;
   }
   .app-promo-pagination .swiper-pagination-bullet-active {
-    width: 22px;
+    width: 28px;
     background: #FC5F53;
   }
 `;
 
 const ARROW_BTN =
-  "pointer-events-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-stone-200 bg-white/90 text-stone-600 shadow-sm backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:border-stone-300 hover:text-coral";
+  "pointer-events-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-stone-200 bg-white/90 text-stone-600 shadow-sm backdrop-blur-sm transition-colors duration-200 hover:border-stone-300 hover:text-coral";
 
 function AppPromotionSection() {
   const { t } = useTranslation();
@@ -144,23 +145,8 @@ function AppPromotionSection() {
             <br />
             {t("landing.promoBody2")}
           </p>
-          <div className="flex flex-wrap justify-center gap-3 pt-6">
-            <a
-              href="https://apps.apple.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-10 items-center justify-center rounded-xl bg-stone-950 px-5 font-sans text-sm font-semibold text-white shadow-sm transition-colors hover:bg-stone-800"
-            >
-              App Store
-            </a>
-            <a
-              href="https://play.google.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-10 items-center justify-center rounded-xl border border-stone-200 bg-white px-5 font-sans text-sm font-semibold text-stone-700 shadow-sm transition-colors hover:bg-stone-50"
-            >
-              Google Play
-            </a>
+          <div className="pt-8">
+            <ArIpadLink />
           </div>
         </div>
       </Reveal>
