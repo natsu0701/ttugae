@@ -22,8 +22,8 @@ const FLOATERS: Floater[] = [
     duration: 4.4,
     delay: 0.15,
     y: -14,
-    dx: 28,
-    dy: 18,
+    dx: 72,
+    dy: 36,
   },
   {
     src: asset("Stroked Image2.png"),
@@ -31,8 +31,8 @@ const FLOATERS: Floater[] = [
     duration: 5.1,
     delay: 0.6,
     y: -11,
-    dx: -32,
-    dy: 16,
+    dx: 80,
+    dy: 34,
   },
   {
     src: asset("Star 1.png"),
@@ -40,8 +40,8 @@ const FLOATERS: Floater[] = [
     duration: 3.2,
     delay: 0.05,
     y: -10,
-    dx: 22,
-    dy: 26,
+    dx: 54,
+    dy: 48,
   },
   {
     src: asset("Star 2.png"),
@@ -49,8 +49,8 @@ const FLOATERS: Floater[] = [
     duration: 3.8,
     delay: 0.9,
     y: -12,
-    dx: -24,
-    dy: 22,
+    dx: 50,
+    dy: 44,
   },
   {
     src: asset("Ellipse 2.png"),
@@ -58,8 +58,8 @@ const FLOATERS: Floater[] = [
     duration: 4.8,
     delay: 0.35,
     y: -13,
-    dx: 16,
-    dy: 12,
+    dx: 36,
+    dy: 28,
   },
   {
     src: asset("Ellipse 3.png"),
@@ -67,8 +67,8 @@ const FLOATERS: Floater[] = [
     duration: 3.6,
     delay: 1.1,
     y: -9,
-    dx: -18,
-    dy: 14,
+    dx: 40,
+    dy: 30,
   },
   {
     src: asset("Ellipse 4.png"),
@@ -76,8 +76,8 @@ const FLOATERS: Floater[] = [
     duration: 5.0,
     delay: 0.45,
     y: -16,
-    dx: 14,
-    dy: 20,
+    dx: 32,
+    dy: 38,
   },
 ];
 
@@ -103,8 +103,8 @@ function HeroDecorations() {
       frame = requestAnimationFrame(tick);
     };
 
-    const onMove = (event: PointerEvent) => {
-      if (event.pointerType === "touch") return;
+    const onMove = (event: MouseEvent | PointerEvent) => {
+      if ("pointerType" in event && event.pointerType === "touch") return;
       const width = window.innerWidth || 1;
       const height = window.innerHeight || 1;
       targetX = (event.clientX / width - 0.5) * 2;
@@ -112,9 +112,11 @@ function HeroDecorations() {
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("mousemove", onMove, { passive: true });
     frame = requestAnimationFrame(tick);
     return () => {
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("mousemove", onMove);
       cancelAnimationFrame(frame);
     };
   }, []);
