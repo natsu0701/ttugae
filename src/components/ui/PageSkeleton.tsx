@@ -4,30 +4,33 @@ import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 type PageSkeletonProps = {
   tone?: "light" | "dark";
   label?: string;
+  embedded?: boolean;
 };
 
 function Bone({ className }: { className: string }) {
   return <div className={`animate-pulse rounded-xl bg-current ${className}`} />;
 }
 
-function PageSkeleton({ tone = "light", label }: PageSkeletonProps) {
+function PageSkeleton({ tone = "light", label, embedded = false }: PageSkeletonProps) {
   const dark = tone === "dark";
   return (
     <div
-      className={`flex min-h-[100dvh] w-full flex-col ${dark ? "bg-stone-900 text-white/15" : "bg-[#FFFBF7] text-stone-200"}`}
+      className={`flex w-full flex-col ${embedded ? "min-h-[70vh]" : "min-h-[100dvh]"} ${dark ? "bg-stone-900 text-white/15" : "bg-[#FFFBF7] text-stone-200"}`}
       aria-busy="true"
       aria-live="polite"
       aria-label={label}
     >
-      <div className={`flex h-[4.5rem] items-center justify-between px-6 ${dark ? "border-b border-white/10" : "border-b border-stone-100"}`}>
-        <Bone className="h-6 w-28" />
-        <div className="hidden items-center gap-4 sm:flex">
-          <Bone className="h-4 w-12" />
-          <Bone className="h-4 w-16" />
-          <Bone className="h-4 w-14" />
+      {embedded ? null : (
+        <div className={`flex h-[4.5rem] items-center justify-between px-6 ${dark ? "border-b border-white/10" : "border-b border-stone-100"}`}>
+          <Bone className="h-6 w-28" />
+          <div className="hidden items-center gap-4 sm:flex">
+            <Bone className="h-4 w-12" />
+            <Bone className="h-4 w-16" />
+            <Bone className="h-4 w-14" />
+          </div>
+          <Bone className="h-9 w-9 rounded-full" />
         </div>
-        <Bone className="h-9 w-9 rounded-full" />
-      </div>
+      )}
 
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center px-6 py-10">
         <img

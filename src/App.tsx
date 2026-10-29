@@ -50,9 +50,9 @@ const CreatePostPage = lazy(() => import("./CreatePostPage.tsx"));
 const Community = lazy(() => import("./Community.tsx"));
 const ArOverlayNavi = lazy(() => import("./components/ar/ArOverlayNavi.tsx"));
 
-function RouteFallback({ dark = false }: { dark?: boolean }) {
+function RouteFallback({ dark = false, embedded = false }: { dark?: boolean; embedded?: boolean }) {
   const { t } = useTranslation();
-  return <PageSkeleton tone={dark ? "dark" : "light"} label={t("common.loading")} />;
+  return <PageSkeleton tone={dark ? "dark" : "light"} embedded={embedded} label={t("common.loading")} />;
 }
 
 type AppView = "landing" | "mypage" | "community" | "editor" | "create-post" | "ar";
@@ -487,7 +487,7 @@ function AppRoutes() {
         onSwitchAccount={handleSwitchAccount}
       >
         {view === "mypage" && isLoggedIn && (
-          <Suspense fallback={<RouteFallback />}>
+          <Suspense fallback={<RouteFallback embedded />}>
             <MyPage
               patterns={patterns}
               onLogout={handleLogout}
@@ -513,7 +513,7 @@ function AppRoutes() {
           </Suspense>
         )}
         {view === "community" && (
-          <Suspense fallback={<RouteFallback />}>
+          <Suspense fallback={<RouteFallback embedded />}>
             <Community
               onImportToEditor={importCommunityPattern}
               onGoEditor={() => {
