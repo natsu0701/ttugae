@@ -648,7 +648,14 @@
     "scrollTop": "一番上へ",
     "open": "トゥニチャット(AI)を開く",
     "thinking": "トゥニが糸を選んでいます...",
-    "offline": "接続が遅いです。少ししてからもう一度聞いてください。"
+    "offline": "接続が遅いです。少ししてからもう一度聞いてください。",
+    "greetLead": "編み物好きの友だち、編み妖精トゥニです。",
+    "greetBody": "配色、編み図の修正、糸選びなど、なんでもお手伝いします！",
+    "greetBubble": "何が知りたいですか？",
+    "suggestColor": "配色",
+    "suggestChart": "編み図修正",
+    "suggestYarn": "糸選び",
+    "suggestGauge": "ゲージ"
   },
   "login": {
     "title": "はじめる",

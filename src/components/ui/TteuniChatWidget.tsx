@@ -4,7 +4,7 @@ import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 import { askTteuniChat } from "../../utils/tteuniChatApi.ts";
 import { loadYarnInventory } from "../../utils/personalizationStorage.ts";
 import SmoothInput from "../ui/SmoothInput.tsx";
-import { ChatFillIcon, CloseFillIcon } from "../icons/FillIcons.tsx";
+import { CloseFillIcon } from "../icons/FillIcons.tsx";
 
 type ChatMessage = {
   id: string;
@@ -16,6 +16,8 @@ type TteuniChatWidgetProps = {
   open: boolean;
   onClose: () => void;
 };
+
+const SUGGEST_KEYS = ["suggestColor", "suggestChart", "suggestYarn", "suggestGauge"] as const;
 
 function withInventory(reply: string, text: string, t: (key: string, opts?: { list: string }) => string): string {
   const askedInventory = /보관함|재고|내 실|바늘|stash|inventory|yarn|needle|gram|保管|在庫/.test(text);
@@ -35,12 +37,25 @@ function withInventory(reply: string, text: string, t: (key: string, opts?: { li
   return `${reply}\n\n${t("editor.tteuniInventoryEmpty")}`;
 }
 
+function TteuniAvatar({ size, alt }: { size: "sm" | "lg"; alt?: string }) {
+  const dim = size === "lg" ? "h-16 w-16" : "h-8 w-8";
+  return (
+    <img
+      src={TTEUNI_IMAGES.chatProfile}
+      alt={alt ?? ""}
+      className={`${dim} shrink-0 rounded-full bg-stone-100 object-cover`}
+      aria-hidden={alt ? undefined : true}
+    />
+  );
+}
+
 function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
   const { t, i18n } = useTranslation();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const idle = messages.length === 0 && !busy;
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
@@ -48,8 +63,8 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
 
   if (!open) return null;
 
-  const submit = () => {
-    const text = input.trim();
+  const send = (raw: string) => {
+    const text = raw.trim();
     if (!text || busy) return;
     const history = messages;
     setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: "user", text }]);
@@ -63,6 +78,8 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
     })();
   };
 
+  const submit = () => send(input);
+
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -73,11 +90,8 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
   return (
     <div className="fixed bottom-24 right-5 z-[70] flex w-[min(100vw-2.5rem,22rem)] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-lg">
       <div className="flex items-center gap-2 border-b border-stone-100 px-4 py-3">
-        <img src={TTEUNI_IMAGES.chatProfile} alt="" className="h-8 w-8 object-contain" />
-        <div className="min-w-0 flex-1">
-          <p className="font-sans text-base font-bold text-stone-900">{t("chat.widgetTitle")}</p>
-          <p className="font-sans text-sm text-stone-500">{t("chat.widgetHint")}</p>
-        </div>
+        <TteuniAvatar size="sm" />
+        <p className="min-w-0 flex-1 font-sans text-base font-bold text-stone-900">{t("chat.widgetTitle")}</p>
         <button
           type="button"
           onClick={onClose}
@@ -87,28 +101,44 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
           <CloseFillIcon className="h-4 w-4" />
         </button>
       </div>
-      <div ref={listRef} className="max-h-72 space-y-3 overflow-y-auto px-4 py-3">
-        {messages.length === 0 && !busy ? (
-          <div className="flex gap-2">
-            <ChatFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-coral" />
-            <p className="font-seoyun text-base leading-relaxed text-stone-600">{t("editor.tteuniHint")}</p>
+      <div ref={listRef} className="max-h-80 min-h-[16.5rem] space-y-3 overflow-y-auto px-4 py-4">
+        {idle ? (
+          <div className="flex min-h-[14.5rem] flex-col">
+            <div className="flex flex-1 flex-col items-center justify-center px-2 text-center">
+              <TteuniAvatar size="lg" alt={t("editor.tteuniName")} />
+              <p className="mt-3 font-sans text-lg font-bold text-stone-900">{t("editor.tteuniName")}</p>
+              <p className="mt-1 font-seoyun text-base leading-relaxed text-stone-600">{t("chat.greetLead")}</p>
+              <p className="mt-0.5 font-seoyun text-base leading-relaxed text-stone-600">{t("chat.greetBody")}</p>
+            </div>
+            <div className="mt-4 flex items-start gap-2">
+              <TteuniAvatar size="sm" />
+              <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-stone-100 px-3 py-2 text-base leading-relaxed text-stone-800">
+                <p className="font-seoyun">{t("chat.greetBubble")}</p>
+              </div>
+            </div>
           </div>
         ) : (
           <>
-            {messages.map((msg) => (
-              <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-base leading-relaxed ${
-                    msg.role === "user" ? "bg-coral text-white" : "bg-stone-100 text-stone-800"
-                  }`}
-                >
-                  <p className="whitespace-pre-wrap font-seoyun">{msg.text}</p>
+            {messages.map((msg) =>
+              msg.role === "user" ? (
+                <div key={msg.id} className="flex justify-end">
+                  <div className="max-w-[85%] rounded-2xl rounded-tr-sm bg-coral px-3 py-2 text-base leading-relaxed text-white">
+                    <p className="whitespace-pre-wrap font-seoyun">{msg.text}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ) : (
+                <div key={msg.id} className="flex items-start gap-2">
+                  <TteuniAvatar size="sm" />
+                  <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-stone-100 px-3 py-2 text-base leading-relaxed text-stone-800">
+                    <p className="whitespace-pre-wrap font-seoyun">{msg.text}</p>
+                  </div>
+                </div>
+              ),
+            )}
             {busy ? (
-              <div className="flex justify-start">
-                <div className="max-w-[85%] rounded-2xl bg-stone-100 px-3 py-2 text-base leading-relaxed text-stone-500">
+              <div className="flex items-start gap-2">
+                <TteuniAvatar size="sm" />
+                <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-stone-100 px-3 py-2 text-base leading-relaxed text-stone-500">
                   <p className="font-seoyun">{t("chat.thinking")}</p>
                 </div>
               </div>
@@ -116,7 +146,20 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
           </>
         )}
       </div>
-      <div className="flex gap-2 border-t border-stone-100 p-3">
+      <div className="flex flex-wrap gap-1.5 border-t border-stone-100 px-3 pt-2.5">
+        {SUGGEST_KEYS.map((key) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => send(t(`chat.${key}`))}
+            disabled={busy}
+            className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 font-sans text-sm text-stone-600 hover:border-coral hover:bg-coral/5 hover:text-coral disabled:opacity-50"
+          >
+            {t(`chat.${key}`)}
+          </button>
+        ))}
+      </div>
+      <div className="flex gap-2 p-3 pt-2">
         <SmoothInput
           type="text"
           value={input}

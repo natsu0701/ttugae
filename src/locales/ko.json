@@ -647,7 +647,14 @@
     "scrollTop": "맨 위로 이동",
     "open": "뜨니챗(AI) 열기",
     "thinking": "뜨니가 실을 고르고 있어요...",
-    "offline": "지금은 연결이 늦어요. 조금 뒤에 다시 물어봐 주세요."
+    "offline": "지금은 연결이 늦어요. 조금 뒤에 다시 물어봐 주세요.",
+    "greetLead": "뜨개러의 친구, 뜨개 요정 뜨니입니다.",
+    "greetBody": "배색, 도안 수정, 실 고르기 등 뭐든지 도와드릴게요!",
+    "greetBubble": "무엇이 궁금하신가요?",
+    "suggestColor": "배색",
+    "suggestChart": "도안 수정",
+    "suggestYarn": "실 고르기",
+    "suggestGauge": "게이지"
   },
   "login": {
     "title": "시작하기",

@@ -648,7 +648,14 @@
     "scrollTop": "Back to top",
     "open": "Open Tteuni chat (AI)",
     "thinking": "Tteuni is picking a yarn...",
-    "offline": "The connection is slow. Please ask again in a moment."
+    "offline": "The connection is slow. Please ask again in a moment.",
+    "greetLead": "A knitter's friend — Tteuni the knitting fairy.",
+    "greetBody": "Color pairing, chart edits, yarn picks — ask me anything!",
+    "greetBubble": "What would you like to know?",
+    "suggestColor": "Color pairing",
+    "suggestChart": "Chart edits",
+    "suggestYarn": "Yarn picks",
+    "suggestGauge": "Gauge"
   },
   "login": {
     "title": "Get started",
