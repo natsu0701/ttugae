@@ -1,0 +1,93 @@
+const CHAT_URL = "https://text.pollinations.ai/openai";
+
+export type TteuniHistoryItem = {
+  role: "user" | "tteuni";
+  text: string;
+};
+
+type ChatCompletion = {
+  choices?: Array<{
+    message?: {
+      content?: unknown;
+    };
+  }>;
+};
+
+const SYSTEM_PROMPT: Record<string, string> = {
+  ko: [
+    "너는 뜨개러투게더 웹사이트의 마스코트 '뜨니'다.",
+    "뜨개질 코치다. 겉뜨기, 안뜨기, 코늘림, 코줄임, 게이지, 실, 바늘, 도안, 단과 코를 정확히 안다.",
+    "한국어로 짧고 따뜻하게 답한다. 이모지는 쓰지 않는다.",
+    "한 번에 2~5문장. 초보자가 바로 따라 할 수 있게 설명한다.",
+    "모르는 말은 추측하지 말고 뜨개질 맥락으로 이해한다.",
+  ].join(" "),
+  en: [
+    "You are Tteuni, the mascot of the Ttugae Together knitting site.",
+    "You are a knitting coach. You know knit, purl, increases, decreases, gauge, yarn, needles, and charts.",
+    "Answer in short, warm English. Do not use emoji.",
+    "Use 2 to 5 sentences a beginner can follow.",
+  ].join(" "),
+  ja: [
+    "あなたはトゥゲ・トゥゲザーのマスコット『トゥニ』です。",
+    "編み物コーチです。表編み、裏編み、目増し、目減らし、ゲージ、糸、針、編み図を正しく知っています。",
+    "短くやさしい日本語で答えてください。絵文字は使いません。",
+    "2〜5文で、初心者がすぐ真似できるように説明します。",
+  ].join(" "),
+};
+
+function systemFor(language: string): string {
+  if (language.startsWith("ja")) return SYSTEM_PROMPT.ja;
+  if (language.startsWith("en")) return SYSTEM_PROMPT.en;
+  return SYSTEM_PROMPT.ko;
+}
+
+function contentToText(content: unknown): string {
+  if (typeof content === "string") return content.trim();
+  if (Array.isArray(content)) {
+    return content
+      .map((part) => {
+        if (typeof part === "string") return part;
+        if (part && typeof part === "object" && "text" in part) {
+          return String((part as { text?: unknown }).text ?? "");
+        }
+        return "";
+      })
+      .join("")
+      .trim();
+  }
+  return "";
+}
+
+export async function askTteuniChat(
+  message: string,
+  history: TteuniHistoryItem[],
+  language: string,
+): Promise<string | null> {
+  const messages = [
+    { role: "system", content: systemFor(language) },
+    ...history.slice(-8).map((item) => ({
+      role: item.role === "user" ? "user" : "assistant",
+      content: item.text,
+    })),
+    { role: "user", content: message },
+  ];
+
+  try {
+    const response = await fetch(CHAT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "openai-fast",
+        messages,
+        seed: Date.now() % 1_000_000,
+      }),
+      signal: AbortSignal.timeout(28000),
+    });
+    if (!response.ok) return null;
+    const data = (await response.json()) as ChatCompletion;
+    const text = contentToText(data.choices?.[0]?.message?.content);
+    return text || null;
+  } catch {
+    return null;
+  }
+}

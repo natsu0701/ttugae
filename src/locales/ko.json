@@ -645,7 +645,9 @@
     "widgetTitle": "뜨니챗(AI)",
     "widgetHint": "배색, 도안 수정, 실 고르기를 물어보세요.",
     "scrollTop": "맨 위로 이동",
-    "open": "뜨니챗(AI) 열기"
+    "open": "뜨니챗(AI) 열기",
+    "thinking": "뜨니가 실을 고르고 있어요...",
+    "offline": "지금은 연결이 늦어요. 조금 뒤에 다시 물어봐 주세요."
   },
   "login": {
     "title": "시작하기",

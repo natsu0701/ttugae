@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
+import { askTteuniChat } from "../../utils/tteuniChatApi.ts";
 import { loadYarnInventory } from "../../utils/personalizationStorage.ts";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import { editorPanel } from "../ui/tabButtonStyles.ts";
@@ -17,47 +18,53 @@ type TteuniChatbotProps = {
 };
 
 export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages]);
+  }, [messages, busy]);
 
   const submit = () => {
     const text = input.trim();
-    if (!text) return;
+    if (!text || busy) return;
+    const history = messages;
     setMessages((prev) => [
       ...prev,
       { id: `u-${Date.now()}`, role: "user", text },
     ]);
     setInput("");
-    let reply = onUserMessage(text);
-    const askedInventory = /보관함|재고|내 실|바늘|모카|그램|stash|inventory|yarn|needle|gram|保管|在庫/.test(text);
-    if (askedInventory) {
-      const stock = loadYarnInventory();
-      if (stock.length > 0) {
-        const list = stock
-          .map((y) => {
-            const bits = [y.name];
-            if (y.grams) bits.push(`${y.grams}g`);
-            if (y.needle) bits.push(y.needle);
-            return bits.join(" ");
-          })
-          .join(", ");
-        reply = `${reply}\n\n${t("editor.tteuniInventory", { list })}`;
-      } else {
-        reply = `${reply}\n\n${t("editor.tteuniInventoryEmpty")}`;
+    setBusy(true);
+    const canned = onUserMessage(text);
+    void (async () => {
+      const ai = await askTteuniChat(text, history, i18n.language);
+      let reply = ai ?? canned;
+      const askedInventory = /보관함|재고|내 실|바늘|모카|그램|stash|inventory|yarn|needle|gram|保管|在庫/.test(text);
+      if (askedInventory) {
+        const stock = loadYarnInventory();
+        if (stock.length > 0) {
+          const list = stock
+            .map((y) => {
+              const bits = [y.name];
+              if (y.grams) bits.push(`${y.grams}g`);
+              if (y.needle) bits.push(y.needle);
+              return bits.join(" ");
+            })
+            .join(", ");
+          reply = `${reply}\n\n${t("editor.tteuniInventory", { list })}`;
+        } else {
+          reply = `${reply}\n\n${t("editor.tteuniInventoryEmpty")}`;
+        }
       }
-    }
-    window.setTimeout(() => {
       setMessages((prev) => [
         ...prev,
         { id: `t-${Date.now()}`, role: "tteuni", text: reply },
       ]);
-    }, 320);
+      setBusy(false);
+    })();
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -75,7 +82,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
         ref={listRef}
         className="mb-3 max-h-52 space-y-3 overflow-y-auto hide-scrollbar"
       >
-        {messages.length === 0 ? (
+        {messages.length === 0 && !busy ? (
           <div className="flex gap-2.5">
             <img
               src={TTEUNI_IMAGES.chatProfile}
@@ -89,7 +96,8 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
             </div>
           </div>
         ) : (
-          messages.map((msg) => (
+          <>
+          {messages.map((msg) => (
             <div
               key={msg.id}
               className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
@@ -118,7 +126,16 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
                 </p>
               </div>
             </div>
-          ))
+          ))}
+          {busy ? (
+            <div className="flex gap-2">
+              <img src={TTEUNI_IMAGES.chatProfile} alt="" className="h-8 w-8 shrink-0 object-contain" aria-hidden />
+              <div className="max-w-[85%] rounded-2xl rounded-tl-sm border border-stone-600/80 bg-stone-700 px-3 py-2">
+                <p className="font-seoyun text-base leading-relaxed text-stone-300">{t("chat.thinking")}</p>
+              </div>
+            </div>
+          ) : null}
+          </>
         )}
       </div>
 
@@ -130,12 +147,14 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder={t("editor.tteuniPlaceholder")}
+          disabled={busy}
           className="min-w-0 flex-1 rounded-xl border-stone-700/80 px-3 py-2.5 text-base"
         />
         <button
           type="button"
           onClick={submit}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral text-white transition-colors hover:bg-black"
+          disabled={busy}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral text-white transition-colors hover:bg-black disabled:opacity-50"
           aria-label={t("common.send")}
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
