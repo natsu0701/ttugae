@@ -80,6 +80,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [durations, setDurations] = useState<Record<string, number>>({});
   const [playlistOpen, setPlaylistOpen] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [scrubbing, setScrubbing] = useState(false);
 
   const activeItem = AR_PLAYLIST[activeIndex] ?? null;
   const hasOverlay = Boolean(activeItem);
@@ -242,14 +243,18 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
 
   const onSeekInput = (event: ChangeEvent<HTMLInputElement>) => {
     seekingRef.current = true;
+    setScrubbing(true);
     seekTo(Number(event.target.value));
   };
 
   const onSeekEnd = () => {
     seekingRef.current = false;
+    setScrubbing(false);
     const video = overlayRef.current;
     if (video && Number.isFinite(video.currentTime)) setPlayhead(video.currentTime);
   };
+
+  const progressPct = duration > 0 ? Math.min(100, (playhead / duration) * 100) : 0;
 
   const toggleOverlayPlayback = useCallback(async () => {
     const overlay = overlayRef.current;
@@ -373,13 +378,15 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         ) : null}
 
         {hasOverlay ? (
-          <div className="mb-3">
-            <div className="mb-2 flex items-center justify-between font-sans text-sm text-white/80">
-              <span>{t("ar.time")}</span>
-              <span className="tabular-nums">
-                {formatClock(playhead)} / {formatClock(duration)}
-              </span>
-            </div>
+          <div className="relative mb-1">
+            {scrubbing ? (
+              <div
+                className="ar-seek-tooltip pointer-events-none absolute -top-8 z-10 -translate-x-1/2 rounded bg-black/90 px-2 py-1 font-sans text-sm tabular-nums text-white"
+                style={{ left: `${progressPct}%` }}
+              >
+                {formatClock(playhead)}
+              </div>
+            ) : null}
             <input
               type="range"
               min={0}
@@ -390,17 +397,19 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
               onChange={onSeekInput}
               onPointerDown={() => {
                 seekingRef.current = true;
+                setScrubbing(true);
               }}
               onPointerUp={onSeekEnd}
               onPointerCancel={onSeekEnd}
               onTouchEnd={onSeekEnd}
               className="ar-seek-slider w-full"
               style={{
-                ["--progress" as string]: `${duration > 0 ? (playhead / duration) * 100 : 0}%`,
+                ["--progress" as string]: `${progressPct}%`,
               }}
               aria-valuemin={0}
               aria-valuemax={duration > 0 ? duration : 0}
               aria-valuenow={playhead}
+              aria-valuetext={`${formatClock(playhead)} / ${formatClock(duration)}`}
               aria-label={t("ar.seek")}
             />
           </div>
@@ -416,6 +425,12 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           >
             {overlayPaused ? <PlayIcon /> : <PauseIcon />}
           </button>
+          {hasOverlay ? (
+            <p className="shrink-0 font-sans text-sm tabular-nums text-white" aria-live="off">
+              {formatClock(playhead)}
+              <span className="text-white/55"> / {formatClock(duration)}</span>
+            </p>
+          ) : null}
           <button
             type="button"
             onClick={() => setPlaylistOpen((open) => !open)}
