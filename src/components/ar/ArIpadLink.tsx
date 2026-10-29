@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { assetUrl, PUBLIC_AR_URL } from "../../utils/appPath.ts";
-import { CheckFillIcon, CopyFillIcon } from "../icons/FillIcons.tsx";
+import { CheckFillIcon, CopyFillIcon, OpenLinkFillIcon } from "../icons/FillIcons.tsx";
 
 type ArIpadLinkProps = {
   tone?: "light" | "dark";
@@ -12,6 +12,9 @@ export default function ArIpadLink({ tone = "light", showQr = true }: ArIpadLink
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const dark = tone === "dark";
+  const iconClass = dark
+    ? "flex h-9 w-9 shrink-0 items-center justify-center text-white/50 hover:text-white"
+    : "flex h-9 w-9 shrink-0 items-center justify-center text-gray-400 hover:text-gray-700";
 
   const copy = useCallback(async () => {
     try {
@@ -32,7 +35,7 @@ export default function ArIpadLink({ tone = "light", showQr = true }: ArIpadLink
           className="h-36 w-36 bg-white p-2"
         />
       ) : null}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <a
           href={PUBLIC_AR_URL}
           className={`break-all text-center font-sans text-base font-semibold underline-offset-2 hover:underline ${
@@ -44,15 +47,14 @@ export default function ArIpadLink({ tone = "light", showQr = true }: ArIpadLink
         <button
           type="button"
           onClick={() => void copy()}
-          className={
-            dark
-              ? "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-coral text-white hover:bg-white hover:text-gray-900"
-              : "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-coral text-white hover:bg-black"
-          }
+          className={iconClass}
           aria-label={copied ? t("ar.linkCopied") : t("ar.copyLink")}
         >
           {copied ? <CheckFillIcon className="h-5 w-5" /> : <CopyFillIcon className="h-5 w-5" />}
         </button>
+        <a href={PUBLIC_AR_URL} className={iconClass} aria-label={t("ar.openLink")}>
+          <OpenLinkFillIcon className="h-5 w-5" />
+        </a>
       </div>
     </div>
   );

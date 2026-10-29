@@ -352,7 +352,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         <button
           type="button"
           onClick={() => void copyIpadLink()}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white hover:bg-white hover:text-gray-900"
+          className="flex h-9 w-9 shrink-0 items-center justify-center text-white/55 hover:text-white"
           aria-label={linkCopied ? t("ar.linkCopied") : t("ar.copyLink")}
         >
           {linkCopied ? <CheckFillIcon className="h-5 w-5" /> : <CopyFillIcon className="h-5 w-5" />}

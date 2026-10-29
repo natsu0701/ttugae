@@ -389,6 +389,17 @@ export function CopyFillIcon({ className = "h-5 w-5" }: IconProps) {
   );
 }
 
+export function OpenLinkFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M14 5h5v5h-1.8V8.05l-6.72 6.73-1.26-1.26 6.73-6.72H14V5zM6.5 7H11V8.8H6.5A.7.7 0 005.8 9.5v8a.7.7 0 00.7.7h8a.7.7 0 00.7-.7V13H17v4.5a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 014 17.5v-8A2.5 2.5 0 016.5 7z"
+      />
+    </svg>
+  );
+}
+
 export function CloseFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
