@@ -88,7 +88,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
   };
 
   return (
-    <div className="fixed bottom-24 right-5 z-[70] flex w-[min(100vw-2.5rem,22rem)] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-lg">
+    <div className="fixed bottom-24 right-5 z-[70] flex w-[min(100vw-2.5rem,23.5rem)] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-lg">
       <div className="flex items-center gap-2 border-b border-stone-100 px-4 py-3">
         <TteuniAvatar size="sm" />
         <p className="min-w-0 flex-1 font-sans text-base font-bold text-stone-900">{t("chat.widgetTitle")}</p>
@@ -107,8 +107,8 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
             <div className="flex flex-1 flex-col items-center justify-center px-2 text-center">
               <TteuniAvatar size="lg" alt={t("editor.tteuniName")} />
               <p className="mt-3 font-sans text-lg font-bold text-stone-900">{t("editor.tteuniName")}</p>
-              <p className="mt-1 font-seoyun text-base leading-relaxed text-stone-600">{t("chat.greetLead")}</p>
-              <p className="mt-0.5 font-seoyun text-base leading-relaxed text-stone-600">{t("chat.greetBody")}</p>
+              <p className="mt-1 break-keep font-seoyun text-base leading-relaxed text-stone-600">{t("chat.greetLead")}</p>
+              <p className="mt-0.5 break-keep font-seoyun text-base leading-relaxed text-stone-600">{t("chat.greetBody")}</p>
             </div>
             <div className="mt-4 flex items-start gap-2">
               <TteuniAvatar size="sm" />
