@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { assetUrl, PUBLIC_AR_URL } from "../../utils/appPath.ts";
+import { CheckFillIcon, CopyFillIcon } from "../icons/FillIcons.tsx";
 
 type ArIpadLinkProps = {
   tone?: "light" | "dark";
@@ -31,28 +32,28 @@ export default function ArIpadLink({ tone = "light", showQr = true }: ArIpadLink
           className="h-36 w-36 bg-white p-2"
         />
       ) : null}
-      <a
-        href={PUBLIC_AR_URL}
-        className={`break-all text-center font-sans text-base font-semibold underline-offset-2 hover:underline ${
-          dark ? "text-white" : "text-gray-900"
-        }`}
-      >
-        {PUBLIC_AR_URL}
-      </a>
-      <p className={`text-center font-sans text-sm ${dark ? "text-white/70" : "text-gray-500"}`}>
-        {t("ar.ipadHint")}
-      </p>
-      <button
-        type="button"
-        onClick={() => void copy()}
-        className={
-          dark
-            ? "rounded-xl bg-coral px-5 py-2.5 font-sans text-base font-semibold text-white hover:bg-white hover:text-gray-900"
-            : "rounded-xl bg-coral px-5 py-2.5 font-sans text-base font-semibold text-white hover:bg-black"
-        }
-      >
-        {copied ? t("ar.linkCopied") : t("ar.copyLink")}
-      </button>
+      <div className="flex items-center gap-2">
+        <a
+          href={PUBLIC_AR_URL}
+          className={`break-all text-center font-sans text-base font-semibold underline-offset-2 hover:underline ${
+            dark ? "text-white" : "text-gray-900"
+          }`}
+        >
+          {PUBLIC_AR_URL}
+        </a>
+        <button
+          type="button"
+          onClick={() => void copy()}
+          className={
+            dark
+              ? "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-coral text-white hover:bg-white hover:text-gray-900"
+              : "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-coral text-white hover:bg-black"
+          }
+          aria-label={copied ? t("ar.linkCopied") : t("ar.copyLink")}
+        >
+          {copied ? <CheckFillIcon className="h-5 w-5" /> : <CopyFillIcon className="h-5 w-5" />}
+        </button>
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "reac
 import { useTranslation } from "react-i18next";
 import { AR_PLAYLIST, formatClock, playlistVideoUrl } from "../../data/arPlaylist.ts";
 import { PUBLIC_AR_URL } from "../../utils/appPath.ts";
+import { CheckFillIcon, CopyFillIcon } from "../icons/FillIcons.tsx";
 import BackButton from "../ui/BackButton.tsx";
 
 export type ArOverlayNaviProps = {
@@ -351,9 +352,10 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         <button
           type="button"
           onClick={() => void copyIpadLink()}
-          className="shrink-0 rounded-xl bg-white/15 px-3 py-2 font-sans text-sm font-semibold text-white hover:bg-white hover:text-gray-900"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white hover:bg-white hover:text-gray-900"
+          aria-label={linkCopied ? t("ar.linkCopied") : t("ar.copyLink")}
         >
-          {linkCopied ? t("ar.linkCopied") : t("ar.copyLink")}
+          {linkCopied ? <CheckFillIcon className="h-5 w-5" /> : <CopyFillIcon className="h-5 w-5" />}
         </button>
       </header>
 
