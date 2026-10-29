@@ -606,6 +606,7 @@
     "me": "Me",
     "back": "Back",
     "send": "Send",
+    "loading": "Loading the page",
     "sts": "sts",
     "rows": "rows",
     "edit": "Edit",
@@ -1212,6 +1213,7 @@
     "playingNow": "Now playing",
     "fullscreen": "Full screen",
     "exitFullscreen": "Exit full screen",
-    "videoLoadError": "The video could not be loaded."
+    "videoLoadError": "The video could not be loaded.",
+    "playbackRate": "Speed {{rate}}"
   }
 }

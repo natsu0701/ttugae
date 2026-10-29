@@ -4,6 +4,7 @@ import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 import { askTteuniChat } from "../../utils/tteuniChatApi.ts";
 import { loadYarnInventory } from "../../utils/personalizationStorage.ts";
 import SmoothInput from "../ui/SmoothInput.tsx";
+import ChatTypingDots from "./ChatTypingDots.tsx";
 import { CloseFillIcon } from "../icons/FillIcons.tsx";
 
 type ChatMessage = {
@@ -139,7 +140,10 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
               <div className="flex items-start gap-2">
                 <TteuniAvatar size="sm" />
                 <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-stone-100 px-3 py-2 text-base leading-relaxed text-stone-500">
-                  <p className="font-seoyun">{t("chat.thinking")}</p>
+                  <div className="flex items-center gap-2">
+                    <ChatTypingDots />
+                    <p className="font-seoyun">{t("chat.thinking")}</p>
+                  </div>
                 </div>
               </div>
             ) : null}

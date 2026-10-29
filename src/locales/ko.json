@@ -605,6 +605,7 @@
     "me": "나",
     "back": "돌아가기",
     "send": "전송",
+    "loading": "페이지를 불러오는 중",
     "sts": "코",
     "rows": "단",
     "edit": "수정",
@@ -1211,6 +1212,7 @@
     "playingNow": "재생 중",
     "fullscreen": "전체화면",
     "exitFullscreen": "전체화면 종료",
-    "videoLoadError": "영상을 불러오지 못했어요."
+    "videoLoadError": "영상을 불러오지 못했어요.",
+    "playbackRate": "배속 {{rate}}"
   }
 }

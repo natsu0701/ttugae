@@ -193,6 +193,16 @@ body {
   }
 
   .hero-floater {
+    transform: translate3d(
+      calc(var(--par-x, 0) * var(--par-dx, 20px)),
+      calc(var(--par-y, 0) * var(--par-dy, 14px)),
+      0
+    );
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .hero-floater-bob {
     transform: translate3d(0, 0, 0);
     will-change: transform;
     backface-visibility: hidden;
@@ -203,6 +213,19 @@ body {
     transform: translate3d(0, 8px, 0);
     will-change: transform;
     backface-visibility: hidden;
+    filter:
+      drop-shadow(3px 0 0 #fff)
+      drop-shadow(-3px 0 0 #fff)
+      drop-shadow(0 3px 0 #fff)
+      drop-shadow(0 -3px 0 #fff)
+      drop-shadow(2px 2px 0 #fff)
+      drop-shadow(-2px 2px 0 #fff)
+      drop-shadow(2px -2px 0 #fff)
+      drop-shadow(-2px -2px 0 #fff)
+      drop-shadow(4px 1px 0 #fff)
+      drop-shadow(-4px 1px 0 #fff)
+      drop-shadow(1px 4px 0 #fff)
+      drop-shadow(-1px 4px 0 #fff);
     animation:
       tteuni-peek-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards,
       tteuni-peek-float 3.2s ease-in-out 0.7s infinite;
@@ -379,7 +402,7 @@ body.yarn-trail-active {
 
   .fade-in,
   .hero-overlay,
-  .hero-floater,
+  .hero-floater-bob,
   .tteuni-peek,
   .input-caret {
     animation: none !important;
@@ -416,6 +439,7 @@ body.yarn-trail-active {
   }
 
   .hero-floater,
+  .hero-floater-bob,
   .tteuni-peek,
   .gpu-float {
     will-change: auto;
@@ -546,4 +570,41 @@ body.yarn-trail-active {
   50% {
     transform: scaleY(1);
   }
+}
+
+.chat-typing-dot {
+  animation: chat-typing-dot 0.9s ease-in-out infinite;
+}
+
+.chat-typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.chat-typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes chat-typing-dot {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  35% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+.boot-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: #fffbf7;
 }

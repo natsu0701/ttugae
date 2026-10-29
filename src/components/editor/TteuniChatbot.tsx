@@ -4,6 +4,7 @@ import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 import { askTteuniChat } from "../../utils/tteuniChatApi.ts";
 import { loadYarnInventory } from "../../utils/personalizationStorage.ts";
 import SmoothInput from "../ui/SmoothInput.tsx";
+import ChatTypingDots from "../ui/ChatTypingDots.tsx";
 import { editorPanel } from "../ui/tabButtonStyles.ts";
 
 export type ChatMessage = {
@@ -131,7 +132,10 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
             <div className="flex gap-2">
               <img src={TTEUNI_IMAGES.chatProfile} alt="" className="h-8 w-8 shrink-0 object-contain" aria-hidden />
               <div className="max-w-[85%] rounded-2xl rounded-tl-sm border border-stone-600/80 bg-stone-700 px-3 py-2">
-                <p className="font-seoyun text-base leading-relaxed text-stone-300">{t("chat.thinking")}</p>
+                <div className="flex items-center gap-2">
+                  <ChatTypingDots tone="dark" />
+                  <p className="font-seoyun text-base leading-relaxed text-stone-300">{t("chat.thinking")}</p>
+                </div>
               </div>
             </div>
           ) : null}

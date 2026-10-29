@@ -12,6 +12,7 @@ import Toast from "./components/ui/Toast.tsx";
 import ConfirmDialog from "./components/ui/ConfirmDialog.tsx";
 import EditorEntryModal from "./components/ui/EditorEntryModal.tsx";
 import YarnStitchTrail from "./components/effects/YarnStitchTrail.tsx";
+import PageSkeleton from "./components/ui/PageSkeleton.tsx";
 import { saveShareDraft } from "./utils/shareDraft.ts";
 import { openShareDraftFromPatterns } from "./utils/createShareDraft.ts";
 import { openCommunityPostForEdit } from "./utils/communityPostDraft.ts";
@@ -50,18 +51,8 @@ const Community = lazy(() => import("./Community.tsx"));
 const ArOverlayNavi = lazy(() => import("./components/ar/ArOverlayNavi.tsx"));
 
 function RouteFallback({ dark = false }: { dark?: boolean }) {
-  return (
-    <div
-      className={`flex min-h-screen items-center justify-center ${
-        dark ? "bg-stone-800" : "bg-[#FFFBF7]"
-      }`}
-      aria-busy="true"
-    >
-      <div className="h-1.5 w-24 overflow-hidden rounded-full bg-coral/20">
-        <div className="h-full w-1/2 animate-pulse rounded-full bg-coral" />
-      </div>
-    </div>
-  );
+  const { t } = useTranslation();
+  return <PageSkeleton tone={dark ? "dark" : "light"} label={t("common.loading")} />;
 }
 
 type AppView = "landing" | "mypage" | "community" | "editor" | "create-post" | "ar";

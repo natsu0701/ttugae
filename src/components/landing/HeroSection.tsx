@@ -78,15 +78,8 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
           </Reveal>
         </div>
 
-        {/* 3줄 서브 설명 */}
-        <Reveal delay={0.75}>
-          <p className="mx-auto mt-0.5 max-w-xl font-seoyun text-lg font-light leading-tight tracking-[0.05em] text-white/60 [text-shadow:0_1px_2px_rgba(0,0,0,0.14),0_4px_16px_rgba(0,0,0,0.16)] sm:text-xl md:mt-1 md:text-xl">
-            {t("landing.heroSub")}
-          </p>
-        </Reveal>
-
         {/* 시작 버튼 그룹 */}
-        <Reveal delay={1.1} className="relative z-10 mt-8 md:mt-10">
+        <Reveal delay={0.9} className="relative z-10 mt-8 md:mt-10">
           <Button
             variant="primary"
             onClick={onOpenEditor}
