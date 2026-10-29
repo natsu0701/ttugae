@@ -1178,7 +1178,7 @@
   },
   "ar": {
     "title": "카메라 오버레이",
-    "subtitle": "배경이 투명한 영상을 넣으면 카메라 위에 겹쳐집니다.",
+    "subtitle": "재생목록에서 영상을 고르면 카메라 위에 겹칩니다.",
     "cameraLabel": "후면 카메라",
     "overlayLabel": "투명 영상 오버레이",
     "cameraStarting": "카메라를 켜는 중이에요.",
@@ -1187,20 +1187,20 @@
     "cameraUnsupported": "이 브라우저는 카메라 미리보기를 지원하지 않아요.",
     "cameraInsecure": "카메라는 HTTPS 또는 localhost에서만 켤 수 있어요.",
     "enableCamera": "카메라 켜기",
-    "opacity": "영상 농도",
-    "opacityFaint": "흐리게",
-    "opacitySolid": "진하게",
-    "addVideo": "영상 넣기",
-    "replaceVideo": "영상 바꾸기",
-    "removeVideo": "영상 빼기",
     "playVideo": "재생",
     "pauseVideo": "일시정지",
-    "dropHint": "여기에 영상을 놓아 주세요",
-    "videoTypeError": "영상 파일만 넣을 수 있어요. 알파가 있는 WebM 또는 HEVC MOV를 권장합니다.",
     "copyLink": "링크 복사",
     "linkCopied": "복사됨",
     "ipadHint": "아이패드 사파리에서 이 주소를 열면 카메라 오버레이가 시작됩니다.",
     "qrAlt": "아이패드 카메라 오버레이 QR 코드",
-    "seek": "재생 위치"
+    "seek": "재생 위치",
+    "time": "시간",
+    "playlist": "재생목록",
+    "playlistEmpty": "재생목록이 비어 있어요. src/data/arPlaylist.ts 에 영상을 넣어 주세요.",
+    "nowPlaying": "{{n}} · {{title}}",
+    "playingNow": "재생 중",
+    "fullscreen": "전체화면",
+    "exitFullscreen": "전체화면 종료",
+    "videoLoadError": "영상을 불러오지 못했어요."
   }
 }

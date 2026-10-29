@@ -1179,7 +1179,7 @@
   },
   "ar": {
     "title": "Camera overlay",
-    "subtitle": "Add a video with a transparent background to layer it on the camera.",
+    "subtitle": "Pick a video from the playlist to layer it on the camera.",
     "cameraLabel": "Rear camera",
     "overlayLabel": "Transparent video overlay",
     "cameraStarting": "Turning the camera on.",
@@ -1188,20 +1188,20 @@
     "cameraUnsupported": "This browser cannot show a live camera preview.",
     "cameraInsecure": "The camera can only start on HTTPS or localhost.",
     "enableCamera": "Turn camera on",
-    "opacity": "Video opacity",
-    "opacityFaint": "Faint",
-    "opacitySolid": "Solid",
-    "addVideo": "Add video",
-    "replaceVideo": "Replace video",
-    "removeVideo": "Remove video",
     "playVideo": "Play",
     "pauseVideo": "Pause",
-    "dropHint": "Drop a video here",
-    "videoTypeError": "Only video files can be added. Prefer WebM or HEVC MOV with an alpha channel.",
     "copyLink": "Copy link",
     "linkCopied": "Copied",
     "ipadHint": "Open this address in iPad Safari to start the camera overlay.",
     "qrAlt": "QR code for the iPad camera overlay",
-    "seek": "Playback position"
+    "seek": "Playback position",
+    "time": "Time",
+    "playlist": "Playlist",
+    "playlistEmpty": "The playlist is empty. Add videos in src/data/arPlaylist.ts.",
+    "nowPlaying": "{{n}} · {{title}}",
+    "playingNow": "Now playing",
+    "fullscreen": "Full screen",
+    "exitFullscreen": "Exit full screen",
+    "videoLoadError": "The video could not be loaded."
   }
 }

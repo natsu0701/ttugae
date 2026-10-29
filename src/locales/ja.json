@@ -1179,7 +1179,7 @@
   },
   "ar": {
     "title": "カメラオーバーレイ",
-    "subtitle": "背景が透明な動画を入れるとカメラの上に重ねます。",
+    "subtitle": "再生リストから動画を選ぶとカメラの上に重ねます。",
     "cameraLabel": "背面カメラ",
     "overlayLabel": "透明動画オーバーレイ",
     "cameraStarting": "カメラを起動しています。",
@@ -1188,20 +1188,20 @@
     "cameraUnsupported": "このブラウザはカメラプレビューに対応していません。",
     "cameraInsecure": "カメラは HTTPS または localhost でのみ起動できます。",
     "enableCamera": "カメラをオン",
-    "opacity": "動画の濃度",
-    "opacityFaint": "薄く",
-    "opacitySolid": "濃く",
-    "addVideo": "動画を入れる",
-    "replaceVideo": "動画を差し替え",
-    "removeVideo": "動画を外す",
     "playVideo": "再生",
     "pauseVideo": "一時停止",
-    "dropHint": "ここに動画をドロップ",
-    "videoTypeError": "動画ファイルのみ追加できます。アルファ付き WebM または HEVC MOV を推奨します。",
     "copyLink": "リンクをコピー",
     "linkCopied": "コピーしました",
     "ipadHint": "iPadのSafariでこのアドレスを開くとカメラオーバーレイが始まります。",
     "qrAlt": "iPadカメラオーバーレイのQRコード",
-    "seek": "再生位置"
+    "seek": "再生位置",
+    "time": "時間",
+    "playlist": "再生リスト",
+    "playlistEmpty": "再生リストが空です。src/data/arPlaylist.ts に動画を追加してください。",
+    "nowPlaying": "{{n}} · {{title}}",
+    "playingNow": "再生中",
+    "fullscreen": "全画面",
+    "exitFullscreen": "全画面を終了",
+    "videoLoadError": "動画を読み込めませんでした。"
   }
 }
