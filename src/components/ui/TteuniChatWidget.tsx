@@ -49,7 +49,7 @@ function TteuniAvatar({ size, alt }: { size: "sm" | "lg"; alt?: string }) {
       <img
         src={TTEUNI_IMAGES.chatProfile}
         alt={alt ?? ""}
-        className="absolute left-1/2 top-[50%] h-[320%] w-[320%] max-w-none -translate-x-1/2 -translate-y-1/2 object-cover"
+        className="absolute left-1/2 top-[50%] h-[270%] w-[270%] max-w-none -translate-x-1/2 -translate-y-1/2 object-cover"
         aria-hidden={alt ? undefined : true}
       />
     </span>
