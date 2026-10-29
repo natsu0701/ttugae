@@ -655,7 +655,10 @@
     "suggestColor": "배색",
     "suggestChart": "도안 수정",
     "suggestYarn": "실 고르기",
-    "suggestGauge": "게이지"
+    "suggestGauge": "게이지",
+    "expand": "전체 화면",
+    "collapse": "창 모드",
+    "resize": "채팅창 크기 조절"
   },
   "login": {
     "title": "시작하기",

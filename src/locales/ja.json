@@ -656,7 +656,10 @@
     "suggestColor": "配色",
     "suggestChart": "編み図修正",
     "suggestYarn": "糸選び",
-    "suggestGauge": "ゲージ"
+    "suggestGauge": "ゲージ",
+    "expand": "全画面",
+    "collapse": "ウィンドウ",
+    "resize": "チャットサイズを変更"
   },
   "login": {
     "title": "はじめる",

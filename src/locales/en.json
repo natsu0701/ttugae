@@ -656,7 +656,10 @@
     "suggestColor": "Color pairing",
     "suggestChart": "Chart edits",
     "suggestYarn": "Yarn picks",
-    "suggestGauge": "Gauge"
+    "suggestGauge": "Gauge",
+    "expand": "Full screen",
+    "collapse": "Windowed",
+    "resize": "Resize chat"
   },
   "login": {
     "title": "Get started",
