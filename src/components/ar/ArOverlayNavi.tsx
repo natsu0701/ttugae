@@ -35,7 +35,7 @@ function prepareOverlayVideo(video: HTMLVideoElement) {
   video.setAttribute("webkit-playsinline", "true");
   video.muted = true;
   video.playsInline = true;
-  video.loop = false;
+  video.loop = true;
   video.autoplay = true;
 }
 
@@ -212,21 +212,12 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         setPlayhead(Number.isFinite(video.currentTime) ? video.currentTime : 0);
       }
     };
-    const onEnded = () => {
-      if (AR_PLAYLIST.length <= 1) {
-        video.currentTime = 0;
-        void video.play().catch(() => setOverlayPaused(true));
-        return;
-      }
-      setActiveIndex((index) => (index + 1) % AR_PLAYLIST.length);
-    };
     const onError = () => setOverlayError(t("ar.videoLoadError"));
 
     video.addEventListener("timeupdate", sync);
     video.addEventListener("loadedmetadata", sync);
     video.addEventListener("durationchange", sync);
     video.addEventListener("seeked", sync);
-    video.addEventListener("ended", onEnded);
     video.addEventListener("error", onError);
     sync();
     return () => {
@@ -234,7 +225,6 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       video.removeEventListener("loadedmetadata", sync);
       video.removeEventListener("durationchange", sync);
       video.removeEventListener("seeked", sync);
-      video.removeEventListener("ended", onEnded);
       video.removeEventListener("error", onError);
     };
   }, [activeItem, hasOverlay, t]);
@@ -336,6 +326,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           hasOverlay ? "visible" : "invisible"
         }`}
         muted
+        loop
         playsInline
         autoPlay
         disablePictureInPicture
