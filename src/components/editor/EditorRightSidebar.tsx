@@ -76,7 +76,7 @@ export default function EditorRightSidebar({
       />
 
       <aside
-        className="relative h-full overflow-hidden border-l border-stone-800/80 bg-stone-800"
+        className="relative h-full overflow-hidden border-l border-stone-200 bg-white"
         style={{ width: sidebarWidth }}
       >
         <div

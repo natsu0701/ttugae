@@ -79,7 +79,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
 
   return (
     <div className={`${editorPanel} p-4`}>
-      <p className="mb-3 font-sans text-base font-bold text-white">{t("editor.tteuniAi")}</p>
+      <p className="mb-3 font-sans text-base font-bold text-stone-900">{t("editor.tteuniAi")}</p>
 
       <div
         ref={listRef}
@@ -92,8 +92,8 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
               alt={t("editor.tteuniName")}
               className="h-10 w-10 shrink-0 object-contain"
             />
-            <div className="rounded-2xl rounded-tl-sm border border-stone-600/80 bg-stone-700 px-3 py-2.5">
-              <p className="font-seoyun text-base font-normal leading-relaxed text-stone-100">
+            <div className="rounded-2xl rounded-tl-sm border border-stone-200 bg-stone-50 px-3 py-2.5">
+              <p className="font-seoyun text-base font-normal leading-relaxed text-stone-800">
                 {t("editor.tteuniHint")}
               </p>
             </div>
@@ -117,12 +117,12 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
                 className={`max-w-[85%] rounded-2xl px-3 py-2 ${
                   msg.role === "user"
                     ? "rounded-tr-sm bg-coral text-white"
-                    : "rounded-tl-sm border border-stone-600/80 bg-stone-700 text-stone-100"
+                    : "rounded-tl-sm border border-stone-200 bg-stone-50 text-stone-800"
                 }`}
               >
                 <p
                   className={`font-seoyun text-base font-normal leading-relaxed ${
-                    msg.role === "user" ? "text-white" : "text-stone-100"
+                    msg.role === "user" ? "text-white" : "text-stone-800"
                   }`}
                 >
                   {msg.text}
@@ -133,10 +133,10 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
           {busy ? (
             <div className="flex gap-2">
               <img src={TTEUNI_IMAGES.chatProfile} alt="" className="h-8 w-8 shrink-0 object-contain" aria-hidden />
-              <div className="max-w-[85%] rounded-2xl rounded-tl-sm border border-stone-600/80 bg-stone-700 px-3 py-2">
+              <div className="max-w-[85%] rounded-2xl rounded-tl-sm border border-stone-200 bg-stone-50 px-3 py-2">
                 <div className="flex items-center gap-2">
-                  <ChatTypingDots tone="dark" />
-                  <p className="font-seoyun text-base leading-relaxed text-stone-300">{t("chat.thinking")}</p>
+                  <ChatTypingDots />
+                  <p className="font-seoyun text-base leading-relaxed text-stone-500">{t("chat.thinking")}</p>
                 </div>
               </div>
             </div>
@@ -148,13 +148,12 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
       <div className="flex gap-2">
         <SmoothInput
           type="text"
-          tone="dark"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder={t("editor.tteuniPlaceholder")}
           disabled={busy}
-          className="min-w-0 flex-1 rounded-xl border-stone-700/80 px-3 py-2.5 text-base"
+          className="min-w-0 flex-1 rounded-xl border-stone-200 bg-white px-3 py-2.5 text-base"
         />
         <button
           type="button"

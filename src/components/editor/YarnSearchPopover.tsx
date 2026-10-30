@@ -105,20 +105,19 @@ export default function YarnSearchPopover({
   return (
     <div
       ref={panelRef}
-      className="absolute left-0 right-0 top-full z-30 mt-2 rounded-xl border border-stone-600/80 bg-stone-800 p-3"
+      className="absolute left-0 right-0 top-full z-30 mt-2 rounded-xl border border-stone-200 bg-white p-3 shadow-md"
       role="dialog"
       aria-label={t("editor.yarnSearch")}
     >
-      <label className="mb-1.5 block font-sans text-sm font-bold text-stone-100">
+      <label className="mb-1.5 block font-sans text-sm font-bold text-stone-900">
         {t("editor.yarnSearch")}
       </label>
-      <p className="mb-2 font-seoyun text-sm font-normal text-stone-400">
+      <p className="mb-2 font-seoyun text-sm font-normal text-stone-500">
         {t("editor.yarnSearchHint")}
       </p>
       <SmoothInput
         ref={inputRef}
         type="text"
-        tone="dark"
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
@@ -126,7 +125,7 @@ export default function YarnSearchPopover({
         }}
         onKeyDown={onKeyDown}
         placeholder={t("editor.yarnSearchPh")}
-        className="rounded-xl border-stone-700/80 px-3 py-2.5 text-base"
+        className="rounded-xl border-stone-200 bg-white px-3 py-2.5 text-base"
       />
 
       <ul className="mt-2 max-h-48 overflow-y-auto hide-scrollbar" role="listbox">
@@ -147,7 +146,7 @@ export default function YarnSearchPopover({
                   onMouseEnter={() => setHighlight(i)}
                   onClick={() => pick(entry)}
                   className={`flex w-full items-center gap-2.5 rounded-xl px-2 py-2 text-left transition-colors ${
-                    i === highlight ? "bg-stone-800" : "hover:bg-stone-800"
+                    i === highlight ? "bg-stone-100" : "hover:bg-stone-50"
                   }`}
                 >
                   <span
@@ -155,10 +154,10 @@ export default function YarnSearchPopover({
                     style={{ backgroundColor: entry.hex }}
                   />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-sans text-base font-normal text-stone-100">
+                    <span className="block truncate font-sans text-base font-normal text-stone-800">
                       {loc(t, `content.yarns.${entry.id}.name`, entry.name)}
                     </span>
-                    <span className="block truncate font-seoyun text-sm font-normal text-stone-400">
+                    <span className="block truncate font-seoyun text-sm font-normal text-stone-500">
                       {loc(t, `content.yarns.${entry.id}.brand`, entry.brand)} ·{" "}
                       {loc(t, `content.yarns.${entry.id}.fiber`, entry.fiberType)}
                       {added ? t("editor.inPalette") : ""}

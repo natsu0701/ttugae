@@ -563,7 +563,7 @@ function Knitting3DCanvas({
   };
 
   return (
-    <div className="relative h-[300px] min-h-[220px] w-full min-w-0 overflow-hidden bg-stone-700">
+    <div className="relative h-[300px] min-h-[220px] w-full min-w-0 overflow-hidden bg-stone-100">
       {active ? (
         <Canvas
           className="absolute inset-0 block h-full w-full"
@@ -602,13 +602,13 @@ function Knitting3DCanvas({
           </Suspense>
         </Canvas>
       ) : (
-        <div className="flex h-full w-full items-center justify-center bg-stone-700 text-sm text-stone-300">
+        <div className="flex h-full w-full items-center justify-center bg-stone-100 text-sm text-stone-500">
           {t("editor.pausePreview")}
         </div>
       )}
 
       {!normalTexture && active ? (
-        <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 bg-stone-700 text-stone-300">
+        <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 bg-stone-100 text-stone-500">
           <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
           <span className="font-sans text-sm font-light">
             {loadingCopy(t, itemType)}
@@ -622,7 +622,7 @@ function Knitting3DCanvas({
             type="button"
             onClick={handleZoomIn}
             {...iconTip(t("editor.zoomInShort"), "left")}
-            className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
+            className="rounded-xl border border-stone-200 bg-white p-2 text-stone-700 shadow-sm transition-colors hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900"
           >
             <ZoomInFillIcon className="h-5 w-5" />
           </button>
@@ -630,7 +630,7 @@ function Knitting3DCanvas({
             type="button"
             onClick={handleZoomOut}
             {...iconTip(t("editor.zoomOutShort"), "left")}
-            className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
+            className="rounded-xl border border-stone-200 bg-white p-2 text-stone-700 shadow-sm transition-colors hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900"
           >
             <ZoomOutFillIcon className="h-5 w-5" />
           </button>
@@ -638,7 +638,7 @@ function Knitting3DCanvas({
             type="button"
             onClick={handleReset}
             {...iconTip(t("editor.resetView"), "left")}
-            className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
+            className="rounded-xl border border-stone-200 bg-white p-2 text-stone-700 shadow-sm transition-colors hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900"
           >
             <RotateFillIcon className="h-5 w-5" />
           </button>
@@ -718,7 +718,7 @@ function Knitting3DPreview({
   return (
     <div
       ref={hostRef}
-      className="flex w-full min-w-0 flex-col overflow-hidden rounded-xl bg-stone-700"
+      className="flex w-full min-w-0 flex-col overflow-hidden rounded-xl bg-stone-100"
     >
       {inView ? (
         <Knitting3DCanvas

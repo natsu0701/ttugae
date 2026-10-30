@@ -61,17 +61,16 @@ function EditorHeader({
   const { t } = useTranslation();
 
   return (
-    <header className="relative z-20 flex h-16 shrink-0 items-center gap-3 border-b border-stone-800/80 bg-stone-950 px-4 md:px-6">
-      <BackButton onClick={onExit} tone="dark" className={`shrink-0 ${editorChromeBtn}`} />
+    <header className="relative z-20 flex h-16 shrink-0 items-center gap-3 border-b border-stone-200 bg-white px-4 md:px-6">
+      <BackButton onClick={onExit} className={`shrink-0 ${editorChromeBtn}`} />
 
       <SmoothInput
         type="text"
-        tone="dark"
         value={title}
         onChange={(e) => onTitleChange(e.target.value)}
         placeholder={t("editor.patternNamePlaceholder")}
         aria-label={t("editor.patternName")}
-        className="h-10 w-40 rounded-xl border-stone-700/80 bg-stone-950 px-3 py-1.5 text-base font-semibold tracking-normal placeholder:text-stone-500 md:w-56"
+        className="h-10 w-40 rounded-xl border-stone-200 bg-white px-3 py-1.5 text-base font-semibold tracking-normal placeholder:text-stone-400 md:w-56"
       />
 
       <button
@@ -94,8 +93,8 @@ function EditorHeader({
           {t("editor.sizeLabel", { cols: gridCols, rows: gridRows })}
         </button>
         {sizeMenuOpen && (
-          <div className="absolute left-0 top-full z-30 mt-2 w-56 rounded-2xl border border-stone-600/80 bg-stone-700 p-3">
-            <p className="mb-2 font-sans text-sm font-normal text-stone-400">
+          <div className="absolute left-0 top-full z-30 mt-2 w-56 rounded-2xl border border-stone-200 bg-white p-3 shadow-md">
+            <p className="mb-2 font-sans text-sm font-normal text-stone-500">
               {t("editor.sizePresetsTitle")}
             </p>
             {SIZE_PRESETS.map((preset) => {
@@ -113,24 +112,22 @@ function EditorHeader({
                 </button>
               );
             })}
-            <p className="mb-2 mt-3 font-sans text-sm font-normal text-stone-400">
+            <p className="mb-2 mt-3 font-sans text-sm font-normal text-stone-500">
               {t("editor.sizeCustomTitle")}
             </p>
             <div className="flex gap-2">
               <SmoothInput
-                tone="dark"
                 value={customW}
                 onChange={(e) => onCustomWChange(e.target.value)}
                 placeholder="W"
-                className="rounded-xl border-stone-700/80 py-1.5 text-base"
+                className="rounded-xl border-stone-200 bg-white py-1.5 text-base"
                 inputMode="numeric"
               />
               <SmoothInput
-                tone="dark"
                 value={customH}
                 onChange={(e) => onCustomHChange(e.target.value)}
                 placeholder="H"
-                className="rounded-xl border-stone-700/80 py-1.5 text-base"
+                className="rounded-xl border-stone-200 bg-white py-1.5 text-base"
                 inputMode="numeric"
               />
             </div>
@@ -150,10 +147,10 @@ function EditorHeader({
         )}
       </div>
 
-      <p className="hidden truncate font-sans text-sm text-stone-400 lg:block">
+      <p className="hidden truncate font-sans text-sm text-stone-500 lg:block">
         {t("editor.needleShort")}: {needleLabel}
       </p>
-      <p className="hidden max-w-[12rem] truncate font-sans text-sm text-stone-400 xl:block">
+      <p className="hidden max-w-[12rem] truncate font-sans text-sm text-stone-500 xl:block">
         {t("editor.yarnShort")}: {yarnLabel}
       </p>
 

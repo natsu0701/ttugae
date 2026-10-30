@@ -85,8 +85,8 @@ export default function FinishedWorkScanPanel({
 
   return (
     <div className={`${editorPanel} p-4`}>
-      <p className="mb-1 font-sans text-base font-bold text-white">{t("editor.scanTitle")}</p>
-      <p className="mb-3 font-seoyun text-sm font-normal leading-snug text-stone-400">
+      <p className="mb-1 font-sans text-base font-bold text-stone-900">{t("editor.scanTitle")}</p>
+      <p className="mb-3 font-seoyun text-sm font-normal leading-snug text-stone-500">
         {t("editor.scanHint")}
       </p>
 
@@ -136,12 +136,12 @@ export default function FinishedWorkScanPanel({
         </button>
       </div>
 
-      <p className="mt-2 truncate font-sans text-sm text-stone-400">
+      <p className="mt-2 truncate font-sans text-sm text-stone-500">
         {sourceLabel || t("editor.scanNoPhoto")}
       </p>
 
       {error ? (
-        <p className="mt-3 font-seoyun text-sm leading-snug text-stone-300">{error}</p>
+        <p className="mt-3 font-seoyun text-sm leading-snug text-coral">{error}</p>
       ) : null}
 
       {result ? (
@@ -149,7 +149,7 @@ export default function FinishedWorkScanPanel({
           {result.messages.map((message) => (
             <p
               key={message}
-              className="font-seoyun text-sm font-normal leading-relaxed text-stone-200"
+              className="font-seoyun text-sm font-normal leading-relaxed text-stone-600"
             >
               {message}
             </p>

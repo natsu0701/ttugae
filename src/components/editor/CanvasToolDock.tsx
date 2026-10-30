@@ -71,8 +71,8 @@ function CanvasToolDock({
         </div>
       ) : null}
 
-      <div className="flex items-center gap-2 rounded-2xl border border-stone-600/80 bg-stone-800 px-3 py-2 shadow-sm">
-        <p className="mr-1 hidden font-sans text-sm font-normal tracking-wide text-stone-400 sm:block">
+      <div className="flex items-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 py-2 shadow-sm">
+        <p className="mr-1 hidden font-sans text-sm font-normal tracking-wide text-stone-500 sm:block">
           {t("editor.drawingTools")}
         </p>
         <div className="flex items-center gap-1.5">
@@ -104,7 +104,7 @@ function CanvasToolDock({
             {t("editor.fillSelection")}
           </button>
         ) : null}
-        <span className="mx-1 h-5 w-px bg-stone-600" aria-hidden />
+        <span className="mx-1 h-5 w-px bg-stone-200" aria-hidden />
         <button
           type="button"
           onClick={onZoomOut}
@@ -113,7 +113,7 @@ function CanvasToolDock({
         >
           <ZoomOutFillIcon className="h-5 w-5" />
         </button>
-        <span className="min-w-[2.5rem] text-center font-sans text-sm text-stone-300">
+        <span className="min-w-[2.5rem] text-center font-sans text-sm text-stone-500">
           {Math.round(zoom * 100)}%
         </span>
         <button

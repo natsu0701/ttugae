@@ -1,12 +1,12 @@
 /** 탭·필터: 기본 white → hover black → active coral + 에어브러시 섀도우 */
 export const softShadow = "shadow-sm";
 
-/** 에디터 다크 크롬 — 버튼·패널 공통 중간 톤 */
+/** 에디터 라이트 크롬 — 버튼·패널 공통 중간 톤 */
 export const editorChromeTone =
-  "border border-stone-600/80 bg-stone-700 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white";
+  "border border-stone-200 bg-white text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900";
 
 export const editorPanel =
-  "rounded-2xl border border-stone-600/80 bg-stone-700";
+  "rounded-2xl border border-stone-200 bg-white";
 
 export const editorChromeBtn = `rounded-xl ${editorChromeTone}`;
 

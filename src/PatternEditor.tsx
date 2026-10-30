@@ -623,7 +623,7 @@ export default function PatternEditor({
 
   return (
     <div
-      className="flex h-screen flex-col overflow-hidden bg-stone-800 font-sans text-stone-100"
+      className="flex h-screen flex-col overflow-hidden bg-[#F7F5F0] font-sans text-stone-800"
       onPointerUp={endDrag}
       onPointerLeave={endDrag}
     >
@@ -681,10 +681,10 @@ export default function PatternEditor({
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <aside
           ref={leftToolbarRef}
-          className="scrollbar-thin flex h-[calc(100vh-4rem)] w-[200px] shrink-0 flex-col gap-4 overflow-y-auto border-r border-stone-800/80 bg-stone-800 p-3 pb-8 md:p-5 md:pb-8"
+          className="scrollbar-thin flex h-[calc(100vh-4rem)] w-[200px] shrink-0 flex-col gap-4 overflow-y-auto border-r border-stone-200 bg-white p-3 pb-8 md:p-5 md:pb-8"
         >
           <div>
-            <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-400">
+            <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
               {t("editor.symbolPalette")}
             </p>
             <div className="grid grid-cols-2 gap-1.5">
@@ -710,7 +710,7 @@ export default function PatternEditor({
                   setCastOnMode("replace");
                   setCastOnOpen(true);
                 }}
-                className="flex flex-col items-center rounded-xl border border-stone-500 bg-transparent px-1.5 py-2 font-sans text-sm font-normal text-stone-100 transition-colors hover:border-stone-400 hover:bg-stone-700/40"
+                className={`flex flex-col items-center px-1.5 py-2 font-sans text-sm font-normal ${editorChromeBtn}`}
                 aria-label={t("editor.castOnButton")}
                 title={t("editor.castOnButton")}
               >
@@ -738,7 +738,7 @@ export default function PatternEditor({
           </div>
 
           <div ref={yarnPaletteRef} className="relative">
-            <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-400">
+            <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
               {t("editor.yarnColors")}
             </p>
             <div className="grid grid-cols-3 gap-1.5">
@@ -816,8 +816,8 @@ export default function PatternEditor({
               <TteuniChatbot onUserMessage={handleAiMessage} />
             </div>
             <div className={`${editorPanel} p-4`}>
-              <p className="mb-1 font-sans text-base font-bold text-white">{t("editor.needlePanelTitle")}</p>
-              <p className="mb-3 font-seoyun text-sm font-normal text-stone-400">
+              <p className="mb-1 font-sans text-base font-bold text-stone-900">{t("editor.needlePanelTitle")}</p>
+              <p className="mb-3 font-seoyun text-sm font-normal text-stone-500">
                 {t("editor.needlePanelHint")}
               </p>
               <NeedleSpecFields
@@ -826,7 +826,6 @@ export default function PatternEditor({
                   setNeedle(next);
                   markDirty();
                 }}
-                tone="dark"
               />
             </div>
             <FinishedWorkScanPanel
@@ -839,7 +838,7 @@ export default function PatternEditor({
             />
             <div className={`relative min-w-0 p-4 ${editorPanel}`}>
               <div className="mb-2 flex shrink-0 items-center justify-between gap-2">
-                <p className="font-sans text-sm font-normal uppercase tracking-wide text-stone-400">
+                <p className="font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
                   {t("editor.narrativePreview")}
                 </p>
                 <button
@@ -860,7 +859,7 @@ export default function PatternEditor({
                   ) : null}
                 </button>
               </div>
-              <pre className="scrollbar-thin max-h-[200px] min-w-0 overflow-x-hidden overflow-y-auto break-keep break-words whitespace-pre-wrap font-sans text-sm font-normal leading-relaxed text-stone-200 md:max-h-[240px]">
+              <pre className="scrollbar-thin max-h-[200px] min-w-0 overflow-x-hidden overflow-y-auto break-keep break-words whitespace-pre-wrap font-sans text-sm font-normal leading-relaxed text-stone-600 md:max-h-[240px]">
                 {patternText}
               </pre>
             </div>

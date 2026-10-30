@@ -41,7 +41,7 @@ export default function ColorPresetsSection({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="font-sans text-sm font-normal uppercase tracking-wide text-stone-400">
+        <p className="font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
           {t("editor.colorPresetsTitle")}
         </p>
         <button
@@ -81,7 +81,7 @@ export default function ColorPresetsSection({
                   </span>
                   <span
                     className={`truncate font-sans text-sm font-normal ${
-                      active ? "text-white" : "text-stone-100"
+                      active ? "text-white" : "text-stone-700"
                     }`}
                   >
                     {presetLabel(preset, t)}

@@ -20,8 +20,8 @@ export default function SelectionColorsPanel({
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-2xl border border-stone-600/80 bg-stone-700 p-3">
-      <p className="mb-0.5 font-sans text-sm font-normal uppercase tracking-[0.14em] text-stone-400">
+    <div className="rounded-2xl border border-stone-200 bg-white p-3">
+      <p className="mb-0.5 font-sans text-sm font-normal uppercase tracking-[0.14em] text-stone-500">
         Selection Colors
       </p>
       <p className="mb-3 font-seoyun text-sm font-normal text-stone-500">

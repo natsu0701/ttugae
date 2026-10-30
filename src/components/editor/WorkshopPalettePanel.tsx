@@ -48,8 +48,8 @@ export default function WorkshopPalettePanel({
     return fallback;
   };
   return (
-    <div className="mt-6 rounded-2xl border border-stone-600/80 bg-stone-700 p-4">
-      <p className="mb-3 font-sans text-sm font-normal tracking-wide text-stone-300">
+    <div className="mt-6 rounded-2xl border border-stone-200 bg-stone-50 p-4">
+      <p className="mb-3 font-sans text-sm font-normal tracking-wide text-stone-500">
         {t("editor.workshopTitle")}
       </p>
 
@@ -72,7 +72,7 @@ export default function WorkshopPalettePanel({
                 </span>
                 <span
                   className={`block truncate font-sans text-2xs font-normal uppercase tracking-wide ${
-                    active ? "text-white/80" : "text-stone-400"
+                    active ? "text-white/80" : "text-stone-500"
                   }`}
                 >
                   {palette.sub}
@@ -83,7 +83,7 @@ export default function WorkshopPalettePanel({
                 {palette.colors.map((hex) => (
                   <span
                     key={hex}
-                    className="h-5 w-5 rounded-full border border-stone-800/80"
+                    className="h-5 w-5 rounded-full border border-white"
                     style={{ backgroundColor: hex }}
                     aria-hidden
                   />
