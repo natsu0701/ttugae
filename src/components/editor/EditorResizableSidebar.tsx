@@ -4,28 +4,35 @@ import {
   useRef,
   useState,
   type MouseEvent as ReactMouseEvent,
+  type MutableRefObject,
   type ReactNode,
 } from "react";
 import { useTranslation } from "react-i18next";
 import { iconTip } from "../../utils/iconTip.ts";
 
-const SIDEBAR_MIN = 240;
-const SIDEBAR_MAX = 560;
-const SIDEBAR_DEFAULT = 320;
+const SIDEBAR_PRESET = {
+  left: { min: 176, max: 360, width: 200 },
+  right: { min: 240, max: 560, width: 320 },
+} as const;
 
-type EditorRightSidebarProps = {
+type EditorResizableSidebarProps = {
+  side: "left" | "right";
   children: ReactNode;
+  asideRef?: MutableRefObject<HTMLElement | null>;
 };
 
 function dispatchCanvasResize() {
   window.dispatchEvent(new Event("resize"));
 }
 
-export default function EditorRightSidebar({
+export default function EditorResizableSidebar({
+  side,
   children,
-}: EditorRightSidebarProps) {
+  asideRef,
+}: EditorResizableSidebarProps) {
   const { t } = useTranslation();
-  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT);
+  const preset = SIDEBAR_PRESET[side];
+  const [sidebarWidth, setSidebarWidth] = useState<number>(preset.width);
   const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);
 
   const onMouseDown = useCallback(
@@ -45,8 +52,9 @@ export default function EditorRightSidebar({
     const onMove = (e: MouseEvent) => {
       const drag = dragRef.current;
       if (!drag) return;
-      const next = drag.startWidth + (drag.startX - e.clientX);
-      setSidebarWidth(Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, next)));
+      const delta = side === "left" ? e.clientX - drag.startX : drag.startX - e.clientX;
+      const next = drag.startWidth + delta;
+      setSidebarWidth(Math.min(preset.max, Math.max(preset.min, next)));
     };
 
     const onUp = () => {
@@ -63,20 +71,27 @@ export default function EditorRightSidebar({
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
-  }, []);
+  }, [preset.max, preset.min, side]);
 
   return (
     <div className="relative flex h-full max-h-[calc(100vh-4rem)] shrink-0 flex-col">
       <div
         role="separator"
         aria-orientation="vertical"
-        {...iconTip(t("editor.sidebarResize"))}
+        {...iconTip(t("editor.sidebarResize"), side === "left" ? "right" : "above")}
         onMouseDown={onMouseDown}
-        className="absolute left-0 top-0 z-20 h-full w-1.5 cursor-col-resize hover:bg-coral/50"
+        className={`absolute top-0 z-20 h-full w-1.5 cursor-col-resize hover:bg-coral/50 ${
+          side === "left" ? "right-0" : "left-0"
+        }`}
       />
 
       <aside
-        className="relative h-full overflow-hidden border-l border-stone-200 bg-white"
+        ref={(el) => {
+          if (asideRef) asideRef.current = el;
+        }}
+        className={`relative h-full overflow-hidden bg-white ${
+          side === "left" ? "border-r border-stone-200" : "border-l border-stone-200"
+        }`}
         style={{ width: sidebarWidth }}
       >
         <div

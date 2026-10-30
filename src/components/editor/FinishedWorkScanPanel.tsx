@@ -5,7 +5,7 @@ import {
   ImageFillIcon,
   SpinnerFillIcon,
 } from "../icons/FillIcons.tsx";
-import { editorChromeBtn, editorChromeBtnActive, editorPanel } from "../ui/tabButtonStyles.ts";
+import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
 import {
   PROJECT_FINISHED_PHOTOS,
   scanFinishedWorkAgainstGrid,
@@ -84,7 +84,7 @@ export default function FinishedWorkScanPanel({
   };
 
   return (
-    <div className={`${editorPanel} p-4`}>
+    <div>
       <p className="mb-1 font-sans text-base font-bold text-stone-900">{t("editor.scanTitle")}</p>
       <p className="mb-3 font-seoyun text-sm font-normal leading-snug text-stone-500">
         {t("editor.scanHint")}

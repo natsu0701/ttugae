@@ -7,7 +7,7 @@ import {
 } from "./components/icons/FillIcons.tsx";
 import AiPreviewNavigator from "./components/editor/AiPreviewNavigator.tsx";
 import FinishedWorkScanPanel from "./components/editor/FinishedWorkScanPanel.tsx";
-import EditorRightSidebar from "./components/editor/EditorRightSidebar.tsx";
+import EditorResizableSidebar from "./components/editor/EditorResizableSidebar.tsx";
 import EditorHeader from "./components/editor/EditorHeader.tsx";
 import CastOnModal from "./components/editor/CastOnModal.tsx";
 import NeedleSpecFields from "./components/editor/NeedleSpecFields.tsx";
@@ -679,10 +679,8 @@ export default function PatternEditor({
       />
 
       <div className="flex min-h-0 flex-1 overflow-hidden">
-        <aside
-          ref={leftToolbarRef}
-          className="scrollbar-thin flex h-[calc(100vh-4rem)] w-[200px] shrink-0 flex-col gap-4 overflow-y-auto border-r border-stone-200 bg-white p-3 pb-8 md:p-5 md:pb-8"
-        >
+        <EditorResizableSidebar side="left" asideRef={leftToolbarRef}>
+        <div className="scrollbar-thin flex h-full min-h-0 flex-col gap-4 overflow-y-auto p-3 pb-8 md:p-5 md:pb-8">
           <div>
             <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
               {t("editor.symbolPalette")}
@@ -770,7 +768,8 @@ export default function PatternEditor({
               existingIds={paletteYarnIds}
             />
           </div>
-        </aside>
+        </div>
+        </EditorResizableSidebar>
 
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#F7F5F0]">
         <EditorCanvasStage
@@ -799,7 +798,7 @@ export default function PatternEditor({
         </EditorCanvasStage>
         </main>
 
-        <EditorRightSidebar>
+        <EditorResizableSidebar side="right">
           <div className="scrollbar-thin flex h-full min-h-0 flex-col gap-4 overflow-x-hidden overflow-y-auto p-4 md:p-5">
             <AiPreviewNavigator
               title={title}
@@ -814,7 +813,7 @@ export default function PatternEditor({
             <div ref={chatbotPanelRef}>
               <TteuniChatbot onUserMessage={handleAiMessage} />
             </div>
-            <div className={`${editorPanel} p-4`}>
+            <div>
               <p className="mb-1 font-sans text-base font-bold text-stone-900">{t("editor.needlePanelTitle")}</p>
               <p className="mb-3 font-seoyun text-sm font-normal text-stone-500">
                 {t("editor.needlePanelHint")}
@@ -863,7 +862,7 @@ export default function PatternEditor({
               </pre>
             </div>
           </div>
-        </EditorRightSidebar>
+        </EditorResizableSidebar>
       </div>
 
       <GiftPackagingAnimation

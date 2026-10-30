@@ -48,8 +48,8 @@ export default function WorkshopPalettePanel({
     return fallback;
   };
   return (
-    <div className="mt-6 rounded-2xl border border-stone-200 bg-stone-50 p-4">
-      <p className="mb-3 font-sans text-sm font-normal tracking-wide text-stone-500">
+    <div className="mt-4">
+      <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
         {t("editor.workshopTitle")}
       </p>
 

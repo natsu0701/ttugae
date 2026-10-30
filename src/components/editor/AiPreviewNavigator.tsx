@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
 import { inferKnitItemType, type KnitItemType } from "../../utils/knitItemType.ts";
-import { editorChromeTone, editorPanel } from "../ui/tabButtonStyles.ts";
+import { editorChromeTone } from "../ui/tabButtonStyles.ts";
 import { SpinnerFillIcon } from "../icons/FillIcons.tsx";
 
 const Knitting3DPreview = lazy(() => import("./Knitting3DPreview.tsx"));
@@ -49,7 +49,7 @@ export default function AiPreviewNavigator({
   }, [inferred]);
 
   return (
-    <div className={`${editorPanel} p-4`}>
+    <div>
       <p className="mb-2 font-sans text-base font-bold text-stone-900">
         {t("editor.preview3d")}
       </p>
