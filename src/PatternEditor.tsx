@@ -13,6 +13,7 @@ import CastOnModal from "./components/editor/CastOnModal.tsx";
 import NeedleSpecFields from "./components/editor/NeedleSpecFields.tsx";
 import ChartTabs from "./components/editor/ChartTabs.tsx";
 import EditorCanvasStage from "./components/editor/EditorCanvasStage.tsx";
+import GaugeCalculator from "./components/mypage/GaugeCalculator.tsx";
 import { iconTip } from "./utils/iconTip.ts";
 import PatternGrid from "./components/editor/PatternGrid.tsx";
 import ColorChipMenu from "./components/editor/ColorChipMenu.tsx";
@@ -47,6 +48,11 @@ import {
 } from "./types/knittingProject.ts";
 import { persistCurrentProgressRow } from "./utils/editorProgressStorage.ts";
 import { formatNeedleBadgeI18n } from "./utils/i18nContent.ts";
+import {
+  loadGaugeProfile,
+  saveGaugeProfile,
+  type GaugeProfile,
+} from "./utils/personalizationStorage.ts";
 import { useUnsavedChanges } from "./context/UnsavedChangesContext.tsx";
 import {
   assignPatternCollection,
@@ -97,7 +103,6 @@ type PatternEditorProps = {
   }) => void;
   onExit: () => void;
   onGoDashboard: () => void;
-  onOpenAr?: () => void;
 };
 
 function initGrid(initial: PatternEditorProps["initialPattern"]) {
@@ -151,13 +156,22 @@ function isCheckerCell(r: number, c: number) {
   return (r + c) % 2 === 0;
 }
 
+function loadEditorGauge(): GaugeProfile {
+  const saved = loadGaugeProfile();
+  return {
+    beforeSts: saved?.beforeSts || "24",
+    beforeRows: saved?.beforeRows || "32",
+    afterSts: saved?.afterSts || "",
+    afterRows: saved?.afterRows || "",
+  };
+}
+
 export default function PatternEditor({
   initialPattern,
   onSave,
   onShare,
   onExit,
   onGoDashboard,
-  onOpenAr,
 }: PatternEditorProps) {
   const { t } = useTranslation();
   const { setDirty, registerSaver, requestLeave } = useUnsavedChanges();
@@ -181,6 +195,7 @@ export default function PatternEditor({
   const [needle, setNeedle] = useState<NeedleSpec>(
     () => initialPattern?.needle ?? DEFAULT_NEEDLE,
   );
+  const [gauge, setGauge] = useState<GaugeProfile>(loadEditorGauge);
   const [isPackOpen, setIsPackOpen] = useState(false);
   const [activeColor, setActiveColor] = useState<string>("coral");
   const [activeStitch, setActiveStitch] = useState<string>("knit");
@@ -523,10 +538,6 @@ export default function PatternEditor({
     return () => registerSaver(() => undefined);
   }, [registerSaver, onSave, patternId, saveCollectionId, setDirty, title, charts, needle]);
 
-  const handleOpenAr = () => {
-    onOpenAr?.();
-  };
-
   const handleShareToCommunity = () => {
     const payload = buildPatternPayload();
     onSave(payload);
@@ -644,7 +655,6 @@ export default function PatternEditor({
         onApplySize={applySize}
         onSave={handleSave}
         onShare={handleShareToCommunity}
-        onOpenAr={onOpenAr ? handleOpenAr : undefined}
         onExit={() => requestLeave(onExit)}
         onAddChart={() => {
           setCastOnMode("add");
@@ -718,16 +728,17 @@ export default function PatternEditor({
                 </span>
               </button>
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                setCastOnMode("gauge");
-                setCastOnOpen(true);
-              }}
-              className={`mt-2 w-full px-3 py-2.5 font-sans text-sm font-normal ${editorChromeBtn}`}
-            >
-              {t("editor.gaugeButton")}
-            </button>
+            <div className="mt-4">
+              <GaugeCalculator
+                compact
+                gauge={gauge}
+                onChange={(next) => {
+                  setGauge(next);
+                  saveGaugeProfile(next);
+                }}
+                onApplySize={applySize}
+              />
+            </div>
 
             <WorkshopPalettePanel
               activePaletteId={activeWorkshopPaletteId}

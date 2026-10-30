@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import BackButton from "../ui/BackButton.tsx";
-import { CameraFillIcon, PlusFillIcon } from "../icons/FillIcons.tsx";
+import { PlusFillIcon } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
 import { iconTip } from "../../utils/iconTip.ts";
 
@@ -27,7 +27,6 @@ type EditorHeaderProps = {
   onApplySize: (w: number, h: number) => void;
   onSave: () => void;
   onShare: () => void;
-  onOpenAr?: () => void;
   onExit: () => void;
   onAddChart: () => void;
   sizeMenuRef: RefObject<HTMLDivElement>;
@@ -50,7 +49,6 @@ function EditorHeader({
   onApplySize,
   onSave,
   onShare,
-  onOpenAr,
   onExit,
   onAddChart,
   sizeMenuRef,
@@ -61,7 +59,7 @@ function EditorHeader({
   const { t } = useTranslation();
 
   return (
-    <header className="relative z-20 flex h-16 shrink-0 items-center gap-3 border-b border-stone-200 bg-white px-4 md:px-6">
+    <header className="relative z-20 flex min-h-16 shrink-0 items-center gap-3 border-b border-stone-200 bg-white px-4 py-2 md:px-6">
       <BackButton onClick={onExit} className={`shrink-0 ${editorChromeBtn}`} />
 
       <SmoothInput
@@ -70,16 +68,16 @@ function EditorHeader({
         onChange={(e) => onTitleChange(e.target.value)}
         placeholder={t("editor.patternNamePlaceholder")}
         aria-label={t("editor.patternName")}
-        className="h-10 w-40 rounded-xl border-stone-200 bg-white px-3 py-1.5 text-base font-semibold tracking-normal placeholder:text-stone-400 md:w-56"
+        className="h-10 w-40 shrink-0 rounded-xl border-stone-200 bg-white px-3 py-1.5 text-base font-semibold tracking-normal placeholder:text-stone-400 md:w-56"
       />
 
       <button
         type="button"
         onClick={onAddChart}
-        className={`flex shrink-0 items-center gap-1 px-3 py-1.5 font-sans text-sm font-medium ${editorChromeBtn}`}
+        className="flex h-9 w-9 shrink-0 items-center justify-center text-stone-600 transition-colors hover:text-stone-900"
+        {...iconTip(t("editor.castOn.addAction"), "below")}
       >
-        <PlusFillIcon className="h-3.5 w-3.5" />
-        {t("editor.castOn.addAction")}
+        <PlusFillIcon className="h-4 w-4" />
       </button>
 
       {chartTabs ? <div className="hidden min-w-0 md:block">{chartTabs}</div> : null}
@@ -147,26 +145,16 @@ function EditorHeader({
         )}
       </div>
 
-      <p className="hidden truncate font-sans text-sm text-stone-500 lg:block">
-        {t("editor.needleShort")}: {needleLabel}
-      </p>
-      <p className="hidden max-w-[12rem] truncate font-sans text-sm text-stone-500 xl:block">
-        {t("editor.yarnShort")}: {yarnLabel}
-      </p>
+      <div className="min-w-0 flex-1">
+        <p className="break-keep font-sans text-sm leading-snug text-stone-500">
+          {t("editor.needleShort")}: {needleLabel}
+        </p>
+        <p className="break-keep font-sans text-sm leading-snug text-stone-500">
+          {t("editor.yarnShort")}: {yarnLabel}
+        </p>
+      </div>
 
       <div className="ml-auto flex shrink-0 items-center gap-2">
-        {onOpenAr ? (
-          <button
-            type="button"
-            onClick={onOpenAr}
-            className={`${editorChromeBtn} flex items-center gap-1.5 px-3 py-2 font-sans text-base font-semibold`}
-            {...iconTip(t("editor.openAr"), "below")}
-          >
-            <CameraFillIcon className="h-4 w-4" />
-            <span className="hidden sm:inline">{t("editor.openAr")}</span>
-            <span className="sm:hidden">{t("editor.openArShort")}</span>
-          </button>
-        ) : null}
         <button
           type="button"
           onClick={onSave}

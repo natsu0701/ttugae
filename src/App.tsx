@@ -418,7 +418,6 @@ function AppRoutes() {
           <PatternEditor
             initialPattern={initial}
             onExit={leaveEditor}
-            onOpenAr={openAr}
             onGoDashboard={() => {
               setIncomingShare(null);
               setActivePatternId(null);

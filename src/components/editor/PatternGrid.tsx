@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { stitchSymbol } from "../../data/stitchSymbols.ts";
 import { symbolColorForBackground } from "../../utils/colorContrast.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
@@ -19,6 +19,10 @@ type PatternGridProps = {
   onCellPointerEnter: (r: number, c: number) => void;
 };
 
+const GAP_PX = 1;
+const FRAME_PAD_PX = 8;
+const MIN_CELL_PX = 4;
+
 function inSelection(selection: Selection | null, r: number, c: number) {
   if (!selection) return false;
   const rMin = Math.min(selection.r0, selection.r1);
@@ -36,42 +40,81 @@ function PatternGrid({
   onCellPointerDown,
   onCellPointerEnter,
 }: PatternGridProps) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState({ w: 0, h: 0 });
   const gridRows = grid.length;
   const gridCols = grid[0]?.length ?? 0;
   const stitchSize =
     gridCols > 30 ? "text-3xs" : gridCols > 20 ? "text-3xs" : "text-2xs";
 
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const cr = entries[0]?.contentRect;
+      if (!cr) return;
+      setBox({ w: cr.width, h: cr.height });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const innerW = Math.max(0, box.w - FRAME_PAD_PX * 2);
+  const innerH = Math.max(0, box.h - FRAME_PAD_PX * 2);
+  const cell =
+    innerW && innerH && gridCols && gridRows
+      ? Math.max(
+          MIN_CELL_PX,
+          Math.floor(
+            Math.min(
+              (innerW - GAP_PX * (gridCols - 1)) / gridCols,
+              (innerH - GAP_PX * (gridRows - 1)) / gridRows,
+            ),
+          ),
+        )
+      : 0;
+  const gridW = cell * gridCols + GAP_PX * Math.max(0, gridCols - 1);
+  const gridH = cell * gridRows + GAP_PX * Math.max(0, gridRows - 1);
+
   return (
     <div
-      className="max-h-full max-w-full rounded-xl bg-white p-3 shadow-sm"
-      style={{
-        aspectRatio: `${gridCols} / ${gridRows}`,
-        width: gridCols >= gridRows ? "100%" : "auto",
-        height: gridRows > gridCols ? "100%" : "auto",
-      }}
+      ref={wrapRef}
+      className="flex h-full w-full min-h-0 min-w-0 items-center justify-center"
     >
       <div
-        className={`h-full w-full ${pointerDisabled ? "pointer-events-none" : ""}`}
-        style={{ aspectRatio: `${gridCols} / ${gridRows}` }}
+        className="rounded-xl bg-white shadow-sm"
+        style={{
+          padding: FRAME_PAD_PX,
+          width: cell ? gridW + FRAME_PAD_PX * 2 : undefined,
+          height: cell ? gridH + FRAME_PAD_PX * 2 : undefined,
+          visibility: cell ? "visible" : "hidden",
+        }}
       >
         <div
-          className="grid h-full w-full gap-px rounded-xl bg-stone-200/70 p-1"
+          className={`grid bg-stone-200/70 ${pointerDisabled ? "pointer-events-none" : ""}`}
           style={{
-            gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
-            gridTemplateRows: `repeat(${gridRows}, minmax(0, 1fr))`,
+            gridTemplateColumns: `repeat(${gridCols}, ${cell}px)`,
+            gridTemplateRows: `repeat(${gridRows}, ${cell}px)`,
+            gap: GAP_PX,
+            width: gridW,
+            height: gridH,
           }}
         >
           {grid.map((row, r) =>
-            row.map((cell, c) => {
+            row.map((cellData, c) => {
               const selected = inSelection(selection, r, c);
-              const bgHex = colorMap[cell.colorId] ?? "#FFFFFF";
+              const bgHex = colorMap[cellData.colorId] ?? "#FFFFFF";
               const symbolColor = symbolColorForBackground(bgHex);
               return (
                 <button
                   key={`${r}-${c}`}
                   type="button"
-                  className={`relative h-full w-full min-w-0 rounded-sm ${stitchSize}`}
-                  style={{ backgroundColor: bgHex }}
+                  className={`relative flex items-center justify-center rounded-sm ${stitchSize}`}
+                  style={{
+                    width: cell,
+                    height: cell,
+                    backgroundColor: bgHex,
+                  }}
                   onPointerDown={(e) => {
                     e.preventDefault();
                     onCellPointerDown(r, c);
@@ -88,7 +131,7 @@ function PatternGrid({
                     className="pointer-events-none relative z-[1] font-sans font-normal"
                     style={{ color: symbolColor }}
                   >
-                    {stitchSymbol(cell.stitchId)}
+                    {stitchSymbol(cellData.stitchId)}
                   </span>
                 </button>
               );
