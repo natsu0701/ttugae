@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { EditorYarn } from "../../types/editorYarn.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
 import { inferKnitItemType, type KnitItemType } from "../../utils/knitItemType.ts";
@@ -18,7 +17,6 @@ type AiPreviewNavigatorProps = {
   charts?: KnittingChart[];
   colorMap: Record<string, string>;
   stitchSymbols: Record<string, string>;
-  yarnMeta?: EditorYarn[];
 };
 
 const ITEM_OPTIONS: { id: KnitItemType; labelKey: string }[] = [
@@ -38,7 +36,6 @@ export default function AiPreviewNavigator({
   charts = [],
   colorMap,
   stitchSymbols,
-  yarnMeta = [],
 }: AiPreviewNavigatorProps) {
   const { t } = useTranslation();
   const inferred = useMemo(() => inferKnitItemType(title), [title]);
@@ -50,23 +47,12 @@ export default function AiPreviewNavigator({
     lastInferred.current = inferred;
     setItemType(inferred);
   }, [inferred]);
-  const metaHint = useMemo(() => {
-    if (yarnMeta.length === 0) return null;
-    const fibers = [...new Set(yarnMeta.map((y) => y.fiberType))];
-    const textures = [...new Set(yarnMeta.map((y) => y.texture))];
-    return `${fibers.join(" · ")} (${textures.join(", ")})`;
-  }, [yarnMeta]);
 
   return (
     <div className={`${editorPanel} p-4`}>
-      <p className="mb-1 font-sans text-base font-bold text-stone-900">
+      <p className="mb-2 font-sans text-base font-bold text-stone-900">
         {t("editor.preview3d")}
       </p>
-      {metaHint && (
-        <p className="mb-2 font-seoyun text-sm font-normal leading-snug text-stone-500">
-          {metaHint}
-        </p>
-      )}
 
       <div className="mb-3 flex flex-wrap gap-1">
         {ITEM_OPTIONS.map((item) => {
@@ -103,7 +89,6 @@ export default function AiPreviewNavigator({
             colorMap={colorMap}
             stitchSymbols={stitchSymbols}
             itemType={itemType}
-            yarnMeta={yarnMeta}
           />
         </Suspense>
       </div>

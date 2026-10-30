@@ -6,7 +6,6 @@ import { Html, OrbitControls, useGLTF } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import { RotateFillIcon, SpinnerFillIcon, ZoomInFillIcon, ZoomOutFillIcon } from "../icons/FillIcons.tsx";
-import type { EditorYarn } from "../../types/editorYarn.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
 import { type KnitItemType } from "../../utils/knitItemType.ts";
@@ -43,7 +42,6 @@ export type Knitting3DPreviewProps = {
   className?: string;
   itemType?: KnitItemType;
   gauge?: KnitGauge;
-  yarnMeta?: EditorYarn[];
   active?: boolean;
   charts?: KnittingChart[];
 };
@@ -107,6 +105,26 @@ function cellHex(cell: EditorCell | undefined, colorMap: Record<string, string>)
   return colorMap[id] ?? "#FFFBF7";
 }
 
+function hexToRgb(hex: string): [number, number, number] {
+  const raw = hex.trim().replace("#", "");
+  const normalized =
+    raw.length === 3 ? raw.split("").map((ch) => `${ch}${ch}`).join("") : raw.slice(0, 6);
+  const n = Number.parseInt(normalized, 16);
+  if (!Number.isFinite(n)) return [255, 251, 247];
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+let colorScratch: HTMLCanvasElement | null = null;
+
+function getColorScratch(width: number, height: number) {
+  if (!colorScratch) colorScratch = document.createElement("canvas");
+  if (colorScratch.width !== width || colorScratch.height !== height) {
+    colorScratch.width = width;
+    colorScratch.height = height;
+  }
+  return colorScratch;
+}
+
 function drawVLoop(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -151,10 +169,7 @@ function drawVTripletCell(
   y: number,
   w: number,
   h: number,
-  fill: string,
 ) {
-  ctx.fillStyle = fill;
-  ctx.fillRect(x, y, w, h);
   const subW = w / 3;
   for (let i = 0; i < 3; i++) {
     drawVLoop(ctx, x + i * subW, y, subW, h);
@@ -209,14 +224,41 @@ function paintSymbolChart(
   const cellW = destW / usedCols;
   const cellH = destH / usedRows;
 
+  const scratch = getColorScratch(usedCols, usedRows);
+  const scratchCtx = scratch.getContext("2d");
+  if (!scratchCtx) return;
+  const pixels = scratchCtx.createImageData(usedCols, usedRows);
   for (let r = r0; r <= r1; r++) {
     for (let c = c0; c <= c1; c++) {
       const cell = cells[r]?.[c];
+      const filled = isFilledCell(cell);
+      const [red, green, blue] = hexToRgb(filled ? cellHex(cell, colorMap) : "#FFFBF7");
+      const i = ((r - r0) * usedCols + (c - c0)) * 4;
+      pixels.data[i] = red;
+      pixels.data[i + 1] = green;
+      pixels.data[i + 2] = blue;
+      pixels.data[i + 3] = 255;
+    }
+  }
+  scratchCtx.putImageData(pixels, 0, 0);
+
+  const blurPx = Math.max(2, Math.min(cellW, cellH) * 0.32);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(destX, destY, destW, destH);
+  ctx.clip();
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.filter = `blur(${blurPx}px)`;
+  ctx.drawImage(scratch, destX, destY, destW, destH);
+  ctx.filter = "none";
+  ctx.restore();
+
+  for (let r = r0; r <= r1; r++) {
+    for (let c = c0; c <= c1; c++) {
       const cx = destX + (c - c0) * cellW;
       const cy = destY + (r - r0) * cellH;
-      const filled = isFilledCell(cell);
-      const color = filled ? cellHex(cell, colorMap) : "#FFFBF7";
-      drawVTripletCell(ctx, cx, cy, cellW, cellH, color);
+      drawVTripletCell(ctx, cx, cy, cellW, cellH);
     }
   }
 }
@@ -445,7 +487,8 @@ function GarmentModel({
       canvas.height = face;
       const texture = new THREE.CanvasTexture(canvas);
       texture.colorSpace = THREE.SRGBColorSpace;
-      texture.minFilter = THREE.LinearFilter;
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.wrapS = THREE.ClampToEdgeWrapping;
       texture.wrapT = THREE.ClampToEdgeWrapping;

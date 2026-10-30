@@ -810,7 +810,6 @@ export default function PatternEditor({
               charts={charts}
               colorMap={colorMap}
               stitchSymbols={stitchSymbols}
-              yarnMeta={usedYarns}
             />
             <div ref={chatbotPanelRef}>
               <TteuniChatbot onUserMessage={handleAiMessage} />
