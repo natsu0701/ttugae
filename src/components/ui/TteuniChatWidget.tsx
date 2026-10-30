@@ -12,6 +12,7 @@ import {
   ResizeFillIcon,
   SendFillIcon,
 } from "../icons/FillIcons.tsx";
+import { iconTip } from "../../utils/iconTip.ts";
 
 type ChatMessage = {
   id: string;
@@ -159,7 +160,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
           type="button"
           onPointerDown={startResize}
           className="absolute left-0 top-0 z-10 flex h-6 w-6 cursor-nwse-resize items-center justify-center text-stone-300 hover:text-stone-500"
-          aria-label={t("chat.resize")}
+          {...iconTip(t("chat.resize"), "below")}
         >
           <ResizeFillIcon className="h-3 w-3" />
         </button>
@@ -171,7 +172,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
           type="button"
           onClick={() => setExpanded((value) => !value)}
           className="flex h-8 w-8 items-center justify-center rounded-full text-stone-400 hover:bg-stone-100 hover:text-stone-700"
-          aria-label={expanded ? t("chat.collapse") : t("chat.expand")}
+          {...iconTip(expanded ? t("chat.collapse") : t("chat.expand"), "below")}
         >
           {expanded ? <CollapseFillIcon className="h-4 w-4" /> : <ExpandFillIcon className="h-4 w-4" />}
         </button>
@@ -179,7 +180,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
           type="button"
           onClick={onClose}
           className="flex h-8 w-8 items-center justify-center rounded-full text-stone-400 hover:bg-stone-100 hover:text-stone-700"
-          aria-label={t("common.close")}
+          {...iconTip(t("common.close"), "below")}
         >
           <CloseFillIcon className="h-4 w-4" />
         </button>
@@ -260,7 +261,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
           onClick={submit}
           disabled={busy}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral text-white hover:bg-black disabled:opacity-50"
-          aria-label={t("common.send")}
+          {...iconTip(t("common.send"))}
         >
           <SendFillIcon className="h-5 w-5" />
         </button>

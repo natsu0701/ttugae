@@ -10,6 +10,7 @@ import {
   type LoungeFilters,
 } from "../../data/loungeFilters.ts";
 import { LOUNGE_CLOSE_FILTER_EVENT } from "../../utils/communityTabEvent.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 type FilterOption = { id: string; labelKey: string };
 
@@ -116,7 +117,7 @@ function CommunityFilterBar({
           type="button"
           onClick={() => setPanelOpen((open) => !open)}
           aria-expanded={panelOpen}
-          aria-label={t("community.filterAria")}
+          {...iconTip(t("community.filterAria"))}
           className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors ${
             panelOpen || hasActive
               ? "border-gray-900 bg-gray-900 text-white"

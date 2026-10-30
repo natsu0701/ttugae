@@ -4,6 +4,7 @@ import { CloseFillIcon } from "../icons/FillIcons.tsx";
 import SmoothInput from "./SmoothInput.tsx";
 import type { PatternCollection } from "../../utils/collectionStorage.ts";
 import { UNFILED_COLLECTION_ID } from "../../utils/collectionStorage.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 type GiftPackagingAnimationProps = {
   isOpen: boolean;
@@ -69,7 +70,7 @@ function GiftPackagingAnimation({
           type="button"
           onClick={onClose}
           className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-stone-400 hover:bg-white hover:text-stone-700"
-          aria-label={t("common.close")}
+          {...iconTip(t("common.close"))}
         >
           <CloseFillIcon className="h-4 w-4" />
         </button>

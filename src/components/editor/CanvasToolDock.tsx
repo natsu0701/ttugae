@@ -11,6 +11,7 @@ import {
   ZoomOutFillIcon,
 } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 type Tool = "paint" | "eraser" | "checker" | "select" | "pan";
 
@@ -63,7 +64,7 @@ function CanvasToolDock({
             type="button"
             onClick={onDismissHint}
             className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700"
-            aria-label={t("editor.close")}
+            {...iconTip(t("editor.close"))}
           >
             <CloseFillIcon className="h-4 w-4" />
           </button>
@@ -84,8 +85,7 @@ function CanvasToolDock({
                 key={toolItem.id}
                 type="button"
                 onClick={() => onToolChange(toolItem.id)}
-                title={label}
-                aria-label={label}
+                {...iconTip(label)}
                 className={`flex h-10 w-10 items-center justify-center px-2.5 font-sans text-base font-normal ${
                   isActive ? editorChromeBtnActive : editorChromeBtn
                 }`}
@@ -109,7 +109,7 @@ function CanvasToolDock({
           type="button"
           onClick={onZoomOut}
           className={`flex h-10 w-10 items-center justify-center ${editorChromeBtn}`}
-          aria-label={t("editor.zoomOut")}
+          {...iconTip(t("editor.zoomOut"))}
         >
           <ZoomOutFillIcon className="h-5 w-5" />
         </button>
@@ -120,7 +120,7 @@ function CanvasToolDock({
           type="button"
           onClick={onZoomIn}
           className={`flex h-10 w-10 items-center justify-center ${editorChromeBtn}`}
-          aria-label={t("editor.zoomIn")}
+          {...iconTip(t("editor.zoomIn"))}
         >
           <ZoomInFillIcon className="h-5 w-5" />
         </button>

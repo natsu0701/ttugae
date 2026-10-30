@@ -1,6 +1,7 @@
 import { memo, useState, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { BookmarkFillIcon, ChatFillIcon, HeartFillIcon } from "../icons/FillIcons.tsx";
+import { iconTip } from "../../utils/iconTip.ts";
 import {
   finishedImageUrl,
   type CommunityPattern,
@@ -159,7 +160,7 @@ function ShowcaseFeedCard({
               liked ? "font-semibold text-coral" : "text-stone-400 hover:text-stone-600"
             }`}
             aria-pressed={liked}
-            aria-label={t("community.like")}
+            {...iconTip(t("community.like"))}
           >
             <HeartFillIcon className="h-4 w-4" filled={liked} />
             <span className="font-bold text-stone-800">{likeCount}</span>
@@ -171,7 +172,7 @@ function ShowcaseFeedCard({
               saved ? "font-semibold text-stone-800" : "text-stone-400 hover:text-stone-600"
             }`}
             aria-pressed={saved}
-            aria-label={t("community.save")}
+            {...iconTip(t("community.save"))}
           >
             <BookmarkFillIcon className="h-4 w-4" filled={saved} />
             <span className="font-bold text-stone-800">{saveCount}</span>
@@ -180,7 +181,7 @@ function ShowcaseFeedCard({
             type="button"
             onClick={() => onOpenFinished?.(pattern)}
             className="flex items-center gap-1 text-sm text-stone-400 hover:text-stone-600"
-            aria-label={t("community.comment")}
+            {...iconTip(t("community.comment"))}
           >
             <ChatFillIcon className="h-4 w-4" />
             <span className="font-bold text-stone-800">{commentCount}</span>

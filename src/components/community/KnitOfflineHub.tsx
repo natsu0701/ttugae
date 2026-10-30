@@ -18,6 +18,7 @@ import {
   type OfflineTicket,
 } from "../../utils/offlineActivityStorage.ts";
 import { writeHubPatternPayload } from "../../utils/workspaceGridStorage.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 import { qrModules } from "../../utils/qrPattern.ts";
 import { loc } from "../../utils/i18nContent.ts";
 import type { TFunction } from "i18next";
@@ -480,12 +481,12 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   </div>
                 </div>
                 <div className="absolute bottom-16 right-4 z-20 flex flex-col gap-1.5">
-                  <div className="overflow-hidden rounded-xl bg-white shadow-md">
+                  <div className="rounded-xl bg-white shadow-md">
                     <button
                       type="button"
                       onClick={() => handleZoom("in")}
                       className="flex h-9 w-9 items-center justify-center border-b border-stone-100 font-sans text-base font-bold text-stone-600 hover:bg-stone-50"
-                      title={t("offline.zoomIn")}
+                      {...iconTip(t("offline.zoomIn"))}
                     >
                       +
                     </button>
@@ -493,7 +494,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       type="button"
                       onClick={() => handleZoom("out")}
                       className="flex h-9 w-9 items-center justify-center font-sans text-base font-bold text-stone-600 hover:bg-stone-50"
-                      title={t("offline.zoomOut")}
+                      {...iconTip(t("offline.zoomOut"))}
                     >
                       -
                     </button>
@@ -502,7 +503,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     type="button"
                     onClick={handleCompass}
                     className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-stone-500 shadow-md hover:text-coral"
-                    title={t("offline.compass")}
+                    {...iconTip(t("offline.compass"))}
                   >
                     <CompassFillIcon className="h-4 w-4" />
                   </button>

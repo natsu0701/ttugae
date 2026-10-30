@@ -10,6 +10,7 @@ import { getPatternPreviewModel } from "../../data/patternThumbnails.ts";
 import PatternChartGrid from "./PatternChartGrid.tsx";
 import { displayAuthor, localizedPattern } from "../../utils/i18nContent.ts";
 import { appPath } from "../../utils/appPath.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 export function communityPostPath(patternId: string) {
   return appPath(`/community/post/${patternId}`);
@@ -106,7 +107,7 @@ function PatternCard({
 
   return (
     <article
-      className="group overflow-hidden rounded-xl bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
+      className="group rounded-xl bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
       onPointerEnter={() => setHoverPhoto(true)}
       onPointerLeave={() => setHoverPhoto(false)}
     >
@@ -198,7 +199,7 @@ function PatternCard({
             liked ? "font-semibold text-coral" : "text-stone-400 hover:text-stone-600"
           }`}
           aria-pressed={liked}
-          aria-label={t("community.like")}
+          {...iconTip(t("community.like"))}
         >
           <HeartFillIcon className="h-4 w-4" filled={liked} />
           <span className="font-bold text-stone-800">{likeCount}</span>
@@ -210,7 +211,7 @@ function PatternCard({
             saved ? "font-semibold text-stone-800" : "text-stone-400 hover:text-stone-600"
           }`}
           aria-pressed={saved}
-          aria-label={t("community.save")}
+          {...iconTip(t("community.save"))}
         >
           <BookmarkFillIcon className="h-4 w-4" filled={saved} />
           <span className="font-bold text-stone-800">{saveCount}</span>

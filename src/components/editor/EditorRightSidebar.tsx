@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { useTranslation } from "react-i18next";
+import { iconTip } from "../../utils/iconTip.ts";
 
 const SIDEBAR_MIN = 240;
 const SIDEBAR_MAX = 560;
@@ -69,7 +70,7 @@ export default function EditorRightSidebar({
       <div
         role="separator"
         aria-orientation="vertical"
-        aria-label={t("editor.sidebarResize")}
+        {...iconTip(t("editor.sidebarResize"))}
         onMouseDown={onMouseDown}
         className="absolute left-0 top-0 z-20 h-full w-1.5 cursor-col-resize hover:bg-coral/50"
       />

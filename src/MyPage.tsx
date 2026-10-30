@@ -61,6 +61,7 @@ import {
   BagFillIcon,
   FolderFillIcon,
 } from "./components/icons/FillIcons.tsx";
+import { iconTip } from "./utils/iconTip.ts";
 import {
   FOLLOW_CHANGED_EVENT,
   isFollowing,
@@ -275,7 +276,7 @@ function ProfileInfoPanel({
               type="button"
               onClick={() => avatarInputRef.current?.click()}
               className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-coral text-white shadow"
-              aria-label={t("mypage.profile.changeAvatar")}
+              {...iconTip(t("mypage.profile.changeAvatar"))}
             >
               <PencilFillIcon className="h-4 w-4" />
             </button>

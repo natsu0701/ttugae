@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import BrandTextLogo from "./ui/BrandTextLogo.tsx";
 import Button from "./ui/Button.tsx";
 import SmoothInput from "./ui/SmoothInput.tsx";
+import { iconTip } from "../utils/iconTip.ts";
 
 type LoginModalProps = {
   onClose: () => void;
@@ -77,7 +78,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           type="button"
           onClick={onClose}
           className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 font-sans text-lg text-gray-600 transition-colors hover:bg-coral hover:text-white"
-          aria-label={t("common.close")}
+          {...iconTip(t("common.close"))}
         >
           ×
         </button>
@@ -124,8 +125,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
             type="button"
             onClick={() => onLogin()}
             className={`${socialBtnBase} bg-[#FEE500] hover:bg-[#f5dc00]`}
-            aria-label={t("login.kakao")}
-            title={t("login.kakao")}
+            {...iconTip(t("login.kakao"))}
           >
             <KakaoIcon />
           </button>
@@ -133,8 +133,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
             type="button"
             onClick={() => onLogin()}
             className={`${socialBtnBase} border border-gray-300 bg-white hover:bg-gray-50`}
-            aria-label={t("login.google")}
-            title={t("login.google")}
+            {...iconTip(t("login.google"))}
           >
             <GoogleIcon />
           </button>
@@ -142,8 +141,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
             type="button"
             onClick={() => onLogin()}
             className={`${socialBtnBase} border border-gray-300 bg-black text-white hover:bg-gray-800`}
-            aria-label={t("login.apple")}
-            title={t("login.apple")}
+            {...iconTip(t("login.apple"))}
           >
             <AppleIcon />
           </button>

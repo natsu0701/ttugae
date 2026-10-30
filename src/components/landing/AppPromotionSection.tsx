@@ -7,6 +7,7 @@ import { ChevronLeftFillIcon, ChevronRightFillIcon } from "../icons/FillIcons.ts
 import Reveal from "./Reveal.tsx";
 import { assetUrl } from "../../utils/appPath.ts";
 import ArIpadLink from "../ar/ArIpadLink.tsx";
+import { iconTip } from "../../utils/iconTip.ts";
 
 import "swiper/css";
 import "swiper/css/effect-creative";
@@ -74,7 +75,7 @@ function AppPromotionSection() {
               type="button"
               onClick={() => slideBy(-1)}
               className={`${ARROW_BTN} absolute left-4 top-1/2 z-20 -translate-y-1/2 md:left-8`}
-              aria-label={t("landing.promoPrev")}
+              {...iconTip(t("landing.promoPrev"))}
             >
               <ChevronLeftFillIcon className="h-5 w-5" />
             </button>
@@ -126,7 +127,7 @@ function AppPromotionSection() {
               type="button"
               onClick={() => slideBy(1)}
               className={`${ARROW_BTN} absolute right-4 top-1/2 z-20 -translate-y-1/2 md:right-8`}
-              aria-label={t("landing.promoNext")}
+              {...iconTip(t("landing.promoNext"))}
             >
               <ChevronRightFillIcon className="h-5 w-5" />
             </button>

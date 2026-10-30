@@ -30,6 +30,7 @@ import { handleFromAuthor } from "./data/loungeAuthors.ts";
 import { COMMUNITY_TAB_EVENT, closeLoungeFilters } from "./utils/communityTabEvent.ts";
 import { deleteSharedCommunityPattern } from "./utils/communityShare.ts";
 import { deleteMyFinishedWork } from "./utils/myFinishedWorksStore.ts";
+import { iconTip } from "./utils/iconTip.ts";
 import {
   loadTasteProfile,
   patternTasteScore,
@@ -372,7 +373,7 @@ export default function Community({
           type="button"
           onClick={onSharePattern}
           className="flex h-14 w-14 items-center justify-center rounded-full bg-black font-sans text-3xl font-bold text-white transition-colors duration-200 hover:bg-coral"
-          aria-label={t("community.shareFabAria")}
+          {...iconTip(t("community.shareFabAria"))}
         >
           +
         </button>

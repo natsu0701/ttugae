@@ -5,6 +5,7 @@ import SmoothInput from "../ui/SmoothInput.tsx";
 import BackButton from "../ui/BackButton.tsx";
 import { CameraFillIcon, PlusFillIcon } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 const SIZE_PRESETS = [
   { label: "10 × 10", w: 10, h: 10 },
@@ -162,7 +163,7 @@ function EditorHeader({
             type="button"
             onClick={onOpenAr}
             className={`${editorChromeBtn} flex items-center gap-1.5 px-3 py-2 font-sans text-base font-semibold`}
-            aria-label={t("editor.openAr")}
+            {...iconTip(t("editor.openAr"), "below")}
           >
             <CameraFillIcon className="h-4 w-4" />
             <span className="hidden sm:inline">{t("editor.openAr")}</span>

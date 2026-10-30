@@ -7,6 +7,7 @@ import SmoothInput from "../ui/SmoothInput.tsx";
 import ChatTypingDots from "../ui/ChatTypingDots.tsx";
 import { editorPanel } from "../ui/tabButtonStyles.ts";
 import { SendFillIcon } from "../icons/FillIcons.tsx";
+import { iconTip } from "../../utils/iconTip.ts";
 
 export type ChatMessage = {
   id: string;
@@ -160,7 +161,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
           onClick={submit}
           disabled={busy}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral text-white transition-colors hover:bg-black disabled:opacity-50"
-          aria-label={t("common.send")}
+          {...iconTip(t("common.send"))}
         >
           <SendFillIcon className="h-5 w-5" />
         </button>

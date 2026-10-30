@@ -49,6 +49,7 @@ export default function ColorChipMenu({
       <button
         type="button"
         title={yarn.label}
+        aria-label={yarn.label}
         onClick={() => {
           onSelect?.();
         }}
@@ -57,7 +58,7 @@ export default function ColorChipMenu({
           e.preventDefault();
           setOpen((o) => !o);
         }}
-        className={`relative flex items-center justify-center overflow-hidden transition-colors ${
+        className={`relative flex items-center justify-center transition-colors ${
           variant === "palette"
             ? `aspect-square w-full rounded-xl ${isActive ? "bg-coral p-0.5" : "border border-stone-600/80 bg-stone-700 p-0.5 hover:border-stone-500 hover:bg-stone-600"}`
             : variant === "selection"

@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { assetUrl, PUBLIC_AR_URL } from "../../utils/appPath.ts";
 import { CheckFillIcon, CopyFillIcon, OpenLinkFillIcon } from "../icons/FillIcons.tsx";
+import { iconTip } from "../../utils/iconTip.ts";
 
 type ArIpadLinkProps = {
   tone?: "light" | "dark";
@@ -48,11 +49,11 @@ export default function ArIpadLink({ tone = "light", showQr = true }: ArIpadLink
           type="button"
           onClick={() => void copy()}
           className={iconClass}
-          aria-label={copied ? t("ar.linkCopied") : t("ar.copyLink")}
+          {...iconTip(copied ? t("ar.linkCopied") : t("ar.copyLink"))}
         >
           {copied ? <CheckFillIcon className="h-5 w-5" /> : <CopyFillIcon className="h-5 w-5" />}
         </button>
-        <a href={PUBLIC_AR_URL} className={iconClass} aria-label={t("ar.openLink")}>
+        <a href={PUBLIC_AR_URL} className={iconClass} {...iconTip(t("ar.openLink"))}>
           <OpenLinkFillIcon className="h-5 w-5" />
         </a>
       </div>

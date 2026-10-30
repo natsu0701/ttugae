@@ -11,6 +11,7 @@ import {
   PlayFillIcon,
 } from "../icons/FillIcons.tsx";
 import BackButton from "../ui/BackButton.tsx";
+import { iconTip } from "../../utils/iconTip.ts";
 
 export type ArOverlayNaviProps = {
   onExit: () => void;
@@ -452,7 +453,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           type="button"
           onClick={() => void copyIpadLink()}
           className="flex h-9 w-9 shrink-0 items-center justify-center text-white/55 hover:text-white"
-          aria-label={linkCopied ? t("ar.linkCopied") : t("ar.copyLink")}
+          {...iconTip(linkCopied ? t("ar.linkCopied") : t("ar.copyLink"), "below")}
         >
           {linkCopied ? <CheckFillIcon className="h-5 w-5" /> : <CopyFillIcon className="h-5 w-5" />}
         </button>
@@ -528,7 +529,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
             onClick={() => void toggleOverlayPlayback()}
             disabled={!hasOverlay}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-gray-900 disabled:opacity-40"
-            aria-label={overlayPaused ? t("ar.playVideo") : t("ar.pauseVideo")}
+            {...iconTip(overlayPaused ? t("ar.playVideo") : t("ar.pauseVideo"))}
           >
             {overlayPaused ? <PlayFillIcon className="h-5 w-5" /> : <PauseFillIcon className="h-5 w-5" />}
           </button>
@@ -543,7 +544,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
             onClick={cyclePlaybackRate}
             disabled={!hasOverlay}
             className="h-11 shrink-0 rounded-full bg-white/15 px-3 font-sans text-sm font-semibold tabular-nums text-white hover:bg-white hover:text-gray-900 disabled:opacity-40"
-            aria-label={t("ar.playbackRate", { rate: formatPlaybackRate(playbackRate) })}
+            {...iconTip(t("ar.playbackRate", { rate: formatPlaybackRate(playbackRate) }))}
           >
             {formatPlaybackRate(playbackRate)}
           </button>
@@ -566,7 +567,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
             type="button"
             onClick={() => void toggleFullscreen()}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white hover:text-gray-900"
-            aria-label={isFullscreen ? t("ar.exitFullscreen") : t("ar.fullscreen")}
+            {...iconTip(isFullscreen ? t("ar.exitFullscreen") : t("ar.fullscreen"))}
           >
             {isFullscreen ? <CollapseFillIcon className="h-5 w-5" /> : <ExpandFillIcon className="h-5 w-5" />}
           </button>

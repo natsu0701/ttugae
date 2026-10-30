@@ -10,6 +10,7 @@ import type { EditorYarn } from "../../types/editorYarn.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
 import { type KnitItemType } from "../../utils/knitItemType.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 import { assetUrl } from "../../utils/appPath.ts";
 
 const ITEM_ACC_KEYS: Record<KnitItemType, string> = {
@@ -620,7 +621,7 @@ function Knitting3DCanvas({
           <button
             type="button"
             onClick={handleZoomIn}
-            title={t("editor.zoomInShort")}
+            {...iconTip(t("editor.zoomInShort"), "left")}
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
             <ZoomInFillIcon className="h-5 w-5" />
@@ -628,7 +629,7 @@ function Knitting3DCanvas({
           <button
             type="button"
             onClick={handleZoomOut}
-            title={t("editor.zoomOutShort")}
+            {...iconTip(t("editor.zoomOutShort"), "left")}
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
             <ZoomOutFillIcon className="h-5 w-5" />
@@ -636,7 +637,7 @@ function Knitting3DCanvas({
           <button
             type="button"
             onClick={handleReset}
-            title={t("editor.resetView")}
+            {...iconTip(t("editor.resetView"), "left")}
             className="rounded-xl border border-stone-600/80 bg-stone-700 p-2 text-stone-100 transition-colors hover:border-stone-500 hover:bg-stone-600 hover:text-white"
           >
             <RotateFillIcon className="h-5 w-5" />

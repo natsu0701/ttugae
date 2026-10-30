@@ -608,3 +608,75 @@ body.yarn-trail-active {
   gap: 1rem;
   background: #fffbf7;
 }
+
+[data-icon-tip]:not(.absolute) {
+  position: relative;
+}
+
+[data-icon-tip]::after {
+  content: attr(data-icon-tip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.4rem);
+  z-index: 90;
+  box-sizing: border-box;
+  max-width: min(16rem, 70vw);
+  padding: 0.28rem 0.5rem;
+  overflow: hidden;
+  border-radius: 0.4rem;
+  background: rgb(28 25 23 / 0.92);
+  color: #fff;
+  font-family: "Noto Sans KR", system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(0.2rem);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+[data-icon-tip]:hover::after,
+[data-icon-tip]:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+[data-icon-tip][data-icon-tip-edge="below"]::after {
+  top: calc(100% + 0.4rem);
+  bottom: auto;
+  transform: translateX(-50%) translateY(-0.2rem);
+}
+
+[data-icon-tip][data-icon-tip-edge="below"]:hover::after,
+[data-icon-tip][data-icon-tip-edge="below"]:focus-visible::after {
+  transform: translateX(-50%) translateY(0);
+}
+
+[data-icon-tip][data-icon-tip-edge="right"]::after {
+  top: 50%;
+  left: calc(100% + 0.4rem);
+  bottom: auto;
+  transform: translateY(-50%) translateX(-0.2rem);
+}
+
+[data-icon-tip][data-icon-tip-edge="right"]:hover::after,
+[data-icon-tip][data-icon-tip-edge="right"]:focus-visible::after {
+  transform: translateY(-50%) translateX(0);
+}
+
+[data-icon-tip][data-icon-tip-edge="left"]::after {
+  top: 50%;
+  left: auto;
+  right: calc(100% + 0.4rem);
+  bottom: auto;
+  transform: translateY(-50%) translateX(0.2rem);
+}
+
+[data-icon-tip][data-icon-tip-edge="left"]:hover::after,
+[data-icon-tip][data-icon-tip-edge="left"]:focus-visible::after {
+  transform: translateY(-50%) translateX(0);
+}

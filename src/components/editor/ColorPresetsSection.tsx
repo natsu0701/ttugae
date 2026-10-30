@@ -6,6 +6,7 @@ import {
   type ColorPreset,
 } from "../../data/colorPresets.ts";
 import { editorChromeBtn, editorChromeBtnActive, editorChromeTone } from "../ui/tabButtonStyles.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 const REFRESH_SPIN_MS = 500;
 
@@ -48,8 +49,7 @@ export default function ColorPresetsSection({
           onClick={handleRefresh}
           disabled={isRefreshing}
           className={`rounded-full p-1.5 ${editorChromeTone} disabled:pointer-events-none`}
-          aria-label={t("editor.colorPresetsRefresh")}
-          title={t("editor.colorPresetsRefresh")}
+          {...iconTip(t("editor.colorPresetsRefresh"), "below")}
         >
           <RefreshFillIcon
             className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}

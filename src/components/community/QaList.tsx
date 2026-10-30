@@ -6,6 +6,7 @@ import {
 } from "../icons/FillIcons.tsx";
 import { getQaCommentCount, type QaPost } from "../../data/qaPosts.ts";
 import { localizedQaPost } from "../../utils/i18nContent.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 const PAGE_SIZE = 5;
 
@@ -76,7 +77,7 @@ export default function QaList({ posts, onSelect }: QaListProps) {
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label={t("community.prevPage")}
+            {...iconTip(t("community.prevPage"))}
           >
             <ChevronLeftFillIcon className="h-4 w-4" />
           </button>
@@ -103,7 +104,7 @@ export default function QaList({ posts, onSelect }: QaListProps) {
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label={t("community.nextPage")}
+            {...iconTip(t("community.nextPage"))}
           >
             <ChevronRightFillIcon className="h-4 w-4" />
           </button>

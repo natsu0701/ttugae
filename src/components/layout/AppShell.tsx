@@ -13,6 +13,7 @@ import { useUnsavedChanges } from "../../context/UnsavedChangesContext.tsx";
 import type { UserAccount } from "../../utils/accountStorage.ts";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 import FloatingDock from "../ui/FloatingDock.tsx";
+import { iconTip } from "../../utils/iconTip.ts";
 
 export type AppNavPage = "landing" | "community" | "mypage";
 
@@ -110,24 +111,26 @@ function ProfileMenu({
       <button
         type="button"
         onClick={() => setMenuOpen((open) => !open)}
-        className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border bg-white outline-none transition-colors duration-200 focus:outline-none focus-visible:outline-none sm:h-11 sm:w-11 ${
+        className={`flex h-10 w-10 items-center justify-center rounded-full border bg-white outline-none transition-colors duration-200 focus:outline-none focus-visible:outline-none sm:h-11 sm:w-11 ${
           currentPage === "mypage"
             ? "border-coral"
             : "border-stone-200 hover:border-coral"
         }`}
-        aria-label={t("nav.profileMenu")}
+        {...iconTip(t("nav.profileMenu"), "below")}
         aria-expanded={menuOpen}
         aria-haspopup="menu"
       >
-        <img
-          src={avatarSrc}
-          alt=""
-          className={
-            hasCustomAvatar
-              ? "h-full w-full object-cover"
-              : "h-[78%] w-[78%] object-contain"
-          }
-        />
+        <span className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
+          <img
+            src={avatarSrc}
+            alt=""
+            className={
+              hasCustomAvatar
+                ? "h-full w-full object-cover"
+                : "h-[78%] w-[78%] object-contain"
+            }
+          />
+        </span>
       </button>
       {menuOpen ? (
         <div
@@ -245,7 +248,7 @@ export default function AppShell({
             type="button"
             onClick={go(onGoHome)}
             className="flex shrink-0 items-center outline-none transition-opacity duration-200 hover:opacity-80 focus:outline-none focus-visible:outline-none"
-            aria-label={t("nav.brand")}
+            {...iconTip(t("nav.brand"), "below")}
           >
             <BrandTextLogo className="h-7 w-auto object-contain md:h-8" />
           </button>

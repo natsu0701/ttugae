@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import Button from "./Button.tsx";
 import { CloseFillIcon, FolderFillIcon, PlusFillIcon } from "../icons/FillIcons.tsx";
 import type { StoredPattern } from "../../types/storedPattern.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 type EditorEntryModalProps = {
   open: boolean;
@@ -37,7 +38,7 @@ function EditorEntryModal({
           type="button"
           onClick={onClose}
           className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-stone-400 hover:bg-stone-100 hover:text-stone-700"
-          aria-label={t("common.close")}
+          {...iconTip(t("common.close"))}
         >
           <CloseFillIcon className="h-4 w-4" />
         </button>

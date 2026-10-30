@@ -13,6 +13,7 @@ import CastOnModal from "./components/editor/CastOnModal.tsx";
 import NeedleSpecFields from "./components/editor/NeedleSpecFields.tsx";
 import ChartTabs from "./components/editor/ChartTabs.tsx";
 import EditorCanvasStage from "./components/editor/EditorCanvasStage.tsx";
+import { iconTip } from "./utils/iconTip.ts";
 import PatternGrid from "./components/editor/PatternGrid.tsx";
 import ColorChipMenu from "./components/editor/ColorChipMenu.tsx";
 import WorkshopPalettePanel from "./components/editor/WorkshopPalettePanel.tsx";
@@ -695,6 +696,7 @@ export default function PatternEditor({
                   className={`flex flex-col items-center px-1.5 py-2 font-sans text-sm font-normal ${
                     activeStitch === s.id ? editorChromeBtnActive : editorChromeBtn
                   }`}
+                  title={t(`editor.stitches.${s.id}`)}
                 >
                   <span className="flex h-6 items-center justify-center text-base leading-none">{s.symbol}</span>
                   <span className="mt-0.5 truncate text-2xs">
@@ -755,8 +757,8 @@ export default function PatternEditor({
                 type="button"
                 onClick={() => setYarnSearchOpen((o) => !o)}
                 className={`flex aspect-square w-full items-center justify-center ${editorChromeBtn}`}
-                aria-label={t("editor.addYarn")}
                 title={t("editor.addYarn")}
+                aria-label={t("editor.addYarn")}
               >
                 <PlusFillIcon className="h-5 w-5" />
               </button>
@@ -844,8 +846,7 @@ export default function PatternEditor({
                   type="button"
                   onClick={() => void copyPatternText()}
                   className={`relative flex h-8 w-8 items-center justify-center rounded-full ${editorChromeTone}`}
-                  aria-label={t("editor.copyNarrative")}
-                  title={patternCopyDone ? t("editor.copied") : t("editor.copy")}
+                  {...iconTip(patternCopyDone ? t("editor.copied") : t("editor.copy"))}
                 >
                   {patternCopyDone ? (
                     <CheckFillIcon className="h-3.5 w-3.5 text-coral" />

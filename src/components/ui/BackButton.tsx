@@ -2,6 +2,7 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeftFillIcon } from "../icons/FillIcons.tsx";
 import { goBack } from "../../utils/navReturn.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 type BackButtonProps = {
   fallbackPath?: string;
@@ -33,7 +34,7 @@ function BackButton({
           ? "text-stone-200 hover:bg-stone-800 hover:text-white"
           : "text-gray-700 hover:bg-stone-100 hover:text-coral"
       } ${className}`}
-      aria-label={t("common.back")}
+      {...iconTip(t("common.back"), "below")}
     >
       <ChevronLeftFillIcon className="h-5 w-5" />
     </button>

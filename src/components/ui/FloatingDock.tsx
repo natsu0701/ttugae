@@ -2,6 +2,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowUpFillIcon, ChatFillIcon } from "../icons/FillIcons.tsx";
 import TteuniChatWidget from "./TteuniChatWidget.tsx";
+import { iconTip } from "../../utils/iconTip.ts";
 
 function FloatingDock() {
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ function FloatingDock() {
             type="button"
             onClick={scrollTop}
             className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-700 shadow-md hover:border-coral hover:text-coral"
-            aria-label={t("chat.scrollTop")}
+            {...iconTip(t("chat.scrollTop"))}
           >
             <ArrowUpFillIcon className="h-5 w-5" />
           </button>
@@ -52,7 +53,7 @@ function FloatingDock() {
           type="button"
           onClick={toggleChat}
           className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full bg-coral text-white shadow-md hover:bg-black"
-          aria-label={t("chat.open")}
+          {...iconTip(chatOpen ? t("chat.close") : t("chat.open"))}
           aria-expanded={chatOpen}
         >
           <ChatFillIcon className="h-5 w-5" />
