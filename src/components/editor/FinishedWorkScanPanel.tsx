@@ -1,85 +1,41 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  CheckFillIcon,
-  SpinnerFillIcon,
-} from "../icons/FillIcons.tsx";
-import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
-import {
-  PROJECT_FINISHED_PHOTOS,
-  scanFinishedWorkAgainstGrid,
-  type FinishedWorkScanResult,
-} from "../../utils/scanFinishedWork.ts";
-import { paletteYarnsForGrid, type EditorCell } from "../../utils/patternGrid.ts";
+import { ImageFillIcon, SpinnerFillIcon } from "../icons/FillIcons.tsx";
+import { generatePatternFromPhoto } from "../../utils/scanFinishedWork.ts";
+import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { EditorYarn } from "../../types/editorYarn.ts";
-import { assetUrl } from "../../utils/appPath.ts";
+import { iconTip } from "../../utils/iconTip.ts";
 
 type FinishedWorkScanPanelProps = {
-  grid: EditorCell[][];
-  colorMap: Record<string, string>;
   onApply: (nextGrid: EditorCell[][], yarns: EditorYarn[]) => void;
 };
 
-export default function FinishedWorkScanPanel({
-  grid,
-  colorMap,
-  onApply,
-}: FinishedWorkScanPanelProps) {
+export default function FinishedWorkScanPanel({ onApply }: FinishedWorkScanPanelProps) {
   const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [source, setSource] = useState<string | null>(null);
-  const [sourceLabel, setSourceLabel] = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<FinishedWorkScanResult | null>(null);
+  const [done, setDone] = useState(false);
 
-  const pickProjectPhoto = (file: string, label: string) => {
-    setSource(assetUrl(`/images/${encodeURI(file)}`));
-    setSourceLabel(label);
-    setResult(null);
-    setError(null);
-  };
-
-  const onUpload = (file: File | undefined) => {
+  const runFromFile = async (file: File | undefined) => {
     if (!file) return;
+    if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
     const url = URL.createObjectURL(file);
-    setSource(url);
-    setSourceLabel(file.name);
-    setResult(null);
-    setError(null);
-  };
-
-  const runScan = async () => {
-    if (!source) {
-      setError(t("editor.scanNeedPhoto"));
-      return;
-    }
+    setPreview(url);
     setBusy(true);
     setError(null);
+    setDone(false);
     try {
-      const next = await scanFinishedWorkAgainstGrid(source, grid, colorMap);
-      setResult(next);
+      const next = await generatePatternFromPhoto(url);
+      onApply(next.grid, next.yarns);
+      setDone(true);
     } catch (err) {
-      setResult(null);
+      setDone(false);
       setError(err instanceof Error ? err.message : t("editor.scanFail"));
     } finally {
       setBusy(false);
     }
-  };
-
-  const canCorrect =
-    result &&
-    (result.colorMismatches.length > 0 || result.stitchMismatches.length > 0);
-
-  const applyCorrection = () => {
-    if (!result) return;
-    onApply(result.suggestedGrid, paletteYarnsForGrid(result.suggestedGrid, colorMap));
-    setResult({
-      ...result,
-      colorMismatches: [],
-      stitchMismatches: [],
-      messages: [t("editor.scanOk")],
-    });
   };
 
   return (
@@ -94,75 +50,43 @@ export default function FinishedWorkScanPanel({
         type="file"
         accept="image/*"
         className="hidden"
-        onChange={(e) => onUpload(e.target.files?.[0])}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          void runFromFile(file);
+        }}
       />
 
-      <div className="mb-3 flex flex-wrap gap-1.5">
-        {PROJECT_FINISHED_PHOTOS.slice(0, 6).map((photo) => {
-          const active = sourceLabel === photo.label;
-          return (
-            <button
-              key={photo.file}
-              type="button"
-              onClick={() => pickProjectPhoto(photo.file, photo.label)}
-              className={`rounded-full px-2.5 py-1 font-sans text-sm ${
-                active ? editorChromeBtnActive : editorChromeBtn
-              }`}
-            >
-              {photo.label}
-            </button>
-          );
-        })}
-      </div>
+      <button
+        type="button"
+        onClick={() => fileRef.current?.click()}
+        disabled={busy}
+        className="flex h-9 w-9 items-center justify-center text-stone-600 transition-colors hover:text-stone-900 disabled:opacity-60"
+        {...iconTip(busy ? t("editor.scanBusy") : t("common.photoUpload"))}
+      >
+        {busy ? (
+          <SpinnerFillIcon className="h-4 w-4 animate-spin" />
+        ) : (
+          <ImageFillIcon className="h-4 w-4" />
+        )}
+      </button>
 
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={() => fileRef.current?.click()}
-          className={`${editorChromeBtn} flex flex-1 items-center justify-center px-3 py-2 font-sans text-sm whitespace-nowrap`}
-        >
-          {t("common.photoUpload")}
-        </button>
-        <button
-          type="button"
-          onClick={() => void runScan()}
-          disabled={busy}
-          className={`${editorChromeBtnActive} flex flex-1 items-center justify-center gap-1.5 px-3 py-2 font-sans text-sm disabled:opacity-60`}
-        >
-          {busy ? <SpinnerFillIcon className="h-3.5 w-3.5 animate-spin" /> : null}
-          {busy ? t("editor.scanBusy") : t("editor.scanRun")}
-        </button>
-      </div>
-
-      <p className="mt-2 truncate font-sans text-sm text-stone-500">
-        {sourceLabel || t("editor.scanNoPhoto")}
-      </p>
+      {preview ? (
+        <img
+          src={preview}
+          alt=""
+          className="mt-3 max-h-28 w-full rounded-xl object-cover"
+        />
+      ) : null}
 
       {error ? (
         <p className="mt-3 font-seoyun text-sm leading-snug text-coral">{error}</p>
       ) : null}
 
-      {result ? (
-        <div className="mt-3 space-y-2">
-          {result.messages.map((message) => (
-            <p
-              key={message}
-              className="font-seoyun text-sm font-normal leading-relaxed text-stone-600"
-            >
-              {message}
-            </p>
-          ))}
-          {canCorrect ? (
-            <button
-              type="button"
-              onClick={applyCorrection}
-              className={`${editorChromeBtnActive} mt-1 flex w-full items-center justify-center gap-1.5 px-3 py-2 font-sans text-sm`}
-            >
-              <CheckFillIcon className="h-3.5 w-3.5" />
-              {t("editor.scanAutoFix")}
-            </button>
-          ) : null}
-        </div>
+      {done && !busy ? (
+        <p className="mt-3 font-seoyun text-sm font-normal leading-relaxed text-stone-600">
+          {t("editor.scanOk")}
+        </p>
       ) : null}
     </div>
   );

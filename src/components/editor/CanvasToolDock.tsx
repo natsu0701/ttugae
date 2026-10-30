@@ -72,9 +72,6 @@ function CanvasToolDock({
       ) : null}
 
       <div className="flex items-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 py-2 shadow-sm">
-        <p className="mr-1 hidden font-sans text-sm font-normal tracking-wide text-stone-500 sm:block">
-          {t("editor.drawingTools")}
-        </p>
         <div className="flex items-center gap-1.5">
           {TOOLS.map((toolItem) => {
             const ToolIcon = toolItem.Icon;
@@ -108,7 +105,7 @@ function CanvasToolDock({
         <button
           type="button"
           onClick={onZoomOut}
-          className={`flex h-10 w-10 items-center justify-center ${editorChromeBtn}`}
+          className="flex h-10 w-10 items-center justify-center text-stone-600 transition-colors hover:text-stone-900"
           {...iconTip(t("editor.zoomOut"))}
         >
           <ZoomOutFillIcon className="h-5 w-5" />
@@ -119,7 +116,7 @@ function CanvasToolDock({
         <button
           type="button"
           onClick={onZoomIn}
-          className={`flex h-10 w-10 items-center justify-center ${editorChromeBtn}`}
+          className="flex h-10 w-10 items-center justify-center text-stone-600 transition-colors hover:text-stone-900"
           {...iconTip(t("editor.zoomIn"))}
         >
           <ZoomInFillIcon className="h-5 w-5" />

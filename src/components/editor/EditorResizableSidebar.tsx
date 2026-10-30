@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { iconTip } from "../../utils/iconTip.ts";
 
 const SIDEBAR_PRESET = {
-  left: { min: 176, max: 360, width: 200 },
+  left: { min: 240, max: 560, width: 320 },
   right: { min: 240, max: 560, width: 320 },
 } as const;
 

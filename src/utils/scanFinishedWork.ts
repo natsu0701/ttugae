@@ -1,6 +1,9 @@
 import { validatePattern } from "./validatePattern.ts";
+import { BASE_EDITOR_YARNS } from "../data/baseEditorYarns.ts";
+import type { EditorYarn } from "../types/editorYarn.ts";
 import {
   EDITOR_COLOR_HEX,
+  EXTRA_PATTERN_YARNS,
   hexToColorId,
   type EditorCell,
 } from "./patternGrid.ts";
@@ -66,7 +69,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
     const img = new Image();
     img.decoding = "async";
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("완성작 사진을 불러오지 못했어요."));
+    img.onerror = () => reject(new Error("사진을 불러오지 못했어요."));
     img.src = src;
   });
 }
@@ -247,6 +250,162 @@ function sampleCell(
   }
 
   return { rgb, colorId, stitchId };
+}
+
+function dist2(a: Rgb, b: Rgb): number {
+  return (a.r - b.r) ** 2 + (a.g - b.g) ** 2 + (a.b - b.b) ** 2;
+}
+
+function nearestKnownColorId(rgb: Rgb, maxDist = 36): string | null {
+  let bestId: string | null = null;
+  let best = maxDist * maxDist;
+  for (const [id, hex] of Object.entries(EDITOR_COLOR_HEX)) {
+    const p = parseHex(hex);
+    if (!p) continue;
+    const d = dist2(rgb, p);
+    if (d <= best) {
+      best = d;
+      bestId = id;
+    }
+  }
+  return bestId;
+}
+
+function buildPhotoPalette(samples: Rgb[]): { id: string; hex: string }[] {
+  const thresh = 38 * 38;
+  const centers: { id: string; rgb: Rgb; n: number }[] = [];
+  let customN = 0;
+
+  const absorb = (index: number, rgb: Rgb) => {
+    const c = centers[index];
+    const n = c.n + 1;
+    c.rgb = {
+      r: Math.round((c.rgb.r * c.n + rgb.r) / n),
+      g: Math.round((c.rgb.g * c.n + rgb.g) / n),
+      b: Math.round((c.rgb.b * c.n + rgb.b) / n),
+    };
+    c.n = n;
+  };
+
+  for (const rgb of samples) {
+    let bestI = -1;
+    let best = thresh;
+    for (let i = 0; i < centers.length; i++) {
+      const d = dist2(rgb, centers[i].rgb);
+      if (d < best) {
+        best = d;
+        bestI = i;
+      }
+    }
+    if (bestI >= 0) {
+      absorb(bestI, rgb);
+      continue;
+    }
+    if (centers.length >= 8) {
+      let ni = 0;
+      let nd = Infinity;
+      for (let i = 0; i < centers.length; i++) {
+        const d = dist2(rgb, centers[i].rgb);
+        if (d < nd) {
+          nd = d;
+          ni = i;
+        }
+      }
+      absorb(ni, rgb);
+      continue;
+    }
+    const known = nearestKnownColorId(rgb);
+    const usedKnown = Boolean(known && centers.some((c) => c.id === known));
+    const id = known && !usedKnown ? known : `photo-${customN++}`;
+    centers.push({ id, rgb: { ...rgb }, n: 1 });
+  }
+
+  return centers.map((c) => ({ id: c.id, hex: rgbToHex(c.rgb) }));
+}
+
+function yarnFromPalette(id: string, hex: string, index: number): EditorYarn {
+  const known = [...BASE_EDITOR_YARNS, ...EXTRA_PATTERN_YARNS].find((y) => y.id === id);
+  if (known) return { ...known, hex: hex.toUpperCase() };
+  return {
+    id,
+    label: `색 ${index + 1}`,
+    hex: hex.toUpperCase(),
+    brand: "사진",
+    fiberType: "혼합",
+    texture: "smooth",
+  };
+}
+
+export type PhotoPatternResult = {
+  grid: EditorCell[][];
+  yarns: EditorYarn[];
+  cols: number;
+  rows: number;
+};
+
+const GEN_MIN = 4;
+const GEN_MAX = 50;
+
+export async function generatePatternFromPhoto(imageSrc: string): Promise<PhotoPatternResult> {
+  const img = await loadImage(imageSrc);
+  const data = drawForScan(img);
+  const bounds = findKnitBounds(data);
+  const layout = estimateStitchLayout(data, bounds);
+  const bw = bounds.x1 - bounds.x0 + 1;
+  const bh = bounds.y1 - bounds.y0 + 1;
+  const aspect = bw / Math.max(1, bh);
+  const fallbackCols = Math.min(
+    GEN_MAX,
+    Math.max(GEN_MIN, Math.round(22 * Math.min(1.6, Math.max(0.6, aspect)))),
+  );
+  const fallbackRows = Math.min(
+    GEN_MAX,
+    Math.max(GEN_MIN, Math.round(fallbackCols / Math.max(0.35, aspect))),
+  );
+  const cols = Math.min(GEN_MAX, Math.max(GEN_MIN, layout.cols ?? fallbackCols));
+  const rows = Math.min(GEN_MAX, Math.max(GEN_MIN, layout.rows ?? fallbackRows));
+
+  const raw: { rgb: Rgb; stitchId: string }[][] = [];
+  for (let r = 0; r < rows; r++) {
+    const row: { rgb: Rgb; stitchId: string }[] = [];
+    for (let c = 0; c < cols; c++) {
+      const x0 = bounds.x0 + Math.floor((c / cols) * bw);
+      const x1 = bounds.x0 + Math.floor(((c + 1) / cols) * bw);
+      const y0 = bounds.y0 + Math.floor((r / rows) * bh);
+      const y1 = bounds.y0 + Math.floor(((r + 1) / rows) * bh);
+      const sample = sampleCell(
+        data,
+        x0,
+        y0,
+        Math.max(x0 + 1, x1),
+        Math.max(y0 + 1, y1),
+        EDITOR_COLOR_HEX,
+      );
+      row.push({
+        rgb: sample.rgb,
+        stitchId: sample.stitchId === "empty" ? "knit" : sample.stitchId,
+      });
+    }
+    raw.push(row);
+  }
+
+  const palette = buildPhotoPalette(raw.flat().map((cell) => cell.rgb));
+  const paletteMap = Object.fromEntries(palette.map((p) => [p.id, p.hex]));
+  const grid: EditorCell[][] = raw.map((row) =>
+    row.map((cell) => ({
+      colorId: nearestPaletteId(cell.rgb, paletteMap),
+      stitchId: cell.stitchId,
+    })),
+  );
+
+  const used = new Set(grid.flat().map((cell) => cell.colorId));
+  const yarns = palette.filter((p) => used.has(p.id)).map((p, i) => yarnFromPalette(p.id, p.hex, i));
+  const have = new Set(yarns.map((y) => y.id));
+  for (const yarn of BASE_EDITOR_YARNS) {
+    if (!have.has(yarn.id)) yarns.push(yarn);
+  }
+
+  return { grid, yarns, cols, rows };
 }
 
 export const PROJECT_FINISHED_PHOTOS: { file: string; label: string }[] = [

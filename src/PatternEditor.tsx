@@ -838,11 +838,16 @@ export default function PatternEditor({
               />
             </div>
             <FinishedWorkScanPanel
-              grid={grid}
-              colorMap={colorMap}
               onApply={(nextGrid, yarns) => {
+                const cols = nextGrid[0]?.length ?? 0;
+                const rows = nextGrid.length;
                 patchActiveGrid(() => nextGrid);
                 setPaletteYarns(yarns);
+                if (cols && rows) {
+                  setCustomW(String(cols));
+                  setCustomH(String(rows));
+                }
+                setSelection(null);
               }}
             />
             <div className={`relative min-w-0 p-4 ${editorPanel}`}>
