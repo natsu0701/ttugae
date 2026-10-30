@@ -778,11 +778,11 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   </div>
                   <div className="mt-5 flex items-center gap-4 border-t border-stone-100 pt-4 font-sans text-sm text-stone-400">
                     <span className="flex items-center gap-1">
-                      <HeartFillIcon className="h-3.5 w-3.5" />
+                      <HeartFillIcon className="h-4 w-4" />
                       <span>4</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <ChatFillIcon className="h-3.5 w-3.5" />
+                      <ChatFillIcon className="h-4 w-4" />
                       <span>2</span>
                     </span>
                   </div>

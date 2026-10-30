@@ -6,6 +6,7 @@ import { loadYarnInventory } from "../../utils/personalizationStorage.ts";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import ChatTypingDots from "../ui/ChatTypingDots.tsx";
 import { editorPanel } from "../ui/tabButtonStyles.ts";
+import { SendFillIcon } from "../icons/FillIcons.tsx";
 
 export type ChatMessage = {
   id: string;
@@ -161,9 +162,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral text-white transition-colors hover:bg-black disabled:opacity-50"
           aria-label={t("common.send")}
         >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
-            <path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.28 1.28L5.7 12 2.12 19.12a1 1 0 001.28 1.28z" />
-          </svg>
+          <SendFillIcon className="h-5 w-5" />
         </button>
       </div>
     </div>

@@ -5,7 +5,13 @@ import { askTteuniChat } from "../../utils/tteuniChatApi.ts";
 import { loadYarnInventory } from "../../utils/personalizationStorage.ts";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import ChatTypingDots from "./ChatTypingDots.tsx";
-import { CloseFillIcon, CollapseFillIcon, ExpandFillIcon } from "../icons/FillIcons.tsx";
+import {
+  CloseFillIcon,
+  CollapseFillIcon,
+  ExpandFillIcon,
+  ResizeFillIcon,
+  SendFillIcon,
+} from "../icons/FillIcons.tsx";
 
 type ChatMessage = {
   id: string;
@@ -155,9 +161,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
           className="absolute left-0 top-0 z-10 flex h-6 w-6 cursor-nwse-resize items-center justify-center text-stone-300 hover:text-stone-500"
           aria-label={t("chat.resize")}
         >
-          <svg viewBox="0 0 12 12" className="h-3 w-3" aria-hidden>
-            <path d="M2 10h2M2 10v-2M5 10h2M2 7v-2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" fill="none" />
-          </svg>
+          <ResizeFillIcon className="h-3 w-3" />
         </button>
       )}
       <div className="flex shrink-0 items-center gap-2 border-b border-stone-100 px-4 py-3">
@@ -258,9 +262,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral text-white hover:bg-black disabled:opacity-50"
           aria-label={t("common.send")}
         >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
-            <path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.28 1.28L5.7 12 2.12 19.12a1 1 0 001.28 1.28z" />
-          </svg>
+          <SendFillIcon className="h-5 w-5" />
         </button>
       </div>
     </div>

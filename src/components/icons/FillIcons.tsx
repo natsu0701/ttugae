@@ -403,10 +403,12 @@ export function OpenLinkFillIcon({ className = "h-5 w-5" }: IconProps) {
 export function CloseFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path
-        d="M8.1 6.9a1.3 1.3 0 00-1.8 1.8L10.2 12l-3.9 3.3a1.3 1.3 0 001.8 1.8L12 13.8l3.9 3.3a1.3 1.3 0 001.8-1.8L13.8 12l3.9-3.3a1.3 1.3 0 00-1.8-1.8L12 10.2 8.1 6.9z"
-        fill="currentColor"
-      />
+      <g transform="rotate(45 12 12)">
+        <path
+          fill="currentColor"
+          d="M10.6 4.4h2.8v6.2h6.2v2.8h-6.2v6.2h-2.8v-6.2H4.4v-2.8h6.2V4.4z"
+        />
+      </g>
     </svg>
   );
 }
@@ -545,7 +547,7 @@ export function ExpandFillIcon({ className = "h-5 w-5" }: IconProps) {
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
         fill="currentColor"
-        d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
+        d="M4.4 4.4H10.6V7.2H7.2V10.6H4.4V4.4zm9 0H19.6V10.6H16.8V7.2H13.4V4.4zM4.4 13.4H7.2V16.8H10.6V19.6H4.4V13.4zm12.4 0H19.6V19.6H13.4V16.8H16.8V13.4z"
       />
     </svg>
   );
@@ -556,8 +558,44 @@ export function CollapseFillIcon({ className = "h-5 w-5" }: IconProps) {
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
         fill="currentColor"
-        d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"
+        d="M4.4 7.8H7.8V4.4H10.6V10.6H4.4V7.8zm8.8-3.4H16.2V7.8H19.6V10.6H13.4V4.4zM4.4 13.4H10.6V19.6H7.8V16.2H4.4V13.4zm9 0H19.6V16.2H16.2V19.6H13.4V13.4z"
       />
+    </svg>
+  );
+}
+
+export function SendFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M2.6 4.8v5.1L14.4 12 2.6 14.1v5.1c0 .7.7 1.1 1.3.8l17-7.1c.6-.3.6-1.3 0-1.6l-17-7.1c-.6-.3-1.3.1-1.3.8z"
+      />
+    </svg>
+  );
+}
+
+export function ResizeFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path fill="currentColor" d="M4.4 4.4H10.6V7.2H7.2V10.6H4.4V4.4z" />
+    </svg>
+  );
+}
+
+export function PlayFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path fill="currentColor" d="M8 5.4c0-.8.9-1.3 1.6-.9l10 6.6a1 1 0 010 1.8l-10 6.6A1 1 0 018 18.6V5.4z" />
+    </svg>
+  );
+}
+
+export function PauseFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="6" y="5" width="4.2" height="14" rx="1.4" fill="currentColor" />
+      <rect x="13.8" y="5" width="4.2" height="14" rx="1.4" fill="currentColor" />
     </svg>
   );
 }

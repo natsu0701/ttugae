@@ -2,7 +2,14 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "reac
 import { useTranslation } from "react-i18next";
 import { AR_PLAYLIST, formatClock, playlistVideoUrl } from "../../data/arPlaylist.ts";
 import { PUBLIC_AR_URL } from "../../utils/appPath.ts";
-import { CheckFillIcon, CopyFillIcon } from "../icons/FillIcons.tsx";
+import {
+  CheckFillIcon,
+  CollapseFillIcon,
+  CopyFillIcon,
+  ExpandFillIcon,
+  PauseFillIcon,
+  PlayFillIcon,
+} from "../icons/FillIcons.tsx";
 import BackButton from "../ui/BackButton.tsx";
 
 export type ArOverlayNaviProps = {
@@ -523,7 +530,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-gray-900 disabled:opacity-40"
             aria-label={overlayPaused ? t("ar.playVideo") : t("ar.pauseVideo")}
           >
-            {overlayPaused ? <PlayIcon /> : <PauseIcon />}
+            {overlayPaused ? <PlayFillIcon className="h-5 w-5" /> : <PauseFillIcon className="h-5 w-5" />}
           </button>
           {hasOverlay ? (
             <p className="shrink-0 font-sans text-sm tabular-nums text-white" aria-live="off">
@@ -561,7 +568,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white hover:text-gray-900"
             aria-label={isFullscreen ? t("ar.exitFullscreen") : t("ar.fullscreen")}
           >
-            {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
+            {isFullscreen ? <CollapseFillIcon className="h-5 w-5" /> : <ExpandFillIcon className="h-5 w-5" />}
           </button>
         </div>
 
@@ -572,44 +579,6 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         ) : null}
       </div>
     </div>
-  );
-}
-
-function PlayIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
-      <path fill="currentColor" d="M8 5.2v13.6L19.2 12 8 5.2z" />
-    </svg>
-  );
-}
-
-function PauseIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
-      <path fill="currentColor" d="M6.5 5h4v14h-4V5zm7 0h4v14h-4V5z" />
-    </svg>
-  );
-}
-
-function FullscreenIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
-      />
-    </svg>
-  );
-}
-
-function ExitFullscreenIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"
-      />
-    </svg>
   );
 }
 

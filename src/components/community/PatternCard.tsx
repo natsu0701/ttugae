@@ -200,7 +200,7 @@ function PatternCard({
           aria-pressed={liked}
           aria-label={t("community.like")}
         >
-          <HeartFillIcon className="h-3.5 w-3.5" filled={liked} />
+          <HeartFillIcon className="h-4 w-4" filled={liked} />
           <span className="font-bold text-stone-800">{likeCount}</span>
         </button>
         <button
@@ -212,7 +212,7 @@ function PatternCard({
           aria-pressed={saved}
           aria-label={t("community.save")}
         >
-          <BookmarkFillIcon className="h-3.5 w-3.5" filled={saved} />
+          <BookmarkFillIcon className="h-4 w-4" filled={saved} />
           <span className="font-bold text-stone-800">{saveCount}</span>
         </button>
         </div>
