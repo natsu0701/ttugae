@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   CheckFillIcon,
-  ImageFillIcon,
   SpinnerFillIcon,
 } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
@@ -120,9 +119,8 @@ export default function FinishedWorkScanPanel({
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className={`${editorChromeBtn} flex flex-1 items-center justify-center gap-1.5 px-3 py-2 font-sans text-sm`}
+          className={`${editorChromeBtn} flex flex-1 items-center justify-center px-3 py-2 font-sans text-sm whitespace-nowrap`}
         >
-          <ImageFillIcon className="h-3.5 w-3.5" />
           {t("common.photoUpload")}
         </button>
         <button
