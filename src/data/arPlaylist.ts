@@ -10,6 +10,7 @@ export type ArPlaylistItem = {
 /**
  * 카메라 위에 겹칠 영상 재생목록.
  * 파일은 `public/overlays/`에 넣고, 이 배열에 항목을 추가하면 화면에 나타납니다.
+ * 권장 소스: 1920×1080 (16:9). 오버레이는 화면을 object-cover로 채우고 넘치는 가장자리는 자릅니다.
  */
 export const AR_PLAYLIST: ArPlaylistItem[] = [
   {

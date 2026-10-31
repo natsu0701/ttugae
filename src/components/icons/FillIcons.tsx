@@ -547,7 +547,7 @@ export function ExpandFillIcon({ className = "h-5 w-5" }: IconProps) {
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
         fill="currentColor"
-        d="M4.4 4.4H10.6V7.2H7.2V10.6H4.4V4.4zm9 0H19.6V10.6H16.8V7.2H13.4V4.4zM4.4 13.4H7.2V16.8H10.6V19.6H4.4V13.4zm12.4 0H19.6V19.6H13.4V16.8H16.8V13.4z"
+        d="M4 4h6.2v2.2H6.2V10.2H4V4zm9.8 0H20v6.2h-2.2V6.2H13.8V4zM4 13.8H6.2V17.8H10.2V20H4v-6.2zm13.8 0H20V20h-6.2v-2.2H17.8V13.8z"
       />
     </svg>
   );
@@ -558,8 +558,19 @@ export function CollapseFillIcon({ className = "h-5 w-5" }: IconProps) {
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
         fill="currentColor"
-        d="M4.4 7.8H7.8V4.4H10.6V10.6H4.4V7.8zm8.8-3.4H16.2V7.8H19.6V10.6H13.4V4.4zM4.4 13.4H10.6V19.6H7.8V16.2H4.4V13.4zm9 0H19.6V16.2H16.2V19.6H13.4V13.4z"
+        d="M8.2 4H10.4V10.4H4V8.2H8.2V4zm5.4 0H15.8V8.2H20V10.4H13.6V4zM4 13.6H10.4V20H8.2V15.8H4V13.6zm9.6 0H20V15.8H15.8V20H13.6V13.6z"
       />
+    </svg>
+  );
+}
+
+export function PlaylistFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3.4" y="5" width="13.2" height="2.3" rx="1.15" fill="currentColor" />
+      <rect x="3.4" y="10.85" width="13.2" height="2.3" rx="1.15" fill="currentColor" />
+      <rect x="3.4" y="16.7" width="8.4" height="2.3" rx="1.15" fill="currentColor" />
+      <path fill="currentColor" d="M17.2 14.1l5 3.1-5 3.1V14.1z" />
     </svg>
   );
 }

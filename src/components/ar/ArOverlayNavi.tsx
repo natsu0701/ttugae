@@ -9,6 +9,7 @@ import {
   ExpandFillIcon,
   PauseFillIcon,
   PlayFillIcon,
+  PlaylistFillIcon,
 } from "../icons/FillIcons.tsx";
 import BackButton from "../ui/BackButton.tsx";
 import { iconTip } from "../../utils/iconTip.ts";
@@ -38,13 +39,19 @@ function isWideLayout(): boolean {
 
 type FsDocument = Document & {
   webkitFullscreenElement?: Element | null;
+  webkitFullscreenEnabled?: boolean;
   webkitExitFullscreen?: () => Promise<void> | void;
 };
 
 type FsElement = HTMLElement & {
-  webkitRequestFullscreen?: () => Promise<void> | void;
-  webkitRequestFullScreen?: () => Promise<void> | void;
+  webkitRequestFullscreen?: (options?: FullscreenOptions) => Promise<void> | void;
+  webkitRequestFullScreen?: (options?: FullscreenOptions) => Promise<void> | void;
 };
+
+const FS_OPTIONS: FullscreenOptions = { navigationUI: "hide" };
+
+const CONTROL_BTN =
+  "flex h-11 w-11 shrink-0 touch-manipulation items-center justify-center";
 
 function cameraErrorStatus(error: unknown): CameraStatus {
   const name =
@@ -70,23 +77,57 @@ function fullscreenElement(): Element | null {
   return document.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
 }
 
-async function enterFullscreen(el: HTMLElement) {
-  const node = el as FsElement;
-  if (el.requestFullscreen) {
-    await el.requestFullscreen();
-    return;
-  }
-  await node.webkitRequestFullscreen?.();
-  await node.webkitRequestFullScreen?.();
+function nativeFullscreenAvailable(): boolean {
+  const doc = document as FsDocument;
+  if (typeof document.fullscreenEnabled === "boolean") return document.fullscreenEnabled;
+  if (typeof doc.webkitFullscreenEnabled === "boolean") return doc.webkitFullscreenEnabled;
+  const probe = document.documentElement as FsElement;
+  return typeof probe.requestFullscreen === "function" || typeof probe.webkitRequestFullscreen === "function";
 }
 
-async function exitFullscreen() {
+function requestNativeFullscreen(el: HTMLElement): Promise<boolean> {
+  const node = el as FsElement;
+  const html = document.documentElement as FsElement;
+  const invoke = (target: FsElement): Promise<boolean> | null => {
+    const fn =
+      (typeof target.requestFullscreen === "function" && target.requestFullscreen) ||
+      (typeof target.webkitRequestFullscreen === "function" && target.webkitRequestFullscreen) ||
+      (typeof target.webkitRequestFullScreen === "function" && target.webkitRequestFullScreen) ||
+      null;
+    if (!fn) return null;
+    try {
+      let result: Promise<void> | void;
+      try {
+        result = fn.call(target, FS_OPTIONS);
+      } catch {
+        result = fn.call(target);
+      }
+      return Promise.resolve(result)
+        .then(() => Boolean(fullscreenElement()))
+        .catch(() => false);
+    } catch {
+      return Promise.resolve(false);
+    }
+  };
+  return invoke(node) ?? invoke(html) ?? Promise.resolve(false);
+}
+
+async function exitNativeFullscreen() {
+  if (!fullscreenElement()) return;
   const doc = document as FsDocument;
-  if (document.exitFullscreen) {
-    await document.exitFullscreen();
-    return;
+  try {
+    if (typeof document.exitFullscreen === "function") {
+      await document.exitFullscreen();
+      return;
+    }
+  } catch {
+    // fall through to webkit
   }
-  await doc.webkitExitFullscreen?.();
+  try {
+    await doc.webkitExitFullscreen?.();
+  } catch {
+    // iPhone Safari has no element fullscreen; CSS immersive still closes
+  }
 }
 
 export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
@@ -105,13 +146,17 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [duration, setDuration] = useState(0);
   const [durations, setDurations] = useState<Record<string, number>>({});
   const [playlistOpen, setPlaylistOpen] = useState(isWideLayout);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [nativeFullscreen, setNativeFullscreen] = useState(false);
+  const [cssFullscreen, setCssFullscreen] = useState(false);
   const [scrubbing, setScrubbing] = useState(false);
   const [playbackRate, setPlaybackRate] = useState<PlaybackRate>(1);
   const [wideLayout, setWideLayout] = useState(isWideLayout);
+  const [chromeVisible, setChromeVisible] = useState(true);
+  const chromeTimerRef = useRef<number | null>(null);
 
   const activeItem = AR_PLAYLIST[activeIndex] ?? null;
   const hasOverlay = Boolean(activeItem);
+  const isFullscreen = nativeFullscreen || cssFullscreen;
 
   const stopStream = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -179,7 +224,11 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   }, [startCamera, stopStream]);
 
   useEffect(() => {
-    const onFs = () => setIsFullscreen(Boolean(fullscreenElement()));
+    const onFs = () => {
+      const native = Boolean(fullscreenElement());
+      setNativeFullscreen(native);
+      if (native) setCssFullscreen(false);
+    };
     document.addEventListener("fullscreenchange", onFs);
     document.addEventListener("webkitfullscreenchange", onFs);
     return () => {
@@ -187,6 +236,84 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       document.removeEventListener("webkitfullscreenchange", onFs);
     };
   }, []);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+
+    const syncViewport = () => {
+      if (!root) return;
+      const vv = window.visualViewport;
+      if (!vv) {
+        root.style.top = "0px";
+        root.style.left = "0px";
+        root.style.width = "100%";
+        root.style.height = "100dvh";
+        return;
+      }
+      root.style.top = `${vv.offsetTop}px`;
+      root.style.left = `${vv.offsetLeft}px`;
+      root.style.width = `${vv.width}px`;
+      root.style.height = `${vv.height}px`;
+    };
+
+    syncViewport();
+    window.visualViewport?.addEventListener("resize", syncViewport);
+    window.visualViewport?.addEventListener("scroll", syncViewport);
+    window.addEventListener("resize", syncViewport);
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+      window.visualViewport?.removeEventListener("resize", syncViewport);
+      window.visualViewport?.removeEventListener("scroll", syncViewport);
+      window.removeEventListener("resize", syncViewport);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!cssFullscreen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setCssFullscreen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [cssFullscreen]);
+
+  const revealChrome = useCallback((hold = false) => {
+    setChromeVisible(true);
+    if (chromeTimerRef.current) {
+      window.clearTimeout(chromeTimerRef.current);
+      chromeTimerRef.current = null;
+    }
+    if (hold || !isFullscreen) return;
+    chromeTimerRef.current = window.setTimeout(() => {
+      setChromeVisible(false);
+      chromeTimerRef.current = null;
+    }, 2600);
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    if (!isFullscreen) {
+      setChromeVisible(true);
+      if (chromeTimerRef.current) {
+        window.clearTimeout(chromeTimerRef.current);
+        chromeTimerRef.current = null;
+      }
+      return;
+    }
+    revealChrome(playlistOpen || scrubbing);
+    return () => {
+      if (chromeTimerRef.current) {
+        window.clearTimeout(chromeTimerRef.current);
+        chromeTimerRef.current = null;
+      }
+    };
+  }, [isFullscreen, playlistOpen, scrubbing, revealChrome]);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1024px)");
@@ -329,16 +456,30 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     });
   }, []);
 
-  const toggleFullscreen = useCallback(async () => {
+  const toggleFullscreen = useCallback(() => {
     const root = rootRef.current;
     if (!root) return;
-    try {
-      if (fullscreenElement()) await exitFullscreen();
-      else await enterFullscreen(root);
-    } catch {
-      // iPad Safari may ignore fullscreen without a fresh gesture
+
+    if (fullscreenElement() || cssFullscreen) {
+      void exitNativeFullscreen();
+      setCssFullscreen(false);
+      if (wideLayout) setPlaylistOpen(true);
+      return;
     }
-  }, []);
+
+    setPlaylistOpen(false);
+    if (!nativeFullscreenAvailable()) {
+      setCssFullscreen(true);
+      return;
+    }
+    const fallback = window.setTimeout(() => {
+      if (!fullscreenElement()) setCssFullscreen(true);
+    }, 350);
+    void requestNativeFullscreen(root).then((ok) => {
+      window.clearTimeout(fallback);
+      if (!ok && !fullscreenElement()) setCssFullscreen(true);
+    });
+  }, [cssFullscreen, wideLayout]);
 
   const copyIpadLink = useCallback(async () => {
     try {
@@ -376,7 +517,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
               <button
                 type="button"
                 onClick={() => setActiveIndex(index)}
-                className={`flex w-full items-center gap-3 px-3 py-2.5 text-left font-sans ${
+                className={`flex min-h-11 w-full touch-manipulation items-center gap-3 px-3 py-2.5 text-left font-sans ${
                   current ? "bg-white/15" : "hover:bg-white/10"
                 }`}
                 aria-current={current ? "true" : undefined}
@@ -411,10 +552,11 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     <div
       ref={rootRef}
       className="fixed inset-0 z-[90] h-[100dvh] w-full overflow-hidden bg-black text-white"
+      data-ar-fullscreen={isFullscreen ? "true" : "false"}
     >
       <video
         ref={cameraRef}
-        className="absolute inset-0 z-0 h-full w-full object-cover"
+        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center"
         autoPlay
         muted
         playsInline
@@ -426,23 +568,32 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         <div className="absolute inset-0 z-0 bg-stone-950" aria-hidden />
       ) : null}
 
-      <video
-        ref={overlayRef}
-        className={`pointer-events-none absolute inset-0 z-[1] h-full w-full bg-transparent object-contain ${
-          hasOverlay ? "visible" : "invisible"
-        }`}
-        muted
-        loop
-        playsInline
-        autoPlay
-        disablePictureInPicture
-        controls={false}
-        aria-hidden={!hasOverlay}
-        aria-label={t("ar.overlayLabel")}
-      />
+      <div className={`ar-overlay-film ${hasOverlay ? "visible" : "invisible"}`}>
+        <video
+          ref={overlayRef}
+          muted
+          loop
+          playsInline
+          autoPlay
+          disablePictureInPicture
+          controls={false}
+          aria-hidden={!hasOverlay}
+          aria-label={t("ar.overlayLabel")}
+        />
+      </div>
 
-      <header className={`absolute inset-x-0 top-0 z-10 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 pb-5 pt-[max(0.75rem,env(safe-area-inset-top))] sm:pb-6 ${wideLayout && playlistOpen ? "lg:pr-[min(22rem,34vw)]" : ""}`}>
-        <BackButton onClick={onExit} tone="dark" className="text-white hover:bg-white/10" />
+      {isFullscreen ? (
+        <button
+          type="button"
+          className="absolute inset-0 z-[2] cursor-default"
+          tabIndex={-1}
+          aria-hidden
+          onClick={() => setChromeVisible((visible) => !visible)}
+        />
+      ) : null}
+
+      <header className={`ar-chrome pointer-events-auto absolute inset-x-0 top-0 z-10 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 pb-5 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-4 sm:pb-6 ${chromeVisible ? "" : "ar-chrome-hidden"} ${wideLayout && playlistOpen ? "lg:pr-[min(22rem,34vw)]" : ""}`}>
+        <BackButton onClick={onExit} tone="dark" className="!h-11 !w-11 text-white hover:bg-white/10" />
         <div className="min-w-0 flex-1">
           <p className="truncate font-sans text-base font-semibold text-white">{t("ar.title")}</p>
           <p className="truncate font-sans text-sm text-white/70">
@@ -452,15 +603,26 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         <button
           type="button"
           onClick={() => void copyIpadLink()}
-          className="flex h-9 w-9 shrink-0 items-center justify-center text-white/55 hover:text-white"
+          className={`${CONTROL_BTN} text-white hover:bg-white/10 ${isFullscreen ? "hidden sm:flex" : "flex"}`}
           {...iconTip(linkCopied ? t("ar.linkCopied") : t("ar.copyLink"), "below")}
         >
           {linkCopied ? <CheckFillIcon className="h-5 w-5" /> : <CopyFillIcon className="h-5 w-5" />}
         </button>
       </header>
 
+      {isFullscreen && !chromeVisible ? (
+        <button
+          type="button"
+          onClick={toggleFullscreen}
+          className={`${CONTROL_BTN} pointer-events-auto absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] z-20 rounded-full bg-black/55 text-white hover:bg-white hover:text-gray-900`}
+          {...iconTip(t("ar.exitFullscreen"), "below")}
+        >
+          <CollapseFillIcon className="h-6 w-6" />
+        </button>
+      ) : null}
+
       {cameraStatus !== "live" ? (
-        <div className={`absolute inset-x-0 top-24 z-10 mx-auto max-w-md px-6 text-center ${wideLayout && playlistOpen ? "lg:mr-[min(22rem,34vw)]" : ""}`}>
+        <div className={`ar-chrome pointer-events-auto absolute inset-x-0 top-24 z-10 mx-auto max-w-md px-6 text-center ${chromeVisible ? "" : "ar-chrome-hidden"} ${wideLayout && playlistOpen ? "lg:mr-[min(22rem,34vw)]" : ""}`}>
           <p className="font-sans text-base text-white/90">{cameraMessage}</p>
           {cameraStatus !== "starting" ? (
             <button
@@ -475,12 +637,12 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       ) : null}
 
       {wideLayout && playlistOpen ? (
-        <aside className="absolute bottom-[5.75rem] right-3 top-[4.75rem] z-10 hidden w-[min(20rem,32vw)] overflow-hidden rounded-xl border border-white/10 bg-black/65 backdrop-blur-sm lg:block">
+        <aside className={`ar-chrome pointer-events-auto absolute bottom-[5.75rem] right-3 top-[4.75rem] z-10 hidden w-[min(20rem,32vw)] overflow-hidden rounded-xl border border-white/10 bg-black/65 backdrop-blur-sm lg:block ${chromeVisible ? "" : "ar-chrome-hidden"}`}>
           {playlistList}
         </aside>
       ) : null}
 
-      <div className={`absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 via-black/55 to-transparent px-3 pb-[max(1rem,env(safe-area-inset-bottom))] pt-8 sm:px-4 ${wideLayout && playlistOpen ? "lg:pr-[min(22rem,34vw)]" : ""}`}>
+      <div className={`ar-chrome pointer-events-auto absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 via-black/55 to-transparent px-3 pb-[max(1.1rem,env(safe-area-inset-bottom))] pt-8 sm:px-4 ${chromeVisible ? "" : "ar-chrome-hidden"} ${wideLayout && playlistOpen ? "lg:pr-[min(22rem,34vw)]" : ""}`}>
         {overlayError ? (
           <p className="mb-3 font-sans text-sm text-coral">{overlayError}</p>
         ) : null}
@@ -523,27 +685,27 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           </div>
         ) : null}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={() => void toggleOverlayPlayback()}
             disabled={!hasOverlay}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-gray-900 disabled:opacity-40"
+            className={`${CONTROL_BTN} rounded-full bg-white text-gray-900 disabled:opacity-40`}
             {...iconTip(overlayPaused ? t("ar.playVideo") : t("ar.pauseVideo"))}
           >
-            {overlayPaused ? <PlayFillIcon className="h-5 w-5" /> : <PauseFillIcon className="h-5 w-5" />}
+            {overlayPaused ? <PlayFillIcon className="h-6 w-6" /> : <PauseFillIcon className="h-6 w-6" />}
           </button>
           {hasOverlay ? (
             <p className="shrink-0 font-sans text-sm tabular-nums text-white" aria-live="off">
               {formatClock(playhead)}
-              <span className="text-white/55"> / {formatClock(duration)}</span>
+              <span className="hidden text-white/55 sm:inline"> / {formatClock(duration)}</span>
             </p>
           ) : null}
           <button
             type="button"
             onClick={cyclePlaybackRate}
             disabled={!hasOverlay}
-            className="h-11 shrink-0 rounded-2xl bg-white/15 px-3 font-sans text-sm font-semibold tabular-nums text-white hover:bg-white hover:text-gray-900 disabled:opacity-40"
+            className="h-11 min-w-[2.75rem] shrink-0 touch-manipulation rounded-xl bg-white/15 px-2.5 font-sans text-sm font-semibold tabular-nums text-white hover:bg-white hover:text-gray-900 disabled:opacity-40 sm:px-3"
             {...iconTip(t("ar.playbackRate", { rate: formatPlaybackRate(playbackRate) }))}
           >
             {formatPlaybackRate(playbackRate)}
@@ -551,25 +713,33 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           <button
             type="button"
             onClick={() => setPlaylistOpen((open) => !open)}
-            className="min-w-0 flex-1 rounded-xl bg-white/15 px-3 py-2 text-left hover:bg-white/25 sm:px-4 sm:py-2.5"
+            className="hidden min-w-0 flex-1 touch-manipulation items-center rounded-xl bg-white/15 px-4 text-left hover:bg-white/25 sm:flex sm:h-11"
             aria-expanded={playlistOpen}
           >
-            <p className="truncate font-sans text-sm font-semibold text-white">
+            <span className="truncate font-sans text-sm font-semibold text-white">
               {t("ar.playlist")} · {AR_PLAYLIST.length}
-            </p>
-            <p className="truncate font-sans text-sm text-white/70">
-              {activeItem
-                ? t("ar.nowPlaying", { n: activeIndex + 1, title: activeItem.title })
-                : t("ar.playlistEmpty")}
-            </p>
+              {activeItem ? ` · ${activeItem.title}` : ""}
+            </span>
           </button>
           <button
             type="button"
-            onClick={() => void toggleFullscreen()}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white hover:text-gray-900"
+            onClick={() => setPlaylistOpen((open) => !open)}
+            className={`${CONTROL_BTN} ml-auto rounded-full bg-white/15 text-white hover:bg-white hover:text-gray-900 sm:hidden`}
+            aria-expanded={playlistOpen}
+            {...iconTip(t("ar.playlist"))}
+          >
+            <PlaylistFillIcon className="h-6 w-6" />
+          </button>
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            className={`${CONTROL_BTN} relative z-20 rounded-full hover:bg-white hover:text-gray-900 ${
+              isFullscreen ? "bg-white text-gray-900" : "bg-white/15 text-white"
+            }`}
+            aria-pressed={isFullscreen}
             {...iconTip(isFullscreen ? t("ar.exitFullscreen") : t("ar.fullscreen"))}
           >
-            {isFullscreen ? <CollapseFillIcon className="h-5 w-5" /> : <ExpandFillIcon className="h-5 w-5" />}
+            {isFullscreen ? <CollapseFillIcon className="h-6 w-6" /> : <ExpandFillIcon className="h-6 w-6" />}
           </button>
         </div>
 
