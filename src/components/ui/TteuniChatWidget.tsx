@@ -160,7 +160,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
           type="button"
           onPointerDown={startResize}
           className="absolute left-0 top-0 z-10 flex h-6 w-6 cursor-nwse-resize items-center justify-center text-stone-300 hover:text-stone-500"
-          {...iconTip(t("chat.resize"), "below")}
+          {...iconTip(t("chat.resize"), "above")}
         >
           <ResizeFillIcon className="h-3 w-3" />
         </button>

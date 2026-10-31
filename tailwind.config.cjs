@@ -23,6 +23,7 @@ module.exports = {
         "3xl": "1rem",
       },
       fontSize: {
+        // Material 3: body large 16sp, title 22–24sp, label/caption 12–14sp.
         // 3xs/2xs: 캔버스 기호 등 초밀집 UI. 본문에는 쓰지 않음.
         "3xs": ["0.625rem", { lineHeight: "1.3" }],
         "2xs": ["0.75rem", { lineHeight: "1.35" }],

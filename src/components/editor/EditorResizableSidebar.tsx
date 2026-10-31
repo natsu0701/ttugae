@@ -78,7 +78,7 @@ export default function EditorResizableSidebar({
       <div
         role="separator"
         aria-orientation="vertical"
-        {...iconTip(t("editor.sidebarResize"), side === "left" ? "right" : "above")}
+        {...iconTip(t("editor.sidebarResize"), side === "left" ? "right" : "left")}
         onMouseDown={onMouseDown}
         className={`absolute top-0 z-20 h-full w-1.5 cursor-col-resize hover:bg-coral/50 ${
           side === "left" ? "right-0" : "left-0"

@@ -13,6 +13,7 @@ import ConfirmDialog from "./components/ui/ConfirmDialog.tsx";
 import EditorEntryModal from "./components/ui/EditorEntryModal.tsx";
 import YarnStitchTrail from "./components/effects/YarnStitchTrail.tsx";
 import PageSkeleton from "./components/ui/PageSkeleton.tsx";
+import IconTipLayer from "./components/ui/IconTipLayer.tsx";
 import { saveShareDraft } from "./utils/shareDraft.ts";
 import { openShareDraftFromPatterns } from "./utils/createShareDraft.ts";
 import { openCommunityPostForEdit } from "./utils/communityPostDraft.ts";
@@ -568,6 +569,7 @@ export default function App() {
     <UnsavedChangesProvider>
       <CommunityActionsProvider>
         <AppRoutes />
+        <IconTipLayer />
       </CommunityActionsProvider>
     </UnsavedChangesProvider>
   );
