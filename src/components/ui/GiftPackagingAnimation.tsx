@@ -90,7 +90,7 @@ function GiftPackagingAnimation({
           <p className="font-sans text-sm font-medium uppercase tracking-[0.18em] text-stone-400">
             {t("gift.packedChip")}
           </p>
-          <h2 className="mt-2 font-sans text-xl font-bold text-stone-950">
+          <h2 className="mt-2 text-title font-sans font-bold text-stone-950">
             {t("gift.done")}
           </h2>
           <div className="mt-4 space-y-3 text-left">

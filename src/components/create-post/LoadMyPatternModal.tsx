@@ -73,7 +73,7 @@ export default function LoadMyPatternModal({
             <div className="border-b border-gray-100 px-5 py-4">
               <h2
                 id="load-pattern-title"
-                className="font-sans text-lg font-bold text-gray-900"
+                className="text-title font-sans font-bold text-gray-900"
               >
                 {t("createPost.loadMine")}
               </h2>

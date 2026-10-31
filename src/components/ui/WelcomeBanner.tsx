@@ -23,11 +23,11 @@ function WelcomeBanner({
   return (
     <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-xl bg-[#FFFBF7] p-8 shadow-sm sm:p-10 md:flex-row">
       <div className="w-full min-w-0 md:flex-1">
-        <span className="mb-3 block w-fit rounded-full bg-[#FC5F53]/10 px-3 py-1 font-sans text-sm font-bold uppercase tracking-widest text-[#FC5F53] md:text-base">
+        <span className="mb-3 block w-fit rounded-full bg-[#FC5F53]/10 px-3 py-1 font-sans text-sm font-bold uppercase tracking-widest text-[#FC5F53]">
           {chip}
         </span>
         <h1
-          className="break-keep font-gamhong text-2xl font-normal tracking-tight text-stone-900 sm:text-3xl md:text-4xl"
+          className="text-display break-keep font-gamhong font-normal tracking-tight text-stone-900"
           style={{
             fontFamily: "Mungyeong-Gamhong-Apple, sans-serif",
             fontWeight: 400,
@@ -37,7 +37,7 @@ function WelcomeBanner({
         >
           {title}
         </h1>
-        <p className="mt-2.5 max-w-xl break-keep font-seoyun text-lg font-normal leading-relaxed text-stone-500 sm:text-xl">
+        <p className="mt-2.5 max-w-xl break-keep font-seoyun text-lg font-normal leading-relaxed text-stone-500">
           {subtitle}
         </p>
       </div>

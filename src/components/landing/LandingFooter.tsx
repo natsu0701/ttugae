@@ -37,7 +37,7 @@ function InfoRow({
   note: string;
 }) {
   return (
-    <li className="flex flex-wrap items-baseline gap-x-2 font-sans text-[0.9375rem] leading-relaxed text-[#1d1d1d]">
+    <li className="flex flex-wrap items-baseline gap-x-2 font-sans text-sm leading-relaxed text-[#1d1d1d]">
       <span className="font-bold">
         {label}{" "}
         <a href={href} className="font-bold hover:text-coral">
@@ -108,7 +108,7 @@ function LandingFooter() {
     <div>
       <div className="bg-white">
         <div className="page-shell py-10 text-center md:py-12">
-          <p className="font-seoyun text-lg font-bold text-gray-900 md:text-xl">{t("landing.footerTag")}</p>
+          <p className="font-seoyun text-lg font-bold text-gray-900">{t("landing.footerTag")}</p>
         </div>
       </div>
 
@@ -124,7 +124,7 @@ function LandingFooter() {
                   open={isOpen}
                 >
                   <summary
-                    className="flex h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 font-sans text-[0.9375rem] text-[#333] marker:content-none hover:bg-[#f7f7f7] [&::-webkit-details-marker]:hidden md:px-8"
+                    className="flex h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 font-sans text-sm text-[#333] marker:content-none hover:bg-[#f7f7f7] [&::-webkit-details-marker]:hidden md:px-8"
                     onClick={(event) => {
                       event.preventDefault();
                       setOpenRelated((prev) => (prev === group.id ? null : group.id));
@@ -159,7 +159,7 @@ function LandingFooter() {
 
           <div className="mt-8 flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
             <div className="min-w-0 flex-1">
-              <p className="font-sans text-[0.9375rem] leading-relaxed text-[#333]">{t("landing.footerAddr")}</p>
+              <p className="font-sans text-sm leading-relaxed text-[#333]">{t("landing.footerAddr")}</p>
               <ul className="mt-4 space-y-2">
                 <InfoRow
                   label={t("landing.footerPhoneLabel")}
@@ -188,7 +188,7 @@ function LandingFooter() {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="inline-flex items-center gap-1 font-sans text-[0.9375rem] text-[#1d1d1d] hover:text-coral"
+                      className="inline-flex items-center gap-1 font-sans text-sm text-[#1d1d1d] hover:text-coral"
                     >
                       {link.label}
                       <ChevronRightFillIcon className="h-3.5 w-3.5 text-[#767676]" />

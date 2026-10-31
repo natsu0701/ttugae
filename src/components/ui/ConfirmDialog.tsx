@@ -29,7 +29,7 @@ function ConfirmDialog({
     <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
       <button type="button" className="absolute inset-0 bg-stone-900/30" onClick={onCancel} aria-label={t("common.close")} />
       <div className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
-        <h2 className="text-title font-sans text-gray-900">{title}</h2>
+        <h2 className="text-title font-sans font-bold text-gray-900">{title}</h2>
         <p className="mt-3 text-body text-stone-600">{body}</p>
         <div className="mt-6 flex flex-wrap justify-end gap-2">
           <Button type="button" variant="secondary" className="px-4 py-2 text-base" onClick={onCancel}>

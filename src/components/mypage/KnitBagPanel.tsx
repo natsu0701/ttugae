@@ -71,7 +71,7 @@ function KnitBagPanel() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.bag.title")}</h2>
+        <h2 className="text-title font-sans font-bold text-gray-900">{t("mypage.bag.title")}</h2>
         <p className="mt-1 font-sans text-base text-gray-600">{t("mypage.bag.subtitle")}</p>
       </div>
 

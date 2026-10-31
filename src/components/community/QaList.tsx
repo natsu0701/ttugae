@@ -27,7 +27,7 @@ export default function QaList({ posts, onSelect }: QaListProps) {
   if (posts.length === 0) {
     return (
       <div className="rounded-2xl bg-gray-50 p-12 text-center">
-        <p className="font-sans text-xl font-bold text-gray-900">
+        <p className="text-title font-sans font-bold text-gray-900">
           {t("community.qaEmptyTitle")}
         </p>
         <p className="mt-2 font-sans text-base font-normal text-gray-500">

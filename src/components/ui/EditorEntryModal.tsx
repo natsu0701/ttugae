@@ -42,7 +42,7 @@ function EditorEntryModal({
         >
           <CloseFillIcon className="h-4 w-4" />
         </button>
-        <h2 className="pr-10 font-sans text-xl font-bold text-stone-900">{t("editor.entryTitle")}</h2>
+        <h2 className="pr-10 text-title font-sans font-bold text-stone-900">{t("editor.entryTitle")}</h2>
         <p className="mt-2 font-sans text-base text-stone-500">{t("editor.entryHint")}</p>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Button type="button" className="h-auto px-4 py-4 text-base" onClick={onCreateNew}>

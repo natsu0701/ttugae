@@ -71,7 +71,7 @@ export default function WorkshopPalettePanel({
                   {paletteTitle(palette.id, palette.name)}
                 </span>
                 <span
-                  className={`block truncate font-sans text-2xs font-normal uppercase tracking-wide ${
+                  className={`block truncate font-sans text-xs font-normal uppercase tracking-wide ${
                     active ? "text-white/80" : "text-stone-500"
                   }`}
                 >

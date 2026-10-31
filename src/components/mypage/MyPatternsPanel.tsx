@@ -105,7 +105,7 @@ export default function MyPatternsPanel({
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="font-sans text-2xl font-bold text-gray-900">
+          <h2 className="text-title font-sans font-bold text-gray-900">
             {t("mypage.patterns.title")}
           </h2>
           <p className="mt-1 font-sans text-base font-normal text-gray-600">
@@ -193,7 +193,7 @@ export default function MyPatternsPanel({
 
       {visible.length === 0 ? (
         <div className="rounded-xl bg-gray-50 p-8 text-center">
-          <p className="font-sans text-xl font-bold text-gray-900">
+          <p className="text-title font-sans font-bold text-gray-900">
             {t("mypage.patterns.emptyTitle")}
           </p>
           <p className="mt-2 font-seoyun text-base text-gray-600">

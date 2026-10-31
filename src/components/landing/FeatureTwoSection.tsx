@@ -12,7 +12,7 @@ function FeatureTwoSection() {
       <div className="page-shell">
         <Reveal className="mb-16 text-center md:text-left">
           <FeatureBadge>Feature 02</FeatureBadge>
-          <h2 className="mt-3 break-keep font-sans text-2xl font-black leading-tight tracking-tight text-stone-900 sm:text-3xl md:text-4xl">
+          <h2 className={`${landingHeading.h2Center} break-keep`}>
             {t("landing.feature2Title")}
           </h2>
           <p className={`${landingHeading.body} font-seoyun`}>

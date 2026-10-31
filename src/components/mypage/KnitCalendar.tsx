@@ -35,7 +35,7 @@ function KnitCalendar({ events }: KnitCalendarProps) {
   return (
     <div className="rounded-xl border border-stone-200 bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-title text-gray-900">{t("mypage.calendar.title")}</h3>
+        <h3 className="text-title font-sans font-bold text-gray-900">{t("mypage.calendar.title")}</h3>
         <div className="flex items-center gap-2">
           <button
             type="button"

@@ -127,7 +127,7 @@ export default function CastOnModal({
             className={`max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl bg-[#FFFBF7] p-6 ${softShadow}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="font-sans text-xl font-bold text-gray-900">
+            <h2 className="text-title font-sans font-bold text-gray-900">
               {isGauge
                 ? t("editor.gaugeButton")
                 : isAdd
@@ -250,7 +250,7 @@ export default function CastOnModal({
               <button
                 type="button"
                 onClick={applyRecommended}
-                className="mt-2 w-full rounded-2xl bg-white px-3 py-2 font-sans text-sm font-normal text-gray-900 transition-colors hover:bg-black hover:text-white"
+                className="mt-2 w-full rounded-2xl bg-white px-3 py-2 font-sans text-base font-normal text-gray-900 transition-colors hover:bg-black hover:text-white"
               >
                 {t("editor.castOn.applyRecommended")}
               </button>

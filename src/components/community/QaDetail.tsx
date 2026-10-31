@@ -92,7 +92,7 @@ function QaDetail({ post, onBack }: QaDetailProps) {
       <article className="page-shell">
         <section className="rounded-xl bg-gray-50 p-6 md:p-8">
           <div className="flex items-start justify-between gap-3">
-            <h1 className="text-display font-sans font-bold leading-snug text-gray-900">
+            <h1 className="text-display font-sans font-bold text-gray-900">
               {displayPost.title}
             </h1>
             <button
@@ -113,7 +113,7 @@ function QaDetail({ post, onBack }: QaDetailProps) {
         </section>
 
         <section className="mt-10">
-          <h2 className="font-sans text-lg font-bold text-gray-900">
+          <h2 className="text-title font-sans font-bold text-gray-900">
             {t("community.answersCount", { count: answers.length })}
           </h2>
           <ul className="mt-4 flex flex-col gap-3">

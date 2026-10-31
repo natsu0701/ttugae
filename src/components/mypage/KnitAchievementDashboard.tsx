@@ -148,7 +148,7 @@ function KnitAchievementDashboard({
   return (
     <div className="w-full space-y-6">
       <div className="rounded-xl border border-stone-200 bg-white p-6">
-        <h3 className="text-title text-stone-900">{t("mypage.achTitle")}</h3>
+        <h3 className="text-title font-sans font-bold text-stone-900">{t("mypage.achTitle")}</h3>
         <p className="mt-2 text-body leading-6 text-stone-500">{t("mypage.achSubtitle")}</p>
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {summaryItems.map((item) => (

@@ -314,7 +314,7 @@ export default function Community({
             </div>
             {filtered.length === 0 ? (
               <div className="rounded-xl bg-gray-50 p-12 text-center">
-                <p className="font-sans text-xl font-bold text-gray-900">
+                <p className="text-title font-sans font-bold text-gray-900">
                   {t("community.noMatchTitle")}
                 </p>
                 <p className="mt-2 font-seoyun text-base font-normal text-gray-500">

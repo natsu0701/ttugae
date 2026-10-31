@@ -116,7 +116,7 @@ export default function FinishedWorksGallery({ onEditPost }: FinishedWorksGaller
   if (works.length === 0) {
     return (
       <div className="rounded-2xl bg-gray-50 p-10 text-center">
-        <p className="font-sans text-xl font-bold text-gray-900">{t("mypage.finishedEmptyTitle")}</p>
+        <p className="text-title font-sans font-bold text-gray-900">{t("mypage.finishedEmptyTitle")}</p>
         <p className="mt-2 font-sans text-base font-normal text-gray-500">
           {t("mypage.finishedEmptyDesc")}
         </p>

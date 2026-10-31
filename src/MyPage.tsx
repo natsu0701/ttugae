@@ -141,7 +141,7 @@ function PatternGallery({
   if (items.length === 0) {
     return (
       <div className="rounded-2xl bg-gray-50 p-10 text-center">
-        <p className="font-sans text-xl font-bold text-gray-900">{emptyTitle}</p>
+        <p className="text-title font-sans font-bold text-gray-900">{emptyTitle}</p>
         <p className="mt-2 font-sans text-base font-normal text-gray-500">{emptyDesc}</p>
       </div>
     );
@@ -253,7 +253,7 @@ function ProfileInfoPanel({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-title text-gray-900">{t("mypage.profile.title")}</h2>
+        <h2 className="text-title font-sans font-bold text-gray-900">{t("mypage.profile.title")}</h2>
         <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.profile.profileHint")}</p>
       </div>
 
@@ -390,7 +390,7 @@ function ProfileInfoPanel({
       </div>
 
       <div className="rounded-xl border border-stone-200 bg-white p-6 md:p-8">
-        <h3 className="text-title">{t("mypage.badgeVault")}</h3>
+        <h3 className="text-title font-sans font-bold text-gray-900">{t("mypage.badgeVault")}</h3>
         <p className="mt-2 font-sans text-base leading-6 text-stone-500">{t("mypage.badgeVaultHint")}</p>
         <div className="mt-5">
           <ProfileBadgeCustomizer
@@ -626,7 +626,7 @@ export default function MyPage({
           {activeTab === "summary" ? (
             <div className="space-y-6">
               <div>
-                <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.tabs.summary")}</h2>
+                <h2 className="text-title font-sans font-bold text-gray-900">{t("mypage.tabs.summary")}</h2>
                 <p className="mt-1 font-sans text-base text-gray-600">{t("mypage.profile.statsHint")}</p>
               </div>
               <KnitAchievementDashboard
@@ -682,7 +682,7 @@ export default function MyPage({
 
           {activeTab === "finished" ? (
             <div>
-              <h2 className="mb-6 font-sans text-2xl font-bold text-gray-900">
+              <h2 className="mb-6 text-title font-sans font-bold text-gray-900">
                 {t("mypage.finishedTitle")}
               </h2>
               <FinishedWorksGallery onEditPost={onEditCommunityPost} />
@@ -691,7 +691,7 @@ export default function MyPage({
 
           {activeTab === "liked" ? (
             <div>
-              <h2 className="mb-6 font-sans text-2xl font-bold text-gray-900">
+              <h2 className="mb-6 text-title font-sans font-bold text-gray-900">
                 {t("mypage.likedTitle")}
               </h2>
               <PatternGallery
@@ -705,7 +705,7 @@ export default function MyPage({
 
           {activeTab === "saved" ? (
             <div>
-              <h2 className="mb-6 font-sans text-2xl font-bold text-gray-900">
+              <h2 className="mb-6 text-title font-sans font-bold text-gray-900">
                 {t("mypage.savedTitle")}
               </h2>
               <PatternGallery

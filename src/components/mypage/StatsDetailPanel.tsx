@@ -85,7 +85,7 @@ export default function StatsDetailPanel({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="font-sans text-2xl font-bold text-gray-900">{t("mypage.statsPageTitle")}</h2>
+        <h2 className="text-title font-sans font-bold text-gray-900">{t("mypage.statsPageTitle")}</h2>
         <p className="mt-1 font-sans text-base font-normal text-gray-600">
           {t("mypage.statsPageHint")}
         </p>

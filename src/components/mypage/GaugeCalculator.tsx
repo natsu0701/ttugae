@@ -53,7 +53,7 @@ function GaugeCalculator({
         </p>
       ) : (
         <>
-          <h2 className="text-title text-gray-900">{t("mypage.profile.gaugeTitle")}</h2>
+          <h2 className="text-title font-sans font-bold text-gray-900">{t("mypage.profile.gaugeTitle")}</h2>
           <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.profile.gaugeHint")}</p>
         </>
       )}
@@ -112,7 +112,7 @@ function GaugeCalculator({
         <button
           type="button"
           onClick={() => onApplySize?.(recSts, recRows)}
-          className="mt-2 w-full rounded-xl border border-stone-200 bg-white px-3 py-2 font-sans text-sm font-normal text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900"
+          className="mt-2 w-full rounded-xl border border-stone-200 bg-white px-3 py-2 font-sans text-base font-normal text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900"
         >
           {t("editor.gaugeApplySize")}
         </button>

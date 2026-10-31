@@ -8,6 +8,7 @@ import Reveal from "./Reveal.tsx";
 import { assetUrl } from "../../utils/appPath.ts";
 import ArIpadLink from "../ar/ArIpadLink.tsx";
 import { iconTip } from "../../utils/iconTip.ts";
+import { landingHeading } from "./landingStyles.ts";
 
 import "swiper/css";
 import "swiper/css/effect-creative";
@@ -137,10 +138,10 @@ function AppPromotionSection() {
         </div>
 
         <div className="page-shell mt-20 text-center md:mt-28">
-          <h2 className="font-sans text-2xl font-bold leading-none text-black sm:text-3xl md:text-4xl lg:text-5xl">
+          <h2 className={landingHeading.h2Center}>
             {t("landing.promoLine1")}
           </h2>
-          <p className="mt-5 font-seoyun text-2xl font-normal leading-tight text-gray-700 md:text-3xl">
+          <p className={landingHeading.body}>
             {t("landing.promoBody1")}
           </p>
           <div className="pt-8">

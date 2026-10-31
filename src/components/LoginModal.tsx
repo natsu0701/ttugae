@@ -83,7 +83,7 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
           ×
         </button>
 
-        <h2 id="login-title" className="flex flex-wrap items-center gap-2 font-sans text-2xl font-bold text-gray-900">
+        <h2 id="login-title" className="flex flex-wrap items-center gap-2 text-title font-sans font-bold text-gray-900">
           <BrandTextLogo className="h-7 w-auto object-contain" />
           {t("login.title")}
         </h2>

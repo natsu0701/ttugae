@@ -213,7 +213,7 @@ export default function CreatePostPage({
       <header className={`relative z-20 bg-gray-50 px-5 py-4 md:px-8 ${softShadow}`}>
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
           <BackButton onClick={onCancel} />
-          <h1 className="font-sans text-lg font-bold text-gray-900">
+          <h1 className="text-title font-sans font-bold text-gray-900">
             {isEdit ? t("createPost.editTitle") : t("createPost.writeTitle")}
           </h1>
           <span className="w-16" aria-hidden />

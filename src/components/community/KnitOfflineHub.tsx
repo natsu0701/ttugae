@@ -423,7 +423,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
           <span className="rounded-full bg-coral/10 px-3.5 py-1 font-sans text-sm font-bold uppercase tracking-widest text-coral">
             Offline Connection
           </span>
-          <h3 className="mt-2 font-sans text-xl font-black tracking-tight text-stone-900">
+          <h3 className="mt-2 text-title font-sans font-bold tracking-tight text-stone-900">
             {t("offline.title")}
           </h3>
           <p className="mt-1 break-keep font-seoyun text-base font-normal text-stone-500">
@@ -548,14 +548,14 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     <div className="flex items-start gap-3 rounded-2xl bg-stone-50 p-4">
                       <CalendarFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                       <div className="font-sans">
-                        <span className="block text-2xs font-bold uppercase text-stone-400">{t("offline.dateLabel")}</span>
+                        <span className="block text-sm font-bold uppercase text-stone-400">{t("offline.dateLabel")}</span>
                         <span className="text-sm font-semibold text-stone-700">{selectedEvent.date}</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 rounded-2xl bg-stone-50 p-4">
                       <PinFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                       <div className="min-w-0 font-sans">
-                        <span className="block text-2xs font-bold uppercase text-stone-400">{t("offline.placeLabel")}</span>
+                        <span className="block text-sm font-bold uppercase text-stone-400">{t("offline.placeLabel")}</span>
                         <span className="break-all text-sm font-semibold leading-normal text-stone-700">
                           {selectedEvent.location}
                         </span>
@@ -579,7 +579,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   <button
                     type="button"
                     onClick={() => handleIssueTicket(selectedEvent)}
-                    className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-coral text-sm font-bold text-white shadow-[0_4px_12px_rgba(252,95,83,0.15)] transition-all hover:bg-coral/90"
+                    className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-coral text-base font-bold text-white shadow-[0_4px_12px_rgba(252,95,83,0.15)] transition-all hover:bg-coral/90"
                   >
                     <QrFillIcon className="h-4 w-4" />
                     <span>{t("offline.ticket")}</span>
@@ -663,7 +663,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       type="button"
                       disabled={isFull && !meet.isJoined}
                       onClick={() => handleToggleJoinMeetup(meet.id)}
-                      className={`mt-4 flex h-10 w-full items-center justify-center gap-1.5 rounded-xl font-sans text-sm font-bold transition-colors ${
+                      className={`mt-4 flex h-10 w-full items-center justify-center gap-1.5 rounded-xl font-sans text-base font-bold transition-colors ${
                         meet.isJoined
                           ? "bg-coral/10 text-coral hover:bg-coral/15"
                           : isFull
@@ -755,7 +755,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                             <FileTextFillIcon className="h-5 w-5" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <span className="block font-sans text-2xs font-bold uppercase tracking-wide text-stone-400">
+                            <span className="block font-sans text-sm font-bold uppercase tracking-wide text-stone-400">
                               {t("offline.patternAttach")}
                             </span>
                             <span className="mt-0.5 block whitespace-normal break-all font-sans text-base font-black leading-snug text-stone-900">
@@ -769,7 +769,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                         <button
                           type="button"
                           onClick={() => handleForkPattern(rev)}
-                          className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-xl bg-stone-950 px-5 py-3 font-sans text-sm font-bold text-stone-100 transition-all hover:bg-stone-800 md:w-auto"
+                          className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-xl bg-stone-950 px-5 py-3 font-sans text-base font-bold text-stone-100 transition-all hover:bg-stone-800 md:w-auto"
                         >
                           <span>{t("offline.cloneEditor")}</span>
                           <ChevronRightFillIcon className="h-3.5 w-3.5" />
@@ -807,7 +807,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               className="relative z-10 w-full max-w-sm space-y-6 rounded-xl bg-white p-6 text-center shadow-[0_30px_70px_rgba(0,0,0,0.15)]"
             >
               <div className="space-y-1.5">
-                <span className="rounded-full bg-coral/10 px-3.5 py-0.5 font-sans text-2xs font-bold uppercase tracking-widest text-coral">
+                <span className="rounded-full bg-coral/10 px-3.5 py-0.5 font-sans text-sm font-bold uppercase tracking-widest text-coral">
                   Mobile Entrance Pass
                 </span>
                 <h4 className="font-sans text-base font-black leading-snug text-stone-900">
@@ -841,7 +841,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               <button
                 type="button"
                 onClick={() => setActiveModalTicket(null)}
-                className="h-11 w-full rounded-xl bg-stone-950 font-sans text-sm font-bold text-white transition-colors hover:bg-stone-800"
+                className="h-11 w-full rounded-xl bg-stone-950 font-sans text-base font-bold text-white transition-colors hover:bg-stone-800"
               >
                 {t("offline.ticketClose")}
               </button>

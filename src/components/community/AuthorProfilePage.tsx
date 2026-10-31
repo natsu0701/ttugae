@@ -56,7 +56,7 @@ export default function AuthorProfilePage({
             className="h-20 w-20 rounded-full object-cover"
           />
           <div className="min-w-0 flex-1">
-            <h1 className="text-title text-gray-900">{author.nickname}</h1>
+            <h1 className="text-title font-sans font-bold text-gray-900">{author.nickname}</h1>
             <p className="mt-1 font-sans text-base text-stone-500">@{author.handle}</p>
             <p className="mt-2 text-body text-stone-600">{author.bio}</p>
             <p className="mt-3 font-sans text-sm text-stone-500">
@@ -86,7 +86,7 @@ export default function AuthorProfilePage({
         ) : null}
       </section>
       <section className="mt-8">
-        <h2 className="text-title text-gray-900">{t("community.authorWorks")}</h2>
+        <h2 className="text-title font-sans font-bold text-gray-900">{t("community.authorWorks")}</h2>
         {patterns.length === 0 ? (
           <p className="mt-4 text-body text-stone-500">{t("community.authorEmpty")}</p>
         ) : (

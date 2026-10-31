@@ -104,11 +104,11 @@ export default function MyMeetupsPanel() {
 
   return (
     <div>
-      <h2 className="text-title text-gray-900">{t("mypage.meetupsTitle")}</h2>
+      <h2 className="text-title font-sans font-bold text-gray-900">{t("mypage.meetupsTitle")}</h2>
       <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.meetupsSubtitle")}</p>
       {empty ? (
         <div className="mt-6 rounded-xl bg-gray-50 p-10 text-center">
-          <p className="font-sans text-xl font-bold text-gray-900">{t("mypage.meetupsEmptyTitle")}</p>
+          <p className="text-title font-sans font-bold text-gray-900">{t("mypage.meetupsEmptyTitle")}</p>
           <p className="mt-2 font-seoyun text-base text-gray-500">{t("mypage.meetupsEmptyDesc")}</p>
         </div>
       ) : (
@@ -159,7 +159,7 @@ export default function MyMeetupsPanel() {
             }}
           />
           <div className="relative max-h-[90vh] w-full max-w-lg overflow-auto rounded-xl bg-white p-6">
-            <h3 className="text-title">{active.title}</h3>
+            <h3 className="text-title font-sans font-bold text-gray-900">{active.title}</h3>
             {host ? (
               <div className="mt-4">
                 <p className="text-base font-medium">{t("mypage.meetups.qrHost")}</p>

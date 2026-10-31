@@ -144,6 +144,7 @@ body {
     border-radius: 0.75rem;
   }
 
+  /* display: 상세 큰 제목 / title: 앱 섹션 제목 / body: 본문 / caption: 힌트·캡션 */
   .text-display {
     font-size: clamp(1.5rem, 1.5vw + 1rem, 2.75rem);
     line-height: 1.25;

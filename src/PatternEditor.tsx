@@ -719,7 +719,7 @@ export default function PatternEditor({
                   title={t(`editor.stitches.${s.id}`)}
                 >
                   <span className="flex h-6 items-center justify-center font-mono text-base leading-none">{s.symbol}</span>
-                  <span className="mt-0.5 truncate text-2xs">
+                  <span className="mt-0.5 truncate text-xs">
                     {t(`editor.stitches.${s.id}`)}
                   </span>
                 </button>
@@ -735,7 +735,7 @@ export default function PatternEditor({
                 title={t("editor.castOnButton")}
               >
                 <span className="flex h-6 items-center justify-center text-2xl leading-none">+</span>
-                <span className="mt-0.5 truncate text-2xs">
+                <span className="mt-0.5 truncate text-xs">
                   {t("editor.stitches.caston")}
                 </span>
               </button>

@@ -126,7 +126,7 @@ export default function FinishedWorkDetail({
         <header className="pb-8">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <h1 className="text-display font-sans text-gray-900">{displayPattern.title}</h1>
+              <h1 className="text-display font-sans font-bold text-gray-900">{displayPattern.title}</h1>
               <NeedleBadge
                 spec={pattern.needle}
                 needleText={d.needle}
@@ -229,7 +229,7 @@ export default function FinishedWorkDetail({
             </div>
           </div>
           <div className="rounded-xl bg-gray-50 p-6">
-            <h2 className="font-sans text-lg font-bold text-gray-900">{t("community.reviewTitle")}</h2>
+            <h2 className="text-title font-sans font-bold text-gray-900">{t("community.reviewTitle")}</h2>
             <p className="mt-4 font-sans text-base leading-relaxed text-gray-700">{d.review}</p>
           </div>
         </section>
@@ -237,7 +237,7 @@ export default function FinishedWorkDetail({
         <section className="mt-12">
           {pattern.hasAttachedPattern ? (
             <>
-              <h2 className="font-sans text-xl font-bold text-gray-900">{t("community.attachedPattern")}</h2>
+              <h2 className="text-title font-sans font-bold text-gray-900">{t("community.attachedPattern")}</h2>
               <p className="mt-2 font-sans text-base text-gray-500">
                 {t("community.attachedHint", { cols: pattern.gridCols, rows: pattern.gridRows })}
               </p>
@@ -250,7 +250,7 @@ export default function FinishedWorkDetail({
             </>
           ) : (
             <>
-              <h2 className="font-sans text-xl font-bold text-gray-900">{t("community.aiAnalyzed")}</h2>
+              <h2 className="text-title font-sans font-bold text-gray-900">{t("community.aiAnalyzed")}</h2>
               <p className="mt-2 font-sans text-base text-gray-500">{t("community.noPatternOnlyPhoto")}</p>
               <div className="mt-4">
                 <AiPredictedImage filename={pattern.aiPredictedImage ?? "completed_muffler_rainbow.jpg"} />
@@ -260,7 +260,7 @@ export default function FinishedWorkDetail({
         </section>
 
         <section className="mt-14 pt-10">
-          <h2 className="font-sans text-lg font-bold text-gray-900">
+          <h2 className="text-title font-sans font-bold text-gray-900">
             {t("community.commentCount", { count: comments.length })}
           </h2>
           <ul className="mt-4 flex flex-col gap-3">
