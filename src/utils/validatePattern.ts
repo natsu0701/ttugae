@@ -1,3 +1,4 @@
+import { knittingRowNumber } from "./knittingChart.ts";
 import type { EditorCell } from "./patternGrid.ts";
 
 export type PatternValidationOk = {
@@ -6,7 +7,7 @@ export type PatternValidationOk = {
 
 export type PatternValidationError = {
   ok: false;
-  /** 1-based 단 번호 (위에서부터) */
+  /** 1-based 단 번호 (아래 1단부터, 실제 도안과 같음) */
   rowNumber: number;
   expected: number;
   actual: number;
@@ -54,7 +55,7 @@ export function validatePattern(gridData: EditorCell[][]): PatternValidation {
     if (consume !== expected || produce !== expected) {
       return {
         ok: false,
-        rowNumber: r + 1,
+        rowNumber: knittingRowNumber(r, gridData.length),
         expected,
         actual: produce !== expected ? produce : consume,
       };

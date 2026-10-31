@@ -1,6 +1,11 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { stitchSymbol } from "../../data/stitchSymbols.ts";
 import { symbolColorForBackground } from "../../utils/colorContrast.ts";
+import {
+  isRightSideKnitRow,
+  knittingRowNumber,
+  knittingStitchNumber,
+} from "../../utils/knittingChart.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 
 type Selection = {
@@ -22,6 +27,7 @@ type PatternGridProps = {
 const GAP_PX = 1;
 const FRAME_PAD_PX = 8;
 const MIN_CELL_PX = 4;
+const RULER_PX = 18;
 
 function inSelection(selection: Selection | null, r: number, c: number) {
   if (!selection) return false;
@@ -59,8 +65,8 @@ function PatternGrid({
     return () => ro.disconnect();
   }, []);
 
-  const innerW = Math.max(0, box.w - FRAME_PAD_PX * 2);
-  const innerH = Math.max(0, box.h - FRAME_PAD_PX * 2);
+  const innerW = Math.max(0, box.w - FRAME_PAD_PX * 2 - RULER_PX * 2);
+  const innerH = Math.max(0, box.h - FRAME_PAD_PX * 2 - RULER_PX);
   const cell =
     innerW && innerH && gridCols && gridRows
       ? Math.max(
@@ -75,6 +81,12 @@ function PatternGrid({
       : 0;
   const gridW = cell * gridCols + GAP_PX * Math.max(0, gridCols - 1);
   const gridH = cell * gridRows + GAP_PX * Math.max(0, gridRows - 1);
+  const dense = cell < 14;
+
+  const showRowNum = (n: number) =>
+    !dense || n === 1 || n === gridRows || n % 2 === 1;
+  const showColNum = (n: number) =>
+    !dense || n === 1 || n === gridCols || n % 5 === 0;
 
   return (
     <div
@@ -85,58 +97,115 @@ function PatternGrid({
         className="rounded-xl bg-white shadow-sm"
         style={{
           padding: FRAME_PAD_PX,
-          width: cell ? gridW + FRAME_PAD_PX * 2 : undefined,
-          height: cell ? gridH + FRAME_PAD_PX * 2 : undefined,
+          width: cell ? gridW + RULER_PX * 2 + FRAME_PAD_PX * 2 : undefined,
+          height: cell ? gridH + RULER_PX + FRAME_PAD_PX * 2 : undefined,
           visibility: cell ? "visible" : "hidden",
         }}
       >
         <div
-          className={`grid bg-stone-200/70 ${pointerDisabled ? "pointer-events-none" : ""}`}
+          className="grid"
           style={{
-            gridTemplateColumns: `repeat(${gridCols}, ${cell}px)`,
-            gridTemplateRows: `repeat(${gridRows}, ${cell}px)`,
-            gap: GAP_PX,
-            width: gridW,
-            height: gridH,
+            gridTemplateColumns: `${RULER_PX}px ${gridW}px ${RULER_PX}px`,
+            gridTemplateRows: `${gridH}px ${RULER_PX}px`,
           }}
         >
-          {grid.map((row, r) =>
-            row.map((cellData, c) => {
-              const selected = inSelection(selection, r, c);
-              const bgHex = colorMap[cellData.colorId] ?? "#FFFFFF";
-              const symbolColor = symbolColorForBackground(bgHex);
+          <div className="flex flex-col" style={{ height: gridH, gap: GAP_PX }}>
+            {grid.map((_, r) => {
+              const n = knittingRowNumber(r, gridRows);
+              const show = !isRightSideKnitRow(n) && showRowNum(n);
               return (
-                <button
-                  key={`${r}-${c}`}
-                  type="button"
-                  className={`relative flex items-center justify-center rounded-sm ${stitchSize}`}
-                  style={{
-                    width: cell,
-                    height: cell,
-                    backgroundColor: bgHex,
-                  }}
-                  onPointerDown={(e) => {
-                    e.preventDefault();
-                    onCellPointerDown(r, c);
-                  }}
-                  onPointerEnter={() => onCellPointerEnter(r, c)}
+                <div
+                  key={`l-${r}`}
+                  className="flex items-center justify-center font-sans text-2xs tabular-nums text-stone-400"
+                  style={{ height: cell }}
                 >
-                  {selected && (
-                    <span
-                      className="pointer-events-none absolute inset-0 rounded-sm bg-coral/40"
-                      aria-hidden
-                    />
-                  )}
-                  <span
-                    className="pointer-events-none relative z-[1] font-sans font-normal"
-                    style={{ color: symbolColor }}
-                  >
-                    {stitchSymbol(cellData.stitchId)}
-                  </span>
-                </button>
+                  {show ? n : ""}
+                </div>
               );
-            }),
-          )}
+            })}
+          </div>
+
+          <div
+            className={`grid bg-stone-200/70 ${pointerDisabled ? "pointer-events-none" : ""}`}
+            style={{
+              gridTemplateColumns: `repeat(${gridCols}, ${cell}px)`,
+              gridTemplateRows: `repeat(${gridRows}, ${cell}px)`,
+              gap: GAP_PX,
+              width: gridW,
+              height: gridH,
+            }}
+          >
+            {grid.map((row, r) =>
+              row.map((cellData, c) => {
+                const selected = inSelection(selection, r, c);
+                const bgHex = colorMap[cellData.colorId] ?? "#FFFFFF";
+                const symbolColor = symbolColorForBackground(bgHex);
+                return (
+                  <button
+                    key={`${r}-${c}`}
+                    type="button"
+                    className={`relative flex items-center justify-center rounded-sm font-mono ${stitchSize}`}
+                    style={{
+                      width: cell,
+                      height: cell,
+                      backgroundColor: bgHex,
+                    }}
+                    onPointerDown={(e) => {
+                      e.preventDefault();
+                      onCellPointerDown(r, c);
+                    }}
+                    onPointerEnter={() => onCellPointerEnter(r, c)}
+                  >
+                    {selected && (
+                      <span
+                        className="pointer-events-none absolute inset-0 rounded-sm bg-coral/40"
+                        aria-hidden
+                      />
+                    )}
+                    <span
+                      className="pointer-events-none relative z-[1] font-normal leading-none"
+                      style={{ color: symbolColor }}
+                    >
+                      {stitchSymbol(cellData.stitchId)}
+                    </span>
+                  </button>
+                );
+              }),
+            )}
+          </div>
+
+          <div className="flex flex-col" style={{ height: gridH, gap: GAP_PX }}>
+            {grid.map((_, r) => {
+              const n = knittingRowNumber(r, gridRows);
+              const show = isRightSideKnitRow(n) && showRowNum(n);
+              return (
+                <div
+                  key={`r-${r}`}
+                  className="flex items-center justify-center font-sans text-2xs tabular-nums text-stone-400"
+                  style={{ height: cell }}
+                >
+                  {show ? n : ""}
+                </div>
+              );
+            })}
+          </div>
+
+          <div />
+          <div className="flex" style={{ width: gridW, gap: GAP_PX }}>
+            {Array.from({ length: gridCols }, (_, c) => {
+              const n = knittingStitchNumber(c, gridCols);
+              return (
+                <div
+                  key={`c-${c}`}
+                  className="flex items-center justify-center font-sans text-2xs tabular-nums text-stone-400"
+                  style={{ width: cell }}
+                >
+                  {showColNum(n) ? n : ""}
+                </div>
+              );
+            })}
+          </div>
+          <div />
         </div>
       </div>
     </div>

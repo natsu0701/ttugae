@@ -3,7 +3,7 @@ import { memo } from "react";
 const CORAL = "#FC5F53";
 const HIGHLIGHT_CELLS = new Set([0, 1, 8, 9, 16, 24, 32, 40, 48]);
 const PALETTE = [CORAL, "#374151", "#FFFFFF"] as const;
-const TOOL_SYMBOLS = ["—", "∪", "○"] as const;
+const TOOL_SYMBOLS = ["|", "—", "○"] as const;
 
 function EditorMockup() {
   return (
@@ -41,7 +41,7 @@ function EditorMockup() {
           {TOOL_SYMBOLS.map((s) => (
             <span
               key={s}
-              className="flex h-8 w-8 items-center justify-center rounded-xl bg-white font-sans text-base font-normal text-gray-600"
+              className="flex h-8 w-8 items-center justify-center rounded-xl bg-white font-mono text-base font-normal text-gray-600"
             >
               {s}
             </span>

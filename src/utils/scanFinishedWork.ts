@@ -343,8 +343,38 @@ export type PhotoPatternResult = {
   rows: number;
 };
 
-const GEN_MIN = 4;
-const GEN_MAX = 50;
+const GEN_MIN = 12;
+const GEN_MAX = 32;
+
+function choosePhotoGrid(
+  layout: { cols: number | null; rows: number | null },
+  aspect: number,
+): { cols: number; rows: number } {
+  let cols: number;
+  let rows: number;
+  if (aspect >= 1) {
+    cols = GEN_MAX;
+    rows = Math.max(GEN_MIN, Math.round(GEN_MAX / aspect));
+  } else {
+    rows = GEN_MAX;
+    cols = Math.max(GEN_MIN, Math.round(GEN_MAX * aspect));
+  }
+  if (
+    layout.cols &&
+    layout.rows &&
+    layout.cols >= GEN_MIN &&
+    layout.cols <= GEN_MAX &&
+    layout.rows >= GEN_MIN &&
+    layout.rows <= GEN_MAX
+  ) {
+    const estAspect = layout.cols / layout.rows;
+    if (Math.abs(estAspect - aspect) / Math.max(aspect, 0.01) < 0.35) {
+      cols = layout.cols;
+      rows = layout.rows;
+    }
+  }
+  return { cols, rows };
+}
 
 export async function generatePatternFromPhoto(imageSrc: string): Promise<PhotoPatternResult> {
   const img = await loadImage(imageSrc);
@@ -354,16 +384,7 @@ export async function generatePatternFromPhoto(imageSrc: string): Promise<PhotoP
   const bw = bounds.x1 - bounds.x0 + 1;
   const bh = bounds.y1 - bounds.y0 + 1;
   const aspect = bw / Math.max(1, bh);
-  const fallbackCols = Math.min(
-    GEN_MAX,
-    Math.max(GEN_MIN, Math.round(22 * Math.min(1.6, Math.max(0.6, aspect)))),
-  );
-  const fallbackRows = Math.min(
-    GEN_MAX,
-    Math.max(GEN_MIN, Math.round(fallbackCols / Math.max(0.35, aspect))),
-  );
-  const cols = Math.min(GEN_MAX, Math.max(GEN_MIN, layout.cols ?? fallbackCols));
-  const rows = Math.min(GEN_MAX, Math.max(GEN_MIN, layout.rows ?? fallbackRows));
+  const { cols, rows } = choosePhotoGrid(layout, aspect);
 
   const raw: { rgb: Rgb; stitchId: string }[][] = [];
   for (let r = 0; r < rows; r++) {

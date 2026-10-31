@@ -1,12 +1,13 @@
+/** 일본·한국 대바늘 도안과 Craft Yarn Council에서 쓰는 겉면 기준 기호 */
 export const STITCHES = [
   { id: "empty", symbol: "·" },
-  { id: "knit", symbol: "—" },
-  { id: "purl", symbol: "∪" },
+  { id: "knit", symbol: "|" },
+  { id: "purl", symbol: "—" },
   { id: "yo", symbol: "○" },
-  { id: "k2tog", symbol: "∧" },
-  { id: "ssk", symbol: "∨" },
+  { id: "k2tog", symbol: "/" },
+  { id: "ssk", symbol: "\\" },
   { id: "bobble", symbol: "●" },
-  { id: "slip", symbol: "/" },
+  { id: "slip", symbol: "V" },
   { id: "twist", symbol: "×" },
   { id: "caston", symbol: "+" },
 ] as const;

@@ -48,6 +48,7 @@ import {
 } from "./types/knittingProject.ts";
 import { persistCurrentProgressRow } from "./utils/editorProgressStorage.ts";
 import { formatNeedleBadgeI18n } from "./utils/i18nContent.ts";
+import { countCellsByColor, knitOrderedRows } from "./utils/knittingChart.ts";
 import {
   loadGaugeProfile,
   saveGaugeProfile,
@@ -586,21 +587,32 @@ export default function PatternEditor({
         rows: gridRows,
       }),
     );
+    lines.push(t("editor.copyReadOrder"));
+    lines.push(
+      t("editor.copySymbolKey", {
+        key: STITCHES.map((s) => `${s.symbol} ${t(`editor.stitches.${s.id}`)}`).join(" · "),
+      }),
+    );
     lines.push(t("editor.copyNeedle", { needle: formatNeedleBadgeI18n(t, needle) }));
+    const colorCounts = countCellsByColor(grid);
     lines.push(
       t("editor.copyYarn", {
-        yarns: usedYarns.map((y) => `${y.label}(${y.fiberType})`).join(", "),
+        yarns: usedYarns
+          .map((y) => `${y.label}(${y.fiberType}) ${colorCounts.get(y.id) ?? 0}`)
+          .join(", "),
       }),
     );
     lines.push("");
-    grid.forEach((row, ri) => {
-      const rowText = row
+    knitOrderedRows(grid).forEach(({ n, rs, cells }) => {
+      const rowText = cells
         .map((cell) => {
           const yarn = paletteYarns.find((y) => y.id === cell.colorId);
           return `${stitchSymbol(cell.stitchId)}(${yarn?.label.slice(0, 2) ?? ""})`;
         })
         .join(" ");
-      lines.push(`R${ri + 1}: ${rowText}`);
+      lines.push(
+        t(rs ? "editor.copyRowRs" : "editor.copyRowWs", { n, row: rowText }),
+      );
     });
     return lines.join("\n");
   }, [grid, usedYarns, gridCols, gridRows, paletteYarns, needle, t]);
@@ -693,7 +705,7 @@ export default function PatternEditor({
         <div className="scrollbar-thin flex h-full min-h-0 flex-col gap-4 overflow-y-auto p-3 pb-8 md:p-5 md:pb-8">
           <div>
             <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
-              {t("editor.symbolPalette")}
+              {t("editor.chartKey")}
             </p>
             <div className="grid grid-cols-2 gap-1.5">
               {STITCHES.filter((s) => s.id !== "caston").map((s) => (
@@ -706,7 +718,7 @@ export default function PatternEditor({
                   }`}
                   title={t(`editor.stitches.${s.id}`)}
                 >
-                  <span className="flex h-6 items-center justify-center text-base leading-none">{s.symbol}</span>
+                  <span className="flex h-6 items-center justify-center font-mono text-base leading-none">{s.symbol}</span>
                   <span className="mt-0.5 truncate text-2xs">
                     {t(`editor.stitches.${s.id}`)}
                   </span>
@@ -795,17 +807,24 @@ export default function PatternEditor({
             onDismissHint: dismissToolHint,
           }}
         >
-          <PatternGrid
-            grid={grid}
-            colorMap={colorMap}
-            selection={selection}
-            pointerDisabled={panEnabled}
-            onCellPointerDown={handlePointerDown}
-            onCellPointerEnter={handlePointerEnter}
-          />
-          {facesIndependent ? (
-            <p className="mt-3 font-seoyun text-base font-normal text-stone-400">{faceHint}</p>
-          ) : null}
+          <div className="flex h-full w-full min-h-0 min-w-0 flex-col">
+            <div className="min-h-0 min-w-0 flex-1">
+              <PatternGrid
+                grid={grid}
+                colorMap={colorMap}
+                selection={selection}
+                pointerDisabled={panEnabled}
+                onCellPointerDown={handlePointerDown}
+                onCellPointerEnter={handlePointerEnter}
+              />
+            </div>
+            <p className="shrink-0 px-4 pb-1 text-center font-seoyun text-sm font-normal text-stone-400">
+              {t("editor.chartReadHint")}
+            </p>
+            {facesIndependent ? (
+              <p className="shrink-0 px-4 pb-1 text-center font-seoyun text-base font-normal text-stone-400">{faceHint}</p>
+            ) : null}
+          </div>
         </EditorCanvasStage>
         </main>
 
