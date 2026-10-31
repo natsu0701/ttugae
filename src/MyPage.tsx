@@ -434,7 +434,7 @@ function ProfileInfoPanel({
                       </div>
                       <button
                         type="button"
-                        className={`shrink-0 rounded-full px-3 py-1 text-sm font-bold ${
+                        className={`shrink-0 rounded-xl px-3 py-1 text-sm font-bold ${
                           followingThem ? "bg-stone-200 text-stone-600" : "bg-coral text-white"
                         }`}
                         onClick={() => toggleFollow(author.handle)}
@@ -508,7 +508,7 @@ function AccountMenu({
       <button
         type="button"
         onClick={onToggle}
-        className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(open)}`}
+        className={`flex items-center gap-2.5 px-4 py-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(open)}`}
         aria-expanded={open}
       >
         <AccountFillIcon className="h-5 w-5 shrink-0" />
@@ -609,7 +609,7 @@ export default function MyPage({
                   key={id}
                   type="button"
                   onClick={() => selectTab(id)}
-                  className={`flex items-center gap-2.5 rounded-full px-4 py-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(active)}`}
+                  className={`flex items-center gap-2.5 px-4 py-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(active)}`}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
                   {t(labelKey)}

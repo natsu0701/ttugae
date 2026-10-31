@@ -886,7 +886,7 @@ export default function PatternEditor({
                     <CopyFillIcon className="h-3.5 w-3.5" />
                   )}
                   {patternCopyDone ? (
-                    <span className="absolute -bottom-8 right-0 z-10 whitespace-nowrap rounded-full bg-stone-800 px-2.5 py-1 font-sans text-sm font-medium text-white shadow-md">
+                    <span className="absolute -bottom-8 right-0 z-10 whitespace-nowrap rounded-xl bg-stone-800 px-2.5 py-1 font-sans text-sm font-medium text-white shadow-md">
                       {t("editor.copied")}
                     </span>
                   ) : null}

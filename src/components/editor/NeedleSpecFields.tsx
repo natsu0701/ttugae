@@ -73,7 +73,7 @@ export default function NeedleSpecFields({
                 key={type}
                 type="button"
                 onClick={() => setType(type)}
-                className={`rounded-full px-3 py-2 font-sans text-sm font-medium transition-colors ${
+                className={`rounded-2xl px-3 py-2 font-sans text-sm font-medium transition-colors ${
                   active
                     ? "bg-coral text-white"
                     : tone === "dark"

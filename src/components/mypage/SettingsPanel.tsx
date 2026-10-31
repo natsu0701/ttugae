@@ -351,7 +351,7 @@ export default function SettingsPanel() {
               key={level}
               type="button"
               onClick={() => changeSkill(level)}
-              className={`rounded-full px-3.5 py-1.5 font-sans text-sm font-medium transition-colors ${
+              className={`rounded-2xl px-3.5 py-1.5 font-sans text-sm font-medium transition-colors ${
                 taste.skill === level
                   ? "bg-coral text-white"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -370,7 +370,7 @@ export default function SettingsPanel() {
                 key={style}
                 type="button"
                 onClick={() => toggleStyle(style)}
-                className={`rounded-full px-3.5 py-1.5 font-sans text-sm font-medium transition-colors ${
+                className={`rounded-2xl px-3.5 py-1.5 font-sans text-sm font-medium transition-colors ${
                   on ? "bg-stone-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >

@@ -526,7 +526,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                         key={event.id}
                         type="button"
                         onClick={() => setSelectedEventId(event.id)}
-                        className={`rounded-full px-2.5 py-1 font-sans text-sm font-bold ${
+                        className={`rounded-xl px-2.5 py-1 font-sans text-sm font-bold ${
                           selectedEventId === event.id
                             ? "bg-coral text-white"
                             : "bg-stone-100 text-stone-500 hover:bg-stone-200"

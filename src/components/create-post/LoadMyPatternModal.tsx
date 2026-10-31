@@ -118,7 +118,7 @@ export default function LoadMyPatternModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full rounded-full py-2.5 font-sans text-base font-normal text-gray-600 transition-colors hover:bg-gray-100"
+                className="w-full rounded-2xl py-2.5 font-sans text-base font-normal text-gray-600 transition-colors hover:bg-gray-100"
               >
                 {t("common.close")}
               </button>

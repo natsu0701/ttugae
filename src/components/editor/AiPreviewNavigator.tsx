@@ -62,7 +62,7 @@ export default function AiPreviewNavigator({
               key={item.id}
               type="button"
               onClick={() => setItemType(item.id)}
-              className={`rounded-full px-2.5 py-1 font-sans text-sm font-normal ${
+              className={`rounded-xl px-2.5 py-1 font-sans text-sm font-normal ${
                 active ? "border border-coral bg-coral text-white" : editorChromeTone
               }`}
             >

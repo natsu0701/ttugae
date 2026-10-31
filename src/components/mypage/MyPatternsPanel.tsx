@@ -128,7 +128,7 @@ export default function MyPatternsPanel({
           <button
             type="button"
             onClick={() => setFolderId("all")}
-            className={`rounded-full px-3 py-1.5 font-sans text-sm ${
+            className={`rounded-2xl px-3 py-1.5 font-sans text-sm ${
               folderId === "all" ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"
             }`}
           >
@@ -137,7 +137,7 @@ export default function MyPatternsPanel({
           <button
             type="button"
             onClick={() => setFolderId(UNFILED_COLLECTION_ID)}
-            className={`rounded-full px-3 py-1.5 font-sans text-sm ${
+            className={`rounded-2xl px-3 py-1.5 font-sans text-sm ${
               folderId === UNFILED_COLLECTION_ID ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"
             }`}
           >
@@ -148,7 +148,7 @@ export default function MyPatternsPanel({
               key={folder.id}
               type="button"
               onClick={() => setFolderId(folder.id)}
-              className={`rounded-full px-3 py-1.5 font-sans text-sm ${
+              className={`rounded-2xl px-3 py-1.5 font-sans text-sm ${
                 folderId === folder.id ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"
               }`}
             >

@@ -240,7 +240,7 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
             type="button"
             onClick={() => send(t(`chat.${key}`))}
             disabled={busy}
-            className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 font-sans text-sm text-stone-600 hover:border-coral hover:bg-coral/5 hover:text-coral disabled:opacity-50"
+            className="rounded-xl border border-stone-200 bg-stone-50 px-2.5 py-1 font-sans text-sm text-stone-600 hover:border-coral hover:bg-coral/5 hover:text-coral disabled:opacity-50"
           >
             {t(`chat.${key}`)}
           </button>

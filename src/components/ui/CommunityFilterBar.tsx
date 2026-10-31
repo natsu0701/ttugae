@@ -103,7 +103,7 @@ function CommunityFilterBar({
   return (
     <div className="w-full select-none">
       <div className="flex items-center gap-2">
-        <label className="flex h-11 min-w-0 flex-1 items-center rounded-full border border-gray-200 bg-white px-4">
+        <label className="flex h-11 min-w-0 flex-1 items-center rounded-2xl border border-gray-200 bg-white px-4">
           <span className="sr-only">{t("community.filterSearch")}</span>
           <input
             type="search"
@@ -143,7 +143,7 @@ function CommunityFilterBar({
               <button
                 type="button"
                 onClick={() => onChange({ ...DEFAULT_LOUNGE_FILTERS, query: filters.query })}
-                className="flex items-center gap-1 rounded-full px-3 py-2 font-sans text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                className="flex items-center gap-1 rounded-xl px-3 py-2 font-sans text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
               >
                 <RefreshFillIcon className="h-3 w-3" />
                 {t("community.filterReset")}

@@ -543,7 +543,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
             type="button"
             onClick={cyclePlaybackRate}
             disabled={!hasOverlay}
-            className="h-11 shrink-0 rounded-full bg-white/15 px-3 font-sans text-sm font-semibold tabular-nums text-white hover:bg-white hover:text-gray-900 disabled:opacity-40"
+            className="h-11 shrink-0 rounded-2xl bg-white/15 px-3 font-sans text-sm font-semibold tabular-nums text-white hover:bg-white hover:text-gray-900 disabled:opacity-40"
             {...iconTip(t("ar.playbackRate", { rate: formatPlaybackRate(playbackRate) }))}
           >
             {formatPlaybackRate(playbackRate)}
