@@ -16,6 +16,12 @@ module.exports = {
         gamhong: ["Mungyeong-Gamhong-Apple", "sans-serif"],
         seoyun: ["LeeSeoyun", "sans-serif"],
       },
+      borderRadius: {
+        lg: "0.375rem",
+        xl: "0.5rem",
+        "2xl": "0.75rem",
+        "3xl": "1rem",
+      },
       fontSize: {
         // 3xs/2xs: 캔버스 기호 등 초밀집 UI. 본문에는 쓰지 않음.
         "3xs": ["0.625rem", { lineHeight: "1.3" }],
