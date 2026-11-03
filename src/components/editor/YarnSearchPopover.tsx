@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useModalKeyboard } from "../../hooks/useModalKeyboard.ts";
 import { searchYarnCatalog, YARN_CATALOG } from "../../data/yarnCatalog.ts";
 import type { EditorYarn, YarnCatalogEntry } from "../../types/editorYarn.ts";
 import SmoothInput from "../ui/SmoothInput.tsx";
@@ -35,6 +36,8 @@ export default function YarnSearchPopover({
   const [highlight, setHighlight] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useModalKeyboard(open, onClose, panelRef);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();

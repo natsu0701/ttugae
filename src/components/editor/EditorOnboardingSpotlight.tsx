@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
   type CSSProperties,
   type RefObject,
@@ -8,6 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
+import { useModalKeyboard } from "../../hooks/useModalKeyboard.ts";
 
 const STORAGE_KEY = "ttugae.editor.onboarding.completed";
 
@@ -69,6 +71,7 @@ function SpotlightDimPanels({
         <button
           key={i}
           type="button"
+          tabIndex={-1}
           aria-label={skipLabel}
           className={`absolute bg-black/60 pointer-events-auto ${panel.className}`}
           style={panel.style}
@@ -89,6 +92,7 @@ export default function EditorOnboardingSpotlight({
   chatbotRef,
 }: EditorOnboardingSpotlightProps) {
   const { t } = useTranslation();
+  const panelRef = useRef<HTMLDivElement>(null);
   const [completed, setCompleted] = useLocalStorage(STORAGE_KEY, false);
   const [step, setStep] = useState<1 | 2>(1);
   const [spot, setSpot] = useState<Rect | null>(null);
@@ -119,14 +123,7 @@ export default function EditorOnboardingSpotlight({
     };
   }, [active, step, updateSpot]);
 
-  useEffect(() => {
-    if (!active) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") finish();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [active, finish]);
+  useModalKeyboard(active, finish, panelRef, "last");
 
   useEffect(() => {
     if (!active || spot) return;
@@ -178,7 +175,7 @@ export default function EditorOnboardingSpotlight({
       ) : null}
 
       <div
-          key={step}
+          ref={panelRef}
           className="fade-in pointer-events-auto absolute z-10 max-w-xs -translate-x-1/2 rounded-xl bg-white px-4 py-4"
           style={{ top: bubbleTop, left: bubbleLeft }}
         >

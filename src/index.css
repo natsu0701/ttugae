@@ -30,10 +30,30 @@
     [role="button"],
     [role="menuitem"],
     [role="tab"],
+    [role="option"],
     [role="gridcell"],
     [tabindex]:not([tabindex="-1"])
   ):focus-visible {
     outline: 2px solid #fc5f53;
+    outline-offset: 2px;
+  }
+}
+
+/* outline-none 유틸보다 위에 두어 탭 선택이 항상 보이게 한다 */
+@layer utilities {
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  summary:focus-visible,
+  [role="button"]:focus-visible,
+  [role="menuitem"]:focus-visible,
+  [role="tab"]:focus-visible,
+  [role="option"]:focus-visible,
+  [role="gridcell"]:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 2px solid #fc5f53 !important;
     outline-offset: 2px;
   }
 }

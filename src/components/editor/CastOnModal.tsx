@@ -168,7 +168,7 @@ export default function CastOnModal({
                     onChange={(e) =>
                       setTargetPart(e.target.value as ChartTargetPart)
                     }
-                    className="w-full rounded-2xl bg-white px-3 py-2 font-sans text-base text-gray-800 outline-none"
+                    className="w-full rounded-2xl bg-white px-3 py-2 font-sans text-base text-gray-800 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
                   >
                     {PARTS.map((part) => (
                       <option key={part} value={part}>

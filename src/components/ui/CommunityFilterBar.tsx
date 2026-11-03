@@ -96,6 +96,15 @@ function CommunityFilterBar({
     return () => window.removeEventListener(LOUNGE_CLOSE_FILTER_EVENT, close);
   }, []);
 
+  useEffect(() => {
+    if (!panelOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPanelOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [panelOpen]);
+
   const patch = (partial: Partial<LoungeFilters>) => {
     onChange({ ...filters, ...partial });
   };
@@ -110,7 +119,7 @@ function CommunityFilterBar({
             value={filters.query}
             onChange={(e) => patch({ query: e.target.value })}
             placeholder={t("community.filterSearch")}
-            className="w-full bg-transparent font-sans text-base font-normal text-gray-800 outline-none placeholder:text-gray-400"
+            className="w-full bg-transparent font-sans text-base font-normal text-gray-800 outline-none placeholder:text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
           />
         </label>
         <button

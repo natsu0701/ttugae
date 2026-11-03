@@ -60,7 +60,7 @@ function ReportModal({ open, targetType, targetId, onClose }: ReportModalProps) 
               value={detail}
               onChange={(e) => setDetail(e.target.value)}
               rows={3}
-              className="mt-4 w-full rounded-lg border border-stone-200 px-3 py-2 text-base outline-none focus:border-coral"
+              className="mt-4 w-full rounded-lg border border-stone-200 px-3 py-2 text-base outline-none focus:border-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
               placeholder={t("report.detailPh")}
             />
           </>

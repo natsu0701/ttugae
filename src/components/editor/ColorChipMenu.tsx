@@ -31,8 +31,21 @@ export default function ColorChipMenu({
         setOpen(false);
       }
     };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        setOpen(false);
+        rootRef.current?.querySelector("button")?.focus();
+      }
+    };
     document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    window.addEventListener("keydown", onKey);
+    const firstItem = rootRef.current?.querySelector<HTMLElement>("[data-chip-menu] button");
+    firstItem?.focus();
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      window.removeEventListener("keydown", onKey);
+    };
   }, [open]);
 
   const chipClass =
@@ -50,8 +63,17 @@ export default function ColorChipMenu({
         type="button"
         title={yarn.label}
         aria-label={yarn.label}
+        aria-haspopup={variant === "selection" ? undefined : "menu"}
+        aria-expanded={variant === "selection" ? undefined : open}
         onClick={() => {
           onSelect?.();
+        }}
+        onKeyDown={(e) => {
+          if (variant === "selection") return;
+          if (e.key === "ContextMenu" || (e.key === "F10" && e.shiftKey) || e.key === "ArrowDown") {
+            e.preventDefault();
+            setOpen(true);
+          }
         }}
         onContextMenu={(e) => {
           if (variant === "selection") return;
@@ -83,9 +105,14 @@ export default function ColorChipMenu({
       ) : null}
 
       {open && variant !== "selection" && (
-        <div className="absolute left-0 top-full z-50 mt-1 min-w-[7rem] rounded-xl border border-stone-200 bg-white p-1 shadow-md">
+        <div
+          data-chip-menu
+          role="menu"
+          className="absolute left-0 top-full z-50 mt-1 min-w-[7rem] rounded-xl border border-stone-200 bg-white p-1 shadow-md"
+        >
           <button
             type="button"
+            role="menuitem"
             className="w-full rounded-lg px-3 py-2 text-left font-sans text-sm font-normal text-stone-700 transition-colors hover:bg-stone-50 hover:text-stone-900"
             onClick={() => colorInputRef.current?.click()}
           >
@@ -93,6 +120,7 @@ export default function ColorChipMenu({
           </button>
           <button
             type="button"
+            role="menuitem"
             className="w-full rounded-lg px-3 py-2 text-left font-sans text-sm font-normal text-stone-700 transition-colors hover:bg-stone-50 hover:text-stone-900"
             onClick={() => {
               onDeleteFromCanvas(yarn.id);
@@ -108,6 +136,7 @@ export default function ColorChipMenu({
         <input
           ref={colorInputRef}
           type="color"
+          tabIndex={-1}
           className="sr-only"
           value={hexValue}
           onChange={(e) => {

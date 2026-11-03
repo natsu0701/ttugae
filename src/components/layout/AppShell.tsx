@@ -89,6 +89,7 @@ function ProfileMenu({
   const { requestLeave } = useUnsavedChanges();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const otherAccounts = accounts.filter((item) => item.id !== activeAccountId);
   const avatarSrc = avatarUrl || TTEUNI_IMAGES.chatProfile;
   const hasCustomAvatar = Boolean(avatarUrl);
@@ -97,16 +98,23 @@ function ProfileMenu({
     const onDoc = (event: MouseEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) setMenuOpen(false);
     };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
     document.addEventListener("mousedown", onDoc);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDoc);
-      window.removeEventListener("keydown", onKey);
-    };
+    return () => document.removeEventListener("mousedown", onDoc);
   }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const first = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
+    first?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   const go = (fn: () => void) => () => {
     setMenuOpen(false);
@@ -116,6 +124,7 @@ function ProfileMenu({
   return (
     <div className="relative shrink-0" ref={menuRef}>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setMenuOpen((open) => !open)}
         className={`flex h-10 w-10 items-center justify-center rounded-full border bg-white transition-colors duration-200 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral sm:h-11 sm:w-11 ${

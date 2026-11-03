@@ -5,6 +5,7 @@ export function useModalKeyboard(
   open: boolean,
   onClose: () => void,
   containerRef: RefObject<HTMLElement | null>,
+  initialFocus: "first" | "last" = "first",
 ) {
   useEffect(() => {
     if (!open) return;
@@ -24,7 +25,8 @@ export function useModalKeyboard(
     if (!root) return;
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const items = focusableControls(root);
-    items[0]?.focus();
+    const start = initialFocus === "last" ? items[items.length - 1] : items[0];
+    start?.focus();
 
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
@@ -49,5 +51,5 @@ export function useModalKeyboard(
       root.removeEventListener("keydown", onKey);
       previouslyFocused?.focus();
     };
-  }, [open, containerRef]);
+  }, [open, containerRef, initialFocus]);
 }
