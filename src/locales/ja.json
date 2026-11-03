@@ -1240,6 +1240,10 @@
     "fullscreen": "全画面",
     "exitFullscreen": "全画面を終了",
     "videoLoadError": "動画を読み込めませんでした。",
-    "playbackRate": "再生速度 {{rate}}"
+    "playbackRate": "再生速度 {{rate}}",
+    "overlayShow": "オーバーレイを表示",
+    "overlayHide": "オーバーレイを隠す",
+    "overlayOpacity": "オーバーレイ {{percent}}%",
+    "overlayOff": "オフ"
   }
 }

@@ -1240,6 +1240,10 @@
     "fullscreen": "Full screen",
     "exitFullscreen": "Exit full screen",
     "videoLoadError": "The video could not be loaded.",
-    "playbackRate": "Speed {{rate}}"
+    "playbackRate": "Speed {{rate}}",
+    "overlayShow": "Show overlay",
+    "overlayHide": "Hide overlay",
+    "overlayOpacity": "Overlay {{percent}}%",
+    "overlayOff": "Off"
   }
 }

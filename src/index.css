@@ -501,6 +501,7 @@ body.yarn-trail-active {
   z-index: 1;
   overflow: hidden;
   pointer-events: none;
+  transition: opacity 180ms ease;
 }
 
 .ar-overlay-film video {
@@ -559,6 +560,46 @@ body.yarn-trail-active {
   border-radius: 999px;
   background: #fc5f53;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.ar-opacity-slider {
+  appearance: none;
+  height: 28px;
+  touch-action: none;
+  background: linear-gradient(
+    to right,
+    #fc5f53 var(--progress, 0%),
+    rgba(255, 255, 255, 0.28) var(--progress, 0%)
+  );
+  background-size: 100% 4px;
+  background-repeat: no-repeat;
+  background-position: center;
+  outline: none;
+  cursor: pointer;
+}
+
+.ar-opacity-slider:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ar-opacity-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #fc5f53;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.ar-opacity-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #fc5f53;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .ar-seek-tooltip::after {

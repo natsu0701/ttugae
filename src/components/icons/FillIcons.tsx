@@ -611,6 +611,32 @@ export function PauseFillIcon({ className = "h-5 w-5" }: IconProps) {
   );
 }
 
+export function EyeFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M12 5c4.5 0 8.3 2.6 10 6.5C20.3 15.4 16.5 18 12 18S3.7 15.4 2 11.5C3.7 7.6 7.5 5 12 5zm0 3.2a3.8 3.8 0 100 7.6 3.8 3.8 0 000-7.6zM12 10.2a1.8 1.8 0 110 3.6 1.8 1.8 0 010-3.6z"
+      />
+    </svg>
+  );
+}
+
+export function EyeOffFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M12 5c4.5 0 8.3 2.6 10 6.5C20.3 15.4 16.5 18 12 18S3.7 15.4 2 11.5C3.7 7.6 7.5 5 12 5zm0 3.2a3.8 3.8 0 100 7.6 3.8 3.8 0 000-7.6zM12 10.2a1.8 1.8 0 110 3.6 1.8 1.8 0 010-3.6z"
+        opacity="0.45"
+      />
+      <path fill="currentColor" d="M4.2 3.5L20.5 19.8l-1.4 1.4L2.8 4.9 4.2 3.5z" />
+    </svg>
+  );
+}
+
 export function CameraFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>

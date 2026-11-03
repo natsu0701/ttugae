@@ -1239,6 +1239,10 @@
     "fullscreen": "전체화면",
     "exitFullscreen": "전체화면 종료",
     "videoLoadError": "영상을 불러오지 못했어요.",
-    "playbackRate": "배속 {{rate}}"
+    "playbackRate": "배속 {{rate}}",
+    "overlayShow": "오버레이 켜기",
+    "overlayHide": "오버레이 끄기",
+    "overlayOpacity": "오버레이 {{percent}}%",
+    "overlayOff": "꺼짐"
   }
 }

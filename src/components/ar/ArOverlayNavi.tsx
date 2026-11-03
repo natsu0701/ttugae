@@ -7,6 +7,8 @@ import {
   CollapseFillIcon,
   CopyFillIcon,
   ExpandFillIcon,
+  EyeFillIcon,
+  EyeOffFillIcon,
   PauseFillIcon,
   PlayFillIcon,
   PlaylistFillIcon,
@@ -152,7 +154,11 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [playbackRate, setPlaybackRate] = useState<PlaybackRate>(1);
   const [wideLayout, setWideLayout] = useState(isWideLayout);
   const [chromeVisible, setChromeVisible] = useState(true);
+  const [overlayOn, setOverlayOn] = useState(true);
+  const [overlayOpacity, setOverlayOpacity] = useState(100);
+  const [opacityScrubbing, setOpacityScrubbing] = useState(false);
   const chromeTimerRef = useRef<number | null>(null);
+  const lastOpacityRef = useRef(100);
 
   const activeItem = AR_PLAYLIST[activeIndex] ?? null;
   const hasOverlay = Boolean(activeItem);
@@ -306,14 +312,14 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       }
       return;
     }
-    revealChrome(playlistOpen || scrubbing);
+    revealChrome(playlistOpen || scrubbing || opacityScrubbing);
     return () => {
       if (chromeTimerRef.current) {
         window.clearTimeout(chromeTimerRef.current);
         chromeTimerRef.current = null;
       }
     };
-  }, [isFullscreen, playlistOpen, scrubbing, revealChrome]);
+  }, [isFullscreen, playlistOpen, scrubbing, opacityScrubbing, revealChrome]);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1024px)");
@@ -447,6 +453,37 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     setOverlayPaused(true);
   }, [hasOverlay]);
 
+  const overlayVisible = hasOverlay && overlayOn && overlayOpacity > 0;
+  const overlayAlpha = overlayVisible ? overlayOpacity / 100 : 0;
+
+  const toggleOverlayVisible = useCallback(() => {
+    setOverlayOn((on) => {
+      if (on) {
+        if (overlayOpacity > 0) lastOpacityRef.current = overlayOpacity;
+        return false;
+      }
+      if (overlayOpacity <= 0) setOverlayOpacity(lastOpacityRef.current || 100);
+      return true;
+    });
+  }, [overlayOpacity]);
+
+  const onOpacityInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const next = Math.min(100, Math.max(0, Number(event.target.value)));
+    setOpacityScrubbing(true);
+    setOverlayOpacity(next);
+    setOverlayOn(next > 0);
+  };
+
+  const onOpacityStart = () => {
+    setOpacityScrubbing(true);
+    if (overlayOpacity > 0) lastOpacityRef.current = overlayOpacity;
+  };
+
+  const onOpacityEnd = () => {
+    setOpacityScrubbing(false);
+    if (overlayOpacity > 0) lastOpacityRef.current = overlayOpacity;
+  };
+
   const cyclePlaybackRate = useCallback(() => {
     setPlaybackRate((current) => {
       const next = nextPlaybackRate(current);
@@ -568,7 +605,10 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         <div className="absolute inset-0 z-0 bg-stone-950" aria-hidden />
       ) : null}
 
-      <div className={`ar-overlay-film ${hasOverlay ? "visible" : "invisible"}`}>
+      <div
+        className={`ar-overlay-film ${hasOverlay ? "visible" : "invisible"}`}
+        style={{ opacity: overlayAlpha }}
+      >
         <video
           ref={overlayRef}
           muted
@@ -577,7 +617,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           autoPlay
           disablePictureInPicture
           controls={false}
-          aria-hidden={!hasOverlay}
+          aria-hidden={!overlayVisible}
           aria-label={t("ar.overlayLabel")}
         />
       </div>
@@ -637,7 +677,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       ) : null}
 
       {wideLayout && playlistOpen ? (
-        <aside className={`ar-chrome pointer-events-auto absolute bottom-[5.75rem] right-3 top-[4.75rem] z-10 hidden w-[min(20rem,32vw)] overflow-hidden rounded-xl border border-white/10 bg-black/65 backdrop-blur-sm lg:block ${chromeVisible ? "" : "ar-chrome-hidden"}`}>
+        <aside className={`ar-chrome pointer-events-auto absolute bottom-[8.25rem] right-3 top-[4.75rem] z-10 hidden w-[min(20rem,32vw)] overflow-hidden rounded-xl border border-white/10 bg-black/65 backdrop-blur-sm lg:block ${chromeVisible ? "" : "ar-chrome-hidden"}`}>
           {playlistList}
         </aside>
       ) : null}
@@ -684,6 +724,45 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
             />
           </div>
         ) : null}
+
+        <div className="mb-2 flex h-11 items-center gap-1 rounded-xl bg-white/10 px-1">
+          <button
+            type="button"
+            onClick={toggleOverlayVisible}
+            disabled={!hasOverlay}
+            className={`${CONTROL_BTN} rounded-full disabled:opacity-40 ${
+              overlayVisible ? "bg-white text-gray-900" : "text-white hover:bg-white/15"
+            }`}
+            aria-pressed={overlayVisible}
+            {...iconTip(overlayVisible ? t("ar.overlayHide") : t("ar.overlayShow"))}
+          >
+            {overlayVisible ? <EyeFillIcon className="h-6 w-6" /> : <EyeOffFillIcon className="h-6 w-6" />}
+          </button>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={overlayVisible ? overlayOpacity : 0}
+            disabled={!hasOverlay}
+            onChange={onOpacityInput}
+            onPointerDown={onOpacityStart}
+            onPointerUp={onOpacityEnd}
+            onPointerCancel={onOpacityEnd}
+            onTouchEnd={onOpacityEnd}
+            className="ar-opacity-slider min-w-0 flex-1"
+            style={{
+              ["--progress" as string]: `${overlayVisible ? overlayOpacity : 0}%`,
+            }}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={overlayVisible ? overlayOpacity : 0}
+            aria-label={t("ar.overlayOpacity", { percent: overlayVisible ? overlayOpacity : 0 })}
+          />
+          <span className="w-12 shrink-0 pr-1.5 text-right font-sans text-sm tabular-nums text-white/90">
+            {overlayVisible ? `${overlayOpacity}%` : t("ar.overlayOff")}
+          </span>
+        </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
           <button
