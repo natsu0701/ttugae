@@ -1,4 +1,5 @@
-import { type FormEvent } from "react";
+import { useRef, type FormEvent } from "react";
+import { useModalKeyboard } from "../hooks/useModalKeyboard.ts";
 import { useTranslation } from "react-i18next";
 import BrandTextLogo from "./ui/BrandTextLogo.tsx";
 import Button from "./ui/Button.tsx";
@@ -54,6 +55,8 @@ function AppleIcon() {
 
 export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
   const { t } = useTranslation();
+  const panelRef = useRef<HTMLDivElement>(null);
+  useModalKeyboard(true, onClose, panelRef);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     onLogin(e);
@@ -63,12 +66,14 @@ export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <button
         type="button"
+        tabIndex={-1}
         className="absolute inset-0 bg-white/80 backdrop-blur-md"
         onClick={onClose}
         aria-label={t("common.close")}
       />
 
       <div
+        ref={panelRef}
         className="fade-in relative w-full max-w-md rounded-xl bg-gray-50 p-8"
         role="dialog"
         aria-modal="true"

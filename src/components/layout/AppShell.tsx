@@ -97,8 +97,15 @@ function ProfileMenu({
     const onDoc = (event: MouseEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) setMenuOpen(false);
     };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
     document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      window.removeEventListener("keydown", onKey);
+    };
   }, []);
 
   const go = (fn: () => void) => () => {
@@ -111,7 +118,7 @@ function ProfileMenu({
       <button
         type="button"
         onClick={() => setMenuOpen((open) => !open)}
-        className={`flex h-10 w-10 items-center justify-center rounded-full border bg-white outline-none transition-colors duration-200 focus:outline-none focus-visible:outline-none sm:h-11 sm:w-11 ${
+        className={`flex h-10 w-10 items-center justify-center rounded-full border bg-white transition-colors duration-200 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral sm:h-11 sm:w-11 ${
           currentPage === "mypage"
             ? "border-coral"
             : "border-stone-200 hover:border-coral"
@@ -247,7 +254,7 @@ export default function AppShell({
           <button
             type="button"
             onClick={go(onGoHome)}
-            className="flex shrink-0 items-center outline-none transition-opacity duration-200 hover:opacity-80 focus:outline-none focus-visible:outline-none"
+            className="flex shrink-0 items-center rounded-lg transition-opacity duration-200 hover:opacity-80 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
             {...iconTip(t("nav.brand"), "below")}
           >
             <BrandTextLogo className="h-7 w-auto object-contain md:h-8" />
@@ -293,9 +300,13 @@ export default function AppShell({
       </header>
 
       {isOverlayHeader ? (
-        children
+        <div id="main-content" tabIndex={-1}>
+          {children}
+        </div>
       ) : (
-        <div className="relative z-10 pt-20 md:pt-24">{children}</div>
+        <div id="main-content" tabIndex={-1} className="relative z-10 pt-20 md:pt-24">
+          {children}
+        </div>
       )}
       <FloatingDock />
       <LandingFooter />

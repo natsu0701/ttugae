@@ -19,10 +19,10 @@ export type SmoothInputProps = InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const LIGHT_TONE =
-  "w-full rounded-2xl border border-stone-200 bg-gray-100 px-4 py-3 font-sans text-base font-normal leading-normal text-gray-800 placeholder:text-gray-400 outline-none transition-colors focus:border-coral focus:bg-gray-50";
+  "w-full rounded-2xl border border-stone-200 bg-gray-100 px-4 py-3 font-sans text-base font-normal leading-normal text-gray-800 placeholder:text-gray-400 outline-none transition-colors focus:border-coral focus:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral";
 
 const DARK_TONE =
-  "w-full rounded-2xl border border-stone-700/80 bg-stone-700 px-4 py-3 font-sans text-base font-normal leading-normal text-stone-100 placeholder:text-stone-400 outline-none transition-colors focus:border-coral focus:bg-stone-700";
+  "w-full rounded-2xl border border-stone-700/80 bg-stone-700 px-4 py-3 font-sans text-base font-normal leading-normal text-stone-100 placeholder:text-stone-400 outline-none transition-colors focus:border-coral focus:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral";
 
 function utilityGroup(token: string): string {
   const variant = token.match(/^((?:[\w-]+:)+)/)?.[1] ?? "";

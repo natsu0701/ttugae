@@ -396,6 +396,8 @@
     "symbolPalette": "記号表",
     "chartKey": "記号表",
     "chartReadHint": "1段は下、1目は右から読みます。奇数段は右から左、偶数段は左から右へ編みます。",
+    "chartGridAria": "編み図グリッド。矢印キーでマスを移し、Enterで塗ります。",
+    "chartCellAria": "{{row}}段 {{stitch}}目",
     "progress": {
       "title": "編み進みモード",
       "start": "進みモードを開始",
@@ -646,6 +648,7 @@
     "progressReq": "条件: {{text}}",
     "customInput": "直接入力",
     "skip": "スキップ",
+    "skipToContent": "本文へスキップ",
     "change": "変更",
     "done": "完了",
     "badge": "バッジ",

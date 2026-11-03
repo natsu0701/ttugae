@@ -396,6 +396,8 @@
     "symbolPalette": "Stitch key",
     "chartKey": "Stitch key",
     "chartReadHint": "Row 1 is at the bottom, stitch 1 at the right. Odd rows read right to left; even rows left to right.",
+    "chartGridAria": "Pattern grid. Arrow keys move the cell, Enter paints it.",
+    "chartCellAria": "Row {{row}}, stitch {{stitch}}",
     "progress": {
       "title": "Knitting progress",
       "start": "Start progress mode",
@@ -646,6 +648,7 @@
     "progressReq": "Need: {{text}}",
     "customInput": "Custom",
     "skip": "Skip",
+    "skipToContent": "Skip to content",
     "change": "Change",
     "done": "done",
     "badge": "Badge",

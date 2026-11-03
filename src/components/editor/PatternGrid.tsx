@@ -1,4 +1,5 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { stitchSymbol } from "../../data/stitchSymbols.ts";
 import { symbolColorForBackground } from "../../utils/colorContrast.ts";
 import {
@@ -48,8 +49,10 @@ function PatternGrid({
   onCellPointerDown,
   onCellPointerEnter,
 }: PatternGridProps) {
+  const { t } = useTranslation();
   const wrapRef = useRef<HTMLDivElement>(null);
   const [box, setBox] = useState({ w: 0, h: 0 });
+  const [cursor, setCursor] = useState({ r: 0, c: 0 });
   const gridRows = grid.length;
   const gridCols = grid[0]?.length ?? 0;
   const stitchSize =
@@ -66,6 +69,13 @@ function PatternGrid({
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  useEffect(() => {
+    setCursor((prev) => ({
+      r: Math.min(Math.max(0, prev.r), Math.max(0, gridRows - 1)),
+      c: Math.min(Math.max(0, prev.c), Math.max(0, gridCols - 1)),
+    }));
+  }, [gridRows, gridCols]);
 
   const innerW = Math.max(0, box.w - FRAME_PAD_PX * 2 - RULER_PX * 2);
   const innerH = Math.max(0, box.h - FRAME_PAD_PX * 2 - RULER_PX);
@@ -131,13 +141,31 @@ function PatternGrid({
           </div>
 
           <div
-            className={`grid bg-stone-200/70 ${pointerDisabled ? "pointer-events-none" : ""}`}
+            role="grid"
+            aria-label={t("editor.chartGridAria")}
+            className={`grid bg-stone-200/70 select-none ${pointerDisabled ? "pointer-events-none" : ""}`}
             style={{
               gridTemplateColumns: `repeat(${gridCols}, ${cell}px)`,
               gridTemplateRows: `repeat(${gridRows}, ${cell}px)`,
               gap: GAP_PX,
               width: gridW,
               height: gridH,
+            }}
+            onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+              if (pointerDisabled) return;
+              let nextR = cursor.r;
+              let nextC = cursor.c;
+              if (e.key === "ArrowUp") nextR -= 1;
+              else if (e.key === "ArrowDown") nextR += 1;
+              else if (e.key === "ArrowLeft") nextC -= 1;
+              else if (e.key === "ArrowRight") nextC += 1;
+              else return;
+              e.preventDefault();
+              const r = Math.min(gridRows - 1, Math.max(0, nextR));
+              const c = Math.min(gridCols - 1, Math.max(0, nextC));
+              setCursor({ r, c });
+              const el = e.currentTarget.querySelector<HTMLElement>(`#chart-cell-${r}-${c}`);
+              el?.focus();
             }}
           >
             {grid.map((row, r) =>
@@ -151,18 +179,29 @@ function PatternGrid({
                 return (
                   <button
                     key={`${r}-${c}`}
+                    id={`chart-cell-${r}-${c}`}
                     type="button"
+                    role="gridcell"
+                    tabIndex={pointerDisabled ? -1 : cursor.r === r && cursor.c === c ? 0 : -1}
+                    aria-label={t("editor.chartCellAria", {
+                      row: knittingRowNumber(r, gridRows),
+                      stitch: knittingStitchNumber(c, gridCols),
+                    })}
                     className={`relative flex items-center justify-center rounded-sm font-mono ${stitchSize}`}
                     style={{
                       width: cell,
                       height: cell,
                       backgroundColor: bgHex,
                     }}
-                    onPointerDown={(e) => {
-                      e.preventDefault();
+                    onPointerDown={() => {
+                      setCursor({ r, c });
                       onCellPointerDown(r, c);
                     }}
+                    onClick={(e) => {
+                      if (e.detail === 0) onCellPointerDown(r, c);
+                    }}
                     onPointerEnter={() => onCellPointerEnter(r, c)}
+                    onFocus={() => setCursor({ r, c })}
                   >
                     {isProgressDone ? (
                       <span

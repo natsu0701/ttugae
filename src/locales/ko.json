@@ -395,6 +395,8 @@
     "symbolPalette": "기호표",
     "chartKey": "기호표",
     "chartReadHint": "1단은 아래, 1코는 오른쪽부터 읽어요. 홀수단은 오른쪽에서 왼쪽으로, 짝수단은 왼쪽에서 오른쪽으로 떠요.",
+    "chartGridAria": "도안 격자. 방향키로 칸을 옮기고 엔터로 칠해요.",
+    "chartCellAria": "{{row}}단 {{stitch}}번째 코",
     "progress": {
       "title": "뜨개 진행 모드",
       "start": "진행 모드 시작",
@@ -645,6 +647,7 @@
     "progressReq": "진행 요건: {{text}}",
     "customInput": "직접 입력",
     "skip": "건너뛰기",
+    "skipToContent": "본문으로 건너뛰기",
     "change": "변경",
     "done": "완료",
     "badge": "배지",
