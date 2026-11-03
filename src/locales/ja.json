@@ -396,6 +396,18 @@
     "symbolPalette": "記号表",
     "chartKey": "記号表",
     "chartReadHint": "1段は下、1目は右から読みます。奇数段は右から左、偶数段は左から右へ編みます。",
+    "progress": {
+      "title": "編み進みモード",
+      "start": "進みモードを開始",
+      "on": "進みモード ON",
+      "current": "いまの段",
+      "currentOf": "{{current}} / {{total}}",
+      "prev": "前の段",
+      "next": "次の段",
+      "reset": "最初に戻る",
+      "hint": "黄色い段が今編んでいる段です。編み終わった段は少し暗く見えます。",
+      "idleHint": "段ごとに追いながら編むときに使います。下の1段から上がっていきます。"
+    },
     "castOnButton": "+ 作り目",
     "gaugeButton": "ゲージ (Gauge) 入力",
     "gaugeCalcTitle": "ゲージ計算",

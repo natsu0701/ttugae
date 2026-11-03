@@ -14,6 +14,12 @@ type DockProps = {
   hint: string;
   hintOpen: boolean;
   onDismissHint: () => void;
+  progress?: {
+    current: number;
+    total: number;
+    onPrev: () => void;
+    onNext: () => void;
+  } | null;
 };
 
 type EditorCanvasStageProps = {

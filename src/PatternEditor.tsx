@@ -12,6 +12,7 @@ import EditorHeader from "./components/editor/EditorHeader.tsx";
 import CastOnModal from "./components/editor/CastOnModal.tsx";
 import NeedleSpecFields from "./components/editor/NeedleSpecFields.tsx";
 import ChartTabs from "./components/editor/ChartTabs.tsx";
+import KnitProgressPanel from "./components/editor/KnitProgressPanel.tsx";
 import EditorCanvasStage from "./components/editor/EditorCanvasStage.tsx";
 import GaugeCalculator from "./components/mypage/GaugeCalculator.tsx";
 import { iconTip } from "./utils/iconTip.ts";
@@ -46,9 +47,12 @@ import {
   type ChartTargetPart,
   type KnittingChart,
 } from "./types/knittingProject.ts";
-import { persistCurrentProgressRow } from "./utils/editorProgressStorage.ts";
+import {
+  loadCurrentProgressRow,
+  persistCurrentProgressRow,
+} from "./utils/editorProgressStorage.ts";
 import { formatNeedleBadgeI18n } from "./utils/i18nContent.ts";
-import { countCellsByColor, knitOrderedRows } from "./utils/knittingChart.ts";
+import { countCellsByColor, knitOrderedRows, knittingRowNumber } from "./utils/knittingChart.ts";
 import {
   loadGaugeProfile,
   saveGaugeProfile,
@@ -218,6 +222,11 @@ export default function PatternEditor({
     String(seeded.charts[0]?.gridData[0]?.length ?? 14),
   );
   const [customH, setCustomH] = useState(String(seeded.charts[0]?.gridData.length ?? 14));
+  const [progressMode, setProgressMode] = useState(false);
+  const [progressKnitRow, setProgressKnitRow] = useState(() => {
+    const saved = loadCurrentProgressRow();
+    return saved != null && saved >= 1 ? saved : 1;
+  });
   const dragStart = useRef<{ r: number; c: number } | null>(null);
   const leftToolbarRef = useRef<HTMLElement>(null);
   const chatbotPanelRef = useRef<HTMLDivElement>(null);
@@ -229,6 +238,35 @@ export default function PatternEditor({
   const grid = activeChart?.gridData ?? emptyGrid(14, 14);
   const gridRows = grid.length;
   const gridCols = grid[0]?.length ?? 0;
+  const clampedProgressRow = Math.min(gridRows, Math.max(1, progressKnitRow));
+
+  const stepProgressRow = useCallback(
+    (delta: number) => {
+      setProgressKnitRow((current) => {
+        const next = Math.min(gridRows, Math.max(1, current + delta));
+        persistCurrentProgressRow(next);
+        return next;
+      });
+    },
+    [gridRows],
+  );
+
+  const toggleProgressMode = useCallback(() => {
+    setProgressMode((on) => {
+      if (on) return false;
+      setProgressKnitRow((current) => {
+        const next = Math.min(gridRows, Math.max(1, current || 1));
+        persistCurrentProgressRow(next);
+        return next;
+      });
+      return true;
+    });
+  }, [gridRows]);
+
+  const resetProgressRow = useCallback(() => {
+    setProgressKnitRow(1);
+    persistCurrentProgressRow(1);
+  }, []);
 
   const markDirty = useCallback(() => setDirty(true), [setDirty]);
 
@@ -266,12 +304,26 @@ export default function PatternEditor({
   }, []);
 
   useEffect(() => {
+    setProgressKnitRow((current) => Math.min(gridRows, Math.max(1, current)));
+  }, [gridRows]);
+
+  useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      const typing = tag === "INPUT" || tag === "TEXTAREA";
       if (e.code === "Space" && !e.repeat) {
-        const tag = (e.target as HTMLElement | null)?.tagName;
-        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        if (typing) return;
         e.preventDefault();
         setSpacePan(true);
+        return;
+      }
+      if (!progressMode || typing) return;
+      if (e.key === "ArrowUp" || e.key === "ArrowRight") {
+        e.preventDefault();
+        stepProgressRow(1);
+      } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        stepProgressRow(-1);
       }
     };
     const onKeyUp = (e: KeyboardEvent) => {
@@ -283,7 +335,7 @@ export default function PatternEditor({
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
     };
-  }, []);
+  }, [progressMode, stepProgressRow]);
 
   const colorMap = useMemo(
     () => Object.fromEntries(paletteYarns.map((y) => [y.id, y.hex])),
@@ -412,9 +464,9 @@ export default function PatternEditor({
         next[r][c] = { colorId: activeColor, stitchId: activeStitch };
         return next;
       });
-      persistCurrentProgressRow(r);
+      if (!progressMode) persistCurrentProgressRow(knittingRowNumber(r, gridRows));
     },
-    [tool, activeColor, activeStitch, patchActiveGrid],
+    [tool, activeColor, activeStitch, patchActiveGrid, gridRows, progressMode],
   );
 
   const fillSelection = useCallback(() => {
@@ -741,6 +793,18 @@ export default function PatternEditor({
               </button>
             </div>
             <div className="mt-4">
+              <KnitProgressPanel
+                enabled={progressMode}
+                current={clampedProgressRow}
+                total={gridRows}
+                onToggle={toggleProgressMode}
+                onPrev={() => stepProgressRow(-1)}
+                onNext={() => stepProgressRow(1)}
+                onReset={resetProgressRow}
+              />
+            </div>
+
+            <div className="mt-4">
               <GaugeCalculator
                 compact
                 gauge={gauge}
@@ -805,6 +869,14 @@ export default function PatternEditor({
             hint: toolHint,
             hintOpen: toolHintOpen,
             onDismissHint: dismissToolHint,
+            progress: progressMode
+              ? {
+                  current: clampedProgressRow,
+                  total: gridRows,
+                  onPrev: () => stepProgressRow(-1),
+                  onNext: () => stepProgressRow(1),
+                }
+              : null,
           }}
         >
           <div className="flex h-full w-full min-h-0 min-w-0 flex-col">
@@ -814,6 +886,7 @@ export default function PatternEditor({
                 colorMap={colorMap}
                 selection={selection}
                 pointerDisabled={panEnabled}
+                progressKnitRow={progressMode ? clampedProgressRow : null}
                 onCellPointerDown={handlePointerDown}
                 onCellPointerEnter={handlePointerEnter}
               />

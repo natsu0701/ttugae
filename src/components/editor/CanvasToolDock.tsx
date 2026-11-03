@@ -2,6 +2,7 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   BrushFillIcon,
+  ChevronFillIcon,
   CloseFillIcon,
   EraserFillIcon,
   PanFillIcon,
@@ -34,6 +35,12 @@ type CanvasToolDockProps = {
   zoom: number;
   onZoomIn: () => void;
   onZoomOut: () => void;
+  progress?: {
+    current: number;
+    total: number;
+    onPrev: () => void;
+    onNext: () => void;
+  } | null;
 };
 
 function CanvasToolDock({
@@ -47,6 +54,7 @@ function CanvasToolDock({
   zoom,
   onZoomIn,
   onZoomOut,
+  progress = null,
 }: CanvasToolDockProps) {
   const { t } = useTranslation();
 
@@ -100,6 +108,32 @@ function CanvasToolDock({
           >
             {t("editor.fillSelection")}
           </button>
+        ) : null}
+        {progress ? (
+          <>
+            <span className="mx-1 h-5 w-px bg-stone-200" aria-hidden />
+            <button
+              type="button"
+              onClick={progress.onPrev}
+              disabled={progress.current <= 1}
+              className="flex h-10 w-10 items-center justify-center text-stone-600 transition-colors hover:text-stone-900 disabled:opacity-40"
+              {...iconTip(t("editor.progress.prev"))}
+            >
+              <ChevronFillIcon className="h-4 w-4" />
+            </button>
+            <span className="min-w-[3.5rem] text-center font-sans text-sm font-semibold tabular-nums text-coral">
+              {progress.current}/{progress.total}
+            </span>
+            <button
+              type="button"
+              onClick={progress.onNext}
+              disabled={progress.current >= progress.total}
+              className="flex h-10 w-10 items-center justify-center text-stone-600 transition-colors hover:text-stone-900 disabled:opacity-40"
+              {...iconTip(t("editor.progress.next"))}
+            >
+              <ChevronFillIcon className="h-4 w-4 rotate-180" />
+            </button>
+          </>
         ) : null}
         <span className="mx-1 h-5 w-px bg-stone-200" aria-hidden />
         <button

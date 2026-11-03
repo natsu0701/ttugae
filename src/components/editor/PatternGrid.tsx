@@ -20,6 +20,7 @@ type PatternGridProps = {
   colorMap: Record<string, string>;
   selection: Selection | null;
   pointerDisabled: boolean;
+  progressKnitRow?: number | null;
   onCellPointerDown: (r: number, c: number) => void;
   onCellPointerEnter: (r: number, c: number) => void;
 };
@@ -43,6 +44,7 @@ function PatternGrid({
   colorMap,
   selection,
   pointerDisabled,
+  progressKnitRow = null,
   onCellPointerDown,
   onCellPointerEnter,
 }: PatternGridProps) {
@@ -113,13 +115,16 @@ function PatternGrid({
             {grid.map((_, r) => {
               const n = knittingRowNumber(r, gridRows);
               const show = !isRightSideKnitRow(n) && showRowNum(n);
+              const current = progressKnitRow === n;
               return (
                 <div
                   key={`l-${r}`}
-                  className="flex items-center justify-center font-sans text-2xs tabular-nums text-stone-400"
+                  className={`flex items-center justify-center font-sans text-2xs tabular-nums ${
+                    current ? "font-semibold text-coral" : "text-stone-400"
+                  }`}
                   style={{ height: cell }}
                 >
-                  {show ? n : ""}
+                  {show || current ? n : ""}
                 </div>
               );
             })}
@@ -140,6 +145,9 @@ function PatternGrid({
                 const selected = inSelection(selection, r, c);
                 const bgHex = colorMap[cellData.colorId] ?? "#FFFFFF";
                 const symbolColor = symbolColorForBackground(bgHex);
+                const knitN = knittingRowNumber(r, gridRows);
+                const isProgressCurrent = progressKnitRow != null && knitN === progressKnitRow;
+                const isProgressDone = progressKnitRow != null && knitN < progressKnitRow;
                 return (
                   <button
                     key={`${r}-${c}`}
@@ -156,6 +164,18 @@ function PatternGrid({
                     }}
                     onPointerEnter={() => onCellPointerEnter(r, c)}
                   >
+                    {isProgressDone ? (
+                      <span
+                        className="pointer-events-none absolute inset-0 rounded-sm bg-stone-950/20"
+                        aria-hidden
+                      />
+                    ) : null}
+                    {isProgressCurrent ? (
+                      <span
+                        className="pointer-events-none absolute inset-0 rounded-sm bg-amber-300/45 ring-1 ring-inset ring-amber-400/80"
+                        aria-hidden
+                      />
+                    ) : null}
                     {selected && (
                       <span
                         className="pointer-events-none absolute inset-0 rounded-sm bg-coral/40"
@@ -178,13 +198,16 @@ function PatternGrid({
             {grid.map((_, r) => {
               const n = knittingRowNumber(r, gridRows);
               const show = isRightSideKnitRow(n) && showRowNum(n);
+              const current = progressKnitRow === n;
               return (
                 <div
                   key={`r-${r}`}
-                  className="flex items-center justify-center font-sans text-2xs tabular-nums text-stone-400"
+                  className={`flex items-center justify-center font-sans text-2xs tabular-nums ${
+                    current ? "font-semibold text-coral" : "text-stone-400"
+                  }`}
                   style={{ height: cell }}
                 >
-                  {show ? n : ""}
+                  {show || current ? n : ""}
                 </div>
               );
             })}

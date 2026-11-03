@@ -395,6 +395,18 @@
     "symbolPalette": "기호표",
     "chartKey": "기호표",
     "chartReadHint": "1단은 아래, 1코는 오른쪽부터 읽어요. 홀수단은 오른쪽에서 왼쪽으로, 짝수단은 왼쪽에서 오른쪽으로 떠요.",
+    "progress": {
+      "title": "뜨개 진행 모드",
+      "start": "진행 모드 시작",
+      "on": "진행 모드 켜짐",
+      "current": "현재 단",
+      "currentOf": "{{current}} / {{total}}",
+      "prev": "이전 단",
+      "next": "다음 단",
+      "reset": "처음으로",
+      "hint": "노란 줄이 지금 뜨는 단이에요. 이미 뜬 단은 조금 어둡게 보여요.",
+      "idleHint": "단을 하나씩 따라가며 뜰 때 켜 보세요. 아래 1단부터 올라갑니다."
+    },
     "castOnButton": "+ 코 만들기",
     "gaugeButton": "게이지(Gauge) 입력",
     "gaugeCalcTitle": "게이지 계산",
