@@ -1,4 +1,5 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
+import { useModalKeyboard } from "../../hooks/useModalKeyboard.ts";
 import { useTranslation } from "react-i18next";
 import Button from "./Button.tsx";
 import { REPORT_REASONS, saveReport, type ReportTargetType } from "../../utils/reportStorage.ts";
@@ -12,6 +13,8 @@ type ReportModalProps = {
 
 function ReportModal({ open, targetType, targetId, onClose }: ReportModalProps) {
   const { t } = useTranslation();
+  const panelRef = useRef<HTMLDivElement>(null);
+  useModalKeyboard(open, onClose, panelRef);
   const [reason, setReason] = useState<(typeof REPORT_REASONS)[number]>("spam");
   const [detail, setDetail] = useState("");
   const [done, setDone] = useState(false);
@@ -32,8 +35,8 @@ function ReportModal({ open, targetType, targetId, onClose }: ReportModalProps) 
 
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
-      <button type="button" className="absolute inset-0 bg-stone-900/30" onClick={onClose} aria-label={t("common.close")} />
-      <div className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
+      <button type="button" tabIndex={-1} className="absolute inset-0 bg-stone-900/30" onClick={onClose} aria-label={t("common.close")} />
+      <div ref={panelRef} role="dialog" aria-modal="true" className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
         <h2 className="text-title font-sans font-bold text-gray-900">{t("report.title")}</h2>
         {done ? (
           <p className="mt-4 text-body text-stone-600">{t("report.submitted")}</p>
@@ -57,7 +60,7 @@ function ReportModal({ open, targetType, targetId, onClose }: ReportModalProps) 
               value={detail}
               onChange={(e) => setDetail(e.target.value)}
               rows={3}
-              className="mt-4 w-full rounded-lg border border-stone-200 px-3 py-2 text-base outline-none focus:border-coral"
+              className="mt-4 w-full rounded-lg border border-stone-200 px-3 py-2 text-base outline-none focus:border-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
               placeholder={t("report.detailPh")}
             />
           </>

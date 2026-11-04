@@ -1,4 +1,5 @@
-import { memo } from "react";
+import { memo, useRef } from "react";
+import { useModalKeyboard } from "../../hooks/useModalKeyboard.ts";
 import { useTranslation } from "react-i18next";
 import Button from "./Button.tsx";
 import { CloseFillIcon, FolderFillIcon, PlusFillIcon } from "../icons/FillIcons.tsx";
@@ -21,6 +22,8 @@ function EditorEntryModal({
   onLoadExisting,
 }: EditorEntryModalProps) {
   const { t } = useTranslation();
+  const panelRef = useRef<HTMLDivElement>(null);
+  useModalKeyboard(open, onClose, panelRef);
   if (!open) return null;
 
   const sorted = patterns.slice().sort((a, b) => b.updatedAt - a.updatedAt);
@@ -29,11 +32,18 @@ function EditorEntryModal({
     <div className="fixed inset-0 z-[95] flex items-center justify-center p-4">
       <button
         type="button"
+        tabIndex={-1}
         className="absolute inset-0 bg-stone-900/40"
         onClick={onClose}
         aria-label={t("common.close")}
       />
-      <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-lg">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="editor-entry-title"
+        className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-lg"
+      >
         <button
           type="button"
           onClick={onClose}
@@ -42,7 +52,7 @@ function EditorEntryModal({
         >
           <CloseFillIcon className="h-4 w-4" />
         </button>
-        <h2 className="pr-10 text-title font-sans font-bold text-stone-900">{t("editor.entryTitle")}</h2>
+        <h2 id="editor-entry-title" className="pr-10 text-title font-sans font-bold text-stone-900">{t("editor.entryTitle")}</h2>
         <p className="mt-2 font-sans text-base text-stone-500">{t("editor.entryHint")}</p>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Button type="button" className="h-auto px-4 py-4 text-base" onClick={onCreateNew}>

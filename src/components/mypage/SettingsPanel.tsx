@@ -216,7 +216,7 @@ export default function SettingsPanel() {
             id="language-select"
             value={current}
             onChange={(e) => handleLanguageChange(e.target.value as AppLanguage)}
-            className={`mt-4 w-full rounded-xl bg-gray-50 px-4 py-3 font-sans text-base font-normal text-gray-800 outline-none transition-colors focus:bg-white ${softShadow}`}
+            className={`mt-4 w-full rounded-xl bg-gray-50 px-4 py-3 font-sans text-base font-normal text-gray-800 outline-none transition-colors focus:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral ${softShadow}`}
           >
             {LANG_OPTIONS.map((lang) => (
               <option key={lang.id} value={lang.id}>

@@ -475,6 +475,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     <input
                       type="text"
                       readOnly
+                      tabIndex={-1}
                       placeholder={t("offline.mapSearchPh")}
                       className="w-full border-none bg-transparent font-sans text-sm font-medium text-stone-700 outline-none"
                     />

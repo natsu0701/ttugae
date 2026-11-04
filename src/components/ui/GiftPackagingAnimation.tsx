@@ -1,5 +1,6 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useModalKeyboard } from "../../hooks/useModalKeyboard.ts";
 import { CloseFillIcon } from "../icons/FillIcons.tsx";
 import SmoothInput from "./SmoothInput.tsx";
 import type { PatternCollection } from "../../utils/collectionStorage.ts";
@@ -50,7 +51,9 @@ function GiftPackagingAnimation({
   onGoVault,
 }: GiftPackagingAnimationProps) {
   const { t } = useTranslation();
+  const panelRef = useRef<HTMLDivElement>(null);
   const [packed, setPacked] = useState(false);
+  useModalKeyboard(isOpen, onClose, panelRef);
 
   useEffect(() => {
     if (!isOpen) {
@@ -65,7 +68,12 @@ function GiftPackagingAnimation({
 
   return (
     <div className="fade-in fixed inset-0 z-[120] flex items-center justify-center bg-stone-950/70 p-6">
-      <div className="relative w-full max-w-md rounded-xl bg-[#F7F5F0] px-8 py-10 text-center">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        className="relative w-full max-w-md rounded-xl bg-[#F7F5F0] px-8 py-10 text-center"
+      >
         <button
           type="button"
           onClick={onClose}
@@ -86,7 +94,10 @@ function GiftPackagingAnimation({
           </div>
         </div>
 
-        <div className={packed ? "opacity-100" : "opacity-0"}>
+        <div
+          className={packed ? "opacity-100" : "invisible pointer-events-none opacity-0"}
+          aria-hidden={!packed}
+        >
           <p className="font-sans text-sm font-medium uppercase tracking-[0.18em] text-stone-400">
             {t("gift.packedChip")}
           </p>

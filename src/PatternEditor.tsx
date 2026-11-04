@@ -53,6 +53,7 @@ import {
 } from "./utils/editorProgressStorage.ts";
 import { formatNeedleBadgeI18n } from "./utils/i18nContent.ts";
 import { countCellsByColor, knitOrderedRows, knittingRowNumber } from "./utils/knittingChart.ts";
+import { isActionTarget } from "./utils/keyboard.ts";
 import {
   loadGaugeProfile,
   saveGaugeProfile,
@@ -309,15 +310,13 @@ export default function PatternEditor({
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement | null)?.tagName;
-      const typing = tag === "INPUT" || tag === "TEXTAREA";
+      if (isActionTarget(e.target)) return;
       if (e.code === "Space" && !e.repeat) {
-        if (typing) return;
         e.preventDefault();
         setSpacePan(true);
         return;
       }
-      if (!progressMode || typing) return;
+      if (!progressMode) return;
       if (e.key === "ArrowUp" || e.key === "ArrowRight") {
         e.preventDefault();
         stepProgressRow(1);
@@ -698,6 +697,8 @@ export default function PatternEditor({
 
   return (
     <div
+      id="main-content"
+      tabIndex={-1}
       className="flex h-screen flex-col overflow-hidden bg-[#F7F5F0] font-sans text-stone-800"
       onPointerUp={endDrag}
       onPointerLeave={endDrag}
@@ -858,7 +859,7 @@ export default function PatternEditor({
         </div>
         </EditorResizableSidebar>
 
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#F7F5F0]">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#F7F5F0]" id="editor-canvas">
         <EditorCanvasStage
           panEnabled={panEnabled}
           dock={{

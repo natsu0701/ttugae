@@ -62,6 +62,7 @@ function LandingFooter() {
       title: t("landing.footerRelatedQuick"),
       links: [
         { href: appPath("/"), label: t("nav.home") },
+        { href: appPath("/about"), label: t("nav.about") },
         { href: appPath("/community"), label: t("nav.community") },
         { href: appPath("/editor"), label: t("nav.startEditor") },
         { href: appPath("/ar"), label: t("nav.ar") },
@@ -99,6 +100,7 @@ function LandingFooter() {
   ];
 
   const utilities: FooterLink[] = [
+    { href: appPath("/about"), label: t("nav.about") },
     { href: appPath("/community"), label: t("nav.community") },
     { href: appPath("/editor"), label: t("nav.startEditor") },
     { href: appPath("/ar"), label: t("nav.ar") },

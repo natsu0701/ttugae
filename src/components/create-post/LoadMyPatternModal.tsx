@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useModalKeyboard } from "../../hooks/useModalKeyboard.ts";
 import type { StoredPattern } from "../../types/storedPattern.ts";
 import { softShadow } from "../ui/tabButtonStyles.ts";
 
@@ -54,21 +56,27 @@ export default function LoadMyPatternModal({
   onSelect,
 }: LoadMyPatternModalProps) {
   const { t } = useTranslation();
+  const panelRef = useRef<HTMLDivElement>(null);
+  useModalKeyboard(open, onClose, panelRef);
   const sorted = patterns.slice().sort((a, b) => b.updatedAt - a.updatedAt);
 
   if (!open) return null;
 
   return (
-        <div
-          className="fade-in fixed inset-0 z-[100] flex items-end justify-center bg-black/50 p-4 sm:items-center"
-          onClick={onClose}
-          role="dialog"
-          aria-modal
-          aria-labelledby="load-pattern-title"
-        >
+        <div className="fade-in fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center">
+          <button
+            type="button"
+            tabIndex={-1}
+            className="absolute inset-0 bg-black/50"
+            onClick={onClose}
+            aria-label={t("common.close")}
+          />
           <div
-            className={`max-h-[min(85vh,32rem)] w-full max-w-lg overflow-hidden rounded-xl bg-white ${softShadow}`}
-            onClick={(e) => e.stopPropagation()}
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="load-pattern-title"
+            className={`relative max-h-[min(85vh,32rem)] w-full max-w-lg overflow-hidden rounded-xl bg-white ${softShadow}`}
           >
             <div className="border-b border-gray-100 px-5 py-4">
               <h2

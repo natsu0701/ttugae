@@ -14,6 +14,7 @@ import EditorEntryModal from "./components/ui/EditorEntryModal.tsx";
 import YarnStitchTrail from "./components/effects/YarnStitchTrail.tsx";
 import PageSkeleton from "./components/ui/PageSkeleton.tsx";
 import IconTipLayer from "./components/ui/IconTipLayer.tsx";
+import SkipToContent from "./components/ui/SkipToContent.tsx";
 import { saveShareDraft } from "./utils/shareDraft.ts";
 import { openShareDraftFromPatterns } from "./utils/createShareDraft.ts";
 import { openCommunityPostForEdit } from "./utils/communityPostDraft.ts";
@@ -50,13 +51,14 @@ const MyPage = lazy(() => import("./MyPage.tsx"));
 const CreatePostPage = lazy(() => import("./CreatePostPage.tsx"));
 const Community = lazy(() => import("./Community.tsx"));
 const ArOverlayNavi = lazy(() => import("./components/ar/ArOverlayNavi.tsx"));
+const AboutPage = lazy(() => import("./AboutPage.tsx"));
 
 function RouteFallback({ dark = false, embedded = false }: { dark?: boolean; embedded?: boolean }) {
   const { t } = useTranslation();
   return <PageSkeleton tone={dark ? "dark" : "light"} embedded={embedded} label={t("common.loading")} />;
 }
 
-type AppView = "landing" | "mypage" | "community" | "editor" | "create-post" | "ar";
+type AppView = "landing" | "about" | "mypage" | "community" | "editor" | "create-post" | "ar";
 
 function viewFromPath(pathname: string): AppView {
   const path = routePath(pathname);
@@ -67,6 +69,7 @@ function viewFromPath(pathname: string): AppView {
   }
   if (path.startsWith("/editor")) return "editor";
   if (path.startsWith("/ar")) return "ar";
+  if (path.startsWith("/about")) return "about";
   return "landing";
 }
 
@@ -76,6 +79,7 @@ function pathFromView(view: AppView): string {
   if (view === "create-post") return "/create-post";
   if (view === "editor") return "/editor";
   if (view === "ar") return "/ar";
+  if (view === "about") return "/about";
   return "/";
 }
 
@@ -351,7 +355,7 @@ function AppRoutes() {
   }, []);
 
   const shellPage: AppNavPage =
-    view === "community" ? "community" : view === "mypage" ? "mypage" : "landing";
+    view === "community" ? "community" : view === "mypage" ? "mypage" : view === "about" ? "about" : "landing";
 
   const yarnTrailDisabled = view === "editor" || view === "create-post" || view === "ar";
   const yarnTrail = <YarnStitchTrail disabled={yarnTrailDisabled} />;
@@ -468,6 +472,7 @@ function AppRoutes() {
         accounts={accounts}
         activeAccountId={activeAccount?.id ?? null}
         onGoHome={() => navigate("landing")}
+        onGoAbout={() => navigate("about")}
         onGoCommunity={() => {
           closeLoungeFilters();
           navigate("community");
@@ -531,6 +536,14 @@ function AppRoutes() {
             />
           </Suspense>
         )}
+        {view === "about" && (
+          <Suspense fallback={<RouteFallback embedded />}>
+            <AboutPage
+              onOpenEditor={() => setEditorEntryOpen(true)}
+              onOpenAr={openAr}
+            />
+          </Suspense>
+        )}
         {view === "landing" && (
           <LandingPage onOpenEditor={() => setEditorEntryOpen(true)} />
         )}
@@ -568,6 +581,7 @@ export default function App() {
   return (
     <UnsavedChangesProvider>
       <CommunityActionsProvider>
+        <SkipToContent />
         <AppRoutes />
         <IconTipLayer />
       </CommunityActionsProvider>

@@ -15,7 +15,7 @@ import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 import FloatingDock from "../ui/FloatingDock.tsx";
 import { iconTip } from "../../utils/iconTip.ts";
 
-export type AppNavPage = "landing" | "community" | "mypage";
+export type AppNavPage = "landing" | "about" | "community" | "mypage";
 
 type AppShellProps = {
   currentPage: AppNavPage;
@@ -25,6 +25,7 @@ type AppShellProps = {
   accounts?: UserAccount[];
   activeAccountId?: string | null;
   onGoHome: () => void;
+  onGoAbout: () => void;
   onGoCommunity: () => void;
   onGoMypage: () => void;
   onGoEditor: () => void;
@@ -89,6 +90,7 @@ function ProfileMenu({
   const { requestLeave } = useUnsavedChanges();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const otherAccounts = accounts.filter((item) => item.id !== activeAccountId);
   const avatarSrc = avatarUrl || TTEUNI_IMAGES.chatProfile;
   const hasCustomAvatar = Boolean(avatarUrl);
@@ -101,6 +103,20 @@ function ProfileMenu({
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const first = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
+    first?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
   const go = (fn: () => void) => () => {
     setMenuOpen(false);
     requestLeave(fn);
@@ -109,9 +125,10 @@ function ProfileMenu({
   return (
     <div className="relative shrink-0" ref={menuRef}>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setMenuOpen((open) => !open)}
-        className={`flex h-10 w-10 items-center justify-center rounded-full border bg-white outline-none transition-colors duration-200 focus:outline-none focus-visible:outline-none sm:h-11 sm:w-11 ${
+        className={`flex h-10 w-10 items-center justify-center rounded-full border bg-white transition-colors duration-200 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral sm:h-11 sm:w-11 ${
           currentPage === "mypage"
             ? "border-coral"
             : "border-stone-200 hover:border-coral"
@@ -202,6 +219,7 @@ export default function AppShell({
   accounts = [],
   activeAccountId,
   onGoHome,
+  onGoAbout,
   onGoCommunity,
   onGoMypage,
   onGoEditor,
@@ -247,7 +265,7 @@ export default function AppShell({
           <button
             type="button"
             onClick={go(onGoHome)}
-            className="flex shrink-0 items-center outline-none transition-opacity duration-200 hover:opacity-80 focus:outline-none focus-visible:outline-none"
+            className="flex shrink-0 items-center rounded-lg transition-opacity duration-200 hover:opacity-80 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
             {...iconTip(t("nav.brand"), "below")}
           >
             <BrandTextLogo className="h-7 w-auto object-contain md:h-8" />
@@ -260,6 +278,13 @@ export default function AppShell({
               overlay={isOverlayHeader}
               className="hidden sm:inline-flex"
               onClick={go(onGoHome)}
+            />
+            <NavTextItem
+              label={t("nav.about")}
+              active={currentPage === "about"}
+              overlay={isOverlayHeader}
+              className="hidden sm:inline-flex"
+              onClick={go(onGoAbout)}
             />
             <NavTextItem
               label={t("nav.community")}
@@ -293,9 +318,13 @@ export default function AppShell({
       </header>
 
       {isOverlayHeader ? (
-        children
+        <div id="main-content" tabIndex={-1}>
+          {children}
+        </div>
       ) : (
-        <div className="relative z-10 pt-20 md:pt-24">{children}</div>
+        <div id="main-content" tabIndex={-1} className="relative z-10 pt-20 md:pt-24">
+          {children}
+        </div>
       )}
       <FloatingDock />
       <LandingFooter />

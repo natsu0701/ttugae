@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useModalKeyboard } from "../../hooks/useModalKeyboard.ts";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
@@ -44,6 +45,8 @@ export default function CastOnModal({
   onNeedleChange,
 }: CastOnModalProps) {
   const { t } = useTranslation();
+  const panelRef = useRef<HTMLDivElement>(null);
+  useModalKeyboard(open, onClose, panelRef);
   const [w, setW] = useState("24");
   const [h, setH] = useState("28");
   const [name, setName] = useState("");
@@ -120,10 +123,11 @@ export default function CastOnModal({
         <div
           className="fade-in pointer-events-auto fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/20 p-6"
           onClick={onClose}
-          role="dialog"
-          aria-modal
         >
           <div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
             className={`max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl bg-[#FFFBF7] p-6 ${softShadow}`}
             onClick={(e) => e.stopPropagation()}
           >
@@ -164,7 +168,7 @@ export default function CastOnModal({
                     onChange={(e) =>
                       setTargetPart(e.target.value as ChartTargetPart)
                     }
-                    className="w-full rounded-2xl bg-white px-3 py-2 font-sans text-base text-gray-800 outline-none"
+                    className="w-full rounded-2xl bg-white px-3 py-2 font-sans text-base text-gray-800 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
                   >
                     {PARTS.map((part) => (
                       <option key={part} value={part}>

@@ -588,6 +588,8 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   return (
     <div
       ref={rootRef}
+      id="main-content"
+      tabIndex={-1}
       className="fixed inset-0 z-[90] h-[100dvh] w-full overflow-hidden bg-black text-white"
       data-ar-fullscreen={isFullscreen ? "true" : "false"}
     >

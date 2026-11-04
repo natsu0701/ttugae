@@ -179,7 +179,7 @@ export default function CreatePostPage({
 
   if (!draft) {
     return (
-      <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900">
+      <div id="main-content" tabIndex={-1} className="flex min-h-screen flex-col bg-white font-sans text-gray-900">
         <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6">
           <p className="text-center text-base text-gray-600">
             {t("createPost.noDraft")}
@@ -209,7 +209,7 @@ export default function CreatePostPage({
   const isEdit = Boolean(draft.editCommunityId);
 
   return (
-    <div className="min-h-screen bg-white pb-24 font-sans text-gray-900">
+    <div id="main-content" tabIndex={-1} className="min-h-screen bg-white pb-24 font-sans text-gray-900">
       <header className={`relative z-20 bg-gray-50 px-5 py-4 md:px-8 ${softShadow}`}>
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
           <BackButton onClick={onCancel} />

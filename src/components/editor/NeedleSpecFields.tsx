@@ -24,8 +24,8 @@ type NeedleSpecFieldsProps = {
 
 function fieldClass(tone: "light" | "dark") {
   return tone === "dark"
-    ? "w-full rounded-xl border border-stone-600/80 bg-stone-800 px-3 py-2 font-sans text-base text-stone-100 outline-none"
-    : "w-full rounded-2xl border border-stone-200 bg-white px-3 py-2 font-sans text-base text-gray-800 outline-none";
+    ? "w-full rounded-xl border border-stone-600/80 bg-stone-800 px-3 py-2 font-sans text-base text-stone-100 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
+    : "w-full rounded-2xl border border-stone-200 bg-white px-3 py-2 font-sans text-base text-gray-800 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral";
 }
 
 function labelClass(tone: "light" | "dark") {

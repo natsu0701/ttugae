@@ -19,6 +19,69 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :where(
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    summary,
+    [role="button"],
+    [role="menuitem"],
+    [role="tab"],
+    [role="option"],
+    [role="gridcell"],
+    [tabindex]:not([tabindex="-1"])
+  ):focus-visible {
+    outline: 2px solid #fc5f53;
+    outline-offset: 2px;
+  }
+}
+
+/* outline-none 유틸보다 위에 두어 탭 선택이 항상 보이게 한다 */
+@layer utilities {
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  summary:focus-visible,
+  [role="button"]:focus-visible,
+  [role="menuitem"]:focus-visible,
+  [role="tab"]:focus-visible,
+  [role="option"]:focus-visible,
+  [role="gridcell"]:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 2px solid #fc5f53 !important;
+    outline-offset: 2px;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 0.75rem;
+  z-index: 200;
+  transform: translateY(-160%);
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  font-family: "Noto Sans KR", system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid #fc5f53;
+  outline-offset: 3px;
+}
+
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
@@ -106,13 +169,18 @@ body {
 
   .nav-text-item,
   .nav-text-item:hover,
-  .nav-text-item:focus,
-  .nav-text-item:focus-visible,
+  .nav-text-item:focus:not(:focus-visible),
   .nav-text-item:active {
-    outline: none !important;
-    box-shadow: none !important;
-    border-style: none !important;
-    border-width: 0 !important;
+    outline: none;
+    box-shadow: none;
+    border-style: none;
+    border-width: 0;
+  }
+
+  .nav-text-item:focus-visible {
+    outline: 2px solid #fc5f53 !important;
+    outline-offset: 4px !important;
+    border-radius: 8px;
   }
 
   .nav-text-item::after {
@@ -136,7 +204,8 @@ body {
   }
 
   .nav-text-item.is-active::after,
-  .nav-text-item:active::after {
+  .nav-text-item:active::after,
+  .nav-text-item:focus-visible::after {
     transform: scaleX(1);
   }
 
@@ -542,6 +611,12 @@ body.yarn-trail-active {
   cursor: pointer;
 }
 
+.ar-seek-slider:focus-visible {
+  outline: 2px solid #fc5f53;
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
 .ar-seek-slider::-webkit-slider-thumb {
   appearance: none;
   width: 18px;
@@ -576,6 +651,12 @@ body.yarn-trail-active {
   background-position: center;
   outline: none;
   cursor: pointer;
+}
+
+.ar-opacity-slider:focus-visible {
+  outline: 2px solid #fc5f53;
+  outline-offset: 3px;
+  border-radius: 999px;
 }
 
 .ar-opacity-slider:disabled {

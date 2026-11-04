@@ -166,7 +166,7 @@ function QaDetail({ post, onBack }: QaDetailProps) {
                         value={editDraft}
                         onChange={(e) => setEditDraft(e.target.value)}
                         rows={3}
-                        className="w-full rounded-xl bg-white px-4 py-3 font-sans text-base font-normal leading-normal text-gray-700 outline-none focus:bg-gray-100"
+                        className="w-full rounded-xl bg-white px-4 py-3 font-sans text-base font-normal leading-normal text-gray-700 outline-none focus:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
                       />
                       <div className="mt-2 flex gap-2">
                         <Button

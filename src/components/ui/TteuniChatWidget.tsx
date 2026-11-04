@@ -108,6 +108,18 @@ function TteuniChatWidget({ open, onClose }: TteuniChatWidgetProps) {
 
   useEffect(() => () => stopResize(), [stopResize]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
   if (!open) return null;
 
   const send = (raw: string) => {

@@ -3,7 +3,7 @@ export const softShadow = "shadow-sm";
 
 /** 에디터 라이트 크롬 — 버튼·패널 공통 중간 톤 */
 export const editorChromeTone =
-  "border border-stone-200 bg-white text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900";
+  "border border-stone-200 bg-white text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral";
 
 export const editorPanel =
   "rounded-2xl border border-stone-200 bg-white";
