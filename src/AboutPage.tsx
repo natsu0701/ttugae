@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import AboutAppSection from "./components/about/AboutAppSection.tsx";
 import AboutIntroVideo from "./components/about/AboutIntroVideo.tsx";
 import {
   ChatFillIcon,
@@ -12,6 +13,7 @@ import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
 
 type AboutPageProps = {
   onOpenEditor: () => void;
+  onOpenAr: () => void;
 };
 
 const PILLARS = [
@@ -21,7 +23,7 @@ const PILLARS = [
   { id: "community", titleKey: "landing.tabCommunityTitle", subKey: "landing.tabCommunitySub", icon: CommunityFillIcon },
 ] as const;
 
-export default function AboutPage({ onOpenEditor }: AboutPageProps) {
+export default function AboutPage({ onOpenEditor, onOpenAr }: AboutPageProps) {
   const { t } = useTranslation();
 
   return (
@@ -89,6 +91,8 @@ export default function AboutPage({ onOpenEditor }: AboutPageProps) {
           </div>
         </div>
       </section>
+
+      <AboutAppSection onOpenAr={onOpenAr} />
     </div>
   );
 }

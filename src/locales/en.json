@@ -749,13 +749,24 @@
   "about": {
     "chip": "ABOUT",
     "heroTitle": "Meet Knit Together",
-    "heroSubtitle": "From the editor to Tteuni AI and Tteugae Lounge — every knitting moment in one place.",
+    "heroSubtitle": "From the editor to Tteuni AI, the camera app, and Tteugae Lounge — every knitting moment in one place.",
     "videoTitle": "Intro video",
     "videoCaption": "See how Knit Together fits into your knitting flow.",
     "videoWaiting": "The intro video is on the way.",
     "videoFallback": "This browser cannot play the video.",
     "bodyTitle": "A studio that never breaks your stitch",
-    "body": "The editor and Tteuni handle the fiddly chart math so you can just knit. Read your chart as written stitches, follow along with the camera, and share in the lounge."
+    "body": "The editor and Tteuni handle the fiddly chart math so you can just knit. Read your chart as written stitches, follow along in the camera app, and share in the lounge.",
+    "appChip": "APP",
+    "appTitle": "A knitting nav in your hand",
+    "appBody": "The Tteuni app lays the chart you drew on the web over your camera so you can knit stitch by stitch. On a phone or iPad the pattern sits on the fabric, and you stay on track.",
+    "appPoint1Title": "Chart overlay",
+    "appPoint1Body": "Turn on the camera and the pattern sits on top of your knitting.",
+    "appPoint2Title": "Knit navigation",
+    "appPoint2Body": "Match opacity and playback speed as you follow each stitch.",
+    "appPoint3Title": "Same chart, anywhere",
+    "appPoint3Body": "Scan the QR on an iPad and keep knitting with the chart you drew on the web.",
+    "appCta": "Open the camera",
+    "appMockAlt": "Phone showing the Tteuni camera app"
   },
   "createPost": {
     "editTitle": "Edit post",
