@@ -15,7 +15,7 @@ import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 import FloatingDock from "../ui/FloatingDock.tsx";
 import { iconTip } from "../../utils/iconTip.ts";
 
-export type AppNavPage = "landing" | "community" | "mypage";
+export type AppNavPage = "landing" | "about" | "community" | "mypage";
 
 type AppShellProps = {
   currentPage: AppNavPage;
@@ -25,6 +25,7 @@ type AppShellProps = {
   accounts?: UserAccount[];
   activeAccountId?: string | null;
   onGoHome: () => void;
+  onGoAbout: () => void;
   onGoCommunity: () => void;
   onGoMypage: () => void;
   onGoEditor: () => void;
@@ -218,6 +219,7 @@ export default function AppShell({
   accounts = [],
   activeAccountId,
   onGoHome,
+  onGoAbout,
   onGoCommunity,
   onGoMypage,
   onGoEditor,
@@ -276,6 +278,13 @@ export default function AppShell({
               overlay={isOverlayHeader}
               className="hidden sm:inline-flex"
               onClick={go(onGoHome)}
+            />
+            <NavTextItem
+              label={t("nav.about")}
+              active={currentPage === "about"}
+              overlay={isOverlayHeader}
+              className="hidden sm:inline-flex"
+              onClick={go(onGoAbout)}
             />
             <NavTextItem
               label={t("nav.community")}

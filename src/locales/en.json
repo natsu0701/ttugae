@@ -2,6 +2,7 @@
   "nav": {
     "brand": "Knit Together",
     "home": "Home",
+    "about": "About",
     "community": "Tteugae Lounge",
     "startEditor": "Draw pattern",
     "ar": "Camera",
@@ -744,6 +745,17 @@
     "tabCommunityTitle": "Tteugae Lounge",
     "tabCommunitySub": "Tteugae Lounge pattern sharing",
     "tabCommunityDesc": "Wrap your finished chart and share it in Tteugae Lounge. Peek at others’ photos and one click pulls a chart into your editor."
+  },
+  "about": {
+    "chip": "ABOUT",
+    "heroTitle": "Meet Knit Together",
+    "heroSubtitle": "From the editor to Tteuni AI and Tteugae Lounge — every knitting moment in one place.",
+    "videoTitle": "Intro video",
+    "videoCaption": "See how Knit Together fits into your knitting flow.",
+    "videoWaiting": "The intro video is on the way.",
+    "videoFallback": "This browser cannot play the video.",
+    "bodyTitle": "A studio that never breaks your stitch",
+    "body": "The editor and Tteuni handle the fiddly chart math so you can just knit. Read your chart as written stitches, follow along with the camera, and share in the lounge."
   },
   "createPost": {
     "editTitle": "Edit post",

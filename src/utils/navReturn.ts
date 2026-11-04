@@ -4,6 +4,7 @@ const RETURN_KEY = "ttugae.nav.return.v1";
 
 export type NavReturnView =
   | "landing"
+  | "about"
   | "mypage"
   | "community"
   | "editor"
@@ -67,6 +68,9 @@ export function resolvePathFallback(pathname: string): NavReturn {
   }
   if (path.startsWith("/ar")) {
     return { view: "landing", path: "/" };
+  }
+  if (path.startsWith("/about")) {
+    return { view: "about", path: "/about" };
   }
   if (path.startsWith("/community")) {
     return { view: "community", path: "/community" };
