@@ -766,7 +766,22 @@
     "appPoint3Title": "Same chart, anywhere",
     "appPoint3Body": "Scan the QR on an iPad and keep knitting with the chart you drew on the web.",
     "appCta": "Open the camera",
-    "appMockAlt": "Phone showing the Tteuni camera app"
+    "appMockAlt": "Phone showing the Tteuni camera app",
+    "overviewAlt": "Why knitting looks hard — Knit Together overview",
+    "backgroundAlt": "Knitting as a hip lifestyle",
+    "researchAlt": "Survey of 58 knitters on friction and the features they need",
+    "brandAlt": "Knit Together colors and Tteuni character",
+    "appHeroAlt": "Phones showing the Knit Together app",
+    "appScreenHome": "Home",
+    "appScreenHomeHint": "See today’s knit, the stitch counter, gauge, and Tteuni chat at a glance.",
+    "appScreenBag": "Knit bag",
+    "appScreenBagHint": "Keep in-progress projects, yarn, and needles in one place.",
+    "appScreenGauge": "Gauge",
+    "appScreenGaugeHint": "Turn the stitches you measured into the count you need, then save it.",
+    "appNaviTitle": "Turn on the camera and a knit guide pops in",
+    "appNaviBody": "Follow the guide stitch by stitch. The same chart you drew on the web sits on the fabric.",
+    "appArAlt": "Knit guide overlaid on the camera",
+    "appWebNaviAlt": "Knit Together web and knit navigation together"
   },
   "createPost": {
     "editTitle": "Edit post",

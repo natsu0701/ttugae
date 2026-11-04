@@ -765,7 +765,22 @@
     "appPoint3Title": "같은 도안, 어디서나",
     "appPoint3Body": "QR로 아이패드를 열고, 웹에서 그린 도안 그대로 이어서 떠 보세요.",
     "appCta": "카메라로 떠 보기",
-    "appMockAlt": "뜨니 카메라 앱이 켜진 휴대폰"
+    "appMockAlt": "뜨니 카메라 앱이 켜진 휴대폰",
+    "overviewAlt": "뜨개질은 왜 어려워 보일까, 뜨개러투게더 소개",
+    "backgroundAlt": "뜨개질, 이제는 힙한 라이프스타일",
+    "researchAlt": "뜨개러 58명이 말한 기록의 번거로움과 필요한 기능",
+    "brandAlt": "뜨개러투게더 색과 뜨니 캐릭터",
+    "appHeroAlt": "뜨개러투게더 앱이 켜진 휴대폰",
+    "appScreenHome": "홈화면",
+    "appScreenHomeHint": "오늘의 뜨개와 행·코 카운터, 게이지, 뜨니챗을 한눈에 봐요.",
+    "appScreenBag": "뜨개가방",
+    "appScreenBagHint": "진행 중인 프로젝트와 실·바늘을 한곳에 모아 둬요.",
+    "appScreenGauge": "게이지",
+    "appScreenGaugeHint": "잰 코수로 필요한 코를 바로 계산하고 저장해요.",
+    "appNaviTitle": "카메라를 켜면 뜨개 가이드가 짠",
+    "appNaviBody": "가이드를 따라 뜨개질을 이어가 보세요. 웹에서 그린 도안과 같은 길로, 손 위의 내비와 함께 떠요.",
+    "appArAlt": "카메라 위에 뜨개 가이드가 겹친 화면",
+    "appWebNaviAlt": "뜨개 웹과 뜨개내비를 함께 쓰는 안내"
   },
   "createPost": {
     "editTitle": "게시물 수정",

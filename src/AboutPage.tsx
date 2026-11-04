@@ -9,6 +9,7 @@ import {
 } from "./components/icons/FillIcons.tsx";
 import Button from "./components/ui/Button.tsx";
 import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
+import { ABOUT_APP_IMAGES } from "./constants/aboutMedia.ts";
 import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
 
 type AboutPageProps = {
@@ -23,6 +24,14 @@ const PILLARS = [
   { id: "community", titleKey: "landing.tabCommunityTitle", subKey: "landing.tabCommunitySub", icon: CommunityFillIcon },
 ] as const;
 
+function AboutFigure({ src, alt }: { src: string; alt: string }) {
+  return (
+    <figure className="overflow-hidden rounded-xl bg-white shadow-sm">
+      <img src={src} alt={alt} className="h-auto w-full object-cover" />
+    </figure>
+  );
+}
+
 export default function AboutPage({ onOpenEditor, onOpenAr }: AboutPageProps) {
   const { t } = useTranslation();
 
@@ -36,6 +45,14 @@ export default function AboutPage({ onOpenEditor, onOpenAr }: AboutPageProps) {
             subtitle={t("about.heroSubtitle")}
             image={TTEUNI_IMAGES.feature}
           />
+        </div>
+      </section>
+
+      <section className="pt-10 md:pt-14">
+        <div className="page-shell space-y-6">
+          <AboutFigure src={ABOUT_APP_IMAGES.overview} alt={t("about.overviewAlt")} />
+          <AboutFigure src={ABOUT_APP_IMAGES.background} alt={t("about.backgroundAlt")} />
+          <AboutFigure src={ABOUT_APP_IMAGES.research} alt={t("about.researchAlt")} />
         </div>
       </section>
 
