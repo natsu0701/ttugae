@@ -24,13 +24,11 @@ const PILLARS = [
   { id: "community", titleKey: "landing.tabCommunityTitle", subKey: "landing.tabCommunitySub", icon: CommunityFillIcon },
 ] as const;
 
-function AboutFigure({ src, alt }: { src: string; alt: string }) {
-  return (
-    <figure className="overflow-hidden rounded-xl bg-white shadow-sm">
-      <img src={src} alt={alt} className="h-auto w-full object-cover" />
-    </figure>
-  );
-}
+const STORY_IMAGES = [
+  { src: ABOUT_APP_IMAGES.overview, altKey: "about.overviewAlt" },
+  { src: ABOUT_APP_IMAGES.background, altKey: "about.backgroundAlt" },
+  { src: ABOUT_APP_IMAGES.research, altKey: "about.researchAlt" },
+] as const;
 
 export default function AboutPage({ onOpenEditor, onOpenAr }: AboutPageProps) {
   const { t } = useTranslation();
@@ -49,10 +47,17 @@ export default function AboutPage({ onOpenEditor, onOpenAr }: AboutPageProps) {
       </section>
 
       <section className="pt-10 md:pt-14">
-        <div className="page-shell space-y-6">
-          <AboutFigure src={ABOUT_APP_IMAGES.overview} alt={t("about.overviewAlt")} />
-          <AboutFigure src={ABOUT_APP_IMAGES.background} alt={t("about.backgroundAlt")} />
-          <AboutFigure src={ABOUT_APP_IMAGES.research} alt={t("about.researchAlt")} />
+        <div className="page-shell">
+          <div className="overflow-hidden rounded-xl bg-white shadow-sm">
+            {STORY_IMAGES.map((item) => (
+              <img
+                key={item.src}
+                src={item.src}
+                alt={t(item.altKey)}
+                className="block h-auto w-full"
+              />
+            ))}
+          </div>
         </div>
       </section>
 
