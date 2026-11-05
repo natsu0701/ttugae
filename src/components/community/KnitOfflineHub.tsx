@@ -557,7 +557,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       <PinFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                       <div className="min-w-0 font-sans">
                         <span className="block text-sm font-bold uppercase text-stone-400">{t("offline.placeLabel")}</span>
-                        <span className="break-all text-sm font-semibold leading-normal text-stone-700">
+                        <span className="break-keep text-sm font-semibold leading-normal text-stone-700">
                           {selectedEvent.location}
                         </span>
                       </div>
@@ -568,7 +568,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   <div className="space-y-1.5 font-sans text-sm text-stone-500">
                     <div className="flex justify-between gap-2">
                       <span className="text-stone-400">{t("offline.yarnMatch")}</span>
-                      <strong className="whitespace-normal break-all text-right text-stone-700">
+                      <strong className="whitespace-normal break-keep text-right text-stone-700">
                         {selectedEvent.featuredYarn}
                       </strong>
                     </div>
@@ -632,7 +632,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                       </div>
                       <div className="flex justify-between gap-2">
                         <span className="text-sm text-stone-400">{t("offline.yarnRecommended")}</span>
-                        <span className="whitespace-normal break-all text-right font-semibold leading-normal text-stone-700">
+                        <span className="whitespace-normal break-keep text-right font-semibold leading-normal text-stone-700">
                           {meet.requiredYarn}
                         </span>
                       </div>
@@ -704,7 +704,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 <div
                   className="fade-in flex flex-col items-start justify-between gap-3 rounded-xl bg-stone-900 px-5 py-3 text-stone-100 shadow-lg sm:flex-row sm:items-center"
                 >
-                  <span className="whitespace-normal break-all font-sans text-sm font-bold leading-normal">
+                  <span className="whitespace-normal break-keep font-sans text-sm font-bold leading-normal">
                     {t("offline.cloneDone", { name: clonedSuccessMsg })}
                   </span>
                   <button
@@ -728,7 +728,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   <div className="space-y-5">
                     <div className="flex items-start justify-between gap-4">
                       <div className="space-y-1">
-                        <span className="inline-block whitespace-normal break-all rounded bg-coral/5 px-2.5 py-0.5 font-sans text-sm font-bold leading-normal text-coral">
+                        <span className="inline-block whitespace-normal break-keep rounded bg-coral/5 px-2.5 py-0.5 font-sans text-sm font-bold leading-normal text-coral">
                           {rev.eventTitle}
                         </span>
                         <h5 className="mt-1 font-sans text-sm font-bold text-stone-400">
@@ -759,10 +759,10 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                             <span className="block font-sans text-sm font-bold uppercase tracking-wide text-stone-400">
                               {t("offline.patternAttach")}
                             </span>
-                            <span className="mt-0.5 block whitespace-normal break-all font-sans text-base font-black leading-snug text-stone-900">
+                            <span className="mt-0.5 block whitespace-normal break-keep font-sans text-base font-black leading-snug text-stone-900">
                               {rev.attachedPatternName}
                             </span>
-                            <span className="mt-1 block whitespace-normal break-all font-seoyun text-sm font-normal leading-normal text-stone-500">
+                            <span className="mt-1 block whitespace-normal break-keep font-seoyun text-sm font-normal leading-normal text-stone-500">
                               {rev.attachedPatternDesc}
                             </span>
                           </div>

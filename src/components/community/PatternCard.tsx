@@ -146,7 +146,7 @@ function PatternCard({
         </div>
 
         <div className="bg-white p-4">
-          <h3 className="line-clamp-1 font-sans text-base font-bold text-stone-900 transition-colors group-hover:text-coral">
+          <h3 className="line-clamp-2 break-keep font-sans text-base font-bold leading-snug text-stone-900 transition-colors group-hover:text-coral">
             {view.title}
           </h3>
           <p className="mt-2 flex items-center gap-1.5 font-sans text-sm font-medium text-stone-500">

@@ -70,7 +70,7 @@ export default function MyProjectsPanel({
         {items.map((pattern) => (
           <article key={pattern.id} className="rounded-xl border border-stone-200 bg-white p-4">
             <button type="button" className="w-full text-left" onClick={() => onOpen(pattern.id)}>
-              <h3 className="truncate font-sans text-lg font-bold text-gray-900">{pattern.title}</h3>
+              <h3 className="break-keep font-sans text-lg font-bold leading-snug text-gray-900">{pattern.title}</h3>
               <p className="mt-1 font-sans text-sm text-gray-500">{formatDate(pattern.updatedAt)}</p>
               <p className="mt-2 font-sans text-base text-gray-600">
                 {pattern.grid[0]?.length ?? pattern.gridSize}x{pattern.grid.length}

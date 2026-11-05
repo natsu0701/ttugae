@@ -65,7 +65,7 @@ function FilterColumn({
                   : "bg-transparent font-normal text-gray-600 hover:bg-gray-50"
               }`}
             >
-              <span>{t(opt.labelKey)}</span>
+              <span className="min-w-0 break-keep leading-snug">{t(opt.labelKey)}</span>
               {active ? <CheckFillIcon className="h-3 w-3 text-white" /> : null}
             </button>
           );

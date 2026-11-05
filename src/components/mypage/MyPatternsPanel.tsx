@@ -211,7 +211,7 @@ export default function MyPatternsPanel({
               >
                 <PatternThumb pattern={pattern} />
                 <div className="min-w-0 flex-1">
-                  <h3 className="truncate font-sans text-lg font-bold text-gray-900">
+                  <h3 className="break-keep font-sans text-lg font-bold leading-snug text-gray-900">
                     {pattern.title}
                   </h3>
                   <p className="mt-1 font-sans text-sm font-normal text-gray-500">
