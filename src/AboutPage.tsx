@@ -23,6 +23,12 @@ export default function AboutPage({ onOpenAr }: AboutPageProps) {
     <div className="relative pb-24">
       <section className="pt-8">
         <div className="page-shell">
+          <AboutIntroVideo />
+        </div>
+      </section>
+
+      <section className="pt-10 md:pt-14">
+        <div className="page-shell">
           <WelcomeBanner
             title={t("about.heroTitle")}
             subtitle={t("about.heroSubtitle")}
@@ -43,12 +49,6 @@ export default function AboutPage({ onOpenAr }: AboutPageProps) {
               />
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="pt-10 md:pt-14">
-        <div className="page-shell">
-          <AboutIntroVideo />
         </div>
       </section>
 
