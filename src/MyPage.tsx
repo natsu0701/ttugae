@@ -504,18 +504,18 @@ function AccountMenu({
 }) {
   const { t } = useTranslation();
   const itemClass =
-    "flex w-full items-center gap-2.5 px-3 py-2.5 text-left font-sans text-base font-normal text-stone-700 hover:bg-stone-50";
+    "flex w-full items-center gap-2.5 px-3 py-2.5 text-left font-sans text-base font-normal leading-snug break-keep text-stone-700 hover:bg-stone-50";
 
   return (
     <div className="relative mt-2 md:w-full">
       <button
         type="button"
         onClick={onToggle}
-        className={`flex items-center gap-2.5 px-4 py-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(open)}`}
+        className={`flex items-center gap-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(open)}`}
         aria-expanded={open}
       >
         <AccountFillIcon className="h-5 w-5 shrink-0" />
-        {t("mypage.account.section")}
+        <span className="min-w-0 break-keep">{t("mypage.account.section")}</span>
       </button>
       {open ? (
         <div className="absolute left-0 top-full z-40 mt-2 w-52 rounded-xl border border-stone-200 bg-white py-1 shadow-md md:left-full md:top-0 md:ml-3 md:mt-0">
@@ -636,7 +636,7 @@ export default function MyPage({
       )}
 
       <div className="page-shell flex flex-col gap-8 py-8 md:flex-row">
-        <div className="flex shrink-0 flex-col md:w-56">
+        <div className="flex shrink-0 flex-col md:w-64">
           <nav className="flex flex-row flex-wrap gap-2 md:flex-col">
             {NAV_TABS.map(({ id, Icon, labelKey }) => {
               const active = activeTab === id;
@@ -645,10 +645,10 @@ export default function MyPage({
                   key={id}
                   type="button"
                   onClick={() => selectTab(id)}
-                  className={`flex items-center gap-2.5 px-4 py-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(active)}`}
+                  className={`flex items-center gap-2.5 text-left font-sans text-base font-normal md:w-full ${tabButtonBase} ${tabButtonClass(active)}`}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
-                  {t(labelKey)}
+                  <span className="min-w-0 break-keep">{t(labelKey)}</span>
                 </button>
               );
             })}

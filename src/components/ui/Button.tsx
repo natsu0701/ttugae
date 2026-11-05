@@ -9,7 +9,7 @@ type ButtonProps = {
   children: ReactNode;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-const base = `inline-flex items-center justify-center gap-2 rounded-2xl font-sans text-base font-semibold transition-colors duration-200 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral disabled:opacity-50 bg-white !text-gray-900 hover:bg-black hover:!text-white active:bg-coral active:!text-white ${softShadow}`;
+const base = `inline-flex h-auto min-h-11 min-w-0 shrink-0 items-center justify-center gap-2 whitespace-normal break-keep rounded-2xl font-sans text-base font-semibold leading-snug transition-colors duration-200 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral disabled:opacity-50 bg-white !text-gray-900 hover:bg-black hover:!text-white active:bg-coral active:!text-white ${softShadow}`;
 
 const variantExtra: Partial<Record<Variant, string>> = {
   kakao:

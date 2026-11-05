@@ -261,7 +261,7 @@ export default function AppShell({
           className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[170px] w-full bg-cover bg-top bg-no-repeat md:h-[190px]"
           style={{ backgroundImage: `url(${assetUrl("/images/nav_lace.png")})` }}
         />
-        <div className="nav-shell relative z-10 flex h-20 w-full items-center justify-between gap-3 md:h-24 md:gap-6">
+        <div className="nav-shell relative z-10 flex min-h-20 w-full items-center justify-between gap-3 py-2 md:min-h-24 md:gap-6">
           <button
             type="button"
             onClick={go(onGoHome)}
@@ -271,7 +271,7 @@ export default function AppShell({
             <BrandTextLogo className="h-7 w-auto object-contain md:h-8" />
           </button>
 
-          <nav className="ml-auto flex min-w-0 items-center justify-end gap-3 sm:gap-5 md:gap-7 lg:gap-8">
+          <nav className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:gap-x-5 md:gap-x-7 lg:gap-x-8">
             <NavTextItem
               label={t("nav.home")}
               active={currentPage === "landing"}

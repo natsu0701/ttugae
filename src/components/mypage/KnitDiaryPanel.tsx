@@ -194,7 +194,7 @@ export default function KnitDiaryPanel({ work, onBack }: KnitDiaryPanelProps) {
           )}
           <div className="p-4">
             <div className="flex items-start justify-between gap-3">
-              <h3 className="min-w-0 truncate font-sans text-lg font-bold text-gray-900">
+              <h3 className="min-w-0 break-keep font-sans text-lg font-bold leading-snug text-gray-900">
                 {work.title}
               </h3>
               <span className="shrink-0 rounded-full bg-stone-100 px-2.5 py-1 font-sans text-sm font-semibold text-stone-600">
@@ -233,7 +233,7 @@ export default function KnitDiaryPanel({ work, onBack }: KnitDiaryPanelProps) {
               className="mt-3 border-0 bg-transparent px-0 py-1 text-3xl font-bold [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               aria-label={t("mypage.diary.rows")}
             />
-            <span className="mt-1 block font-sans text-sm text-gray-500">{t("mypage.diary.rows")}</span>
+            <span className="mt-1 block break-keep font-sans text-sm leading-snug text-gray-500">{t("mypage.diary.rows")}</span>
           </label>
           <label className="rounded-2xl border border-stone-200 bg-white p-4">
             <ClockFillIcon className="h-6 w-6 text-gray-900" />
@@ -245,7 +245,7 @@ export default function KnitDiaryPanel({ work, onBack }: KnitDiaryPanelProps) {
               className="mt-3 border-0 bg-transparent px-0 py-1 text-3xl font-bold [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               aria-label={t("mypage.diary.minutes")}
             />
-            <span className="mt-1 block font-sans text-sm text-gray-500">{t("mypage.diary.minutes")}</span>
+            <span className="mt-1 block break-keep font-sans text-sm leading-snug text-gray-500">{t("mypage.diary.minutes")}</span>
           </label>
         </div>
       </section>
@@ -256,7 +256,7 @@ export default function KnitDiaryPanel({ work, onBack }: KnitDiaryPanelProps) {
           {diary.materials.map((item) => (
             <span
               key={item.id}
-              className="inline-flex min-h-11 items-center gap-1 rounded-full border border-stone-200 bg-white px-3 font-sans text-base text-gray-800"
+              className="inline-flex min-h-11 max-w-full items-center gap-1 break-keep rounded-full border border-stone-200 bg-white px-3 font-sans text-base leading-snug text-gray-800"
             >
               {item.label}
               <button
@@ -298,7 +298,7 @@ export default function KnitDiaryPanel({ work, onBack }: KnitDiaryPanelProps) {
             <button
               type="button"
               onClick={() => setAddingMaterial(true)}
-              className="inline-flex min-h-11 items-center gap-1 rounded-full border border-dashed border-stone-300 px-3 font-sans text-base text-gray-600 hover:border-coral hover:text-coral"
+              className="inline-flex min-h-11 items-center gap-1 break-keep rounded-full border border-dashed border-stone-300 px-3 font-sans text-base leading-snug text-gray-600 hover:border-coral hover:text-coral"
             >
               <PlusFillIcon className="h-4 w-4" />
               {t("mypage.diary.addMaterial")}
@@ -314,7 +314,7 @@ export default function KnitDiaryPanel({ work, onBack }: KnitDiaryPanelProps) {
             type="button"
             onClick={() => void fillMemo()}
             disabled={aiBusy}
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-gray-900 px-3.5 font-sans text-sm font-semibold text-white hover:bg-black disabled:opacity-50"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 break-keep rounded-full bg-gray-900 px-3.5 font-sans text-sm font-semibold leading-snug text-white hover:bg-black disabled:opacity-50"
           >
             <SparkleFillIcon className="h-3.5 w-3.5" />
             {aiBusy ? t("mypage.diary.aiBusy") : t("mypage.diary.aiFill")}
@@ -366,7 +366,7 @@ export default function KnitDiaryPanel({ work, onBack }: KnitDiaryPanelProps) {
         <button
           type="button"
           onClick={() => photoRef.current?.click()}
-          className="mt-3 flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 font-sans text-base font-semibold text-gray-800 hover:border-coral hover:text-coral"
+          className="mt-3 flex min-h-14 w-full items-center justify-center gap-2 break-keep rounded-2xl border border-stone-200 bg-stone-50 font-sans text-base font-semibold leading-snug text-gray-800 hover:border-coral hover:text-coral"
         >
           <CameraFillIcon className="h-5 w-5" />
           {t("mypage.diary.addPhoto")}

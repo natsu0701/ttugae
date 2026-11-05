@@ -126,7 +126,7 @@ function LandingFooter() {
                   open={isOpen}
                 >
                   <summary
-                    className="flex h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 font-sans text-sm text-[#333] marker:content-none hover:bg-[#f7f7f7] [&::-webkit-details-marker]:hidden md:px-8"
+                    className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 font-sans text-sm leading-snug break-keep text-[#333] marker:content-none hover:bg-[#f7f7f7] [&::-webkit-details-marker]:hidden md:px-8"
                     onClick={(event) => {
                       event.preventDefault();
                       setOpenRelated((prev) => (prev === group.id ? null : group.id));

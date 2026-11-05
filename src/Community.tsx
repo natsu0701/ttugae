@@ -289,7 +289,7 @@ export default function Community({
               onClick={() => handleTabChange(tab.id)}
               className={`${tabButtonBase} ${tabButtonClass(activeTab === tab.id)}`}
             >
-              {t(`community.tabs.${tab.id}`)}
+              <span className="break-keep">{t(`community.tabs.${tab.id}`)}</span>
             </button>
           ))}
         </div>

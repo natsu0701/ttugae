@@ -20,6 +20,12 @@
 @tailwind utilities;
 
 @layer base {
+  :where(button, summary, [role="button"], [role="tab"], [role="menuitem"]) {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-height: 1.45;
+  }
+
   :where(
     a,
     button,
@@ -125,6 +131,8 @@ body {
   font-weight: 400;
   background-color: #ffffff;
   color: #374151;
+  word-break: keep-all;
+  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -162,7 +170,9 @@ body {
     font-weight: 400;
     line-height: 1.5;
     cursor: pointer;
+    flex-shrink: 0;
     white-space: nowrap;
+    word-break: keep-all;
     transition: color 0.2s ease-out, transform 0.2s ease-out;
     -webkit-tap-highlight-color: transparent;
   }
