@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
+import FinishedWorksGallery from "./FinishedWorksGallery.tsx";
+import type { CommunityPattern } from "../../data/communityPatterns.ts";
+import type { MyFinishedWork } from "../../data/myFinishedWorks.ts";
 import type { StoredPattern } from "../../types/storedPattern.ts";
 import {
   getPatternStatus,
@@ -18,6 +21,8 @@ type MyProjectsPanelProps = {
   onCreateNew: () => void;
   onOpen: (id: string) => void;
   onDelete: (id: string) => void;
+  onEditFinishedPost: (pattern: CommunityPattern) => void;
+  onOpenDiary: (work: MyFinishedWork) => void;
 };
 
 export default function MyProjectsPanel({
@@ -25,6 +30,8 @@ export default function MyProjectsPanel({
   onCreateNew,
   onOpen,
   onDelete,
+  onEditFinishedPost,
+  onOpenDiary,
 }: MyProjectsPanelProps) {
   const { t } = useTranslation();
   const [tick, setTick] = useState(0);
@@ -128,7 +135,15 @@ export default function MyProjectsPanel({
         <h3 className="mb-3 font-sans text-base font-bold text-stone-800">
           {t("mypage.projects.completed")}
         </h3>
-        {renderList(grouped.completed, true)}
+        <p className="mb-4 font-seoyun text-base text-stone-500">{t("mypage.projects.completedHint")}</p>
+        <FinishedWorksGallery
+          embedded
+          onEditPost={onEditFinishedPost}
+          onOpenWork={onOpenDiary}
+        />
+        {grouped.completed.length > 0 ? (
+          <div className="mt-6">{renderList(grouped.completed, true)}</div>
+        ) : null}
       </section>
     </div>
   );

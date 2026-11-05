@@ -5,8 +5,8 @@ import KnitBagPanel from "./components/mypage/KnitBagPanel.tsx";
 import MyProjectsPanel from "./components/mypage/MyProjectsPanel.tsx";
 import MyPatternsPanel from "./components/mypage/MyPatternsPanel.tsx";
 import MyMeetupsPanel from "./components/mypage/MyMeetupsPanel.tsx";
-import FinishedWorksGallery from "./components/mypage/FinishedWorksGallery.tsx";
 import SettingsPanel from "./components/mypage/SettingsPanel.tsx";
+import KnitDiaryPanel from "./components/mypage/KnitDiaryPanel.tsx";
 import ProfileBadgeCustomizer from "./components/ui/ProfileBadgeCustomizer.tsx";
 import SmoothInput from "./components/ui/SmoothInput.tsx";
 import KnitAchievementDashboard from "./components/mypage/KnitAchievementDashboard.tsx";
@@ -46,7 +46,6 @@ import { tabButtonBase, tabButtonClass } from "./components/ui/tabButtonStyles.t
 import {
   ProfileFillIcon,
   PatternsFillIcon,
-  ImageFillIcon,
   HeartFillIcon,
   BookmarkFillIcon,
   SettingsFillIcon,
@@ -76,8 +75,14 @@ import { loadKnitCalendarEvents, loadKnitMinutes } from "./utils/knittingLogStor
 import { getAchievementBadge } from "./data/achievementBadges.ts";
 import { loadEquippedBadgeId, saveEquippedBadgeId } from "./utils/equippedBadgeStorage.ts";
 import { badgeName } from "./utils/i18nContent.ts";
-import { mypagePathForTab, mypageTabFromPath, type MyPageRouteTab } from "./utils/mypageTab.ts";
-import { appPath } from "./utils/appPath.ts";
+import {
+  mypageDiaryPath,
+  mypagePathForTab,
+  mypageViewFromPath,
+  type MyPageRouteTab,
+} from "./utils/mypageTab.ts";
+import { loadMyFinishedWorks } from "./utils/myFinishedWorksStore.ts";
+import { appPath, routePath } from "./utils/appPath.ts";
 
 export type MyPageTab =
   | "profile"
@@ -87,7 +92,6 @@ export type MyPageTab =
   | "gauge"
   | "projects"
   | "patterns"
-  | "finished"
   | "liked"
   | "saved"
   | "settings";
@@ -100,7 +104,6 @@ const NAV_TABS: { id: MyPageTab; Icon: typeof ProfileFillIcon; labelKey: string 
   { id: "gauge", Icon: CompassFillIcon, labelKey: "mypage.tabs.gauge" },
   { id: "projects", Icon: PatternsFillIcon, labelKey: "mypage.tabs.projects" },
   { id: "patterns", Icon: FolderFillIcon, labelKey: "mypage.tabs.patterns" },
-  { id: "finished", Icon: ImageFillIcon, labelKey: "mypage.tabs.finished" },
   { id: "liked", Icon: HeartFillIcon, labelKey: "mypage.tabs.liked" },
   { id: "saved", Icon: BookmarkFillIcon, labelKey: "mypage.tabs.saved" },
   { id: "settings", Icon: SettingsFillIcon, labelKey: "mypage.tabs.settings" },
@@ -551,24 +554,50 @@ export default function MyPage({
   onDeleteAccount,
 }: MyPageProps) {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<MyPageTab>(
-    () => mypageTabFromPath(window.location.pathname),
-  );
+  const initialLocation = mypageViewFromPath(window.location.pathname);
+  const [activeTab, setActiveTab] = useState<MyPageTab>(initialLocation.tab);
+  const [diaryWorkId, setDiaryWorkId] = useState<string | null>(initialLocation.diaryWorkId);
   const [accountOpen, setAccountOpen] = useState(false);
   const { likedPatternIds, savedPatternIds } = useCommunityActions();
   const { requestLeave } = useUnsavedChanges();
   const achievementStats = useMemo(() => computeAchievementStats(patterns), [patterns]);
 
+  const applyLocation = () => {
+    const next = mypageViewFromPath(window.location.pathname);
+    setActiveTab(next.tab);
+    setDiaryWorkId(next.diaryWorkId);
+  };
+
   const selectTab = (id: MyPageTab) => {
-    if (id === activeTab) return;
+    if (id === activeTab && !diaryWorkId) return;
     requestLeave(() => {
       setActiveTab(id);
+      setDiaryWorkId(null);
       window.history.replaceState({}, "", appPath(mypagePathForTab(id as MyPageRouteTab)));
     });
   };
 
+  const openDiary = (workId: string) => {
+    requestLeave(() => {
+      setActiveTab("projects");
+      setDiaryWorkId(workId);
+      window.history.pushState({}, "", appPath(mypageDiaryPath(workId)));
+    });
+  };
+
+  const closeDiary = () => {
+    setDiaryWorkId(null);
+    setActiveTab("projects");
+    window.history.pushState({}, "", appPath(mypagePathForTab("projects")));
+  };
+
   useEffect(() => {
-    const onPop = () => setActiveTab(mypageTabFromPath(window.location.pathname));
+    const path = routePath(window.location.pathname);
+    if (path === "/mypage/finished" || path === "/mypage/diary") {
+      window.history.replaceState({}, "", appPath(mypagePathForTab("projects")));
+    }
+    applyLocation();
+    const onPop = () => applyLocation();
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
@@ -588,16 +617,23 @@ export default function MyPage({
     />
   );
 
+  const diaryWork = diaryWorkId
+    ? loadMyFinishedWorks().find((work) => work.id === diaryWorkId) ?? null
+    : null;
+  const diaryOpen = Boolean(diaryWorkId);
+
   return (
     <div className="pb-16">
-      <div className="page-shell pt-8">
-        <WelcomeBanner
-          chip="MY PAGE"
-          title={t("mypage.title")}
-          subtitle={t("mypage.subtitle")}
-          image={TTEUNI_IMAGES.feature}
-        />
-      </div>
+      {diaryOpen ? null : (
+        <div className="page-shell pt-8">
+          <WelcomeBanner
+            chip="MY PAGE"
+            title={t("mypage.title")}
+            subtitle={t("mypage.subtitle")}
+            image={TTEUNI_IMAGES.feature}
+          />
+        </div>
+      )}
 
       <div className="page-shell flex flex-col gap-8 py-8 md:flex-row">
         <div className="flex shrink-0 flex-col md:w-56">
@@ -621,9 +657,26 @@ export default function MyPage({
         </div>
 
         <main className="min-w-0 flex-1">
-          {activeTab === "profile" ? <ProfileInfoPanel patterns={patterns} /> : null}
+          {diaryOpen && diaryWork ? (
+            <KnitDiaryPanel work={diaryWork} onBack={closeDiary} />
+          ) : null}
+          {diaryOpen && !diaryWork ? (
+            <div className="rounded-2xl bg-stone-50 p-10 text-center">
+              <p className="text-title font-sans font-bold text-gray-900">{t("mypage.diary.missingTitle")}</p>
+              <p className="mt-2 font-sans text-base text-gray-500">{t("mypage.diary.missingBody")}</p>
+              <button
+                type="button"
+                onClick={closeDiary}
+                className="mt-6 min-h-11 rounded-xl px-4 font-sans text-base font-semibold text-coral hover:bg-white"
+              >
+                {t("common.back")}
+              </button>
+            </div>
+          ) : null}
 
-          {activeTab === "summary" ? (
+          {diaryOpen ? null : activeTab === "profile" ? <ProfileInfoPanel patterns={patterns} /> : null}
+
+          {diaryOpen ? null : activeTab === "summary" ? (
             <div className="space-y-6">
               <div>
                 <h2 className="text-title font-sans font-bold text-gray-900">{t("mypage.tabs.summary")}</h2>
@@ -655,22 +708,24 @@ export default function MyPage({
             </div>
           ) : null}
 
-          {activeTab === "gauge" ? <GaugeTab /> : null}
+          {diaryOpen ? null : activeTab === "gauge" ? <GaugeTab /> : null}
 
-          {activeTab === "bag" ? <KnitBagPanel /> : null}
+          {diaryOpen ? null : activeTab === "bag" ? <KnitBagPanel /> : null}
 
-          {activeTab === "meetups" ? <MyMeetupsPanel /> : null}
+          {diaryOpen ? null : activeTab === "meetups" ? <MyMeetupsPanel /> : null}
 
-          {activeTab === "projects" ? (
+          {diaryOpen ? null : activeTab === "projects" ? (
             <MyProjectsPanel
               patterns={patterns}
               onCreateNew={onCreateNew}
               onOpen={onOpenPattern}
               onDelete={onDeletePattern}
+              onEditFinishedPost={onEditCommunityPost}
+              onOpenDiary={(work) => openDiary(work.id)}
             />
           ) : null}
 
-          {activeTab === "patterns" ? (
+          {diaryOpen ? null : activeTab === "patterns" ? (
             <MyPatternsPanel
               patterns={patterns}
               onCreateNew={onCreateNew}
@@ -680,16 +735,7 @@ export default function MyPage({
             />
           ) : null}
 
-          {activeTab === "finished" ? (
-            <div>
-              <h2 className="mb-6 text-title font-sans font-bold text-gray-900">
-                {t("mypage.finishedTitle")}
-              </h2>
-              <FinishedWorksGallery onEditPost={onEditCommunityPost} />
-            </div>
-          ) : null}
-
-          {activeTab === "liked" ? (
+          {diaryOpen ? null : activeTab === "liked" ? (
             <div>
               <h2 className="mb-6 text-title font-sans font-bold text-gray-900">
                 {t("mypage.likedTitle")}
@@ -703,7 +749,7 @@ export default function MyPage({
             </div>
           ) : null}
 
-          {activeTab === "saved" ? (
+          {diaryOpen ? null : activeTab === "saved" ? (
             <div>
               <h2 className="mb-6 text-title font-sans font-bold text-gray-900">
                 {t("mypage.savedTitle")}
@@ -717,7 +763,7 @@ export default function MyPage({
             </div>
           ) : null}
 
-          {activeTab === "settings" ? <SettingsPanel /> : null}
+          {diaryOpen ? null : activeTab === "settings" ? <SettingsPanel /> : null}
 
           <div className="mt-10 md:hidden">{accountMenu}</div>
         </main>

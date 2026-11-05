@@ -647,3 +647,25 @@ export function CameraFillIcon({ className = "h-5 w-5" }: IconProps) {
     </svg>
   );
 }
+
+export function ClockFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M12 3.2a8.8 8.8 0 100 17.6 8.8 8.8 0 000-17.6zM12 6a1.1 1.1 0 011.1 1.1v4.4l3 1.8a1.1 1.1 0 11-1.1 1.9l-3.6-2.2A1.1 1.1 0 0110.9 12V7.1A1.1 1.1 0 0112 6z"
+      />
+    </svg>
+  );
+}
+
+export function SparkleFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M12 2.4l2.1 6.4 6.5 2.2-6.5 2.1L12 21.6l-2.1-6.5-6.5-2.1 6.5-2.2L12 2.4z"
+      />
+    </svg>
+  );
+}
