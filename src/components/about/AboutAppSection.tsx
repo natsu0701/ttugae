@@ -19,23 +19,13 @@ export default function AboutAppSection({ onOpenAr }: AboutAppSectionProps) {
   return (
     <section className="pt-12 md:pt-16">
       <div className="page-shell space-y-8">
-        <div className="overflow-hidden rounded-xl bg-[#FFFBF7] shadow-sm">
-          <img
-            src={ABOUT_APP_IMAGES.hero}
-            alt={t("about.appHeroAlt")}
-            className="h-auto w-full object-cover"
-          />
-          <div className="px-8 py-8 sm:px-10 sm:py-10">
-            <span className="mb-3 block w-fit rounded-full bg-[#FC5F53]/10 px-3 py-1 font-sans text-sm font-bold uppercase tracking-widest text-[#FC5F53]">
-              {t("about.appChip")}
-            </span>
-            <h2 className="text-title break-keep font-sans font-bold text-gray-900">
-              {t("about.appTitle")}
-            </h2>
-            <p className="mt-3 max-w-3xl break-keep font-seoyun text-lg font-normal leading-relaxed text-stone-500">
-              {t("about.appBody")}
-            </p>
-          </div>
+        <div>
+          <h2 className="text-title break-keep font-sans font-bold text-gray-900">
+            {t("about.appTitle")}
+          </h2>
+          <p className="mt-3 max-w-3xl break-keep font-seoyun text-lg font-normal leading-relaxed text-stone-500">
+            {t("about.appBody")}
+          </p>
         </div>
 
         <ul className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -81,13 +71,15 @@ export default function AboutAppSection({ onOpenAr }: AboutAppSectionProps) {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm sm:p-8">
+        <figure className="overflow-hidden rounded-xl bg-white shadow-sm">
           <img
             src={ABOUT_APP_IMAGES.webNavi}
             alt={t("about.appWebNaviAlt")}
-            className="mx-auto h-auto w-full max-w-4xl object-contain"
+            className="block h-auto w-full"
           />
-          <p className="mt-6 text-center font-seoyun text-base font-normal text-stone-500">
+        </figure>
+        <div>
+          <p className="text-center font-seoyun text-base font-normal text-stone-500">
             {t("ar.ipadHint")}
           </p>
           <div className="mt-4">
@@ -99,7 +91,7 @@ export default function AboutAppSection({ onOpenAr }: AboutAppSectionProps) {
           <img
             src={ABOUT_APP_IMAGES.brand}
             alt={t("about.brandAlt")}
-            className="h-auto w-full object-cover"
+            className="block h-auto w-full"
           />
         </figure>
       </div>
