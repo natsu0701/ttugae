@@ -52,7 +52,7 @@ export default function AboutPage({ onOpenAr }: AboutPageProps) {
         </div>
       </section>
 
-      <section className="pt-12 md:pt-16">
+      <section className="pt-24 md:pt-32">
         <div className="page-shell">
           <div className="max-w-3xl">
             <h2 className="text-title font-sans font-bold text-gray-900">{t("about.bodyTitle")}</h2>
