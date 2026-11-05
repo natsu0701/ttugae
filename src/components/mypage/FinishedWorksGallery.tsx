@@ -16,15 +16,19 @@ import { getCommunityPattern } from "../../data/communityPatterns.ts";
 
 type FinishedWorksGalleryProps = {
   onEditPost: (pattern: CommunityPattern) => void;
+  onOpenWork: (work: MyFinishedWork) => void;
+  embedded?: boolean;
 };
 
 function FinishedWorkCard({
   work,
+  onOpen,
   onEdit,
   onDelete,
   canManage,
 }: {
   work: MyFinishedWork;
+  onOpen: () => void;
   onEdit?: () => void;
   onDelete: () => void;
   canManage: boolean;
@@ -37,30 +41,34 @@ function FinishedWorkCard({
 
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl bg-gray-50 transition-colors hover:bg-gray-100">
-      {failed ? (
-        <div className="flex h-48 items-center justify-center bg-gray-100 p-4 text-center">
-          <p className="font-sans text-sm font-normal text-gray-500">
-            {t("community.photoFail")}
+      <button type="button" className="text-left" onClick={onOpen}>
+        {failed ? (
+          <div className="flex h-48 items-center justify-center bg-gray-100 p-4 text-center">
+            <p className="font-sans text-sm font-normal text-gray-500">
+              {t("community.photoFail")}
+            </p>
+          </div>
+        ) : (
+          <img
+            src={src}
+            alt={t("community.finishedAltOf", { title: work.title })}
+            className="h-48 w-full object-cover"
+            onError={() => setFailed(true)}
+          />
+        )}
+        <div className="p-4 pb-0">
+          <h3 className="font-sans text-lg font-bold text-gray-900">{work.title}</h3>
+          <p className="mt-1 font-sans text-sm font-normal text-gray-500">
+            {work.completedAt}
+          </p>
+          <p className="mt-3 font-sans text-base font-normal leading-relaxed text-gray-600">
+            {work.caption}
           </p>
         </div>
-      ) : (
-        <img
-          src={src}
-          alt={t("community.finishedAlt")}
-          className="h-48 w-full object-cover"
-          onError={() => setFailed(true)}
-        />
-      )}
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="font-sans text-lg font-bold text-gray-900">{work.title}</h3>
-        <p className="mt-1 font-sans text-sm font-normal text-gray-500">
-          {work.completedAt}
-        </p>
-        <p className="mt-3 flex-1 font-sans text-base font-normal leading-relaxed text-gray-600">
-          {work.caption}
-        </p>
+      </button>
+      <div className="flex flex-1 flex-col p-4 pt-3">
         {canManage && (
-          <div className="mt-4 flex gap-2">
+          <div className="mt-auto flex gap-2">
             {onEdit && (
               <Button
                 type="button"
@@ -86,7 +94,11 @@ function FinishedWorkCard({
   );
 }
 
-export default function FinishedWorksGallery({ onEditPost }: FinishedWorksGalleryProps) {
+export default function FinishedWorksGallery({
+  onEditPost,
+  onOpenWork,
+  embedded = false,
+}: FinishedWorksGalleryProps) {
   const { t } = useTranslation();
   const [works, setWorks] = useState<MyFinishedWork[]>(() => loadMyFinishedWorks());
 
@@ -114,6 +126,13 @@ export default function FinishedWorksGallery({ onEditPost }: FinishedWorksGaller
   };
 
   if (works.length === 0) {
+    if (embedded) {
+      return (
+        <p className="rounded-xl bg-stone-50 px-4 py-8 text-center font-sans text-base text-stone-400">
+          {t("mypage.finishedEmptyDesc")}
+        </p>
+      );
+    }
     return (
       <div className="rounded-2xl bg-gray-50 p-10 text-center">
         <p className="text-title font-sans font-bold text-gray-900">{t("mypage.finishedEmptyTitle")}</p>
@@ -133,6 +152,7 @@ export default function FinishedWorksGallery({ onEditPost }: FinishedWorksGaller
             key={work.id}
             work={work}
             canManage
+            onOpen={() => onOpenWork(work)}
             onEdit={isUserPost ? () => handleEdit(work) : undefined}
             onDelete={() => handleDelete(work)}
           />

@@ -85,7 +85,7 @@ function LandingFooter() {
       links: [
         { href: appPath("/mypage"), label: t("mypage.tabs.profile") },
         { href: appPath("/mypage/patterns"), label: t("mypage.tabs.patterns") },
-        { href: appPath("/mypage/finished"), label: t("mypage.tabs.finished") },
+        { href: appPath("/mypage/projects"), label: t("mypage.tabs.projects") },
         { href: appPath("/mypage/settings"), label: t("mypage.tabs.settings") },
       ],
     },
