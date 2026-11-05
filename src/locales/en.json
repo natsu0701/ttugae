@@ -765,7 +765,6 @@
     "appPoint2Body": "Match opacity and playback speed as you follow each stitch.",
     "appPoint3Title": "Same chart, anywhere",
     "appPoint3Body": "Scan the QR on an iPad and keep knitting with the chart you drew on the web.",
-    "appCta": "Open the camera",
     "appMockAlt": "Phone showing the Tteuni camera app",
     "overviewAlt": "Why knitting looks hard — Knit Together overview",
     "backgroundAlt": "Knitting as a hip lifestyle",
@@ -778,9 +777,6 @@
     "appScreenBagHint": "Keep in-progress projects, yarn, and needles in one place.",
     "appScreenGauge": "Gauge",
     "appScreenGaugeHint": "Turn the stitches you measured into the count you need, then save it.",
-    "appNaviTitle": "Turn on the camera and a knit guide pops in",
-    "appNaviBody": "Follow the guide stitch by stitch. The same chart you drew on the web sits on the fabric.",
-    "appArAlt": "Knit guide overlaid on the camera",
     "appWebNaviAlt": "Knit Together web and knit navigation together"
   },
   "createPost": {

@@ -764,7 +764,6 @@
     "appPoint2Body": "透明度と再生スピードを合わせながら、目を追います。",
     "appPoint3Title": "同じ編み図をどこでも",
     "appPoint3Body": "QRでiPadを開き、ウェブで描いた編み図のまま編んでください。",
-    "appCta": "カメラで編んでみる",
     "appMockAlt": "トゥニカメラアプリを表示したスマホ",
     "overviewAlt": "編み物はなぜ難しく見えるのか、編み物トゥゲザーの紹介",
     "backgroundAlt": "編み物は今、おしゃれなライフスタイル",
@@ -777,9 +776,6 @@
     "appScreenBagHint": "進行中のプロジェクトと糸・針をひとところにまとめます。",
     "appScreenGauge": "ゲージ",
     "appScreenGaugeHint": "測った目数から必要な目をすぐ計算して保存できます。",
-    "appNaviTitle": "カメラをオンにすると編みガイドがパッ",
-    "appNaviBody": "ガイドに沿って編み進めてください。ウェブで描いた同じ編み図が編地の上に乗ります。",
-    "appArAlt": "カメラの上に編みガイドが重なった画面",
     "appWebNaviAlt": "編み物ウェブと編みナビを一緒に使う案内",
     "videoFallback": "このブラウザでは動画を再生できません。"
   },

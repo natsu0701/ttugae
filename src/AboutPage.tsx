@@ -5,10 +5,6 @@ import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
 import { ABOUT_APP_IMAGES } from "./constants/aboutMedia.ts";
 import { TTEUNI_IMAGES } from "./constants/tteuniImages.ts";
 
-type AboutPageProps = {
-  onOpenAr: () => void;
-};
-
 const STORY_IMAGES = [
   { src: ABOUT_APP_IMAGES.hero, altKey: "about.appHeroAlt" },
   { src: ABOUT_APP_IMAGES.overview, altKey: "about.overviewAlt" },
@@ -16,7 +12,7 @@ const STORY_IMAGES = [
   { src: ABOUT_APP_IMAGES.research, altKey: "about.researchAlt" },
 ] as const;
 
-export default function AboutPage({ onOpenAr }: AboutPageProps) {
+export default function AboutPage() {
   const { t } = useTranslation();
 
   return (
@@ -63,7 +59,7 @@ export default function AboutPage({ onOpenAr }: AboutPageProps) {
         </div>
       </section>
 
-      <AboutAppSection onOpenAr={onOpenAr} />
+      <AboutAppSection />
     </div>
   );
 }

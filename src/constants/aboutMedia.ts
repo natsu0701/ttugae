@@ -11,7 +11,6 @@ export const ABOUT_APP_IMAGES = {
   home: assetUrl("/about/app-home.jpg"),
   bag: assetUrl("/about/app-bag.jpg"),
   gauge: assetUrl("/about/app-gauge.jpg"),
-  ar: assetUrl("/about/app-ar.png"),
   webNavi: assetUrl("/about/app-web-navi.png"),
   brand: assetUrl("/about/app-brand.png"),
 } as const;

@@ -538,7 +538,7 @@ function AppRoutes() {
         )}
         {view === "about" && (
           <Suspense fallback={<RouteFallback embedded />}>
-            <AboutPage onOpenAr={openAr} />
+            <AboutPage />
           </Suspense>
         )}
         {view === "landing" && (
