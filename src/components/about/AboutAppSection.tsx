@@ -17,17 +17,18 @@ export default function AboutAppSection({ onOpenAr }: AboutAppSectionProps) {
   const { t } = useTranslation();
 
   return (
-    <section className="pt-12 md:pt-16">
-      <div className="page-shell space-y-8">
-        <div>
+    <section className="pt-20 md:pt-28">
+      <div className="page-shell">
+        <div className="max-w-3xl">
           <h2 className="text-title break-keep font-sans font-bold text-gray-900">
             {t("about.appTitle")}
           </h2>
-          <p className="mt-3 max-w-3xl break-keep font-seoyun text-lg font-normal leading-relaxed text-stone-500">
+          <p className="mt-3 break-keep font-seoyun text-lg font-normal leading-relaxed text-stone-500">
             {t("about.appBody")}
           </p>
         </div>
 
+        <div className="mt-20 space-y-8 md:mt-28">
         <ul className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {SCREENS.map((screen) => (
             <li key={screen.titleKey} className="overflow-hidden rounded-xl bg-white shadow-sm">
@@ -94,6 +95,7 @@ export default function AboutAppSection({ onOpenAr }: AboutAppSectionProps) {
             className="block h-auto w-full"
           />
         </figure>
+        </div>
       </div>
     </section>
   );
