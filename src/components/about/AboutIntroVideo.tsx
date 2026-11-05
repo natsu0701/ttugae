@@ -8,7 +8,7 @@ export default function AboutIntroVideo() {
   const [ready, setReady] = useState(false);
 
   return (
-    <figure className="mx-auto w-full max-w-4xl">
+    <figure className="w-full">
       <div className="relative aspect-video overflow-hidden rounded-xl bg-[#FFFBF7] shadow-sm">
         <video
           className={`h-full w-full object-cover ${ready ? "block" : "hidden"}`}
