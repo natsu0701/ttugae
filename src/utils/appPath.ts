@@ -13,7 +13,18 @@ const BASE_PREFIX = stripTrailingSlash(BASE_URL === "/" ? "" : BASE_URL);
 /** Prefix a public asset path with the Vite base (`/images/x` → `/ttugae/images/x`). */
 export function assetUrl(path: string): string {
   const clean = path.replace(/^\/+/, "");
-  return `${BASE_URL}${clean}`;
+  const encoded = clean
+    .split("/")
+    .filter((part) => part.length > 0)
+    .map((part) => {
+      try {
+        return encodeURIComponent(decodeURIComponent(part));
+      } catch {
+        return encodeURIComponent(part);
+      }
+    })
+    .join("/");
+  return `${BASE_URL}${encoded}`;
 }
 
 /**

@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  deployments: write
 
 concurrency:
   group: pages
@@ -36,8 +37,33 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # Branch-source Jekyll publish races this job and can overwrite dist with raw index.html.
+      - name: Release stuck GitHub Pages deployments
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          API="https://api.github.com/repos/${GITHUB_REPOSITORY}"
+          AUTH="Authorization: Bearer ${GH_TOKEN}"
+          ACCEPT="Accept: application/vnd.github+json"
+          curl -sS -H "$AUTH" -H "$ACCEPT" \
+            "$API/deployments?environment=github-pages&per_page=30" \
+            | python3 -c "import json,sys; [print(d['id']) for d in json.load(sys.stdin)]" \
+            | while read -r id; do
+                [ -n "$id" ] || continue
+                curl -sS -X POST -H "$AUTH" -H "$ACCEPT" \
+                  -H "Content-Type: application/json" \
+                  "$API/deployments/${id}/statuses" \
+                  -d '{"state":"inactive","environment":"github-pages","description":"cleared for Vite dist deploy"}' \
+                  >/dev/null || true
+              done
       - name: Wait for branch Pages publish to finish
-        run: sleep 120
+        run: sleep 90
       - id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: Retry Pages deploy
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 45
+      - id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4

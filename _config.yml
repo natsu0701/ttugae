@@ -1,0 +1,4 @@
+# GitHub의 브랜치 Jekyll 배포가 원본 저장소를 올리지 못하게 한다.
+# 이미지는 Vite dist의 public 복사본(/ttugae/images/…)을 써야 한다.
+plugins:
+  - jekyll-ttugae-vite-dist-only
