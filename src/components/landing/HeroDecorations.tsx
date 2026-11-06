@@ -12,7 +12,7 @@ type Floater = {
 };
 
 function asset(name: string) {
-  return assetUrl(`/images/${encodeURIComponent(name)}`);
+  return assetUrl(`/images/${name}`);
 }
 
 const FLOATERS: Floater[] = [

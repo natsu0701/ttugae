@@ -52,7 +52,7 @@ export function finishedImageUrl(filename: string) {
   ) {
     return filename;
   }
-  return assetUrl(`/images/${encodeURI(filename)}`);
+  return assetUrl(`/images/${filename}`);
 }
 
 export const COMMUNITY_PATTERNS: CommunityPattern[] = [

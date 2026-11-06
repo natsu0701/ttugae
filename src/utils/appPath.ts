@@ -10,7 +10,11 @@ function stripTrailingSlash(value: string): string {
 
 const BASE_PREFIX = stripTrailingSlash(BASE_URL === "/" ? "" : BASE_URL);
 
-/** Prefix a public asset path with the Vite base (`/images/x` → `/ttugae/images/x`). */
+/**
+ * Prefix a public asset path with the Vite base (`/images/x` → `/ttugae/images/x`)
+ * and percent-encode each segment (spaces, Hangul). Do not wrap the result in
+ * `encodeURI` — that turns `%20` into `%2520` and 404s the file.
+ */
 export function assetUrl(path: string): string {
   const clean = path.replace(/^\/+/, "");
   const encoded = clean
