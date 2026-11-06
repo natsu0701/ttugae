@@ -44,7 +44,7 @@ function FeatureInteractiveTabs() {
         <div className="relative flex aspect-[4/3] w-full items-center justify-center">
           <div key={active.id} className="relative z-10 flex h-full w-full items-center justify-center fade-in">
             <SafePublicImage
-              src={encodeURI(active.imagePath)}
+              src={active.imagePath}
               alt={t(TAB_COPY[active.id]?.title ?? "landing.tabEditorTitle")}
               className="h-auto max-h-full w-auto max-w-full rounded-xl object-contain"
               fallbackLabel={active.imagePath}

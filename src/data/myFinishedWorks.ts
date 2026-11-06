@@ -36,5 +36,5 @@ export const MY_FINISHED_WORKS: MyFinishedWork[] = [
 ];
 
 export function finishedWorkImageUrl(filename: string) {
-  return assetUrl(`/images/${encodeURI(filename)}`);
+  return assetUrl(`/images/${filename}`);
 }
