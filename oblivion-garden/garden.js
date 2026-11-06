@@ -1,8 +1,8 @@
 (() => {
   const DAY = 86400000;
-  const HANG_LIMIT = 12;
   const KEY = "mangak-garden-guestbook-v1";
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const narrowQuery = window.matchMedia("(max-width: 839px)");
 
   const now = Date.now();
   const SEEDS = [
@@ -17,6 +17,7 @@
   const world = $("world");
   const sky = $("sky");
   const cluster = $("cluster");
+  const dock = $("dock");
   const invite = $("invite");
   const voidEl = $("void");
   const lamp = $("lamp");
@@ -27,6 +28,8 @@
   const nameInput = $("name-input");
   const textInput = $("text-input");
   const formError = $("form-error");
+  const formFoot = $("form-foot");
+  const colophon = $("colophon");
   const countEl = $("count");
   const live = $("live");
   const sunkenOpen = $("sunken-open");
@@ -36,53 +39,123 @@
   const readWho = $("read-who");
   const readWhen = $("read-when");
   const readRemove = $("read-remove");
+  const submitBtn = form.querySelector('button[type="submit"]');
 
   let returnFocus = invite;
   let readingEntry = null;
+  let savedOnServer = false;
+  let entries = [];
+  let sending = false;
 
-  function loadOwn() {
-    try {
-      const raw = JSON.parse(localStorage.getItem(KEY) || "[]");
-      if (!Array.isArray(raw)) return [];
-      return raw.map(cleanStored).filter(Boolean).slice(-40);
-    } catch {
-      return [];
-    }
+  function isNarrow() {
+    return narrowQuery.matches;
   }
 
-  function cleanStored(entry) {
+  function normalize(entry) {
     if (!entry || typeof entry !== "object") return null;
     const name = String(entry.name || "").trim().slice(0, 12);
     const text = String(entry.text || "").trim().replace(/\s+/g, " ").slice(0, 60);
     const at = Number(entry.at);
     const id = String(entry.id || "");
     if (!name || !text || !id || !Number.isFinite(at)) return null;
-    return { id, name, text, at, own: true };
+    return { id, name, text, at, own: Boolean(entry.own) };
   }
 
-  function saveOwn(list) {
-    const payload = list.slice(-40).map(({ id, name, text, at }) => ({ id, name, text, at }));
+  function loadLocal() {
     try {
-      localStorage.setItem(KEY, JSON.stringify(payload));
+      const raw = JSON.parse(localStorage.getItem(KEY) || "[]");
+      if (!Array.isArray(raw)) return [];
+      return raw.map((entry) => normalize({ ...entry, own: true })).filter(Boolean).slice(-40);
     } catch {
-      /* private mode or a full disk: the garden still holds the words for this visit */
+      return [];
     }
   }
 
-  function allEntries() {
-    const own = loadOwn();
-    return [...own, ...SEEDS.map((entry) => ({ ...entry, own: false }))].sort((a, b) => b.at - a.at);
+  function saveLocal(list) {
+    const payload = list.slice(-40).map(({ id, name, text, at }) => ({ id, name, text, at }));
+    try {
+      if (payload.length) localStorage.setItem(KEY, JSON.stringify(payload));
+      else localStorage.removeItem(KEY);
+    } catch {
+      /* the garden still holds the words for this visit */
+    }
+  }
+
+  function localEntries() {
+    return [...loadLocal(), ...SEEDS.map((entry) => ({ ...entry, own: false }))].sort((a, b) => b.at - a.at);
+  }
+
+  function applyCopy() {
+    if (savedOnServer) {
+      colophon.textContent = "남긴 말은 정원에 남는다.";
+      formFoot.textContent = "정원에 남아, 시간이 지나면 실이 길어진다.";
+    } else {
+      colophon.textContent = "남긴 말은 이 기기에 머문다.";
+      formFoot.textContent = "이 기기에 남아, 시간이 지나면 실이 길어진다.";
+    }
+  }
+
+  async function fetchEntries() {
+    const res = await fetch("/api/entries", { headers: { accept: "application/json" } });
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    if (!data || data.saved !== true || !Array.isArray(data.entries)) throw new Error("shape");
+    return data.entries.map(normalize).filter(Boolean);
+  }
+
+  async function postEntry(name, text) {
+    const res = await fetch("/api/entries", {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify({ name, text }),
+    });
+    if (res.status === 429) {
+      const error = new Error("rate");
+      error.code = "rate";
+      throw error;
+    }
+    if (!res.ok) throw new Error("save");
+    const data = await res.json();
+    const entry = normalize(data.entry);
+    if (!entry) throw new Error("save");
+    return entry;
+  }
+
+  async function boot() {
+    try {
+      let remote = await fetchEntries();
+      const local = loadLocal();
+      const remain = [];
+      for (const entry of local) {
+        try {
+          await postEntry(entry.name, entry.text);
+        } catch {
+          remain.push(entry);
+        }
+      }
+      saveLocal(remain);
+      if (local.length) remote = await fetchEntries();
+      const seen = new Set(remote.map((entry) => entry.id));
+      entries = [...remote, ...remain.filter((entry) => !seen.has(entry.id))].sort((a, b) => b.at - a.at);
+      savedOnServer = true;
+    } catch {
+      savedOnServer = false;
+      entries = localEntries();
+    }
+    applyCopy();
+    render({ recenter: !parting });
   }
 
   function variation(id) {
     let h = 0;
     for (const ch of id) h = (h * 33 + ch.charCodeAt(0)) >>> 0;
-    const tilt = `${((h % 23) - 11) / 10}deg`;
-    const dur = `${6.4 + (h % 28) / 10}s`;
-    const delay = `${-((h % 40) / 8)}s`;
-    const drop = 12 + (h % 20);
-    const hgt = `${206 + (h % 5) * 12}px`;
-    return { tilt, dur, delay, drop, h: hgt };
+    return {
+      tilt: `${((h % 23) - 11) / 10}deg`,
+      dur: `${6.4 + (h % 28) / 10}s`,
+      delay: `${-((h % 40) / 8)}s`,
+      drop: 12 + (h % 20),
+      h: `${206 + (h % 5) * 12}px`,
+    };
   }
 
   function whenLabel(at) {
@@ -103,19 +176,20 @@
     btn.className = arrive ? "hang is-new" : "hang";
     btn.dataset.id = entry.id;
     const days = (Date.now() - entry.at) / DAY;
-    const sink = Math.max(0, Math.min(120, days * 3.1));
-    const fade = Math.max(0.4, 1 - days * 0.01);
+    const narrow = isNarrow();
+    const sink = narrow ? Math.max(0, Math.min(22, days * 0.55)) : Math.max(0, Math.min(120, days * 3.1));
+    const fade = Math.max(0.45, 1 - days * 0.01);
     const look = variation(entry.id);
     btn.style.setProperty("--fade", fade.toFixed(3));
     btn.style.setProperty("--tilt", look.tilt);
     btn.style.setProperty("--dur", look.dur);
     btn.style.setProperty("--delay", look.delay);
     btn.style.setProperty("--age", Math.min(0.42, days * 0.009).toFixed(3));
-    btn.style.setProperty("--h", look.h);
+    btn.style.setProperty("--h", narrow ? "210px" : look.h);
 
     const thread = document.createElement("span");
     thread.className = "thread";
-    thread.style.height = `${Math.round(look.drop + sink)}px`;
+    thread.style.height = `${Math.round((narrow ? 8 : look.drop) + sink)}px`;
     thread.setAttribute("aria-hidden", "true");
 
     const ring = document.createElement("span");
@@ -149,22 +223,30 @@
 
   function render(options = {}) {
     const { arriveId = null, recenter = false } = options;
-    const entries = allEntries();
-    const hanging = entries.slice(0, HANG_LIMIT);
-    const sunk = entries.slice(HANG_LIMIT);
-    const left = [];
-    const right = [];
-    hanging.forEach((entry, index) => (index % 2 === 0 ? right : left).push(entry));
-    left.reverse();
+    const sorted = entries.slice().sort((a, b) => b.at - a.at);
+    const limit = isNarrow() ? 8 : 12;
+    const hanging = sorted.slice(0, limit);
+    const sunk = sorted.slice(limit);
 
+    const keptScroll = sky.scrollLeft;
     cluster.replaceChildren();
-    left.forEach((entry) => cluster.append(makeHang(entry, entry.id === arriveId)));
-    const gap = document.createElement("span");
-    gap.className = "sky-gap";
-    gap.setAttribute("aria-hidden", "true");
-    gap.append(invite);
-    cluster.append(gap);
-    right.forEach((entry) => cluster.append(makeHang(entry, entry.id === arriveId)));
+    if (isNarrow()) {
+      hanging.forEach((entry) => cluster.append(makeHang(entry, entry.id === arriveId)));
+      dock.replaceChildren(invite);
+    } else {
+      const left = [];
+      const right = [];
+      hanging.forEach((entry, index) => (index % 2 === 0 ? right : left).push(entry));
+      left.reverse();
+      left.forEach((entry) => cluster.append(makeHang(entry, entry.id === arriveId)));
+      const gap = document.createElement("span");
+      gap.className = "sky-gap";
+      gap.setAttribute("aria-hidden", "true");
+      gap.append(invite);
+      cluster.append(gap);
+      right.forEach((entry) => cluster.append(makeHang(entry, entry.id === arriveId)));
+      dock.replaceChildren();
+    }
 
     sunkenOpen.hidden = sunk.length === 0;
     sunkenCount.textContent = sunk.length ? String(sunk.length) : "";
@@ -190,14 +272,21 @@
 
     if (arriveId || recenter) {
       requestAnimationFrame(() => {
-        const target = arriveId ? cluster.querySelector(`[data-id="${CSS.escape(arriveId)}"]`) : gap;
+        const target = arriveId
+          ? cluster.querySelector(`[data-id="${CSS.escape(arriveId)}"]`)
+          : isNarrow()
+            ? cluster.querySelector(".hang")
+            : cluster.querySelector(".sky-gap");
         scrollToCenter(target, Boolean(arriveId) && !reduce);
       });
+    } else if (keptScroll) {
+      sky.scrollLeft = keptScroll;
     }
   }
 
   function openPaper() {
     returnFocus = invite;
+    formError.textContent = "비어 있는 말은 걸 수 없다.";
     formError.hidden = true;
     nameInput.classList.remove("is-invalid");
     textInput.classList.remove("is-invalid");
@@ -228,29 +317,54 @@
     return `m-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   }
 
-  form.addEventListener("submit", (event) => {
+  function failSave(error) {
+    formError.textContent = error && error.code === "rate" ? "잠시 뒤에 다시 걸어 두어라." : "걸리지 못했다. 다시 걸어 두어라.";
+    formError.hidden = false;
+  }
+
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (sending) return;
     const name = nameInput.value.trim().slice(0, 10);
     const text = textInput.value.trim().replace(/\s+/g, " ").slice(0, 60);
     nameInput.classList.toggle("is-invalid", !name);
     textInput.classList.toggle("is-invalid", !text);
     if (!name || !text) {
+      formError.textContent = "비어 있는 말은 걸 수 없다.";
       formError.hidden = false;
       (name ? textInput : nameInput).focus();
       return;
     }
-    const entry = { id: idOf(), name, text, at: Date.now() };
-    const own = loadOwn();
-    own.push(entry);
-    saveOwn(own);
-    nameInput.value = "";
-    textInput.value = "";
-    countEl.textContent = "60";
-    formError.hidden = true;
-    closePaper();
-    render({ arriveId: entry.id });
-    live.textContent = "말이 걸렸다.";
-    returnFocus = invite;
+    sending = true;
+    submitBtn.disabled = true;
+    try {
+      let createdId = "";
+      if (savedOnServer) {
+        const created = await postEntry(name, text);
+        entries = await fetchEntries();
+        createdId = created.id;
+      } else {
+        const entry = { id: idOf(), name, text, at: Date.now(), own: true };
+        const own = loadLocal();
+        own.push(entry);
+        saveLocal(own);
+        entries = localEntries();
+        createdId = entry.id;
+      }
+      nameInput.value = "";
+      textInput.value = "";
+      countEl.textContent = "60";
+      formError.hidden = true;
+      closePaper();
+      render({ arriveId: createdId });
+      live.textContent = savedOnServer ? "말이 정원에 걸렸다." : "말이 이 기기에 걸렸다.";
+      returnFocus = invite;
+    } catch (error) {
+      failSave(error);
+    } finally {
+      sending = false;
+      submitBtn.disabled = false;
+    }
   });
 
   textInput.addEventListener("input", () => {
@@ -283,20 +397,37 @@
     if (returnFocus && document.contains(returnFocus)) returnFocus.focus();
   });
 
-  readRemove.addEventListener("click", () => {
-    if (!readingEntry || !readingEntry.own) return;
+  readRemove.addEventListener("click", async () => {
+    if (!readingEntry || !readingEntry.own || sending) return;
     if (readRemove.dataset.armed !== "1") {
       readRemove.dataset.armed = "1";
       readRemove.textContent = "정말 거둔다";
       return;
     }
     const id = readingEntry.id;
-    saveOwn(loadOwn().filter((entry) => entry.id !== id));
-    readingEntry = null;
-    returnFocus = invite;
-    reading.close();
-    render({ recenter: true });
-    live.textContent = "말을 거두었다.";
+    sending = true;
+    try {
+      if (savedOnServer) {
+        const res = await fetch(`/api/entries/${encodeURIComponent(id)}`, { method: "DELETE" });
+        if (!res.ok) {
+          live.textContent = "거두지 못했다.";
+          return;
+        }
+        entries = await fetchEntries();
+      } else {
+        saveLocal(loadLocal().filter((entry) => entry.id !== id));
+        entries = localEntries();
+      }
+      readingEntry = null;
+      returnFocus = invite;
+      reading.close();
+      render({ recenter: true });
+      live.textContent = "말을 거두었다.";
+    } catch {
+      live.textContent = "거두지 못했다.";
+    } finally {
+      sending = false;
+    }
   });
 
   sunkenOpen.addEventListener("click", () => {
@@ -313,10 +444,17 @@
   });
 
   invite.addEventListener("click", openPaper);
+  narrowQuery.addEventListener("change", () => render({ recenter: true }));
 
-  window.addEventListener("storage", (event) => {
-    if (event.key === KEY) render();
-  });
+  window.setInterval(() => {
+    if (!savedOnServer || paper.open || reading.open || sunken.open) return;
+    fetchEntries()
+      .then((next) => {
+        entries = next;
+        render();
+      })
+      .catch(() => {});
+  }, 25000);
 
   const started = performance.now();
   const MIN_BLACK = 1200;
@@ -324,8 +462,7 @@
   const pending = [];
 
   function later(fn, ms) {
-    const id = window.setTimeout(fn, ms);
-    pending.push(id);
+    pending.push(window.setTimeout(fn, ms));
   }
 
   function clearPending() {
@@ -375,8 +512,10 @@
   let cx = 0;
   let cy = 0;
   let look = 0.5;
+  let lastMove = performance.now();
 
   window.addEventListener("pointermove", (event) => {
+    lastMove = performance.now();
     tx = event.clientX / window.innerWidth - 0.5;
     ty = event.clientY / window.innerHeight - 0.5;
     look = event.clientX / window.innerWidth;
@@ -385,7 +524,7 @@
   });
 
   function tick(nowMs) {
-    if (!reduce && document.body.classList.contains("is-settled")) {
+    if (!reduce && document.body.classList.contains("is-settled") && !isNarrow()) {
       const idle = performance.now() - lastMove > 2800;
       if (idle) {
         const t = nowMs / 1000;
@@ -403,12 +542,10 @@
     window.requestAnimationFrame(tick);
   }
 
-  let lastMove = performance.now();
-  window.addEventListener("pointermove", () => {
-    lastMove = performance.now();
-  });
-
+  entries = localEntries();
+  applyCopy();
   render({ recenter: true });
   begin();
+  boot();
   window.requestAnimationFrame(tick);
 })();

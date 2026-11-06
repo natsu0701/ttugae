@@ -54,6 +54,7 @@
             <img src="assets/letters.png" alt="망각의 정원" />
           </h1>
           <p class="mark-note">남겨진 말은 천천히 가라앉는다.</p>
+          <p class="colophon" id="colophon">남긴 말은 이 기기에 머문다.</p>
         </header>
 
         <div class="wire" aria-hidden="true"></div>
@@ -70,7 +71,7 @@
           </span>
         </button>
 
-        <p class="colophon">남긴 말은 이 기기에 머문다.</p>
+        <div class="dock" id="dock"></div>
         <button class="sunken-open" id="sunken-open" type="button" hidden>
           가라앉은 말 <span id="sunken-count"></span>
         </button>
@@ -89,7 +90,7 @@
           <textarea id="text-input" name="text" maxlength="60" rows="3" spellcheck="false" placeholder="오래 남지 않을 말"></textarea>
         </label>
         <p class="form-error" id="form-error" hidden>비어 있는 말은 걸 수 없다.</p>
-        <p class="form-foot">이 기기에 남아, 시간이 지나면 실이 길어진다.</p>
+        <p class="form-foot" id="form-foot">이 기기에 남아, 시간이 지나면 실이 길어진다.</p>
         <div class="acts">
           <button class="act" type="submit">걸어 두기</button>
           <button class="act act-quiet" id="paper-cancel" type="button">접다</button>

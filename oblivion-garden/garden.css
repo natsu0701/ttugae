@@ -548,10 +548,12 @@ body.is-reading .world {
 
 .hang:not(.hang-invite) .body {
   flex: 1 1 auto;
+  width: 1.35em;
   min-height: 0;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(#000 74%, transparent 98%);
-  mask-image: linear-gradient(#000 74%, transparent 98%);
+  word-break: keep-all;
+  -webkit-mask-image: linear-gradient(#000 72%, transparent);
+  mask-image: linear-gradient(#000 72%, transparent);
 }
 
 .hang-invite .body {
@@ -631,32 +633,31 @@ body.is-reading .world {
   }
 }
 
-.colophon,
+.colophon {
+  margin: 8px 0 0;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: rgba(236, 230, 218, 0.5);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
 .sunken-open {
   position: absolute;
   z-index: 6;
+  right: max(16px, 2vw);
   bottom: max(12px, 1.6vh);
   margin: 0;
-  font-size: 11px;
-  font-weight: 300;
-  letter-spacing: 0.12em;
-  color: rgba(236, 230, 218, 0.48);
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
-  opacity: 0;
-  transition: opacity 1.6s ease 0.3s;
-}
-
-.colophon {
-  left: max(16px, 2vw);
-}
-
-.sunken-open {
-  right: max(16px, 2vw);
   padding: 6px 2px;
   border: 0;
   background: none;
   font-size: 12px;
+  font-weight: 300;
   letter-spacing: 0.16em;
+  color: rgba(236, 230, 218, 0.48);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  transition: opacity 1.6s ease 0.3s;
 }
 
 .sunken-open:hover,
@@ -664,9 +665,12 @@ body.is-reading .world {
   color: rgba(236, 230, 218, 0.82);
 }
 
-.is-settled .colophon,
 .is-settled .sunken-open:not([hidden]) {
   opacity: 1;
+}
+
+.dock {
+  display: none;
 }
 
 dialog {
@@ -794,6 +798,11 @@ dialog::backdrop {
   opacity: 0.62;
 }
 
+.act:disabled {
+  opacity: 0.38;
+  cursor: wait;
+}
+
 .act-quiet {
   opacity: 0.55;
 }
@@ -864,77 +873,192 @@ dialog::backdrop {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 839px) {
+  .layer-palm {
+    opacity: 0.1;
+  }
+
   .layer-deity {
-    height: 78vh;
-    left: -18vw;
-    opacity: 0.78;
+    height: 62vh;
+    left: -28vw;
+    bottom: 6vh;
+    opacity: 0.88;
   }
 
-  .layer-line {
-    height: 64vh;
-    left: -24vw;
-    opacity: 0.18;
-  }
-
-  .layer-fighter {
-    width: 38vw;
-    right: -2vw;
-    bottom: 18vh;
-    opacity: 0.55;
-  }
-
+  .layer-line,
+  .layer-fighter,
   .layer-boys {
-    opacity: 0.05;
-  }
-
-  .layer-eyes {
-    width: 88vw;
-    right: -18vw;
-    top: -4vh;
-    opacity: 0.42;
-  }
-
-  .mark {
-    bottom: 2.4vh;
-  }
-
-  .mark img {
-    width: min(560px, 88vw);
-  }
-
-  .mark-note {
-    font-size: 12px;
-    padding: 0 20px;
-  }
-
-  .colophon {
     display: none;
   }
 
+  .layer-eyes {
+    width: 78vw;
+    right: -28vw;
+    top: -2vh;
+    opacity: 0.32;
+  }
+
+  .peonies {
+    height: 16vh;
+  }
+
+  .wire {
+    top: 10px;
+    left: 8vw;
+    right: 8vw;
+  }
+
   .sky {
-    -webkit-mask-image: linear-gradient(#000 70%, transparent 98%),
-      linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-    mask-image: linear-gradient(#000 70%, transparent 98%),
-      linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    top: 8px;
+    height: 36vh;
+    scroll-snap-type: x mandatory;
+    -webkit-mask-image: linear-gradient(#000 86%, transparent),
+      linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(#000 86%, transparent),
+      linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
     -webkit-mask-composite: source-in;
     mask-composite: intersect;
   }
 
-  .sky {
-    height: 46vh;
+  .cluster {
+    justify-content: flex-start;
+    gap: 22px;
+    padding: 8px calc(50% - 34px) 0;
+  }
+
+  .hang {
+    scroll-snap-align: center;
+  }
+
+  .hang:not(.hang-invite) .sheet {
+    width: 52px;
+    height: 210px;
+    padding: 10px 6px 8px;
+  }
+
+  .body {
+    font-size: 15px;
+    letter-spacing: 0.08em;
+  }
+
+  .who {
+    max-height: 72px;
+    font-size: 12px;
+  }
+
+  .mark {
+    bottom: calc(78px + env(safe-area-inset-bottom));
+    width: 92vw;
+  }
+
+  .mark img {
+    width: min(440px, 88vw);
+  }
+
+  .mark-kicker {
+    font-size: 11px;
+    letter-spacing: 0.36em;
+    padding-left: 0.36em;
+  }
+
+  .mark-note {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 0 12px;
+  }
+
+  .colophon {
+    margin-top: 4px;
+    padding: 0 16px;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .dock {
+    display: flex;
+    position: absolute;
+    z-index: 8;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+    padding: 0 18px calc(12px + env(safe-area-inset-bottom));
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .is-settled .dock {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 1.4s ease 0.1s;
+  }
+
+  .dock .hang-invite {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dock .hang-invite .thread {
+    display: none;
+  }
+
+  .dock .hang-invite .sheet {
+    width: auto;
+    min-height: 0;
+    padding: 12px 18px;
+    animation: none;
+  }
+
+  .dock .hang-invite .body {
+    writing-mode: horizontal-tb;
+    padding-top: 0;
+    font-size: 15px;
+    letter-spacing: 0.22em;
+  }
+
+  .sunken-open {
+    left: 14px;
+    right: auto;
+    bottom: calc(86px + env(safe-area-inset-bottom));
+    z-index: 8;
+    min-height: 44px;
+  }
+
+  dialog {
+    width: 100%;
+    max-width: 100%;
+    margin: auto 0 0;
   }
 
   .sheet-form {
-    padding: 24px 22px 20px;
+    width: 100%;
+    max-height: min(88dvh, 720px);
+    padding: 20px 22px calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .sheet-form h2 {
+    margin-bottom: 18px;
+  }
+
+  .act {
+    min-height: 44px;
+    padding: 12px 2px;
   }
 
   .gate img {
-    object-position: center 18%;
+    object-position: center 16%;
+  }
+
+  .void-line {
+    padding: 0 28px;
+    letter-spacing: 0.16em;
+    text-align: center;
   }
 }
 
-@media (max-height: 720px) {
+@media (max-height: 720px) and (min-width: 840px) {
   .mark img {
     width: min(520px, 58vw);
   }
