@@ -37,8 +37,21 @@ export function playlistFallbackUrl(item: ArPlaylistItem): string | null {
   return item.fallbackSrc ? assetUrl(item.fallbackSrc) : null;
 }
 
-export function canPlayWebmVp9(): boolean {
+function isWebKitWithoutVp9Alpha(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent;
+  if (/iP(ad|hone|od)/.test(ua)) return true;
+  if (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) return true;
+  return /Safari/.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|Firefox/.test(ua);
+}
+
+/**
+ * Chrome/Firefox는 VP9 WebM 알파를 합성한다. Safari·iOS는 코덱만 열고 알파는 버려
+ * 투명 픽셀이 검정으로 보이므로 여기선 false.
+ */
+export function canPlayWebmVp9Alpha(): boolean {
   if (typeof document === "undefined") return true;
+  if (isWebKitWithoutVp9Alpha()) return false;
   const probe = document.createElement("video");
   return probe.canPlayType('video/webm; codecs="vp9"') !== "";
 }

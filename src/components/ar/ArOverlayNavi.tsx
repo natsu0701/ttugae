@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "reac
 import { useTranslation } from "react-i18next";
 import {
   AR_PLAYLIST,
-  canPlayWebmVp9,
+  canPlayWebmVp9Alpha,
   formatClock,
   playlistFallbackUrl,
   playlistVideoUrl,
@@ -165,7 +165,8 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [opacityScrubbing, setOpacityScrubbing] = useState(false);
   const chromeTimerRef = useRef<number | null>(null);
   const lastOpacityRef = useRef(100);
-  const [webmOk] = useState(() => canPlayWebmVp9());
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [webmOk] = useState(() => canPlayWebmVp9Alpha());
 
   const activeItem = AR_PLAYLIST[activeIndex] ?? null;
   const hasOverlay = Boolean(activeItem);
@@ -365,10 +366,10 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     if (!activeItem) return;
     if (useImageFallback) {
       setPlayhead(0);
-      setDuration(3);
+      setDuration(10.125);
       setOverlayPaused(false);
       setOverlayError(null);
-      setDurations((prev) => (prev[activeItem.id] === 3 ? prev : { ...prev, [activeItem.id]: 3 }));
+      setDurations((prev) => (prev[activeItem.id] === 10.125 ? prev : { ...prev, [activeItem.id]: 10.125 }));
       return;
     }
     const overlay = overlayRef.current;
@@ -428,6 +429,31 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       video.removeEventListener("error", onError);
     };
   }, [activeItem, hasOverlay, playbackRate, t]);
+
+  useEffect(() => {
+    if (useImageFallback) return;
+    const video = overlayRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+    let frame = 0;
+    const draw = () => {
+      const width = video.videoWidth;
+      const height = video.videoHeight;
+      if (width > 0 && height > 0) {
+        if (canvas.width !== width || canvas.height !== height) {
+          canvas.width = width;
+          canvas.height = height;
+        }
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(video, 0, 0, width, height);
+      }
+      frame = window.requestAnimationFrame(draw);
+    };
+    frame = window.requestAnimationFrame(draw);
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeItem, useImageFallback]);
 
   const seekTo = useCallback(
     (next: number) => {
@@ -632,17 +658,20 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         {useImageFallback && fallbackUrl ? (
           <img src={fallbackUrl} alt={t("ar.overlayLabel")} aria-hidden={!overlayVisible} />
         ) : (
-          <video
-            ref={overlayRef}
-            muted
-            loop
-            playsInline
-            autoPlay
-            disablePictureInPicture
-            controls={false}
-            aria-hidden={!overlayVisible}
-            aria-label={t("ar.overlayLabel")}
-          />
+          <>
+            <video
+              ref={overlayRef}
+              className="ar-overlay-decode"
+              muted
+              loop
+              playsInline
+              autoPlay
+              disablePictureInPicture
+              controls={false}
+              aria-hidden
+            />
+            <canvas ref={canvasRef} aria-hidden={!overlayVisible} aria-label={t("ar.overlayLabel")} />
+          </>
         )}
       </div>
 

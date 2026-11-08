@@ -584,7 +584,8 @@ body.yarn-trail-active {
 }
 
 .ar-overlay-film video,
-.ar-overlay-film img {
+.ar-overlay-film img,
+.ar-overlay-film canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -592,6 +593,13 @@ body.yarn-trail-active {
   object-fit: contain;
   object-position: center center;
   background: transparent;
+}
+
+.ar-overlay-film video.ar-overlay-decode {
+  width: 16px;
+  height: 9px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .ar-chrome {
