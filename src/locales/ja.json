@@ -1323,6 +1323,8 @@
     "overlayShow": "オーバーレイを表示",
     "overlayHide": "オーバーレイを隠す",
     "overlayOpacity": "オーバーレイ {{percent}}%",
-    "overlayOff": "オフ"
+    "overlayOff": "オフ",
+    "trackKnitting": "棒針",
+    "trackCrochet": "かぎ針"
   }
 }

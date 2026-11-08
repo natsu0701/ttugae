@@ -1322,6 +1322,8 @@
     "overlayShow": "오버레이 켜기",
     "overlayHide": "오버레이 끄기",
     "overlayOpacity": "오버레이 {{percent}}%",
-    "overlayOff": "꺼짐"
+    "overlayOff": "꺼짐",
+    "trackKnitting": "대바늘",
+    "trackCrochet": "코바늘"
   }
 }

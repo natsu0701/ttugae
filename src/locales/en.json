@@ -1323,6 +1323,8 @@
     "overlayShow": "Show overlay",
     "overlayHide": "Hide overlay",
     "overlayOpacity": "Overlay {{percent}}%",
-    "overlayOff": "Off"
+    "overlayOff": "Off",
+    "trackKnitting": "Knitting needles",
+    "trackCrochet": "Crochet hook"
   }
 }

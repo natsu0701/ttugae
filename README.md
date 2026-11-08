@@ -7,7 +7,7 @@ React + Tailwind CSS + Framer Motion 랜딩·에디터 페이지입니다.
 
 아이패드 카메라 오버레이: [https://natsu0701.github.io/ttugae/ar](https://natsu0701.github.io/ttugae/ar)
 
-카메라에 겹칠 영상은 화면이 아니라 코드에서 넣습니다. 파일은 `public/overlays/`에 두고 `src/data/arPlaylist.ts` 배열에 제목과 경로를 추가하면 재생목록에 나타납니다.
+카메라에 겹칠 영상은 화면이 아니라 코드에서 넣습니다. 파일은 `public/overlays/`에 두고 `src/data/arPlaylist.ts` 배열에 제목과 경로를 추가하면 재생목록에 나타납니다. 배경이 투명한 VP9 WebM(알파)을 권장합니다.
 
 ## 로컬 실행
 
