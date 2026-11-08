@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { AR_PLAYLIST, formatClock, playlistVideoUrl } from "../../data/arPlaylist.ts";
+import {
+  AR_PLAYLIST,
+  canPlayWebmVp9,
+  formatClock,
+  playlistFallbackUrl,
+  playlistVideoUrl,
+} from "../../data/arPlaylist.ts";
 import { PUBLIC_AR_URL } from "../../utils/appPath.ts";
 import {
   CheckFillIcon,
@@ -159,9 +165,12 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [opacityScrubbing, setOpacityScrubbing] = useState(false);
   const chromeTimerRef = useRef<number | null>(null);
   const lastOpacityRef = useRef(100);
+  const [webmOk] = useState(() => canPlayWebmVp9());
 
   const activeItem = AR_PLAYLIST[activeIndex] ?? null;
   const hasOverlay = Boolean(activeItem);
+  const useImageFallback = Boolean(activeItem?.fallbackSrc) && !webmOk;
+  const fallbackUrl = activeItem ? playlistFallbackUrl(activeItem) : null;
   const isFullscreen = nativeFullscreen || cssFullscreen;
 
   const stopStream = useCallback(() => {
@@ -353,8 +362,17 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   }, []);
 
   useEffect(() => {
+    if (!activeItem) return;
+    if (useImageFallback) {
+      setPlayhead(0);
+      setDuration(3);
+      setOverlayPaused(false);
+      setOverlayError(null);
+      setDurations((prev) => (prev[activeItem.id] === 3 ? prev : { ...prev, [activeItem.id]: 3 }));
+      return;
+    }
     const overlay = overlayRef.current;
-    if (!overlay || !activeItem) return;
+    if (!overlay) return;
     prepareOverlayVideo(overlay);
     overlay.src = playlistVideoUrl(activeItem);
     setPlayhead(0);
@@ -364,7 +382,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       .play()
       .then(() => setOverlayPaused(false))
       .catch(() => setOverlayPaused(true));
-  }, [activeItem]);
+  }, [activeItem, useImageFallback]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -568,7 +586,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className={`block truncate text-sm ${current ? "font-semibold text-white" : "text-white/90"}`}>
-                    {item.title}
+                    {t(item.titleKey)}
                   </span>
                   {current ? (
                     <span className="block text-sm text-coral">{t("ar.playingNow")}</span>
@@ -611,17 +629,21 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         className={`ar-overlay-film ${hasOverlay ? "visible" : "invisible"}`}
         style={{ opacity: overlayAlpha }}
       >
-        <video
-          ref={overlayRef}
-          muted
-          loop
-          playsInline
-          autoPlay
-          disablePictureInPicture
-          controls={false}
-          aria-hidden={!overlayVisible}
-          aria-label={t("ar.overlayLabel")}
-        />
+        {useImageFallback && fallbackUrl ? (
+          <img src={fallbackUrl} alt={t("ar.overlayLabel")} aria-hidden={!overlayVisible} />
+        ) : (
+          <video
+            ref={overlayRef}
+            muted
+            loop
+            playsInline
+            autoPlay
+            disablePictureInPicture
+            controls={false}
+            aria-hidden={!overlayVisible}
+            aria-label={t("ar.overlayLabel")}
+          />
+        )}
       </div>
 
       {isFullscreen ? (
@@ -639,7 +661,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         <div className="min-w-0 flex-1">
           <p className="truncate font-sans text-base font-semibold text-white">{t("ar.title")}</p>
           <p className="truncate font-sans text-sm text-white/70">
-            {activeItem?.title ?? t("ar.subtitle")}
+            {activeItem ? t(activeItem.titleKey) : t("ar.subtitle")}
           </p>
         </div>
         <button
@@ -799,7 +821,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           >
             <span className="truncate font-sans text-sm font-semibold text-white">
               {t("ar.playlist")} · {AR_PLAYLIST.length}
-              {activeItem ? ` · ${activeItem.title}` : ""}
+              {activeItem ? ` · ${t(activeItem.titleKey)}` : ""}
             </span>
           </button>
           <button
