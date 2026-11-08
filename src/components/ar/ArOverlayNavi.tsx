@@ -180,10 +180,10 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [wideLayout, setWideLayout] = useState(isWideLayout);
   const [chromeVisible, setChromeVisible] = useState(true);
   const [overlayOn, setOverlayOn] = useState(true);
-  const [overlayOpacity, setOverlayOpacity] = useState(100);
+  const [overlayOpacity, setOverlayOpacity] = useState(50);
   const [opacityScrubbing, setOpacityScrubbing] = useState(false);
   const chromeTimerRef = useRef<number | null>(null);
-  const lastOpacityRef = useRef(100);
+  const lastOpacityRef = useRef(50);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [webmOk] = useState(() => canPlayWebmVp9Alpha());
 
@@ -669,7 +669,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         if (overlayOpacity > 0) lastOpacityRef.current = overlayOpacity;
         return false;
       }
-      if (overlayOpacity <= 0) setOverlayOpacity(lastOpacityRef.current || 100);
+      if (overlayOpacity <= 0) setOverlayOpacity(lastOpacityRef.current || 50);
       return true;
     });
   }, [overlayOpacity]);
