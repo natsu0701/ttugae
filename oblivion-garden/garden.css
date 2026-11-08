@@ -759,6 +759,10 @@ dialog::backdrop {
   color: rgba(36, 28, 22, 0.38);
 }
 
+#name-input::placeholder {
+  font-size: 12px;
+}
+
 .field input.is-invalid,
 .field textarea.is-invalid {
   border-bottom-color: #7a3030;
