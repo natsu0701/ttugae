@@ -7,7 +7,12 @@ export type ArPlaylistItem = {
   src: string;
   /** Safari 등 WebM 알파를 못 여는 브라우저용 투명 애니메이션. */
   fallbackSrc?: string;
+  /** 원본 클립 길이(초). 메타데이터가 오기 전 시크 바에 쓴다. */
+  duration?: number;
 };
+
+/** 대바늘/코바늘 원본 MOV 길이. */
+export const OVERLAY_CLIP_DURATION = 10.125;
 
 /**
  * 카메라 위에 겹칠 영상 재생목록.
@@ -20,12 +25,14 @@ export const AR_PLAYLIST: ArPlaylistItem[] = [
     titleKey: "ar.trackKnitting",
     src: "overlays/knitting-needles.webm",
     fallbackSrc: "overlays/knitting-needles.webp",
+    duration: OVERLAY_CLIP_DURATION,
   },
   {
     id: "crochet",
     titleKey: "ar.trackCrochet",
     src: "overlays/crochet-hook.webm",
     fallbackSrc: "overlays/crochet-hook.webp",
+    duration: OVERLAY_CLIP_DURATION,
   },
 ];
 
@@ -35,6 +42,10 @@ export function playlistVideoUrl(item: ArPlaylistItem): string {
 
 export function playlistFallbackUrl(item: ArPlaylistItem): string | null {
   return item.fallbackSrc ? assetUrl(item.fallbackSrc) : null;
+}
+
+export function playlistClipDuration(item: ArPlaylistItem): number {
+  return item.duration && item.duration > 0 ? item.duration : OVERLAY_CLIP_DURATION;
 }
 
 function isWebKitWithoutVp9Alpha(): boolean {

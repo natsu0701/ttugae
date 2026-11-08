@@ -1325,6 +1325,9 @@
     "overlayOpacity": "Overlay {{percent}}%",
     "overlayOff": "Off",
     "trackKnitting": "Knitting needles",
-    "trackCrochet": "Crochet hook"
+    "trackCrochet": "Crochet hook",
+    "repeatOnce": "Play once",
+    "repeatLoop": "Repeat",
+    "repeatNext": "Play next"
   }
 }

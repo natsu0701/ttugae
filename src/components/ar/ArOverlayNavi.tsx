@@ -4,6 +4,7 @@ import {
   AR_PLAYLIST,
   canPlayWebmVp9Alpha,
   formatClock,
+  playlistClipDuration,
   playlistFallbackUrl,
   playlistVideoUrl,
 } from "../../data/arPlaylist.ts";
@@ -18,6 +19,9 @@ import {
   PauseFillIcon,
   PlayFillIcon,
   PlaylistFillIcon,
+  RepeatLoopFillIcon,
+  RepeatNextFillIcon,
+  RepeatOnceFillIcon,
 } from "../icons/FillIcons.tsx";
 import BackButton from "../ui/BackButton.tsx";
 import { iconTip } from "../../utils/iconTip.ts";
@@ -31,6 +35,9 @@ type CameraStatus = "starting" | "live" | "blocked" | "missing" | "insecure" | "
 const PLAYBACK_RATES = [0.2, 0.5, 1, 1.5, 2] as const;
 type PlaybackRate = (typeof PLAYBACK_RATES)[number];
 
+const REPEAT_MODES = ["once", "loop", "next"] as const;
+type RepeatMode = (typeof REPEAT_MODES)[number];
+
 function formatPlaybackRate(rate: number): string {
   const matched = PLAYBACK_RATES.find((item) => Math.abs(item - rate) < 0.001) ?? rate;
   return `${matched}X`;
@@ -39,6 +46,10 @@ function formatPlaybackRate(rate: number): string {
 function nextPlaybackRate(rate: number): PlaybackRate {
   const index = PLAYBACK_RATES.findIndex((item) => Math.abs(item - rate) < 0.001);
   return PLAYBACK_RATES[(index < 0 ? 0 : index + 1) % PLAYBACK_RATES.length];
+}
+
+function nextRepeatMode(mode: RepeatMode): RepeatMode {
+  return REPEAT_MODES[(REPEAT_MODES.indexOf(mode) + 1) % REPEAT_MODES.length];
 }
 
 function isWideLayout(): boolean {
@@ -76,7 +87,7 @@ function prepareOverlayVideo(video: HTMLVideoElement) {
   video.setAttribute("webkit-playsinline", "true");
   video.muted = true;
   video.playsInline = true;
-  video.loop = true;
+  video.loop = false;
   video.autoplay = true;
 }
 
@@ -145,9 +156,17 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const overlayRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const seekingRef = useRef(false);
+  const endedHandledRef = useRef(false);
+  const imageClockRef = useRef({ origin: 0, startedAt: 0 });
+  const playheadRef = useRef(0);
+  const durationRef = useRef(0);
+  const repeatModeRef = useRef<RepeatMode>("loop");
+  const activeIndexRef = useRef(0);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [activeIndex, setActiveIndex] = useState(0);
   const [overlayPaused, setOverlayPaused] = useState(false);
+  const [repeatMode, setRepeatMode] = useState<RepeatMode>("loop");
+  const [imgEpoch, setImgEpoch] = useState(0);
   const [overlayError, setOverlayError] = useState<string | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
   const [playhead, setPlayhead] = useState(0);
@@ -161,10 +180,10 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [wideLayout, setWideLayout] = useState(isWideLayout);
   const [chromeVisible, setChromeVisible] = useState(true);
   const [overlayOn, setOverlayOn] = useState(true);
-  const [overlayOpacity, setOverlayOpacity] = useState(100);
+  const [overlayOpacity, setOverlayOpacity] = useState(50);
   const [opacityScrubbing, setOpacityScrubbing] = useState(false);
   const chromeTimerRef = useRef<number | null>(null);
-  const lastOpacityRef = useRef(100);
+  const lastOpacityRef = useRef(50);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [webmOk] = useState(() => canPlayWebmVp9Alpha());
 
@@ -173,6 +192,19 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const useImageFallback = Boolean(activeItem?.fallbackSrc) && !webmOk;
   const fallbackUrl = activeItem ? playlistFallbackUrl(activeItem) : null;
   const isFullscreen = nativeFullscreen || cssFullscreen;
+
+  useEffect(() => {
+    playheadRef.current = playhead;
+  }, [playhead]);
+  useEffect(() => {
+    durationRef.current = duration;
+  }, [duration]);
+  useEffect(() => {
+    repeatModeRef.current = repeatMode;
+  }, [repeatMode]);
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
 
   const stopStream = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -362,28 +394,76 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     };
   }, []);
 
-  useEffect(() => {
-    if (!activeItem) return;
-    if (useImageFallback) {
-      setPlayhead(0);
-      setDuration(10.125);
-      setOverlayPaused(false);
-      setOverlayError(null);
-      setDurations((prev) => (prev[activeItem.id] === 10.125 ? prev : { ...prev, [activeItem.id]: 10.125 }));
+  const restartClipClock = useCallback(() => {
+    imageClockRef.current.origin = 0;
+    imageClockRef.current.startedAt = performance.now();
+    playheadRef.current = 0;
+    setPlayhead(0);
+    setImgEpoch((n) => n + 1);
+  }, []);
+
+  const handleOverlayEnded = useCallback(() => {
+    if (endedHandledRef.current) return;
+    endedHandledRef.current = true;
+    const mode = repeatModeRef.current;
+    const video = overlayRef.current;
+
+    if (mode === "loop") {
+      if (video) {
+        video.currentTime = 0;
+        void video.play().then(() => setOverlayPaused(false)).catch(() => setOverlayPaused(true));
+      } else {
+        setOverlayPaused(false);
+      }
+      restartClipClock();
       return;
     }
+
+    if (mode === "next") {
+      const current = activeIndexRef.current;
+      const next = AR_PLAYLIST.length === 0 ? current : (current + 1) % AR_PLAYLIST.length;
+      if (next === current) {
+        restartClipClock();
+        if (video) {
+          video.currentTime = 0;
+          void video.play().then(() => setOverlayPaused(false)).catch(() => setOverlayPaused(true));
+        } else {
+          setOverlayPaused(false);
+        }
+        return;
+      }
+      setActiveIndex(next);
+      return;
+    }
+
+    const max = durationRef.current;
+    playheadRef.current = max;
+    imageClockRef.current.origin = max;
+    setPlayhead(max);
+    setOverlayPaused(true);
+    if (video) video.pause();
+  }, [restartClipClock]);
+
+  useEffect(() => {
+    if (!activeItem) return;
+    endedHandledRef.current = false;
+    const clipDuration = playlistClipDuration(activeItem);
+    restartClipClock();
+    setDuration(clipDuration);
+    setOverlayPaused(false);
+    setOverlayError(null);
+    setDurations((prev) => (prev[activeItem.id] === clipDuration ? prev : { ...prev, [activeItem.id]: clipDuration }));
+    if (useImageFallback) return;
     const overlay = overlayRef.current;
     if (!overlay) return;
     prepareOverlayVideo(overlay);
     overlay.src = playlistVideoUrl(activeItem);
-    setPlayhead(0);
-    setDuration(0);
-    setOverlayError(null);
+    overlay.loop = false;
     void overlay
       .play()
       .then(() => setOverlayPaused(false))
       .catch(() => setOverlayPaused(true));
-  }, [activeItem, useImageFallback]);
+  }, [activeItem, restartClipClock, useImageFallback]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -396,11 +476,13 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
 
     const sync = () => {
       const nextDuration = Number.isFinite(video.duration) ? video.duration : 0;
-      setDuration(nextDuration);
-      if (activeItem && nextDuration > 0) {
-        setDurations((prev) =>
-          prev[activeItem.id] === nextDuration ? prev : { ...prev, [activeItem.id]: nextDuration },
-        );
+      if (nextDuration > 0) {
+        setDuration(nextDuration);
+        if (activeItem) {
+          setDurations((prev) =>
+            prev[activeItem.id] === nextDuration ? prev : { ...prev, [activeItem.id]: nextDuration },
+          );
+        }
       }
       if (!seekingRef.current) {
         setPlayhead(Number.isFinite(video.currentTime) ? video.currentTime : 0);
@@ -412,13 +494,17 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       sync();
     };
 
+    const onEnded = () => handleOverlayEnded();
+
     video.addEventListener("timeupdate", sync);
     video.addEventListener("loadedmetadata", applyRate);
     video.addEventListener("durationchange", applyRate);
     video.addEventListener("ratechange", sync);
     video.addEventListener("seeked", sync);
+    video.addEventListener("ended", onEnded);
     video.addEventListener("error", onError);
     video.playbackRate = playbackRate;
+    video.loop = false;
     sync();
     return () => {
       video.removeEventListener("timeupdate", sync);
@@ -426,9 +512,37 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       video.removeEventListener("durationchange", applyRate);
       video.removeEventListener("ratechange", sync);
       video.removeEventListener("seeked", sync);
+      video.removeEventListener("ended", onEnded);
       video.removeEventListener("error", onError);
     };
-  }, [activeItem, hasOverlay, playbackRate, t]);
+  }, [activeItem, handleOverlayEnded, hasOverlay, playbackRate, t]);
+
+  useEffect(() => {
+    if (!useImageFallback || overlayPaused) return;
+    imageClockRef.current.origin = playheadRef.current;
+    imageClockRef.current.startedAt = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      if (seekingRef.current) {
+        raf = window.requestAnimationFrame(tick);
+        return;
+      }
+      const { origin, startedAt } = imageClockRef.current;
+      const elapsed = ((now - startedAt) / 1000) * playbackRate;
+      const next = origin + elapsed;
+      const max = durationRef.current;
+      if (max > 0 && next < max - 0.2) endedHandledRef.current = false;
+      if (max > 0 && next >= max) {
+        handleOverlayEnded();
+        return;
+      }
+      playheadRef.current = next;
+      setPlayhead(next);
+      raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
+  }, [handleOverlayEnded, overlayPaused, playbackRate, useImageFallback, activeItem, imgEpoch]);
 
   useEffect(() => {
     if (useImageFallback) return;
@@ -438,6 +552,12 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
     let frame = 0;
+    const publishPlayhead = (time: number) => {
+      if (seekingRef.current || !Number.isFinite(time)) return;
+      if (Math.abs(time - playheadRef.current) < 0.04) return;
+      playheadRef.current = time;
+      setPlayhead(time);
+    };
     const draw = () => {
       const width = video.videoWidth;
       const height = video.videoHeight;
@@ -449,21 +569,37 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         ctx.clearRect(0, 0, width, height);
         ctx.drawImage(video, 0, 0, width, height);
       }
+      const time = video.currentTime;
+      const max = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : durationRef.current;
+      if (max > 0 && time < max - 0.2) endedHandledRef.current = false;
+      if (!video.paused && max > 0 && (video.ended || time >= max - 0.04)) {
+        handleOverlayEnded();
+      } else {
+        publishPlayhead(time);
+      }
       frame = window.requestAnimationFrame(draw);
     };
     frame = window.requestAnimationFrame(draw);
     return () => window.cancelAnimationFrame(frame);
-  }, [activeItem, useImageFallback]);
+  }, [activeItem, handleOverlayEnded, useImageFallback]);
 
   const seekTo = useCallback(
     (next: number) => {
-      const video = overlayRef.current;
       const max = Number.isFinite(duration) && duration > 0 ? duration : 0;
       const clamped = Math.min(Math.max(next, 0), max);
+      endedHandledRef.current = clamped >= max - 0.04;
+      playheadRef.current = clamped;
+      imageClockRef.current.origin = clamped;
+      imageClockRef.current.startedAt = performance.now();
       setPlayhead(clamped);
+      if (useImageFallback) {
+        if (clamped <= 0.05) setImgEpoch((n) => n + 1);
+        return;
+      }
+      const video = overlayRef.current;
       if (video && Number.isFinite(clamped)) video.currentTime = clamped;
     },
-    [duration],
+    [duration, useImageFallback],
   );
 
   const onSeekInput = (event: ChangeEvent<HTMLInputElement>) => {
@@ -475,17 +611,44 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const onSeekEnd = () => {
     seekingRef.current = false;
     setScrubbing(false);
+    if (useImageFallback) {
+      imageClockRef.current.origin = playheadRef.current;
+      imageClockRef.current.startedAt = performance.now();
+      return;
+    }
     const video = overlayRef.current;
-    if (video && Number.isFinite(video.currentTime)) setPlayhead(video.currentTime);
+    if (video && Number.isFinite(video.currentTime)) {
+      playheadRef.current = video.currentTime;
+      setPlayhead(video.currentTime);
+    }
   };
 
   const progressPct = duration > 0 ? Math.min(100, (playhead / duration) * 100) : 0;
 
   const toggleOverlayPlayback = useCallback(async () => {
+    if (!hasOverlay) return;
+    const nearEnd = durationRef.current > 0 && playheadRef.current >= durationRef.current - 0.05;
+
+    if (useImageFallback) {
+      if (overlayPaused) {
+        if (nearEnd) restartClipClock();
+        else {
+          imageClockRef.current.origin = playheadRef.current;
+          imageClockRef.current.startedAt = performance.now();
+        }
+        setOverlayPaused(false);
+        return;
+      }
+      imageClockRef.current.origin = playheadRef.current;
+      setOverlayPaused(true);
+      return;
+    }
+
     const overlay = overlayRef.current;
-    if (!overlay || !hasOverlay) return;
+    if (!overlay) return;
     if (overlay.paused) {
       try {
+        if (overlay.ended || nearEnd) overlay.currentTime = 0;
         await overlay.play();
         setOverlayPaused(false);
       } catch {
@@ -495,7 +658,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     }
     overlay.pause();
     setOverlayPaused(true);
-  }, [hasOverlay]);
+  }, [hasOverlay, overlayPaused, restartClipClock, useImageFallback]);
 
   const overlayVisible = hasOverlay && overlayOn && overlayOpacity > 0;
   const overlayAlpha = overlayVisible ? overlayOpacity / 100 : 0;
@@ -506,7 +669,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         if (overlayOpacity > 0) lastOpacityRef.current = overlayOpacity;
         return false;
       }
-      if (overlayOpacity <= 0) setOverlayOpacity(lastOpacityRef.current || 100);
+      if (overlayOpacity <= 0) setOverlayOpacity(lastOpacityRef.current || 50);
       return true;
     });
   }, [overlayOpacity]);
@@ -533,8 +696,14 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       const next = nextPlaybackRate(current);
       const overlay = overlayRef.current;
       if (overlay) overlay.playbackRate = next;
+      imageClockRef.current.origin = playheadRef.current;
+      imageClockRef.current.startedAt = performance.now();
       return next;
     });
+  }, []);
+
+  const cycleRepeatMode = useCallback(() => {
+    setRepeatMode((current) => nextRepeatMode(current));
   }, []);
 
   const toggleFullscreen = useCallback(() => {
@@ -656,14 +825,18 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         style={{ opacity: overlayAlpha }}
       >
         {useImageFallback && fallbackUrl ? (
-          <img src={fallbackUrl} alt={t("ar.overlayLabel")} aria-hidden={!overlayVisible} />
+          <img
+            key={`${activeItem?.id ?? "overlay"}-${imgEpoch}`}
+            src={fallbackUrl}
+            alt={t("ar.overlayLabel")}
+            aria-hidden={!overlayVisible}
+          />
         ) : (
           <>
             <video
               ref={overlayRef}
               className="ar-overlay-decode"
               muted
-              loop
               playsInline
               autoPlay
               disablePictureInPicture
@@ -685,7 +858,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         />
       ) : null}
 
-      <header className={`ar-chrome pointer-events-auto absolute inset-x-0 top-0 z-10 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 pb-5 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-4 sm:pb-6 ${chromeVisible ? "" : "ar-chrome-hidden"} ${wideLayout && playlistOpen ? "lg:pr-[min(22rem,34vw)]" : ""}`}>
+      <header className={`ar-chrome pointer-events-auto absolute inset-x-0 top-0 z-10 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 pb-5 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-4 sm:pb-6 ${chromeVisible ? "" : "ar-chrome-hidden"}`}>
         <BackButton onClick={onExit} tone="dark" className="!h-11 !w-11 text-white hover:bg-white/10" />
         <div className="min-w-0 flex-1">
           <p className="truncate font-sans text-base font-semibold text-white">{t("ar.title")}</p>
@@ -715,7 +888,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       ) : null}
 
       {cameraStatus !== "live" ? (
-        <div className={`ar-chrome pointer-events-auto absolute inset-x-0 top-24 z-10 mx-auto max-w-md px-6 text-center ${chromeVisible ? "" : "ar-chrome-hidden"} ${wideLayout && playlistOpen ? "lg:mr-[min(22rem,34vw)]" : ""}`}>
+        <div className={`ar-chrome pointer-events-auto absolute inset-x-0 top-24 z-10 mx-auto max-w-md px-6 text-center ${chromeVisible ? "" : "ar-chrome-hidden"}`}>
           <p className="font-sans text-base text-white/90">{cameraMessage}</p>
           {cameraStatus !== "starting" ? (
             <button
@@ -729,13 +902,13 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         </div>
       ) : null}
 
-      {wideLayout && playlistOpen ? (
-        <aside className={`ar-chrome pointer-events-auto absolute bottom-[8.25rem] right-3 top-[4.75rem] z-10 hidden w-[min(20rem,32vw)] overflow-hidden rounded-xl border border-white/10 bg-black/65 backdrop-blur-sm lg:block ${chromeVisible ? "" : "ar-chrome-hidden"}`}>
+      {playlistOpen ? (
+        <aside className={`ar-chrome ar-playlist-panel ${chromeVisible ? "" : "ar-chrome-hidden"}`}>
           {playlistList}
         </aside>
       ) : null}
 
-      <div className={`ar-chrome pointer-events-auto absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 via-black/55 to-transparent px-3 pb-[max(1.1rem,env(safe-area-inset-bottom))] pt-8 sm:px-4 ${chromeVisible ? "" : "ar-chrome-hidden"} ${wideLayout && playlistOpen ? "lg:pr-[min(22rem,34vw)]" : ""}`}>
+      <div className={`ar-chrome pointer-events-auto absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 via-black/55 to-transparent px-3 pb-[max(1.1rem,env(safe-area-inset-bottom))] pt-8 sm:px-4 ${chromeVisible ? "" : "ar-chrome-hidden"}`}>
         {overlayError ? (
           <p className="mb-3 font-sans text-sm text-coral">{overlayError}</p>
         ) : null}
@@ -830,7 +1003,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           {hasOverlay ? (
             <p className="shrink-0 font-sans text-sm tabular-nums text-white" aria-live="off">
               {formatClock(playhead)}
-              <span className="hidden text-white/55 sm:inline"> / {formatClock(duration)}</span>
+              <span className="text-white/55"> / {formatClock(duration)}</span>
             </p>
           ) : null}
           <button
@@ -856,11 +1029,34 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           <button
             type="button"
             onClick={() => setPlaylistOpen((open) => !open)}
-            className={`${CONTROL_BTN} ml-auto rounded-full bg-white/15 text-white hover:bg-white hover:text-gray-900 sm:hidden`}
+            className={`${CONTROL_BTN} rounded-full bg-white/15 text-white hover:bg-white hover:text-gray-900 sm:hidden`}
             aria-expanded={playlistOpen}
             {...iconTip(t("ar.playlist"))}
           >
             <PlaylistFillIcon className="h-6 w-6" />
+          </button>
+          <button
+            type="button"
+            onClick={cycleRepeatMode}
+            disabled={!hasOverlay}
+            className={`${CONTROL_BTN} ml-auto rounded-full hover:bg-white hover:text-gray-900 disabled:opacity-40 ${
+              repeatMode === "once" ? "bg-white/15 text-white" : "bg-white text-gray-900"
+            }`}
+            {...iconTip(
+              repeatMode === "once"
+                ? t("ar.repeatOnce")
+                : repeatMode === "loop"
+                  ? t("ar.repeatLoop")
+                  : t("ar.repeatNext"),
+            )}
+          >
+            {repeatMode === "once" ? (
+              <RepeatOnceFillIcon className="h-6 w-6" />
+            ) : repeatMode === "loop" ? (
+              <RepeatLoopFillIcon className="h-6 w-6" />
+            ) : (
+              <RepeatNextFillIcon className="h-6 w-6" />
+            )}
           </button>
           <button
             type="button"
@@ -874,12 +1070,6 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
             {isFullscreen ? <CollapseFillIcon className="h-6 w-6" /> : <ExpandFillIcon className="h-6 w-6" />}
           </button>
         </div>
-
-        {!wideLayout && playlistOpen ? (
-          <div className="mt-3 max-h-[min(40vh,16rem)] overflow-hidden rounded-xl bg-black/55 lg:hidden">
-            {playlistList}
-          </div>
-        ) : null}
       </div>
     </div>
   );

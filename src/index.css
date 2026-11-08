@@ -591,15 +591,36 @@ body.yarn-trail-active {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: center center;
+  object-position: center bottom;
   background: transparent;
 }
 
 .ar-overlay-film video.ar-overlay-decode {
-  width: 16px;
-  height: 9px;
   opacity: 0;
   pointer-events: none;
+}
+
+.ar-playlist-panel {
+  position: absolute;
+  z-index: 9;
+  left: 0.75rem;
+  right: 0.75rem;
+  top: calc(4.1rem + max(0.75rem, env(safe-area-inset-top, 0px)));
+  bottom: calc(10.75rem + max(1.1rem, env(safe-area-inset-bottom, 0px)));
+  overflow: hidden;
+  pointer-events: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+}
+
+@media (min-width: 1024px) {
+  .ar-playlist-panel {
+    left: auto;
+    width: min(20rem, 32vw);
+    right: 0.75rem;
+  }
 }
 
 .ar-chrome {
