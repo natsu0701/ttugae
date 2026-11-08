@@ -1325,6 +1325,9 @@
     "overlayOpacity": "オーバーレイ {{percent}}%",
     "overlayOff": "オフ",
     "trackKnitting": "棒針",
-    "trackCrochet": "かぎ針"
+    "trackCrochet": "かぎ針",
+    "repeatOnce": "1回のみ再生",
+    "repeatLoop": "繰り返し再生",
+    "repeatNext": "次の再生リストへ"
   }
 }
