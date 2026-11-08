@@ -771,13 +771,6 @@ dialog::backdrop {
   color: #6e2e2e;
 }
 
-.form-foot {
-  margin: 4px 0 12px;
-  font-size: 12px;
-  line-height: 1.65;
-  opacity: 0.58;
-}
-
 .acts {
   display: flex;
   align-items: center;

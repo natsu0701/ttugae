@@ -80,20 +80,19 @@
 
     <dialog class="paper" id="paper" aria-labelledby="paper-title">
       <form class="sheet-form" id="leave-form">
-        <h2 id="paper-title">걸 말</h2>
+        <h2 id="paper-title">방명록</h2>
         <label class="field">
           <span>이름</span>
-          <input id="name-input" name="name" type="text" maxlength="10" autocomplete="nickname" spellcheck="false" placeholder="무명도 괜찮다" />
+          <input id="name-input" name="name" type="text" maxlength="10" autocomplete="nickname" spellcheck="false" placeholder="익명도 괜찮습니다." />
         </label>
         <label class="field">
-          <span>한 줄 <em class="count" id="count">60</em></span>
-          <textarea id="text-input" name="text" maxlength="60" rows="3" spellcheck="false" placeholder="오래 남지 않을 말"></textarea>
+          <span>전하고 싶은 말 <em class="count" id="count">60</em></span>
+          <textarea id="text-input" name="text" maxlength="60" rows="3" spellcheck="false"></textarea>
         </label>
         <p class="form-error" id="form-error" hidden>비어 있는 말은 걸 수 없다.</p>
-        <p class="form-foot" id="form-foot">이 기기에 남아, 시간이 지나면 실이 길어진다.</p>
         <div class="acts">
-          <button class="act" type="submit">걸어 두기</button>
-          <button class="act act-quiet" id="paper-cancel" type="button">접다</button>
+          <button class="act act-quiet" id="paper-cancel" type="button">취소</button>
+          <button class="act" type="submit">올리기</button>
         </div>
       </form>
     </dialog>

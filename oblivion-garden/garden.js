@@ -28,7 +28,6 @@
   const nameInput = $("name-input");
   const textInput = $("text-input");
   const formError = $("form-error");
-  const formFoot = $("form-foot");
   const colophon = $("colophon");
   const countEl = $("count");
   const live = $("live");
@@ -86,13 +85,7 @@
   }
 
   function applyCopy() {
-    if (savedOnServer) {
-      colophon.textContent = "남긴 말은 정원에 남는다.";
-      formFoot.textContent = "정원에 남아, 시간이 지나면 실이 길어진다.";
-    } else {
-      colophon.textContent = "남긴 말은 이 기기에 머문다.";
-      formFoot.textContent = "이 기기에 남아, 시간이 지나면 실이 길어진다.";
-    }
+    colophon.textContent = savedOnServer ? "남긴 말은 정원에 남는다." : "남긴 말은 이 기기에 머문다.";
   }
 
   async function fetchEntries() {
