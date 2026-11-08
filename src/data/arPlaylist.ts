@@ -11,8 +11,8 @@ export type ArPlaylistItem = {
 
 /**
  * 카메라 위에 겹칠 영상 재생목록.
- * 파일은 `public/overlays/`에 넣고, 이 배열에 항목을 추가하면 화면에 나타납니다.
- * 알파가 있는 VP9 WebM(1920×1080). 오버레이는 object-contain으로 화면 안에 맞춥니다.
+ * 원본은 알파 QuickTime(`대바늘(1).mov`, `코바늘(1).mov`)이고,
+ * 웹용으로 VP9 WebM(알파)과 Safari용 WebP를 `public/overlays/`에 둔다.
  */
 export const AR_PLAYLIST: ArPlaylistItem[] = [
   {
