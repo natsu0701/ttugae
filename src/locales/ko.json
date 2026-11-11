@@ -1312,6 +1312,7 @@
     "seek": "재생 위치",
     "time": "시간",
     "playlist": "재생목록",
+    "playlistCollapse": "재생목록 접기",
     "playlistEmpty": "재생목록이 비어 있어요. src/data/arPlaylist.ts 에 영상을 넣어 주세요.",
     "nowPlaying": "{{n}} · {{title}}",
     "playingNow": "재생 중",
@@ -1324,6 +1325,9 @@
     "overlayOpacity": "오버레이 {{percent}}%",
     "overlayOff": "꺼짐",
     "trackKnitting": "대바늘",
-    "trackCrochet": "코바늘"
+    "trackCrochet": "코바늘",
+    "repeatOnce": "한 번만 재생",
+    "repeatLoop": "반복 재생",
+    "repeatNext": "다음 재생목록으로"
   }
 }

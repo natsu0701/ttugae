@@ -1313,6 +1313,7 @@
     "seek": "再生位置",
     "time": "時間",
     "playlist": "再生リスト",
+    "playlistCollapse": "再生リストを閉じる",
     "playlistEmpty": "再生リストが空です。src/data/arPlaylist.ts に動画を追加してください。",
     "nowPlaying": "{{n}} · {{title}}",
     "playingNow": "再生中",
@@ -1325,6 +1326,9 @@
     "overlayOpacity": "オーバーレイ {{percent}}%",
     "overlayOff": "オフ",
     "trackKnitting": "棒針",
-    "trackCrochet": "かぎ針"
+    "trackCrochet": "かぎ針",
+    "repeatOnce": "1回のみ再生",
+    "repeatLoop": "繰り返し再生",
+    "repeatNext": "次の再生リストへ"
   }
 }

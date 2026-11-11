@@ -611,6 +611,39 @@ export function PauseFillIcon({ className = "h-5 w-5" }: IconProps) {
   );
 }
 
+export function RepeatOnceFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path fill="currentColor" d="M3.8 5.4c0-.8.9-1.3 1.6-.9l8.6 5.6a1 1 0 010 1.8l-8.6 5.6a1 1 0 01-1.6-.9V5.4z" />
+      <path
+        fill="currentColor"
+        d="M18.2 6.2c-2 0-3.4 1.3-3.4 3.2 0 1.4.8 2.3 2.2 2.8l1.6.5c.7.2 1 .6 1 1.2 0 .8-.7 1.3-1.6 1.3-.9 0-1.6-.4-2-.9l-1.5 1.2c.7.9 1.9 1.5 3.5 1.5 2.1 0 3.6-1.2 3.6-3.2 0-1.5-.8-2.4-2.3-2.9l-1.6-.5c-.6-.2-.9-.6-.9-1.1 0-.7.6-1.2 1.4-1.2.8 0 1.3.4 1.6.8l1.4-1.2c-.6-.8-1.7-1.5-3-1.5z"
+      />
+    </svg>
+  );
+}
+
+export function RepeatLoopFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M17.2 3.1l3.9 3.6-3.9 3.6V8.1H8.3A2.7 2.7 0 005.6 10.8v1.7H3.4v-1.7A4.9 4.9 0 018.3 5.9h8.9V3.1zm-10.4 17.8l-3.9-3.6 3.9-3.6v2.2h8.9a2.7 2.7 0 002.7-2.7V13h2.2v1.7a4.9 4.9 0 01-4.9 4.9H6.8v2.2z"
+      />
+    </svg>
+  );
+}
+
+export function RepeatNextFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path fill="currentColor" d="M3.4 6.2l7.1 5.8-7.1 5.8V6.2z" />
+      <path fill="currentColor" d="M11.6 6.2l7.1 5.8-7.1 5.8V6.2z" />
+      <rect x="19.4" y="6" width="2.2" height="12" rx="1.1" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function EyeFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>

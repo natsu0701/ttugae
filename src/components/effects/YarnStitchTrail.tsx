@@ -10,21 +10,15 @@ type Point = {
   time: number;
 };
 
-const MAX_POINTS = 24;
-const POINT_LIFETIME = 600;
-const RECORD_THROTTLE_MS = 24;
-const BASE_COLOR = "#FC5F53";
-const HALO_COLOR = "#FF8A9B";
-const MAX_OPACITY = 0.45;
-const POINTER_QUERY = "(hover: hover), (any-hover: hover), (pointer: fine), (any-pointer: fine)";
+const MAX_POINTS = 36;
+const POINT_LIFETIME = 900;
+const RECORD_THROTTLE_MS = 16;
+const YARN_BODY = "#FC5F53";
+const YARN_EDGE = "#C4453C";
+const YARN_HIGHLIGHT = "#FFE6D8";
 
-export const CURSOR_HOTSPOT = { x: 21, y: 5 } as const;
-
-function canDrawYarnTrail(): boolean {
-  if (typeof window === "undefined") return false;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
-  return window.matchMedia(POINTER_QUERY).matches;
-}
+/** 커스텀 커서 핫스팟 = 바늘 끝(궤적 시작점) */
+export const CURSOR_HOTSPOT = { x: 28, y: 8 } as const;
 
 function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -36,24 +30,39 @@ function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
   for (let index = 1; index < points.length; index += 1) {
     const point = points[index];
     const prevPoint = points[index - 1];
-    const ratio = index / points.length;
-    const opacity = Math.max(0, ratio * MAX_OPACITY);
-    const strokeWidth = 1.2 + ratio * 4.0;
+    const ratio = index / (points.length - 1);
+    const opacity = 0.35 + ratio * 0.6;
+    const strokeWidth = 3.2 + ratio * 7.5;
+    const midX = (prevPoint.x + point.x) / 2;
+    const midY = (prevPoint.y + point.y) / 2;
+    const dx = point.x - prevPoint.x;
+    const dy = point.y - prevPoint.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = (-dy / len) * (1.1 + ratio * 1.4);
+    const ny = (dx / len) * (1.1 + ratio * 1.4);
 
-    ctx.strokeStyle = HALO_COLOR;
-    ctx.globalAlpha = opacity * 0.4;
-    ctx.lineWidth = strokeWidth * 1.4;
+    ctx.strokeStyle = YARN_EDGE;
+    ctx.globalAlpha = opacity;
+    ctx.lineWidth = strokeWidth + 2.4;
     ctx.beginPath();
     ctx.moveTo(prevPoint.x, prevPoint.y);
-    ctx.lineTo(point.x, point.y);
+    ctx.quadraticCurveTo(midX, midY, point.x, point.y);
     ctx.stroke();
 
-    ctx.strokeStyle = BASE_COLOR;
+    ctx.strokeStyle = YARN_BODY;
     ctx.globalAlpha = opacity;
     ctx.lineWidth = strokeWidth;
     ctx.beginPath();
     ctx.moveTo(prevPoint.x, prevPoint.y);
-    ctx.lineTo(point.x, point.y);
+    ctx.quadraticCurveTo(midX, midY, point.x, point.y);
+    ctx.stroke();
+
+    ctx.strokeStyle = YARN_HIGHLIGHT;
+    ctx.globalAlpha = opacity * 0.55;
+    ctx.lineWidth = Math.max(1.4, strokeWidth * 0.28);
+    ctx.beginPath();
+    ctx.moveTo(prevPoint.x + nx, prevPoint.y + ny);
+    ctx.quadraticCurveTo(midX + nx, midY + ny, point.x + nx, point.y + ny);
     ctx.stroke();
   }
 
@@ -65,7 +74,6 @@ type YarnStitchTrailProps = {
 };
 
 function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
-  const [pointerOk, setPointerOk] = useState(canDrawYarnTrail);
   const [prefEnabled, setPrefEnabled] = useState(loadYarnTrailEnabled);
 
   const pointsRef = useRef<Point[]>([]);
@@ -76,23 +84,9 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
   const lastRecordRef = useRef(0);
   const lastSizeRef = useRef({ w: 0, h: 0 });
   const drawingRef = useRef(false);
-  const inactive = disabled || !prefEnabled || !pointerOk;
+  const inactive = disabled || !prefEnabled;
 
   useEffect(() => subscribeYarnTrail(setPrefEnabled), []);
-
-  useEffect(() => {
-    const media = window.matchMedia(POINTER_QUERY);
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setPointerOk(canDrawYarnTrail());
-    media.addEventListener("change", sync);
-    reduced.addEventListener("change", sync);
-    window.addEventListener("pointermove", sync, { once: true, passive: true });
-    sync();
-    return () => {
-      media.removeEventListener("change", sync);
-      reduced.removeEventListener("change", sync);
-    };
-  }, []);
 
   useEffect(() => {
     if (inactive) {
@@ -153,7 +147,7 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       rafIdRef.current = requestAnimationFrame(updateTrail);
     };
 
-    const handleMouseMove = (e: PointerEvent | MouseEvent) => {
+    const handleMove = (e: PointerEvent | MouseEvent) => {
       if ("pointerType" in e && e.pointerType === "touch") return;
       if (cursorRef.current) {
         cursorRef.current.style.transform = `translate3d(${e.clientX - CURSOR_HOTSPOT.x}px, ${e.clientY - CURSOR_HOTSPOT.y}px, 0)`;
@@ -163,28 +157,29 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       if (now - lastRecordRef.current < RECORD_THROTTLE_MS) return;
       lastRecordRef.current = now;
 
-      pointsRef.current = [
-        ...pointsRef.current,
-        { x: e.clientX, y: e.clientY, time: now },
-      ].slice(-MAX_POINTS);
+      pointsRef.current = [...pointsRef.current, { x: e.clientX, y: e.clientY, time: now }].slice(
+        -MAX_POINTS,
+      );
       startLoop();
     };
 
-    const handleMouseLeave = () => {
+    const handleLeave = () => {
       pointsRef.current = [];
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       stopLoop();
     };
 
     syncSize();
-    window.addEventListener("pointermove", handleMouseMove, { passive: true });
+    window.addEventListener("pointermove", handleMove, { passive: true });
+    window.addEventListener("mousemove", handleMove, { passive: true });
     window.addEventListener("resize", syncSize);
-    document.documentElement.addEventListener("mouseleave", handleMouseLeave);
+    document.documentElement.addEventListener("mouseleave", handleLeave);
 
     return () => {
-      window.removeEventListener("pointermove", handleMouseMove);
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("resize", syncSize);
-      document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
+      document.documentElement.removeEventListener("mouseleave", handleLeave);
       stopLoop();
       document.body.classList.remove("yarn-trail-active");
       pointsRef.current = [];
@@ -197,27 +192,30 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-[9998] h-[100dvh] w-screen overflow-hidden yarn-trail-layer"
+      className="yarn-trail-layer pointer-events-none fixed inset-0 z-[9998] h-[100dvh] w-screen overflow-hidden"
       aria-hidden
     >
-      <canvas
-        ref={canvasRef}
-        className="yarn-trail-svg pointer-events-none h-full w-full"
-        style={{ mixBlendMode: "normal" }}
-        aria-hidden
-      />
+      <canvas ref={canvasRef} className="yarn-trail-svg pointer-events-none h-full w-full" aria-hidden />
 
       <div
         ref={cursorRef}
         className="yarn-cursor pointer-events-none fixed left-0 top-0 z-[9999] transform-gpu will-change-transform"
         aria-hidden
       >
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <circle cx="7" cy="22" r="5.5" fill="#FC5F53" />
-          <circle cx="7" cy="22" r="3.5" fill="#FFB3B3" opacity="0.65" />
-          <path d="M10 19 L21 5" stroke="#FC5F53" strokeWidth="2.5" strokeLinecap="round" />
-          <circle cx="21" cy="5" r="2" fill="#FFB3B3" />
-          <path d="M20 4 L23 2" stroke="#E8E8E8" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <circle cx="12" cy="28" r="9" fill={YARN_EDGE} />
+          <circle cx="12" cy="28" r="7.4" fill={YARN_BODY} />
+          <path
+            d="M7.2 25.2c2.4-1.6 6.6-1.4 8.6.6M6.8 28.6c2.8.2 6.2-.2 8.2-1.8M8.4 31.6c2.2 1.2 5.8 1 8 -0.6"
+            stroke={YARN_HIGHLIGHT}
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            opacity="0.85"
+          />
+          <path d="M16.6 22.4 L30.5 6.2" stroke={YARN_EDGE} strokeWidth="3.4" strokeLinecap="round" />
+          <path d="M16.6 22.4 L30.5 6.2" stroke={YARN_BODY} strokeWidth="2.2" strokeLinecap="round" />
+          <circle cx="30.5" cy="6.2" r="2.4" fill={YARN_HIGHLIGHT} />
+          <path d="M29.4 5.2 L33.2 2.4" stroke="#F7F5F0" strokeWidth="1.4" strokeLinecap="round" />
         </svg>
       </div>
     </div>
