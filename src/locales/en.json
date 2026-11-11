@@ -502,6 +502,12 @@
     "needleShort": "Needles",
     "yarnShort": "Yarn",
     "yarnUnset": "Not set",
+    "headerNeedlePlaceholder": "Pick a needle or type your own",
+    "headerYarnPlaceholder": "Pick a yarn or type your own",
+    "headerNeedleAria": "Change needle",
+    "headerYarnAria": "Change yarn",
+    "headerSpecPick": "Choose from list",
+    "headerSpecEmpty": "No matches. Type your own above.",
     "stitches": {
       "empty": "No stitch",
       "knit": "Knit",

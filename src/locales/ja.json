@@ -502,6 +502,12 @@
     "needleShort": "針",
     "yarnShort": "糸",
     "yarnUnset": "未設定",
+    "headerNeedlePlaceholder": "針を選ぶか、直接入力してください",
+    "headerYarnPlaceholder": "糸を選ぶか、直接入力してください",
+    "headerNeedleAria": "針を変更",
+    "headerYarnAria": "糸を変更",
+    "headerSpecPick": "リストから選ぶ",
+    "headerSpecEmpty": "一致する項目がありません。上に直接入力してください。",
     "stitches": {
       "empty": "目なし",
       "knit": "表目",
