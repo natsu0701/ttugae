@@ -41,7 +41,7 @@ function KnitProgressPanel({
         {enabled ? t("editor.progress.on") : t("editor.progress.start")}
       </button>
       {enabled ? (
-        <div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+        <div className="space-y-3 rounded-xl border border-stone-200 bg-white p-3">
           <p className="text-center font-sans text-sm font-semibold text-stone-800">
             {t("editor.progress.current")}{" "}
             <span className="text-coral">
