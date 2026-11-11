@@ -174,6 +174,68 @@ function drawCoverBottom(
   ctx.drawImage(source, 0, 0, srcW, srcH, dx, dy, drawW, drawH);
 }
 
+function readDeviceAngle(): 0 | 90 | 180 | 270 {
+  const so = window.screen?.orientation;
+  if (so && Number.isFinite(so.angle)) {
+    const angle = ((Math.round(so.angle / 90) * 90) % 360 + 360) % 360;
+    if (angle === 90 || angle === 180 || angle === 270) return angle;
+    return 0;
+  }
+  const legacy = (window as Window & { orientation?: number }).orientation;
+  if (legacy === 90) return 90;
+  if (legacy === -90) return 270;
+  if (legacy === 180 || legacy === -180) return 180;
+  return 0;
+}
+
+function unlockScreenOrientation() {
+  try {
+    window.screen?.orientation?.unlock?.();
+  } catch {
+    // iOS Safari throws when orientation lock is unavailable.
+  }
+}
+
+function layoutArStage(root: HTMLDivElement) {
+  const vv = window.visualViewport;
+  const vw = Math.max(1, vv?.width ?? window.innerWidth);
+  const vh = Math.max(1, vv?.height ?? window.innerHeight);
+  const offsetTop = vv?.offsetTop ?? 0;
+  const offsetLeft = vv?.offsetLeft ?? 0;
+  const angle = readDeviceAngle();
+  const pageLandscape = vw >= vh;
+  const deviceLandscape = angle === 90 || angle === 270;
+
+  root.style.right = "auto";
+  root.style.bottom = "auto";
+  root.style.transformOrigin = "center center";
+
+  if (deviceLandscape && !pageLandscape) {
+    const rotate = angle === 270 ? -90 : 90;
+    root.style.width = `${vh}px`;
+    root.style.height = `${vw}px`;
+    root.style.left = `${offsetLeft + (vw - vh) / 2}px`;
+    root.style.top = `${offsetTop + (vh - vw) / 2}px`;
+    root.style.transform = `rotate(${rotate}deg)`;
+    return;
+  }
+
+  if (angle === 180 && !pageLandscape) {
+    root.style.width = `${vw}px`;
+    root.style.height = `${vh}px`;
+    root.style.left = `${offsetLeft}px`;
+    root.style.top = `${offsetTop}px`;
+    root.style.transform = "rotate(180deg)";
+    return;
+  }
+
+  root.style.width = `${vw}px`;
+  root.style.height = `${vh}px`;
+  root.style.left = `${offsetLeft}px`;
+  root.style.top = `${offsetTop}px`;
+  root.style.transform = "none";
+}
+
 function fullscreenElement(): Element | null {
   const doc = document as FsDocument;
   return document.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
@@ -365,32 +427,33 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     html.style.overflow = "hidden";
     body.style.overflow = "hidden";
 
+    const timers: number[] = [];
     const syncViewport = () => {
       if (!root) return;
-      const vv = window.visualViewport;
-      if (!vv) {
-        root.style.top = "0px";
-        root.style.left = "0px";
-        root.style.width = "100%";
-        root.style.height = "100dvh";
-        return;
-      }
-      root.style.top = `${vv.offsetTop}px`;
-      root.style.left = `${vv.offsetLeft}px`;
-      root.style.width = `${vv.width}px`;
-      root.style.height = `${vv.height}px`;
+      layoutArStage(root);
+    };
+    const syncAfterTurn = () => {
+      syncViewport();
+      timers.push(window.setTimeout(syncViewport, 60));
+      timers.push(window.setTimeout(syncViewport, 280));
     };
 
+    unlockScreenOrientation();
     syncViewport();
     window.visualViewport?.addEventListener("resize", syncViewport);
     window.visualViewport?.addEventListener("scroll", syncViewport);
     window.addEventListener("resize", syncViewport);
+    window.addEventListener("orientationchange", syncAfterTurn);
+    window.screen?.orientation?.addEventListener?.("change", syncAfterTurn);
     return () => {
       html.style.overflow = prevHtmlOverflow;
       body.style.overflow = prevBodyOverflow;
       window.visualViewport?.removeEventListener("resize", syncViewport);
       window.visualViewport?.removeEventListener("scroll", syncViewport);
       window.removeEventListener("resize", syncViewport);
+      window.removeEventListener("orientationchange", syncAfterTurn);
+      window.screen?.orientation?.removeEventListener?.("change", syncAfterTurn);
+      timers.forEach((id) => window.clearTimeout(id));
     };
   }, []);
 
