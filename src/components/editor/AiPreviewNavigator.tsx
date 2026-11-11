@@ -84,7 +84,7 @@ export default function AiPreviewNavigator({
         {t("editor.preview3d")}
       </p>
 
-      <div className="mb-3 flex flex-wrap gap-1">
+      <div className="mb-3 flex flex-wrap gap-2">
         {ITEM_OPTIONS.map((item) => {
           const active = itemType === item.id;
           return (

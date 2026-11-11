@@ -59,7 +59,7 @@ function EditorHeader({
   const { t } = useTranslation();
 
   return (
-    <header className="relative z-20 flex min-h-16 shrink-0 items-center gap-3 border-b border-stone-200 bg-white px-4 py-2 md:px-6">
+    <header className="relative z-20 flex min-h-16 shrink-0 items-center gap-4 border-b border-stone-200 bg-white px-4 py-2 md:px-6">
       <BackButton onClick={onExit} className={`shrink-0 ${editorChromeBtn}`} />
 
       <SmoothInput
@@ -154,7 +154,7 @@ function EditorHeader({
         </p>
       </div>
 
-      <div className="ml-auto flex shrink-0 items-center gap-2">
+      <div className="ml-auto flex shrink-0 items-center gap-3">
         <button
           type="button"
           onClick={onSave}

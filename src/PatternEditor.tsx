@@ -755,24 +755,24 @@ export default function PatternEditor({
 
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <EditorResizableSidebar side="left" asideRef={leftToolbarRef}>
-        <div className="scrollbar-thin flex h-full min-h-0 flex-col gap-4 overflow-y-auto p-3 pb-8 md:p-5 md:pb-8">
-          <div>
-            <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+        <div className="scrollbar-thin flex h-full min-h-0 flex-col overflow-y-auto p-4 pb-10 md:px-5 md:pt-5 md:pb-12">
+          <div className="border-b border-stone-200 pb-8">
+            <p className="mb-3 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
               {t("editor.chartKey")}
             </p>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-2 gap-2.5">
               {STITCHES.filter((s) => s.id !== "caston").map((s) => (
                 <button
                   key={s.id}
                   type="button"
                   onClick={() => setActiveStitch(s.id)}
-                  className={`flex flex-col items-center px-1.5 py-2 font-sans text-sm font-normal ${
+                  className={`flex flex-col items-center px-2 py-2.5 font-sans text-sm font-normal ${
                     activeStitch === s.id ? editorChromeBtnActive : editorChromeBtn
                   }`}
                   title={t(`editor.stitches.${s.id}`)}
                 >
                   <span className="flex h-6 items-center justify-center font-mono text-base leading-none">{s.symbol}</span>
-                  <span className="mt-0.5 truncate text-xs">
+                  <span className="mt-1 truncate text-xs">
                     {t(`editor.stitches.${s.id}`)}
                   </span>
                 </button>
@@ -783,51 +783,54 @@ export default function PatternEditor({
                   setCastOnMode("replace");
                   setCastOnOpen(true);
                 }}
-                className={`flex flex-col items-center px-1.5 py-2 font-sans text-sm font-normal ${editorChromeBtn}`}
+                className={`flex flex-col items-center px-2 py-2.5 font-sans text-sm font-normal ${editorChromeBtn}`}
                 aria-label={t("editor.castOnButton")}
                 title={t("editor.castOnButton")}
               >
                 <span className="flex h-6 items-center justify-center text-2xl leading-none">+</span>
-                <span className="mt-0.5 truncate text-xs">
+                <span className="mt-1 truncate text-xs">
                   {t("editor.stitches.caston")}
                 </span>
               </button>
             </div>
-            <div className="mt-4">
-              <KnitProgressPanel
-                enabled={progressMode}
-                current={clampedProgressRow}
-                total={gridRows}
-                onToggle={toggleProgressMode}
-                onPrev={() => stepProgressRow(-1)}
-                onNext={() => stepProgressRow(1)}
-                onReset={resetProgressRow}
-              />
-            </div>
+          </div>
 
-            <div className="mt-4">
-              <GaugeCalculator
-                compact
-                gauge={gauge}
-                onChange={(next) => {
-                  setGauge(next);
-                  saveGaugeProfile(next);
-                }}
-                onApplySize={applySize}
-              />
-            </div>
+          <div className="border-b border-stone-200 py-8">
+            <KnitProgressPanel
+              enabled={progressMode}
+              current={clampedProgressRow}
+              total={gridRows}
+              onToggle={toggleProgressMode}
+              onPrev={() => stepProgressRow(-1)}
+              onNext={() => stepProgressRow(1)}
+              onReset={resetProgressRow}
+            />
+          </div>
 
+          <div className="border-b border-stone-200 py-8">
+            <GaugeCalculator
+              compact
+              gauge={gauge}
+              onChange={(next) => {
+                setGauge(next);
+                saveGaugeProfile(next);
+              }}
+              onApplySize={applySize}
+            />
+          </div>
+
+          <div className="border-b border-stone-200 py-8">
             <WorkshopPalettePanel
               activePaletteId={activeWorkshopPaletteId}
               onSelectPalette={applyWorkshopPalette}
             />
           </div>
 
-          <div ref={yarnPaletteRef} className="relative">
-            <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+          <div ref={yarnPaletteRef} className="relative pt-8">
+            <p className="mb-3 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
               {t("editor.yarnColors")}
             </p>
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-3 gap-2.5">
               {paletteYarns.map((yarn) => (
                 <ColorChipMenu
                   key={yarn.id}
@@ -903,7 +906,7 @@ export default function PatternEditor({
         </main>
 
         <EditorResizableSidebar side="right">
-          <div className="scrollbar-thin flex h-full min-h-0 flex-col gap-4 overflow-x-hidden overflow-y-auto p-4 md:p-5">
+          <div className="scrollbar-thin flex h-full min-h-0 flex-col gap-8 overflow-x-hidden overflow-y-auto p-4 md:p-5">
             <AiPreviewNavigator
               title={title}
               grid={grid}

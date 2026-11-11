@@ -48,12 +48,12 @@ export default function WorkshopPalettePanel({
     return fallback;
   };
   return (
-    <div className="mt-4">
-      <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+    <div>
+      <p className="mb-3 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
         {t("editor.workshopTitle")}
       </p>
 
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2.5">
         {WORKSHOP_PALETTES.map((palette) => {
           const active = activePaletteId === palette.id;
           return (
