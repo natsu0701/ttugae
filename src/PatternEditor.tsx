@@ -29,9 +29,10 @@ import { editorChromeBtn, editorChromeBtnActive, editorChromeTone, editorPanel, 
 import { STITCHES, stitchSymbol } from "./data/stitchSymbols.ts";
 import type { EditorYarn, YarnCatalogEntry } from "./types/editorYarn.ts";
 import {
-  createRealisticDemoGrid,
+  createCheckerStartGrid,
   emptyGrid,
   paletteYarnsForGrid,
+  randomCheckerStartColor,
   resizeGrid,
   type EditorCell,
 } from "./utils/patternGrid.ts";
@@ -131,7 +132,10 @@ type PatternEditorProps = {
   onGoDashboard: () => void;
 };
 
-function initGrid(initial: PatternEditorProps["initialPattern"]) {
+function initGrid(
+  initial: PatternEditorProps["initialPattern"],
+  startColor?: string,
+) {
   if (initial?.grid?.length) {
     const rows = initial.grid.length;
     const cols = initial.grid[0]?.length ?? initial.gridSize;
@@ -142,16 +146,32 @@ function initGrid(initial: PatternEditorProps["initialPattern"]) {
   return {
     rows,
     cols,
-    grid: createRealisticDemoGrid(rows, cols, "editor-new"),
+    grid: createCheckerStartGrid(rows, cols, startColor ?? "coral"),
   };
 }
 
-function initCharts(initial: PatternEditorProps["initialPattern"]): {
+function initEditorSeed(initial: PatternEditorProps["initialPattern"]): {
+  charts: KnittingChart[];
+  activeChartId: string;
+  facesIndependent: boolean;
+  startColor: string;
+  isNew: boolean;
+} {
+  const isNew = !initial?.grid?.length;
+  const startColor = isNew ? randomCheckerStartColor() : "coral";
+  const seeded = initCharts(initial, isNew ? startColor : undefined);
+  return { ...seeded, startColor, isNew };
+}
+
+function initCharts(
+  initial: PatternEditorProps["initialPattern"],
+  startColor?: string,
+): {
   charts: KnittingChart[];
   activeChartId: string;
   facesIndependent: boolean;
 } {
-  const seeded = initGrid(initial);
+  const seeded = initGrid(initial, startColor);
   const frontId = newChartId();
   const charts: KnittingChart[] = [
     {
@@ -205,17 +225,17 @@ export default function PatternEditor({
 }: PatternEditorProps) {
   const { t } = useTranslation();
   const { setDirty, registerSaver, requestLeave } = useUnsavedChanges();
-  const seeded = initCharts(initialPattern);
+  const [seed] = useState(() => initEditorSeed(initialPattern));
   const defaultTitle = t("editor.defaultTitle");
   const [patternId] = useState<string>(
     initialPattern?.id ?? (crypto.randomUUID?.() ?? String(Date.now())),
   );
   const [title, setTitle] = useState<string>(initialPattern?.title ?? defaultTitle);
-  const [charts, setCharts] = useState<KnittingChart[]>(seeded.charts);
-  const [activeChartId, setActiveChartId] = useState(seeded.activeChartId);
-  const [facesIndependent] = useState(seeded.facesIndependent);
+  const [charts, setCharts] = useState<KnittingChart[]>(seed.charts);
+  const [activeChartId, setActiveChartId] = useState(seed.activeChartId);
+  const [facesIndependent] = useState(seed.facesIndependent);
   const [paletteYarns, setPaletteYarns] = useState<EditorYarn[]>(() =>
-    paletteYarnsForGrid(initGrid(initialPattern).grid, initialPattern?.colorMap),
+    paletteYarnsForGrid(seed.charts[0]?.gridData ?? [], initialPattern?.colorMap),
   );
   const [yarnSearchOpen, setYarnSearchOpen] = useState(false);
   const [patternCopyDone, setPatternCopyDone] = useState(false);
@@ -230,9 +250,9 @@ export default function PatternEditor({
   );
   const [gauge, setGauge] = useState<GaugeProfile>(loadEditorGauge);
   const [isPackOpen, setIsPackOpen] = useState(false);
-  const [activeColor, setActiveColor] = useState<string>("coral");
+  const [activeColor, setActiveColor] = useState<string>(seed.startColor);
   const [activeStitch, setActiveStitch] = useState<string>("knit");
-  const [tool, setTool] = useState<Tool>("paint");
+  const [tool, setTool] = useState<Tool>(seed.isNew ? "checker" : "paint");
   const [spacePan, setSpacePan] = useState(false);
   const [saveCollectionId, setSaveCollectionId] = useState(() =>
     collectionIdForPattern(initialPattern?.id ?? ""),
@@ -247,9 +267,9 @@ export default function PatternEditor({
   const [toolHintOpen, setToolHintOpen] = useState(true);
   const [sizeMenuOpen, setSizeMenuOpen] = useState(false);
   const [customW, setCustomW] = useState(
-    String(seeded.charts[0]?.gridData[0]?.length ?? 14),
+    String(seed.charts[0]?.gridData[0]?.length ?? 14),
   );
-  const [customH, setCustomH] = useState(String(seeded.charts[0]?.gridData.length ?? 14));
+  const [customH, setCustomH] = useState(String(seed.charts[0]?.gridData.length ?? 14));
   const [progressMode, setProgressMode] = useState(false);
   const [progressKnitRow, setProgressKnitRow] = useState(() => {
     const saved = loadCurrentProgressRow();
