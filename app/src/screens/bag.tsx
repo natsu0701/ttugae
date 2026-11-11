@@ -3,7 +3,7 @@ import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock }
 import { useApp } from "../store.tsx";
 import type { BagTab, Needle, Project, Yarn } from "../types.ts";
 import type { SortDir, SortField } from "../types.ts";
-import { CheckIcon, ChevronDown, Fab, FilterIcon, GearIcon, GridIcon, InfoButton, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
+import { CheckIcon, ChevronDown, DoneMark, Fab, FilterIcon, GearIcon, GridIcon, InfoButton, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
 
 const TABS: { id: BagTab; label: string }[] = [
   { id: "projects", label: "프로젝트" },
@@ -568,6 +568,7 @@ export function NaviScreen({ id }: { id: string }) {
 
 export function ProjectFormScreen({ id }: { id?: string }) {
   const { data, saveProject, back, notify } = useApp();
+  const [done, setDone] = useState(false);
   const existing = data.projects.find((project) => project.id === id);
   const [title, setTitle] = useState(existing?.title ?? "");
   const [category, setCategory] = useState(existing?.category ?? "울");
@@ -597,10 +598,15 @@ export function ProjectFormScreen({ id }: { id?: string }) {
           return;
         }
         saveProject({ id, title: title.trim(), category, patternId, yarnIds, needleIds });
-        notify(id ? "프로젝트를 수정했어요" : "프로젝트를 만들었어요");
-        back();
+        if (id) {
+          notify("프로젝트를 수정했어요");
+          back();
+          return;
+        }
+        setDone(true);
       }}
     >
+      {done ? <DoneMark message={"프로젝트 생성을\n완료했어요!"} onDone={back} /> : null}
       <label className="block">
         <span className="text-[14px] font-bold">프로젝트 이름</span>
         <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="프로젝트 이름을 입력하세요." className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[14px] outline-none" />

@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
-import { BlackButton, CameraIcon, ChevronDown, CloseIcon, Fab, InfoButton, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
+import { BlackButton, CameraIcon, ChevronDown, CloseIcon, DoneMark, Fab, InfoButton, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
 
 export function GaugeScreen({ tab }: { tab: GaugeTab }) {
   const { replace, push } = useApp();
@@ -383,7 +383,8 @@ function GaugeList() {
 }
 
 export function GaugeFormScreen() {
-  const { data, calcSts, calcLen, calcResult, saveGauge, back, notify } = useApp();
+  const { data, calcSts, calcLen, calcResult, saveGauge, back } = useApp();
+  const [done, setDone] = useState(false);
   const [name, setName] = useState("울 3합");
   const [projectId, setProjectId] = useState(data.projects[0]?.id ?? "");
   const [yarnName, setYarnName] = useState(data.yarns[0]?.name ?? "");
@@ -414,10 +415,10 @@ export function GaugeFormScreen() {
           memo,
         };
         saveGauge(gauge);
-        notify("게이지를 저장했어요");
-        back();
+        setDone(true);
       }}
     >
+      {done ? <DoneMark message={"게이지 등록을\n완료했어요!"} onDone={back} /> : null}
       <label className="block text-[14px] font-bold">
         게이지 이름
         <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal outline-none" />

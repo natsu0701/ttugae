@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes, CSSProperties, InputHTMLAttributes, ReactNode } from "react";
+import { useEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type InputHTMLAttributes, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { figmaIcons, type FigmaIconName } from "./icons/figmaIcons.ts";
 import {
   BellFillIcon,
@@ -437,6 +438,47 @@ export function CrownIcon({ color = "currentColor" }: { color?: string }) {
 
 export function CheckIcon() {
   return <CheckFillIcon className="h-4 w-4" />;
+}
+
+export function DoneMark({ message, onDone }: { message: string; onDone: () => void }) {
+  const [host, setHost] = useState<HTMLElement | null>(null);
+  const [draw, setDraw] = useState(false);
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
+  useEffect(() => {
+    setHost(document.querySelector(".phone") as HTMLElement | null);
+    const start = window.setTimeout(() => setDraw(true), 220);
+    const next = window.setTimeout(() => doneRef.current(), 220 + 720 + 480);
+    return () => {
+      window.clearTimeout(start);
+      window.clearTimeout(next);
+    };
+  }, []);
+  if (!host) return null;
+  return createPortal(
+    <div className="absolute inset-0 z-[60] flex flex-col items-center justify-center bg-white px-8 text-center">
+      <span className="grid h-32 w-32 place-items-center rounded-full bg-blush">
+        <svg viewBox="0 0 64 64" className="h-16 w-16" aria-hidden>
+          <path
+            d="M16 33.5 27 44.5 48 20"
+            fill="none"
+            stroke="#171717"
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            pathLength={1}
+            style={{
+              strokeDasharray: 1,
+              strokeDashoffset: draw ? 0 : 1,
+              transition: "stroke-dashoffset 720ms ease-in-out",
+            }}
+          />
+        </svg>
+      </span>
+      <p className="mt-7 whitespace-pre-line text-[22px] font-bold leading-snug">{message}</p>
+    </div>,
+    host,
+  );
 }
 
 export function PencilIcon() {
