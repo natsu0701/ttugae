@@ -21,7 +21,7 @@ export function SplashScreen() {
       <div className={cx("transition-all duration-500", beat === 0 ? "translate-y-6 opacity-0" : "translate-y-0 opacity-100")}>
         {beat > 0 ? <Mascot className="mx-auto h-36 w-36" mood={beat > 1 ? "cheer" : "wave"} /> : <div className="h-36" />}
       </div>
-      <Wordmark className={cx("mt-2 w-64 transition-transform duration-500", beat === 0 ? "scale-90" : "scale-100")} />
+      <Wordmark className={cx("mt-3 w-[17.5rem] transition-transform duration-500", beat === 0 ? "scale-90" : "scale-100")} />
     </button>
   );
 }
@@ -44,7 +44,7 @@ export function LoginScreen() {
     <div className="relative min-h-full bg-blush-wash px-6 pb-10 pt-8">
       <Flower className="left-4 top-2" />
       <Flower className="right-6 top-16 scale-75" />
-      <div className="mx-auto mt-10 max-w-[280px]">
+      <div className="mx-auto mt-10 w-[16.5rem] max-w-full">
         <Wordmark className="w-full" />
       </div>
       <p className="mt-4 text-center text-[14px] font-medium leading-relaxed text-white">

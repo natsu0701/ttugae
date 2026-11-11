@@ -155,7 +155,7 @@ export function Mascot({
 }
 
 export function Wordmark({ className = "w-56" }: { className?: string }) {
-  return <img src={`${import.meta.env.BASE_URL}logo.png`} alt="뜨개러투게더" className={className} />;
+  return <img src={`${import.meta.env.BASE_URL}logo.png`} alt="뜨개러투게더" className={cx("h-auto max-w-full object-contain", className)} />;
 }
 
 export function TabBar() {
