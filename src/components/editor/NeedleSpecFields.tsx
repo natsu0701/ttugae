@@ -62,7 +62,7 @@ export default function NeedleSpecFields({
   }, [sizes, value.needleSize]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div>
         <p className={label}>{t("editor.needleKind")}</p>
         <div className="grid grid-cols-2 gap-2">
