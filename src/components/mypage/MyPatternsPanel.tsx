@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
+import Select from "../ui/Select.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import type { StoredPattern } from "../../types/storedPattern.ts";
 import {
@@ -224,18 +225,18 @@ export default function MyPatternsPanel({
               </button>
               <label className="font-sans text-sm text-stone-500">
                 {t("mypage.patterns.moveFolder")}
-                <select
-                  className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-2 py-1.5 text-base text-stone-800"
+                <Select
+                  className="mt-1"
                   value={collectionIdForPattern(pattern.id)}
-                  onChange={(e) => assignPatternCollection(pattern.id, e.target.value)}
-                >
-                  <option value={UNFILED_COLLECTION_ID}>{t("mypage.patterns.unfiled")}</option>
-                  {collections.map((folder) => (
-                    <option key={folder.id} value={folder.id}>
-                      {folder.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(next) => assignPatternCollection(pattern.id, next)}
+                  options={[
+                    { value: UNFILED_COLLECTION_ID, label: t("mypage.patterns.unfiled") },
+                    ...collections.map((folder) => ({
+                      value: folder.id,
+                      label: folder.name,
+                    })),
+                  ]}
+                />
               </label>
               <div className="flex flex-wrap gap-2">
                 <Button

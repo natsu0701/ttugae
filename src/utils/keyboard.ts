@@ -11,7 +11,19 @@ export function isActionTarget(target: EventTarget | null): boolean {
   const tag = target.tagName;
   if (tag === "BUTTON" || tag === "A" || tag === "SUMMARY" || tag === "OPTION") return true;
   const role = target.getAttribute("role");
-  return role === "button" || role === "menuitem" || role === "tab" || role === "link" || role === "checkbox" || role === "radio" || role === "switch" || role === "gridcell";
+  return (
+    role === "button" ||
+    role === "menuitem" ||
+    role === "tab" ||
+    role === "link" ||
+    role === "checkbox" ||
+    role === "radio" ||
+    role === "switch" ||
+    role === "gridcell" ||
+    role === "combobox" ||
+    role === "option" ||
+    role === "listbox"
+  );
 }
 
 const FOCUSABLE =
