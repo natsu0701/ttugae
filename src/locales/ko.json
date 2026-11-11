@@ -445,6 +445,7 @@
     "gaugeCalcTitle": "게이지 계산",
     "gaugeApplySize": "이 코·단으로 맞추기",
     "yarnColors": "실 색상",
+    "yarnSelect": "실 선택",
     "addYarn": "+ 실 추가하기",
     "usedColors": "Selection Colors",
     "usedColorsHint": "칩을 눌러 그 색으로 칠해진 칸을 한꺼번에 바꿔요",
