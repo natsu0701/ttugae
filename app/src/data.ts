@@ -24,6 +24,10 @@ const sweater = media("media/pattern-sweater.jpg");
 const socks = media("media/proj-socks.jpg");
 const bag = media("media/proj-bag.jpg");
 const cream = media("media/proj-cream.jpg");
+const linen = media("media/swatch-linen.jpg");
+const woolSwatch = media("media/swatch-wool.jpg");
+const etiNeedle = media("media/needle-eti.jpg");
+const woodNeedle = media("media/needle-wood.jpg");
 
 export const YARN_CATEGORIES = ["코튼", "린넨", "울", "폴리에스터", "나일론"] as const;
 export const NEEDLE_CATEGORIES = ["대바늘", "코바늘", "특수바늘", "기타"] as const;
@@ -149,7 +153,7 @@ export function seedProjects(): Project[] {
       elapsed: 3600,
       running: false,
       category: "울",
-      image: media("works/beanie.jpg"),
+      image: media("media/pop-beanie.jpg"),
       ago: "어제",
       patternId: "pt1",
       parts: [{ id: "crown", name: "정수리", count: 12, done: true, ago: "어제" }],
@@ -265,7 +269,7 @@ export function seedYarns(): Yarn[] {
       category: "린넨",
       lot: "Lot 014",
       colorName: "샌드",
-      image: swatchRose,
+      image: linen,
       recent: false,
     },
   ];
@@ -304,7 +308,7 @@ export function seedNeedles(): Needle[] {
       shop: "바늘이야기",
       shopUrl: "http://banulstory.kku.ac.kr",
       lot: "Lot 088",
-      image: swatchPink,
+      image: etiNeedle,
       recent: true,
       brandLine: "4/0호(4mm)",
       meta: "3 balls",
@@ -322,7 +326,7 @@ export function seedNeedles(): Needle[] {
       shop: "바늘이야기",
       shopUrl: "http://banulstory.kku.ac.kr",
       lot: "Lot 021",
-      image: swatchGray,
+      image: woodNeedle,
       recent: false,
       brandLine: "6/0호(5mm)",
       meta: "1.5 balls",
@@ -357,7 +361,7 @@ export function seedGauges(): GaugeRecord[] {
       yarnName: "매기",
       before: "30단 × 28코",
       after: "30단 × 28코",
-      image: swatchGray,
+      image: woolSwatch,
       projectId: "p1",
       needle: "대바늘 3mm",
       pattern: "벤쿠버 가디건",
@@ -493,7 +497,7 @@ export const SHORTS: ShortClip[] = [
   { id: "s1", title: "포인트 컬러로 완성하는 겨울 룩", author: "명훈명훈", length: "01:22", image: media("media/pop-mittens.jpg") },
   { id: "s2", title: "셀럽들의 공항 패션 스타일 분석", author: "앗딱", length: "01:22", image: media("media/news-yarn.jpg") },
   { id: "s3", title: "신규 브랜드 탐방: 떠오르는 디자이너들", author: "차투리", length: "01:22", image: sweater },
-  { id: "s4", title: "겨울 필수 아이템, 따뜻한 코트", author: "노을빛", length: "01:22", image: media("works/muffler.jpg") },
+  { id: "s4", title: "겨울 필수 아이템, 따뜻한 코트", author: "노을빛", length: "01:22", image: media("media/coat.jpg") },
   { id: "s5", title: "KOREADB 2025 뉴 컬렉션", author: "푸른바다", length: "01:22", image: media("media/pop-pink.jpg") },
 ];
 
