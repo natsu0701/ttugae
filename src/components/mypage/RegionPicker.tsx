@@ -1,5 +1,6 @@
 import { memo, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Select from "../ui/Select.tsx";
 import {
   KOREA_REGIONS,
   formatRegion,
@@ -34,45 +35,39 @@ function RegionPicker({ value, onChange }: RegionPickerProps) {
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         <label className="text-sm text-stone-500">
           {t("mypage.region.province")}
-          <select
-            className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-base"
+          <Select
+            className="mt-1"
             value={province.name}
-            onChange={(e) => setPart({ province: e.target.value, city: undefined, dong: undefined })}
-          >
-            {KOREA_REGIONS.map((item) => (
-              <option key={item.name} value={item.name}>
-                {item.name}
-              </option>
-            ))}
-          </select>
+            onChange={(next) => setPart({ province: next, city: undefined, dong: undefined })}
+            options={KOREA_REGIONS.map((item) => ({
+              value: item.name,
+              label: item.name,
+            }))}
+          />
         </label>
         <label className="text-sm text-stone-500">
           {t("mypage.region.city")}
-          <select
-            className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-base"
+          <Select
+            className="mt-1"
             value={city.name}
-            onChange={(e) => setPart({ city: e.target.value, dong: undefined })}
-          >
-            {province.cities.map((item) => (
-              <option key={item.name} value={item.name}>
-                {item.name}
-              </option>
-            ))}
-          </select>
+            onChange={(next) => setPart({ city: next, dong: undefined })}
+            options={province.cities.map((item) => ({
+              value: item.name,
+              label: item.name,
+            }))}
+          />
         </label>
         <label className="text-sm text-stone-500">
           {t("mypage.region.dong")}
-          <select
-            className="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-base"
+          <Select
+            className="mt-1"
             value={parsed.dong || city.dongs[0]}
-            onChange={(e) => setPart({ dong: e.target.value })}
-          >
-            {city.dongs.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
+            onChange={(next) => setPart({ dong: next })}
+            options={city.dongs.map((item) => ({
+              value: item,
+              label: item,
+            }))}
+          />
         </label>
       </div>
       <input

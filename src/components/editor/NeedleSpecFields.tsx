@@ -15,6 +15,7 @@ import {
   formatNeedleSizeI18n,
   formatNeedleTypeI18n,
 } from "../../utils/i18nContent.ts";
+import Select from "../ui/Select.tsx";
 
 type NeedleSpecFieldsProps = {
   value: NeedleSpec;
@@ -92,34 +93,32 @@ export default function NeedleSpecFields({
         <label className={label} htmlFor={`needle-detail-${uid}`}>
           {t("editor.needleDetailLabel")}
         </label>
-        <select
+        <Select
           id={`needle-detail-${uid}`}
+          tone={tone}
           value={value.needleDetail ?? details[0]?.id}
-          onChange={(e) =>
+          onChange={(next) =>
             onChange({
               ...value,
-              needleDetail: e.target.value as NeedleSpec["needleDetail"],
+              needleDetail: next as NeedleSpec["needleDetail"],
             })
           }
-          className={field}
-        >
-          {details.map((opt) => (
-            <option key={opt.id} value={opt.id}>
-              {formatNeedleDetailI18n(t, opt.id) ?? opt.label}
-            </option>
-          ))}
-        </select>
+          options={details.map((opt) => ({
+            value: opt.id,
+            label: formatNeedleDetailI18n(t, opt.id) ?? opt.label,
+          }))}
+        />
       </div>
 
       <div>
         <label className={label} htmlFor={`needle-size-${uid}`}>
           {t("editor.needleSizeLabel")}
         </label>
-        <select
+        <Select
           id={`needle-size-${uid}`}
+          tone={tone}
           value={selectSize}
-          onChange={(e) => {
-            const next = e.target.value;
+          onChange={(next) => {
             if (next === CUSTOM_SIZE_VALUE) {
               setCustomOpen(true);
               return;
@@ -127,17 +126,16 @@ export default function NeedleSpecFields({
             setCustomOpen(false);
             onChange({ ...value, needleSize: next });
           }}
-          className={field}
-        >
-          {(value.needleType === "knitting" ? KNITTING_SIZE_OPTIONS : CROCHET_SIZE_OPTIONS).map(
-            (size) => (
-              <option key={size} value={size}>
-                {formatNeedleSizeI18n(t, size)}
-              </option>
+          options={[
+            ...(value.needleType === "knitting" ? KNITTING_SIZE_OPTIONS : CROCHET_SIZE_OPTIONS).map(
+              (size) => ({
+                value: size,
+                label: formatNeedleSizeI18n(t, size),
+              }),
             ),
-          )}
-          <option value={CUSTOM_SIZE_VALUE}>{t("common.customInput")}</option>
-        </select>
+            { value: CUSTOM_SIZE_VALUE, label: t("common.customInput") },
+          ]}
+        />
         {customOpen || !sizeInList ? (
           <input
             type="text"
