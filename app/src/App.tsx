@@ -21,7 +21,9 @@ import {
 } from "./screens/home.tsx";
 import { LoungeScreen, QuestionScreen, ShortScreen } from "./screens/lounge.tsx";
 import { MyScreen } from "./screens/my.tsx";
-import { CodexScreen, NeedleScreen, YarnScreen } from "./screens/stash.tsx";
+import { CodexScreen } from "./screens/codex.tsx";
+import { codexById } from "./codex.ts";
+import { NeedleScreen, YarnScreen } from "./screens/stash.tsx";
 import {
   ChatScreen,
   CounterListScreen,
@@ -57,7 +59,7 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
     case "counters":
       return "행/코 카운터";
     case "codex":
-      return "실 도감";
+      return route.id ? (codexById(route.id)?.name ?? "뜨개도감") : "뜨개도감";
     case "chat":
       return "뜨니챗";
     case "editor":

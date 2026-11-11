@@ -32,7 +32,7 @@ export type Route =
   | { name: "gauge-help" }
   | { name: "counters" }
   | { name: "counter"; id: string }
-  | { name: "codex"; id: string }
+  | { name: "codex"; id?: string }
   | { name: "chat" }
   | { name: "editor" }
   | { name: "pattern"; id: string }

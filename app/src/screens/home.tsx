@@ -115,7 +115,7 @@ function HomePane() {
           <ToolButton label="게이지" onClick={() => push({ name: "gauge", tab: "calc" })}>
             <GaugeGlyph />
           </ToolButton>
-          <ToolButton label="뜨개 도감" onClick={() => push({ name: "codex", id: "y4" })}>
+          <ToolButton label="뜨개 도감" onClick={() => push({ name: "codex" })}>
             <BookGlyph />
           </ToolButton>
           <ToolButton label="뜨니챗" onClick={() => push({ name: "chat" })}>

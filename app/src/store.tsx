@@ -86,7 +86,6 @@ function routeToHash(route: Route) {
     case "needle":
     case "finished":
     case "counter":
-    case "codex":
     case "pattern":
     case "work":
     case "news":
@@ -98,6 +97,8 @@ function routeToHash(route: Route) {
       return route.id ? `#/project-form/${route.id}` : "#/project-form";
     case "gauge":
       return `#/gauge/${route.tab}`;
+    case "codex":
+      return route.id ? `#/codex/${route.id}` : "#/codex";
     default:
       return `#/${route.name}`;
   }
@@ -115,7 +116,7 @@ function hashToRoute(hash: string): Route {
   if (name === "needle" && id) return { name: "needle", id };
   if (name === "finished" && id) return { name: "finished", id };
   if (name === "counter" && id) return { name: "counter", id };
-  if (name === "codex" && id) return { name: "codex", id };
+  if (name === "codex") return { name: "codex", id };
   if (name === "pattern" && id) return { name: "pattern", id };
   if (name === "work" && id) return { name: "work", id };
   if (name === "news" && id) return { name: "news", id };

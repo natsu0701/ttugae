@@ -1,6 +1,5 @@
-import { CODEX_POSTS, REVIEWS, ballsLabel } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { ClockIcon, HeartIcon, MinusIcon, PinIcon, PlusIcon, UnderlineTabs } from "../ui.tsx";
+import { ClockIcon, MinusIcon, PinIcon, PlusIcon, UnderlineTabs } from "../ui.tsx";
 import type { ReactNode } from "react";
 
 const YARN_DOTS: Record<string, string> = {
@@ -125,88 +124,6 @@ export function NeedleScreen({ id }: { id: string }) {
         <ShopCard name={needle.shop} url={needle.shopUrl} />
       </div>
     </div>
-  );
-}
-
-export function CodexScreen({ id }: { id: string }) {
-  const yarn = useApp().data.yarns.find((item) => item.id === id) ?? useApp().data.yarns[0];
-  if (!yarn) return null;
-  return (
-    <div className="pb-12">
-      <div className="px-5 pt-2 text-center">
-        <img src={yarn.image} alt="" className="mx-auto aspect-square w-40 rounded-lg object-cover object-top" />
-        <h2 className="mt-3 text-[20px] font-bold">{yarn.name}</h2>
-        <p className="text-[12px] text-[#999]">{yarn.lot}</p>
-      </div>
-      <div className="mt-4 grid grid-cols-2 gap-3 px-4">
-        <Spec icon={<ClockIcon />} value={yarn.material} label="소재" />
-        <Spec icon={<ClockIcon />} value={yarn.weight} label="무게" />
-        <Spec icon={<ClockIcon />} value={yarn.length} label="길이" />
-        <Spec icon={<ClockIcon />} value={yarn.needle} label="권장 바늘" />
-      </div>
-      <section className="px-4 pt-6">
-        <h3 className="text-[16px] font-bold">실 후기</h3>
-        <p className="text-[12px] text-[#999]">실 사용자 & 편집점 중심</p>
-        <div className="mt-3 flex gap-3 overflow-x-auto">
-          {REVIEWS.map((review) => (
-            <article key={review.name} className="w-64 shrink-0 rounded-lg bg-[#f7f7f7] p-4">
-              <p className="text-[13px] font-bold">
-                {review.name} <Stars count={review.stars} />
-              </p>
-              <p className="mt-2 text-[13px] leading-relaxed">{review.body}</p>
-              <p className="mt-3 flex items-center gap-1 text-[12px] text-[#999]"><CommentMark /> {review.comments}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-      <section className="px-4 pt-6">
-        <h3 className="text-[16px] font-bold">뜨개 커뮤니티 공유</h3>
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          {CODEX_POSTS.map((post) => (
-            <article key={post.team} className="overflow-hidden rounded-lg bg-[#f7f7f7]">
-              <img src={post.image} alt="" className="h-28 w-full object-cover" />
-              <div className="p-3">
-                <p className="text-[12px] font-bold">{post.team}</p>
-                <p className="mt-1 text-[12px] leading-snug">{post.body}</p>
-                <p className="mt-2 text-[11px] text-[#888]">{post.tags.join(" ")}</p>
-                <p className="mt-1 flex items-center gap-1 text-[12px] text-blush"><HeartIcon filled /> {post.likes}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-      <section className="px-4 pt-6">
-        <h3 className="text-[16px] font-bold">지금 바로 구매</h3>
-        <a href={yarn.shopUrl} target="_blank" rel="noreferrer" className="mt-3 flex items-center justify-between rounded-lg border border-[#eee] px-4 py-3">
-          <span>
-            <span className="block text-[12px] text-[#999]">{yarn.shop}</span>
-            <span className="font-bold">{yarn.name}</span>
-            <span className="block text-[12px] text-[#888]">{ballsLabel(yarn.balls)} · {yarn.weight}</span>
-          </span>
-          <span className="rounded-full bg-ink px-3 py-2 text-[12px] text-white">추가 구매</span>
-        </a>
-      </section>
-    </div>
-  );
-}
-
-function Stars({ count }: { count: number }) {
-  return (
-    <span className="inline-flex gap-0.5 text-blush" aria-label={`별 ${count}개`}>
-      {Array.from({ length: count }, (_, index) => (
-        <svg key={index} width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
-          <path d="M6 1.2 7.3 4.3 10.6 4.6 8.1 6.8 8.9 10 6 8.3 3.1 10 3.9 6.8 1.4 4.6 4.7 4.3 6 1.2z" />
-        </svg>
-      ))}
-    </span>
-  );
-}
-
-function CommentMark() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
-      <path d="M2.2 3.2h9.6v6.2H6.2L3.4 11.6V9.4H2.2V3.2z" />
-    </svg>
   );
 }
 
