@@ -896,6 +896,55 @@ export default function PatternEditor({
         <EditorResizableSidebar side="left" asideRef={leftToolbarRef}>
         <div className="scrollbar-thin flex h-full min-h-0 flex-col overflow-y-auto p-4 pb-10 md:px-5 md:pt-5 md:pb-12">
           <div className="border-b border-stone-200 pb-8">
+            <p className={`mb-1 ${editorSectionTitle}`}>{t("editor.needlePanelTitle")}</p>
+            <p className="mb-3 font-seoyun text-sm font-normal text-stone-500">
+              {t("editor.needlePanelHint")}
+            </p>
+            <NeedleSpecFields
+              value={needle}
+              onChange={(next) => commitNeedle(clearNeedleCustomLabel(next))}
+            />
+          </div>
+
+          <div ref={yarnPaletteRef} className="relative border-b border-stone-200 py-8">
+            <p className={`mb-3 ${editorSectionTitle}`}>
+              {t("editor.yarnSelect")}
+            </p>
+            <div className="grid grid-cols-3 gap-2.5">
+              {paletteYarns.map((yarn) => (
+                <div key={yarn.id} className="min-w-0">
+                  <ColorChipMenu
+                    yarn={yarn}
+                    variant="palette"
+                    isActive={activeColor === yarn.id}
+                    onSelect={() => setActiveColor(yarn.id)}
+                    onChangeColor={changeYarnColor}
+                    onDeleteFromCanvas={deleteColorFromCanvas}
+                  />
+                  <p className="mt-1 truncate text-center font-sans text-xs font-normal text-stone-600">
+                    {yarn.label}
+                  </p>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setYarnSearchOpen((o) => !o)}
+                className={`flex aspect-square w-full items-center justify-center ${editorChromeBtn}`}
+                title={t("editor.addYarn")}
+                aria-label={t("editor.addYarn")}
+              >
+                <PlusFillIcon className="h-5 w-5" />
+              </button>
+            </div>
+            <YarnSearchPopover
+              open={yarnSearchOpen}
+              onClose={() => setYarnSearchOpen(false)}
+              onSelect={addYarnToPalette}
+              existingIds={paletteYarnIds}
+            />
+          </div>
+
+          <div className="border-b border-stone-200 py-8">
             <p className={`mb-3 ${editorSectionTitle}`}>
               {t("editor.chartKey")}
             </p>
@@ -958,44 +1007,10 @@ export default function PatternEditor({
             />
           </div>
 
-          <div className="border-b border-stone-200 py-8">
+          <div className="pt-8">
             <WorkshopPalettePanel
               activePaletteId={activeWorkshopPaletteId}
               onSelectPalette={applyWorkshopPalette}
-            />
-          </div>
-
-          <div ref={yarnPaletteRef} className="relative pt-8">
-            <p className={`mb-3 ${editorSectionTitle}`}>
-              {t("editor.yarnColors")}
-            </p>
-            <div className="grid grid-cols-3 gap-2.5">
-              {paletteYarns.map((yarn) => (
-                <ColorChipMenu
-                  key={yarn.id}
-                  yarn={yarn}
-                  variant="palette"
-                  isActive={activeColor === yarn.id}
-                  onSelect={() => setActiveColor(yarn.id)}
-                  onChangeColor={changeYarnColor}
-                  onDeleteFromCanvas={deleteColorFromCanvas}
-                />
-              ))}
-              <button
-                type="button"
-                onClick={() => setYarnSearchOpen((o) => !o)}
-                className={`flex aspect-square w-full items-center justify-center ${editorChromeBtn}`}
-                title={t("editor.addYarn")}
-                aria-label={t("editor.addYarn")}
-              >
-                <PlusFillIcon className="h-5 w-5" />
-              </button>
-            </div>
-            <YarnSearchPopover
-              open={yarnSearchOpen}
-              onClose={() => setYarnSearchOpen(false)}
-              onSelect={addYarnToPalette}
-              existingIds={paletteYarnIds}
             />
           </div>
         </div>
@@ -1058,16 +1073,6 @@ export default function PatternEditor({
             />
             <div ref={chatbotPanelRef}>
               <TteuniChatbot onUserMessage={handleAiMessage} />
-            </div>
-            <div>
-              <p className={`mb-1 ${editorSectionTitle}`}>{t("editor.needlePanelTitle")}</p>
-              <p className="mb-3 font-seoyun text-sm font-normal text-stone-500">
-                {t("editor.needlePanelHint")}
-              </p>
-              <NeedleSpecFields
-                value={needle}
-                onChange={(next) => commitNeedle(clearNeedleCustomLabel(next))}
-              />
             </div>
             <FinishedWorkScanPanel
               onApply={(nextGrid, yarns) => {

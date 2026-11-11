@@ -446,6 +446,7 @@
     "gaugeCalcTitle": "Gauge calculator",
     "gaugeApplySize": "Resize chart to this",
     "yarnColors": "Yarn colors",
+    "yarnSelect": "Yarn",
     "addYarn": "+ Add yarn",
     "usedColors": "Selection Colors",
     "usedColorsHint": "Click a chip to recolor every cell painted with that color",

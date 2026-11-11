@@ -446,6 +446,7 @@
     "gaugeCalcTitle": "ゲージ計算",
     "gaugeApplySize": "この目数に合わせる",
     "yarnColors": "毛糸の色",
+    "yarnSelect": "糸",
     "addYarn": "+ 毛糸を追加",
     "usedColors": "Selection Colors",
     "usedColorsHint": "チップを押すとその色で塗ったマスをまとめて変更できます",
