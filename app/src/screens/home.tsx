@@ -41,7 +41,7 @@ function HomePane() {
       <section className="px-4 pt-4">
         <h2 className="text-[22px] font-bold leading-snug">오늘의 뜨개를 시작해보세요!</h2>
         {project ? (
-          <article className="mt-3 overflow-hidden rounded-[28px] bg-white shadow-card">
+          <article className="mt-3 overflow-hidden rounded-lg bg-white shadow-card">
             <button type="button" onClick={() => push({ name: "project", id: project.id })} className="block w-full text-left">
               <div className="relative">
                 <img src={project.image} alt="" className="h-52 w-full object-cover" />
@@ -143,10 +143,10 @@ function HomePane() {
               key={pattern.id}
               type="button"
               onClick={() => push({ name: "pattern", id: pattern.id })}
-              className="w-[86%] shrink-0 rounded-[28px] bg-white p-3 text-left shadow-card"
+              className="w-[86%] shrink-0 rounded-lg bg-white p-3 text-left shadow-card"
             >
               <div className="flex gap-3">
-                <img src={pattern.image} alt="" className="h-28 w-28 rounded-2xl object-cover" />
+                <img src={pattern.image} alt="" className="h-28 w-28 rounded-lg object-cover" />
                 <div>
                   <p className="text-[16px] font-bold">{pattern.title}</p>
                   <p className="mt-1 text-[12px] text-[#999]">{pattern.needles}</p>
@@ -195,7 +195,7 @@ function HomePane() {
                 {king.name.slice(0, 1)}
               </span>
               <p className="mt-2 text-[13px] font-bold">{king.name}</p>
-              <div className="mt-2 rounded-2xl border border-[#eee] px-1 py-2 text-[12px] leading-relaxed">
+              <div className="mt-2 rounded-lg border border-[#eee] px-1 py-2 text-[12px] leading-relaxed">
                 <p className="font-bold">작품 {king.works}개</p>
                 <p className="text-[#777]">행: {king.rows}</p>
                 <p className="text-[#777]">코: {king.sts}</p>
@@ -210,7 +210,7 @@ function HomePane() {
         <div className="mt-3 flex gap-3 overflow-x-auto px-4">
           {NEWS.map((item) => (
             <button key={item.id} type="button" onClick={() => push({ name: "news", id: item.id })} className="w-40 shrink-0 text-left">
-              <img src={item.image} alt="" className="h-28 w-full rounded-2xl object-cover" />
+              <img src={item.image} alt="" className="h-28 w-full rounded-lg object-cover" />
               <p className="mt-2 text-[13px] font-semibold">{item.title}</p>
             </button>
           ))}
@@ -220,7 +220,7 @@ function HomePane() {
       <section className="px-4 pb-4 pt-10 text-center">
         <p className="text-[40px] font-black tracking-wide text-blush">FAQ</p>
         <p className="text-[18px] font-bold">궁금한 점이 있으신가요?</p>
-        <label className="mt-4 flex h-12 items-center gap-2 rounded-2xl bg-[#f5f5f5] px-4 text-left">
+        <label className="mt-4 flex h-12 items-center gap-2 rounded-lg bg-[#f5f5f5] px-4 text-left">
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -235,7 +235,7 @@ function HomePane() {
             const index = FAQ.indexOf(item);
             const open = openFaq === index;
             return (
-              <div key={item.q} className="rounded-2xl border border-[#ececec]">
+              <div key={item.q} className="rounded-lg border border-[#ececec]">
                 <button
                   type="button"
                   className="flex w-full items-center justify-between px-4 py-3 text-[14px] font-semibold"
@@ -278,7 +278,7 @@ function MarketPane() {
         </button>
       </header>
       <div className="px-4 pt-3">
-        <label className="flex h-11 items-center gap-2 rounded-full bg-[#f5f5f5] px-4">
+        <label className="flex h-11 items-center gap-2 rounded-lg bg-[#f5f5f5] px-4">
           <SearchIcon />
           <input
             value={query}
@@ -304,8 +304,8 @@ function MarketPane() {
       <ul className="mt-4 space-y-3 px-4">
         {items.map((item) => (
           <li key={item.id}>
-            <button type="button" onClick={() => push({ name: "product", id: item.id })} className="flex w-full gap-3 rounded-3xl bg-white p-3 text-left shadow-card">
-              <img src={item.image} alt="" className="h-20 w-20 rounded-2xl object-cover" />
+            <button type="button" onClick={() => push({ name: "product", id: item.id })} className="flex w-full gap-3 rounded-lg bg-white p-3 text-left shadow-card">
+              <img src={item.image} alt="" className="h-20 w-20 rounded-lg object-cover" />
               <span>
                 <span className="text-[11px] text-blush">{item.kind}</span>
                 <span className="mt-0.5 block text-[15px] font-bold">{item.title}</span>
@@ -380,7 +380,7 @@ export function RankingScreen() {
       <h2 className="pt-2 text-center text-[20px] font-bold">이번달 뜨개왕</h2>
       <ul className="mt-6 space-y-3">
         {KINGS.map((king, index) => (
-          <li key={king.name} className="flex items-center gap-3 rounded-3xl border border-[#eee] p-4">
+          <li key={king.name} className="flex items-center gap-3 rounded-lg border border-[#eee] p-4">
             <span className="text-2xl" style={{ color: king.crown }}>
               {index + 1}
             </span>
@@ -426,7 +426,7 @@ export function LikesScreen() {
       {items.map((work) => (
         <li key={work.id}>
           <button type="button" onClick={() => push({ name: "work", id: work.id })} className="w-full text-left">
-            <img src={work.image} alt="" className="aspect-square w-full rounded-2xl object-cover" />
+            <img src={work.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
             <p className="mt-1 text-[13px] font-bold">{work.title}</p>
           </button>
         </li>
@@ -443,7 +443,7 @@ export function NotificationsScreen() {
   return (
     <ul className="space-y-2 px-4 pb-8">
       {NOTIFICATIONS.map((item) => (
-        <li key={item.title} className="rounded-2xl bg-[#fafafa] px-4 py-3">
+        <li key={item.title} className="rounded-lg bg-[#fafafa] px-4 py-3">
           <p className="font-bold">{item.title}</p>
           <p className="mt-1 text-[13px] leading-relaxed text-[#666]">{item.body}</p>
         </li>

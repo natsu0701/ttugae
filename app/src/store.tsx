@@ -47,6 +47,7 @@ function freshPersisted(): Persisted {
     likes: [],
     notifRead: false,
     naviDone: {},
+    catalogVersion: 2,
   };
 }
 
@@ -60,8 +61,9 @@ function loadPersisted(): Persisted {
       ...base,
       ...parsed,
       projects: parsed.projects?.length ? parsed.projects.map((p) => ({ ...p, running: false })) : base.projects,
-      yarns: parsed.yarns?.length ? parsed.yarns : base.yarns,
-      needles: parsed.needles?.length ? parsed.needles : base.needles,
+      yarns: parsed.catalogVersion === 2 && parsed.yarns?.length ? parsed.yarns : base.yarns,
+      needles: parsed.catalogVersion === 2 && parsed.needles?.length ? parsed.needles : base.needles,
+      catalogVersion: 2,
       gauges: parsed.gauges ?? base.gauges,
       counters: parsed.counters?.length ? parsed.counters : base.counters,
       likes: parsed.likes ?? [],
@@ -326,6 +328,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const next = { name } as Route;
       const marker = window.history.state as { ttg?: number } | null;
       window.history.pushState({ ttg: (marker?.ttg ?? 1) + 1 }, "", routeToHash(next));
+      if (name === "home") setHomeTab("home");
       setStack([next]);
     };
 

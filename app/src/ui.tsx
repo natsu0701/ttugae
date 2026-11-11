@@ -83,7 +83,7 @@ export function TextField({
     <input
       {...props}
       className={cx(
-        "h-12 w-full rounded-full border border-[#ececec] bg-white px-4 text-[15px] outline-none placeholder:text-[#b0b0b0]",
+        "h-12 w-full rounded-lg border border-[#ececec] bg-white px-4 text-[15px] outline-none placeholder:text-[#b0b0b0]",
         className,
       )}
     />
@@ -265,7 +265,7 @@ export function SheetHost() {
   return (
     <div className="absolute inset-0 z-40 flex items-end bg-black/30" onClick={closeSheet}>
       <div
-        className="w-full rounded-t-3xl bg-white px-5 pb-8 pt-4"
+        className="w-full rounded-t-lg bg-white px-5 pb-8 pt-4"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
       >
@@ -295,7 +295,7 @@ export function SheetHost() {
                     closeSheet();
                   }}
                   className={cx(
-                    "h-11 rounded-2xl border px-4 text-left text-[14px]",
+                    "h-11 rounded-lg border px-4 text-left text-[14px]",
                     sort === id ? "border-blush bg-blush-soft font-semibold" : "border-[#eee]",
                   )}
                 >
@@ -343,7 +343,7 @@ export function ToastHost() {
   return (
     <div
       className={cx(
-        "pointer-events-none absolute left-4 right-4 z-50 rounded-2xl bg-ink px-4 py-3 text-center text-[13px] text-white",
+        "pointer-events-none absolute left-4 right-4 z-50 rounded-lg bg-ink px-4 py-3 text-center text-[13px] text-white",
         showsTabBar(route) ? "bottom-24" : "bottom-6",
       )}
     >

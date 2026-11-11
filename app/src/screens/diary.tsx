@@ -80,16 +80,16 @@ export function DiaryScreen({ id }: { id: string }) {
 
       <div className="flex items-start gap-2 px-4 pt-3">
         <Mascot className="h-16 w-16 shrink-0" mood="cheer" />
-        <p className="rounded-2xl bg-white px-4 py-3 text-[14px] font-semibold leading-snug shadow-card">
+        <p className="rounded-lg bg-white px-4 py-3 text-[14px] font-semibold leading-snug shadow-card">
           오늘의 뜨개 완료! 오늘 뜬 소중한 한 땀, 뜨니랑 같이 기록해 볼까요?
         </p>
       </div>
 
       <section className="px-4 pt-6">
         <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon filled /> 진행 중인 프로젝트</h2>
-        <article className="mt-3 overflow-hidden rounded-[24px] bg-white shadow-card">
+        <article className="mt-3 overflow-hidden rounded-lg bg-white shadow-card">
           <div className="flex gap-3 p-3">
-            <img src={project.image} alt="" className="h-28 w-24 rounded-2xl object-cover" />
+            <img src={project.image} alt="" className="h-28 w-24 rounded-lg object-cover" />
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-2">
                 <p className="text-[16px] font-bold">{project.title}</p>
@@ -121,12 +121,12 @@ export function DiaryScreen({ id }: { id: string }) {
       <section className="px-4 pt-6">
         <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon filled /> 오늘의 기록</h2>
         <div className="mt-3 grid grid-cols-2 gap-3">
-          <div className="rounded-[24px] bg-white px-4 py-5 text-center shadow-card">
+          <div className="rounded-lg bg-white px-4 py-5 text-center shadow-card">
             <RowsIcon />
             <p className="mt-2 text-[28px] font-bold">{rows}단</p>
             <p className="text-[13px] text-[#888]">작업량</p>
           </div>
-          <div className="rounded-[24px] bg-white px-4 py-5 text-center shadow-card">
+          <div className="rounded-lg bg-white px-4 py-5 text-center shadow-card">
             <ClockIcon />
             <p className="mt-2 text-[28px] font-bold">{minutes}분</p>
             <p className="text-[13px] text-[#888]">소요 시간</p>
@@ -151,14 +151,14 @@ export function DiaryScreen({ id }: { id: string }) {
           </button>
         </div>
         {picking ? (
-          <ul className="mt-3 overflow-hidden rounded-[24px] border border-[#f0f0f0] bg-white">
+          <ul className="mt-3 overflow-hidden rounded-lg border border-[#f0f0f0] bg-white">
             {catalog.length === 0 ? <li className="px-4 py-4 text-[13px] text-[#888]">등록된 재료가 없어요.</li> : null}
             {catalog.map((item) => {
               const selected = chips.includes(item.label);
               return (
                 <li key={item.id} className="border-t border-[#f4f4f4] first:border-t-0">
                   <button type="button" onClick={() => toggleChip(item.label)} className="flex w-full items-center gap-3 px-3 py-2 text-left">
-                    <img src={item.image} alt="" className="h-12 w-12 rounded-2xl object-contain bg-[#f7f7f7]" />
+                    <img src={item.image} alt="" className="h-12 w-12 rounded-lg object-contain bg-[#f7f7f7]" />
                     <span className="min-w-0 flex-1">
                       <span className="block text-[11px] text-[#999]">{item.kind}</span>
                       <span className="block truncate text-[14px] font-semibold">{item.label}</span>
@@ -185,12 +185,12 @@ export function DiaryScreen({ id }: { id: string }) {
           onChange={(event) => setMemo(event.target.value)}
           placeholder="오늘의 뜨개 느낌이나 팁을 적어보세요."
           aria-label="나의 메모"
-          className="memo-lines mt-3 h-40 w-full resize-none rounded-2xl border border-[#f0e4d8] bg-[#fffdf8] px-4 py-3 text-[14px] leading-[28px] outline-none"
+          className="memo-lines mt-3 h-40 w-full resize-none rounded-lg border border-[#f0e4d8] bg-[#fffdf8] px-4 py-3 text-[14px] leading-[28px] outline-none"
         />
         {project.diary.length > 0 ? (
           <ul className="mt-3 space-y-2">
             {project.diary.map((entry, index) => (
-              <li key={`${entry.date}-${index}`} className="rounded-2xl bg-[#fafafa] px-3 py-2 text-[13px]">
+              <li key={`${entry.date}-${index}`} className="rounded-lg bg-[#fafafa] px-3 py-2 text-[13px]">
                 <span className="font-semibold">{entry.title}</span>
                 <span className="mt-0.5 block whitespace-pre-line text-[#666]">{entry.body}</span>
                 <span className="mt-1 block text-[12px] text-[#999]">{entry.date}</span>
@@ -220,7 +220,7 @@ export function DiaryScreen({ id }: { id: string }) {
         {photos.length > 0 ? (
           <ul className="mt-3 space-y-3">
             {photos.map((url) => (
-              <li key={url} className="overflow-hidden rounded-[28px] bg-white shadow-card">
+              <li key={url} className="overflow-hidden rounded-lg bg-white shadow-card">
                 <img src={url} alt="" className="block h-auto w-full bg-[#f7f7f7]" />
                 <div className="flex items-center justify-between px-4 py-3">
                   <span>

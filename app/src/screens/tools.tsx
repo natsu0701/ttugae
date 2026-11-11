@@ -89,7 +89,7 @@ function Calculator() {
         계산하기
       </BlackButton>
       {calcResult !== null ? (
-        <div className="mt-4 rounded-[24px] border border-blush px-4 py-5 text-center">
+        <div className="mt-4 rounded-lg border border-blush px-4 py-5 text-center">
           <p className="text-[14px]">계산 결과</p>
           <p className="text-[36px] font-bold">{calcResult}코</p>
           <p className="text-[12px] text-[#999]">(올림 처리된 값)</p>
@@ -99,7 +99,7 @@ function Calculator() {
         게이지 저장하기
       </PinkButton>
       <button type="button" onClick={() => openSheet({ kind: "info", title: "자가가 필요할 때", body: "10cm 자를 스와치에 대고 그 안의 코를 세면 돼요. 사진 버튼은 예시로 20코를 넣어 줘요." })} className="mt-8 flex items-end justify-between">
-        <span className="max-w-[180px] rounded-2xl bg-[#f4f4f4] px-3 py-2 text-left text-[13px] leading-snug">
+        <span className="max-w-[180px] rounded-lg bg-[#f4f4f4] px-3 py-2 text-left text-[13px] leading-snug">
           자가 필요하면
           <br />
           저를 클릭하세요!
@@ -115,7 +115,7 @@ function GaugeList() {
   if (data.gauges.length === 0) {
     return (
       <div className="grid place-items-center px-8 pt-16 text-center">
-        <span className="rounded-2xl bg-[#f4f4f4] px-4 py-3 text-[14px] leading-relaxed">
+        <span className="rounded-lg bg-[#f4f4f4] px-4 py-3 text-[14px] leading-relaxed">
           세탁 전후 게이지,
           <br />
           뜨니가 체크해 드려요!
@@ -129,7 +129,7 @@ function GaugeList() {
     <div>
       <ul className="space-y-3 px-4 pt-5">
         {data.gauges.map((gauge) => (
-          <li key={gauge.id} className="flex gap-3 rounded-[24px] border border-[#f0f0f0] p-3">
+          <li key={gauge.id} className="flex gap-3 rounded-lg border border-[#f0f0f0] p-3">
             <div className="flex-1">
               <p className="font-bold">{gauge.name}</p>
               <p className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><PencilIcon /> {gauge.thickness}</p>
@@ -143,7 +143,7 @@ function GaugeList() {
               <button type="button" aria-label="게이지 삭제" onClick={() => removeGauge(gauge.id)} className="text-[#bbb]">
                 <TrashIcon />
               </button>
-              <img src={gauge.image} alt="" className="mt-2 h-16 w-16 rounded-2xl object-cover" />
+              <img src={gauge.image} alt="" className="mt-2 h-16 w-16 rounded-lg object-cover" />
             </div>
           </li>
         ))}
@@ -191,11 +191,11 @@ export function GaugeFormScreen() {
     >
       <label className="block text-[14px] font-bold">
         게이지 이름
-        <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-3 font-normal outline-none" />
+        <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal outline-none" />
       </label>
       <label className="block text-[14px] font-bold">
         연결된 프로젝트
-        <select value={projectId} onChange={(event) => setProjectId(event.target.value)} className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-3 font-normal">
+        <select value={projectId} onChange={(event) => setProjectId(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal">
           <option value="">프로젝트 없음</option>
           {data.projects.map((project) => (
             <option key={project.id} value={project.id}>
@@ -206,7 +206,7 @@ export function GaugeFormScreen() {
       </label>
       <label className="block text-[14px] font-bold">
         실 정보
-        <select value={yarnName} onChange={(event) => setYarnName(event.target.value)} className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-3 font-normal">
+        <select value={yarnName} onChange={(event) => setYarnName(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal">
           {data.yarns.map((yarn) => (
             <option key={yarn.id}>{yarn.name}</option>
           ))}
@@ -214,7 +214,7 @@ export function GaugeFormScreen() {
       </label>
       <label className="block text-[14px] font-bold">
         바늘 정보
-        <select value={needle} onChange={(event) => setNeedle(event.target.value)} className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-3 font-normal">
+        <select value={needle} onChange={(event) => setNeedle(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal">
           {data.needles.map((item) => (
             <option key={item.id}>{item.name}</option>
           ))}
@@ -222,13 +222,13 @@ export function GaugeFormScreen() {
       </label>
       <label className="block text-[14px] font-bold">
         도안명
-        <input value={pattern} onChange={(event) => setPattern(event.target.value)} className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-3 font-normal outline-none" />
+        <input value={pattern} onChange={(event) => setPattern(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal outline-none" />
       </label>
       <Pair title="세탁 전 게이지" sts={beforeSts} rows={beforeRows} onSts={setBeforeSts} onRows={setBeforeRows} />
       <Pair title="세탁 후 게이지" sts={afterSts} rows={afterRows} onSts={setAfterSts} onRows={setAfterRows} />
       <label className="block text-[14px] font-bold">
         메모
-        <textarea value={memo} onChange={(event) => setMemo(event.target.value)} className="mt-2 h-24 w-full rounded-2xl bg-[#f6f6f6] px-3 py-3 font-normal outline-none" />
+        <textarea value={memo} onChange={(event) => setMemo(event.target.value)} className="mt-2 h-24 w-full rounded-lg bg-[#f6f6f6] px-3 py-3 font-normal outline-none" />
       </label>
       <button type="submit" className="h-12 w-full rounded-full bg-blush font-semibold text-white">
         저장
@@ -271,7 +271,7 @@ export function CounterListScreen() {
       <ul className="space-y-3 px-4 pt-2">
         {data.counters.map((counter) => (
           <li key={counter.id}>
-            <button type="button" onClick={() => push({ name: "counter", id: counter.id })} className="flex w-full items-center justify-between rounded-[24px] border border-[#f3f3f3] px-4 py-4 text-left shadow-card">
+            <button type="button" onClick={() => push({ name: "counter", id: counter.id })} className="flex w-full items-center justify-between rounded-lg border border-[#f3f3f3] px-4 py-4 text-left shadow-card">
               <span>
                 <span className="block text-[18px] font-bold">{counter.name}</span>
                 <span className="text-[13px] text-[#999]">카운터 {counter.rows.length}개</span>
@@ -300,15 +300,15 @@ export function CounterScreen({ id }: { id: string }) {
           value={counter.name}
           onChange={(event) => renameCounter(counter.id, event.target.value)}
           aria-label="카운터 이름"
-          className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-4 text-[16px] font-semibold outline-none"
+          className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[16px] font-semibold outline-none"
         />
       </label>
-      <div className="rounded-[24px] border border-[#f2f2f2] p-4">
+      <div className="rounded-lg border border-[#f2f2f2] p-4">
         <span className="text-[14px] font-bold">연결 프로젝트</span>
         <button
           type="button"
           onClick={() => setOpenProjects((value) => !value)}
-          className="mt-2 flex h-12 w-full items-center justify-between rounded-2xl bg-[#f6f6f6] px-4 text-left text-[14px]"
+          className="mt-2 flex h-12 w-full items-center justify-between rounded-lg bg-[#f6f6f6] px-4 text-left text-[14px]"
           aria-expanded={openProjects}
         >
           <span className="truncate">{linked ? linked.title : "프로젝트 선택하기"}</span>
@@ -323,7 +323,7 @@ export function CounterScreen({ id }: { id: string }) {
                   setCounterProject(counter.id, null);
                   setOpenProjects(false);
                 }}
-                className={cx("w-full rounded-2xl border px-4 py-3 text-left text-[14px]", !linked ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
+                className={cx("w-full rounded-lg border px-4 py-3 text-left text-[14px]", !linked ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
               >
                 연결 안 함
               </button>
@@ -338,7 +338,7 @@ export function CounterScreen({ id }: { id: string }) {
                       setCounterProject(counter.id, project.id);
                       setOpenProjects(false);
                     }}
-                    className={cx("flex w-full items-center gap-3 rounded-2xl border p-2 text-left", selected ? "border-blush bg-blush-soft" : "border-[#f0f0f0] bg-white")}
+                    className={cx("flex w-full items-center gap-3 rounded-lg border p-2 text-left", selected ? "border-blush bg-blush-soft" : "border-[#f0f0f0] bg-white")}
                   >
                     <img src={project.image} alt="" className="h-14 w-14 rounded-lg object-cover" />
                     <span className="min-w-0">
@@ -353,7 +353,7 @@ export function CounterScreen({ id }: { id: string }) {
         ) : null}
       </div>
       {counter.rows.map((row) => (
-        <section key={row.id} className="overflow-hidden rounded-[24px] border border-[#eee]">
+        <section key={row.id} className="overflow-hidden rounded-lg border border-[#eee]">
           <div className="flex items-center justify-between bg-ink px-4 py-2 text-white">
             <span className="text-[14px] font-semibold">{row.label}</span>
             <button type="button" aria-label={`${row.label} 초기화`} onClick={() => resetCounterRow(counter.id, row.id)}>
@@ -439,7 +439,7 @@ export function ChatScreen() {
         {messages.map((message, index) => (
           <div key={`${message.from}-${index}`} className={cx("flex", message.from === "me" ? "justify-end" : "justify-start gap-2")}>
             {message.from === "bot" ? <Mascot className="h-10 w-10 shrink-0" /> : null}
-            <p className={cx("max-w-[75%] rounded-2xl px-3 py-2 text-[14px] leading-relaxed", message.from === "me" ? "bg-ink text-white" : "bg-[#f5f5f5]")}>
+            <p className={cx("max-w-[75%] rounded-lg px-3 py-2 text-[14px] leading-relaxed", message.from === "me" ? "bg-ink text-white" : "bg-[#f5f5f5]")}>
               {message.text}
             </p>
           </div>
@@ -492,7 +492,7 @@ export function EditorScreen() {
         ))}
       </div>
       <div className={cx("mt-4 origin-center transition-transform", tilt && "[transform:rotateX(48deg)_rotateZ(-18deg)]")} style={{ perspective: "800px" }}>
-        <div className="grid grid-cols-12 gap-0.5 rounded-2xl bg-[#f3f3f3] p-2">
+        <div className="grid grid-cols-12 gap-0.5 rounded-lg bg-[#f3f3f3] p-2">
           {cells.map((cell, index) => (
             <button
               key={index}

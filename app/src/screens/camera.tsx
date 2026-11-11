@@ -184,7 +184,7 @@ export function CameraScreen({ id }: { id: string }) {
         </button>
       </div>
       {status !== "live" ? (
-        <p className="absolute left-4 right-4 top-20 rounded-2xl bg-black px-4 py-3 text-center text-[13px] leading-relaxed">
+        <p className="absolute left-4 right-4 top-20 rounded-lg bg-black px-4 py-3 text-center text-[13px] leading-relaxed">
           {status === "starting"
             ? "카메라를 켜는 중이에요."
             : "카메라를 열지 못했어요. 브라우저에서 카메라 권한을 허용하면 바늘 영상이 화면 위에 겹쳐져요. 오른쪽 위 버튼으로 오늘 작업을 마칠 수 있어요."}

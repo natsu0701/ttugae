@@ -303,7 +303,7 @@ function ToolStep({ tool, onChange }: { tool: ToolKind | null; onChange: (tool: 
             type="button"
             onClick={() => onChange(item)}
             className={cx(
-              "h-24 rounded-3xl border text-[14px] font-semibold",
+              "h-24 rounded-lg border text-[14px] font-semibold",
               tool === item ? "border-blush bg-blush-soft" : "border-[#eee]",
             )}
           >
@@ -320,7 +320,7 @@ function Choice({ title, active, onClick }: { title: string; active: boolean; on
     <button
       type="button"
       onClick={onClick}
-      className={cx("h-14 rounded-2xl border px-4 text-left text-[15px] font-semibold", active ? "border-blush bg-blush-soft" : "border-[#eee]")}
+      className={cx("h-14 rounded-lg border px-4 text-left text-[15px] font-semibold", active ? "border-blush bg-blush-soft" : "border-[#eee]")}
     >
       {title}
     </button>
@@ -386,7 +386,7 @@ export function SkillScreen() {
             key={option}
             type="button"
             onClick={() => pick(optionIndex)}
-            className="h-14 rounded-2xl border border-[#eee] text-left px-4 text-[15px] font-semibold"
+            className="h-14 rounded-lg border border-[#eee] text-left px-4 text-[15px] font-semibold"
           >
             {option}
           </button>

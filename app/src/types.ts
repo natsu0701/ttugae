@@ -184,6 +184,7 @@ export type ShortClip = {
   author: string;
   length: string;
   image: string;
+  video: string;
 };
 
 export type Question = {
@@ -214,4 +215,5 @@ export type Persisted = {
   likes: string[];
   notifRead: boolean;
   naviDone: Record<string, string[]>;
+  catalogVersion?: number;
 };

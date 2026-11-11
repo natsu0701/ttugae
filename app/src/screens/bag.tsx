@@ -84,7 +84,7 @@ function ProjectPane() {
       {current ? (
         <section className="px-4 pt-2">
           <h2 className="text-[16px] font-bold">진행 중인 프로젝트</h2>
-          <button type="button" onClick={() => push({ name: "project", id: current.id })} className="mt-3 w-full overflow-hidden rounded-[28px] bg-white text-left shadow-card">
+          <button type="button" onClick={() => push({ name: "project", id: current.id })} className="mt-3 w-full overflow-hidden rounded-lg bg-white text-left shadow-card">
             <img src={current.image} alt="" className="h-44 w-full object-cover" />
             <div className="flex items-end justify-between px-4 py-3">
               <span>
@@ -136,7 +136,7 @@ function ProjectList({ projects }: { projects: Project[] }) {
     <ul className="space-y-2 px-4 pt-3">
       {projects.map((project) => (
         <li key={project.id}>
-          <button type="button" onClick={() => push({ name: "project", id: project.id })} className="flex w-full items-center gap-3 rounded-2xl border border-[#f0f0f0] p-2 text-left">
+          <button type="button" onClick={() => push({ name: "project", id: project.id })} className="flex w-full items-center gap-3 rounded-lg border border-[#f0f0f0] p-2 text-left">
             <img src={project.image} alt="" className="h-16 w-16 rounded-lg object-cover" />
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[15px] font-bold">{project.title}</span>
@@ -180,7 +180,7 @@ function DonePane() {
       {(done.length ? done : data.projects.slice(0, 2)).map((project) => (
         <li key={project.id}>
           <button type="button" onClick={() => push({ name: "finished", id: project.id })} className="w-full text-left">
-            <img src={project.image} alt="" className="aspect-[3/4] w-full rounded-3xl object-cover" />
+            <img src={project.image} alt="" className="aspect-[3/4] w-full rounded-lg object-cover" />
             <span className="mt-2 block text-[14px] font-bold">{project.title}</span>
             <span className="text-[12px] text-[#999]">완성 기록</span>
           </button>
@@ -203,7 +203,7 @@ function SearchRow({
 }) {
   return (
     <div className="flex gap-2 px-4 pt-4">
-      <label className="flex h-11 flex-1 items-center gap-2 rounded-full bg-[#f5f5f5] px-4">
+      <label className="flex h-11 flex-1 items-center gap-2 rounded-lg bg-[#f5f5f5] px-4">
         <input
           value={value}
           onChange={(event) => onChange(event.target.value)}
@@ -213,7 +213,7 @@ function SearchRow({
         />
         <SearchIcon />
       </label>
-      <button type="button" aria-label="정렬" onClick={onFilter} className="grid h-11 w-11 place-items-center rounded-full bg-[#f5f5f5]">
+      <button type="button" aria-label="정렬" onClick={onFilter} className="grid h-11 w-11 place-items-center rounded-lg bg-[#f5f5f5]">
         ▽
       </button>
     </div>
@@ -244,7 +244,7 @@ function YarnPane() {
       <h2 className="px-4 pt-2 text-[16px] font-bold">최근 사용한 실</h2>
       <div className="mt-3 flex gap-3 overflow-x-auto px-4">
         {recent.map((yarn) => (
-          <button key={yarn.id} type="button" onClick={() => push({ name: "yarn", id: yarn.id })} className="w-36 shrink-0 rounded-3xl border border-[#f0f0f0] p-2 text-left">
+          <button key={yarn.id} type="button" onClick={() => push({ name: "yarn", id: yarn.id })} className="w-36 shrink-0 rounded-lg border border-[#f0f0f0] p-2 text-left">
             <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
             <p className="mt-2 truncate text-[13px] font-bold">{yarn.name}</p>
             <p className="truncate text-[11px] text-[#999]">{yarn.code}</p>
@@ -274,7 +274,7 @@ function YarnPane() {
 
 function YarnRow({ yarn, onOpen, onRemove }: { yarn: Yarn; onOpen: () => void; onRemove: () => void }) {
   return (
-    <li className="rounded-3xl border border-[#f0f0f0] p-3">
+    <li className="rounded-lg border border-[#f0f0f0] p-3">
       <div className="flex gap-3">
         <button type="button" onClick={onOpen} className="flex flex-1 gap-3 text-left">
           <img src={yarn.image} alt="" className="h-16 w-16 rounded-lg object-cover" />
@@ -324,7 +324,7 @@ function NeedlePane() {
         {needles
           .filter((needle) => needle.recent)
           .map((needle) => (
-            <button key={needle.id} type="button" onClick={() => push({ name: "needle", id: needle.id })} className="w-36 shrink-0 rounded-3xl border border-[#f0f0f0] p-2 text-left">
+            <button key={needle.id} type="button" onClick={() => push({ name: "needle", id: needle.id })} className="w-36 shrink-0 rounded-lg border border-[#f0f0f0] p-2 text-left">
               <img src={needle.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
               <p className="mt-2 truncate text-[13px] font-bold">{needle.name}</p>
               <p className="text-[11px] text-[#999]">{needle.brandLine}</p>
@@ -351,7 +351,7 @@ function NeedlePane() {
 
 function NeedleRow({ needle, onOpen, onRemove }: { needle: Needle; onOpen: () => void; onRemove: () => void }) {
   return (
-    <li className="rounded-3xl border border-[#f0f0f0] p-3">
+    <li className="rounded-lg border border-[#f0f0f0] p-3">
       <div className="flex gap-3">
         <button type="button" onClick={onOpen} className="flex-1 text-left">
           <span className="rounded-full bg-[#f6f6f6] px-2 py-0.5 text-[11px]">{needle.category}</span>
@@ -381,8 +381,8 @@ export function ProjectScreen({ id }: { id: string }) {
           <GridIcon /> 시작일 {project.started}
         </span>
       </div>
-      <img src={project.image} alt="" className="mx-4 mt-3 h-52 w-[calc(100%-2rem)] rounded-[28px] object-cover" />
-      <div className="mx-4 mt-4 rounded-[28px] bg-[#fafafa] p-4">
+      <img src={project.image} alt="" className="mx-4 mt-3 h-52 w-[calc(100%-2rem)] rounded-lg object-cover" />
+      <div className="mx-4 mt-4 rounded-lg bg-[#fafafa] p-4">
         <div className="flex items-center justify-between">
           <p className="font-mono text-[28px] font-semibold tracking-wider">{formatClock(project.elapsed)}</p>
           <span className="flex gap-2">
@@ -468,7 +468,7 @@ export function ProjectScreen({ id }: { id: string }) {
 export function MiniChart() {
   const colors = ["#f4e7d8", "#e7b7a8", "#c98686", "#8d5b49", "#f7f1ea"];
   return (
-    <div className="grid grid-cols-12 gap-0.5 rounded-2xl bg-[#f7f7f7] p-2">
+    <div className="grid grid-cols-12 gap-0.5 rounded-lg bg-[#f7f7f7] p-2">
       {Array.from({ length: 96 }, (_, index) => (
         <span key={index} className="aspect-square rounded-[2px]" style={{ background: colors[(index * 3 + Math.floor(index / 12)) % colors.length] }} />
       ))}
@@ -501,7 +501,7 @@ export function NaviScreen({ id }: { id: string }) {
                 type="button"
                 onClick={() => toggleNavi(id, step)}
                 className={cx(
-                  "flex w-full items-start gap-3 rounded-2xl border px-4 py-3 text-left",
+                  "flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left",
                   current ? "border-blush bg-blush-soft" : "border-[#f0f0f0]",
                 )}
               >
@@ -558,11 +558,11 @@ export function ProjectFormScreen({ id }: { id?: string }) {
     >
       <label className="block">
         <span className="text-[14px] font-bold">프로젝트 이름</span>
-        <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="프로젝트 이름을 입력하세요." className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-4 text-[14px] outline-none" />
+        <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="프로젝트 이름을 입력하세요." className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[14px] outline-none" />
       </label>
       <label className="block">
         <span className="text-[14px] font-bold">도안</span>
-        <select value={patternId} onChange={(event) => setPatternId(event.target.value)} className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-4 text-[14px]">
+        <select value={patternId} onChange={(event) => setPatternId(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[14px]">
           {PATTERNS.map((pattern) => (
             <option key={pattern.id} value={pattern.id}>
               {pattern.title}
@@ -582,7 +582,7 @@ export function ProjectFormScreen({ id }: { id?: string }) {
                 type="button"
                 onClick={() => toggleId(yarnIds, yarn.id, setYarnIds)}
                 aria-pressed={selected}
-                className={cx("w-28 shrink-0 rounded-2xl border p-2 text-left text-[12px]", selected ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
+                className={cx("w-28 shrink-0 rounded-lg border p-2 text-left text-[12px]", selected ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
               >
                 <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
                 <span className="mt-1 block font-semibold">{yarn.name}</span>
@@ -603,7 +603,7 @@ export function ProjectFormScreen({ id }: { id?: string }) {
                 type="button"
                 onClick={() => toggleId(needleIds, needle.id, setNeedleIds)}
                 aria-pressed={selected}
-                className={cx("w-28 shrink-0 rounded-2xl border p-2 text-left text-[12px]", selected ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
+                className={cx("w-28 shrink-0 rounded-lg border p-2 text-left text-[12px]", selected ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
               >
                 <img src={needle.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
                 <span className="mt-1 block font-semibold">{needle.name}</span>
@@ -615,7 +615,7 @@ export function ProjectFormScreen({ id }: { id?: string }) {
       </div>
       <label className="block">
         <span className="text-[14px] font-bold">카테고리</span>
-        <select value={category} onChange={(event) => setCategory(event.target.value)} className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-4 text-[14px]">
+        <select value={category} onChange={(event) => setCategory(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[14px]">
           {YARN_CATEGORIES.map((item) => (
             <option key={item}>{item}</option>
           ))}
@@ -625,7 +625,7 @@ export function ProjectFormScreen({ id }: { id?: string }) {
       <GaugePair label="세탁 후 게이지" sts={afterSts} rows={afterRows} onSts={setAfterSts} onRows={setAfterRows} />
       <label className="block">
         <span className="text-[14px] font-bold">메모</span>
-        <textarea value={memo} onChange={(event) => setMemo(event.target.value)} placeholder="게이지 측정에 대한 추가 정보를 입력하세요." className="mt-2 h-24 w-full rounded-2xl bg-[#f6f6f6] px-4 py-3 text-[14px] outline-none" />
+        <textarea value={memo} onChange={(event) => setMemo(event.target.value)} placeholder="게이지 측정에 대한 추가 정보를 입력하세요." className="mt-2 h-24 w-full rounded-lg bg-[#f6f6f6] px-4 py-3 text-[14px] outline-none" />
       </label>
       <button type="submit" className="h-12 w-full rounded-full bg-blush font-semibold text-white">
         저장
