@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { BagTab, Needle, Project, Yarn } from "../types.ts";
-import { CheckIcon, Fab, GearIcon, GridIcon, InfoButton, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
+import type { SortDir, SortField } from "../types.ts";
+import { CheckIcon, ChevronDown, Fab, FilterIcon, GearIcon, GridIcon, InfoButton, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
 
 const TABS: { id: BagTab; label: string }[] = [
   { id: "projects", label: "프로젝트" },
@@ -190,38 +191,90 @@ function DonePane() {
   );
 }
 
+function sortItems<T extends { id: string; name: string; recent: boolean }>(list: T[], sort: { field: SortField; dir: SortDir }, stock: (item: T) => number) {
+  const sign = sort.dir === "asc" ? 1 : -1;
+  return [...list].sort((a, b) => {
+    if (sort.field === "name") return a.name.localeCompare(b.name, "ko") * sign;
+    if (sort.field === "stock") return (stock(a) - stock(b)) * sign;
+    if (sort.field === "registered") return a.id.localeCompare(b.id) * sign;
+    return (Number(a.recent) - Number(b.recent)) * sign;
+  });
+}
+
+const SORTS: { field: SortField; label: string }[] = [
+  { field: "recent", label: "최근 사용순" },
+  { field: "registered", label: "등록일순" },
+  { field: "name", label: "이름순" },
+  { field: "stock", label: "재고순" },
+];
+
 function SearchRow({
   value,
   onChange,
   placeholder,
-  onFilter,
 }: {
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
-  onFilter: () => void;
 }) {
+  const { sort, setSort } = useApp();
+  const [open, setOpen] = useState(false);
+  const choose = (field: SortField, dir: SortDir) => {
+    setSort({ field, dir });
+    setOpen(false);
+  };
   return (
-    <div className="flex gap-2 px-4 pt-4">
-      <label className="flex h-11 flex-1 items-center gap-2 rounded-lg bg-[#f5f5f5] px-4">
-        <input
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          placeholder={placeholder}
-          className="w-full bg-transparent text-[14px] outline-none"
-          aria-label={placeholder}
-        />
-        <SearchIcon />
-      </label>
-      <button type="button" aria-label="정렬" onClick={onFilter} className="grid h-11 w-11 place-items-center rounded-lg bg-[#f5f5f5]">
-        ▽
-      </button>
+    <div className="relative px-4 pt-4">
+      <div className="flex gap-2">
+        <label className="flex h-11 flex-1 items-center gap-2 rounded-lg bg-[#f5f5f5] px-4">
+          <input
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+            placeholder={placeholder}
+            className="w-full bg-transparent text-[14px] outline-none"
+            aria-label={placeholder}
+          />
+          <SearchIcon />
+        </label>
+        <button
+          type="button"
+          aria-label="정렬"
+          aria-expanded={open}
+          onClick={() => setOpen((current) => !current)}
+          className={cx("grid h-11 w-11 place-items-center rounded-full border", open ? "border-ink bg-ink text-white" : "border-[#e6e6e6] bg-white text-[#666]")}
+        >
+          <FilterIcon />
+        </button>
+      </div>
+      {open ? (
+        <>
+          <button type="button" aria-label="정렬 닫기" className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
+          <div className="absolute right-4 top-[4.25rem] z-30 w-[15.5rem] rounded-2xl border border-[#eee] bg-white p-3 shadow-card">
+            <p className="px-1 text-[14px] font-bold">정렬</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {SORTS.map((item) => (
+                <div key={item.field} className={cx("flex h-9 items-center justify-center gap-1 rounded-full border px-2 text-[12px]", sort.field === item.field ? "border-[#ddd] bg-[#fafafa] font-semibold" : "border-[#ececec]")}>
+                  <span>{item.label}</span>
+                  <span className="flex flex-col">
+                    <button type="button" aria-label={`${item.label} 오름차순`} onClick={() => choose(item.field, "asc")} className={cx("grid h-3 w-3 place-items-center", sort.field === item.field && sort.dir === "asc" ? "text-ink" : "text-[#c8c8c8]")}>
+                      <ChevronDown up className="h-3 w-3" />
+                    </button>
+                    <button type="button" aria-label={`${item.label} 내림차순`} onClick={() => choose(item.field, "desc")} className={cx("grid h-3 w-3 place-items-center", sort.field === item.field && sort.dir === "desc" ? "text-ink" : "text-[#c8c8c8]")}>
+                      <ChevronDown className="h-3 w-3" />
+                    </button>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
 
 function YarnPane() {
-  const { data, push, removeYarn, openSheet, notify, sort } = useApp();
+  const { data, push, removeYarn, notify, sort } = useApp();
   const [category, setCategory] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const yarns = useMemo(() => {
@@ -229,17 +282,13 @@ function YarnPane() {
       const text = `${yarn.name} ${yarn.code} ${yarn.category}`;
       return (!category || yarn.category === category) && text.includes(query.trim());
     });
-    return [...list].sort((a, b) => {
-      if (sort === "name") return a.name.localeCompare(b.name, "ko");
-      if (sort === "amount") return b.balls - a.balls;
-      return Number(b.recent) - Number(a.recent);
-    });
+    return sortItems(list, sort, (yarn) => yarn.balls);
   }, [category, data.yarns, query, sort]);
   const recent = yarns.filter((yarn) => yarn.recent);
 
   return (
     <div>
-      <SearchRow value={query} onChange={setQuery} placeholder="실 이름을 검색해보세요." onFilter={() => openSheet({ kind: "filter", scope: "yarn" })} />
+      <SearchRow value={query} onChange={setQuery} placeholder="실 이름을 검색해보세요." />
       <CategoryRow items={YARN_CATEGORIES} value={category} onChange={setCategory} />
       <h2 className="px-4 pt-2 text-[16px] font-bold">최근 사용한 실</h2>
       <div className="mt-3 flex gap-3 overflow-x-auto px-4">
@@ -300,7 +349,7 @@ function YarnRow({ yarn, onOpen, onRemove }: { yarn: Yarn; onOpen: () => void; o
 }
 
 function NeedlePane() {
-  const { data, push, removeNeedle, openSheet, notify, sort } = useApp();
+  const { data, push, removeNeedle, notify, sort } = useApp();
   const [category, setCategory] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const needles = useMemo(() => {
@@ -308,16 +357,12 @@ function NeedlePane() {
       const text = `${needle.name} ${needle.category} ${needle.size}`;
       return (!category || needle.category === category) && text.includes(query.trim());
     });
-    return [...list].sort((a, b) => {
-      if (sort === "name") return a.name.localeCompare(b.name, "ko");
-      if (sort === "amount") return a.size.localeCompare(b.size);
-      return Number(b.recent) - Number(a.recent);
-    });
+    return sortItems(list, sort, (needle) => Number.parseFloat(needle.size) || 0);
   }, [category, data.needles, query, sort]);
 
   return (
     <div>
-      <SearchRow value={query} onChange={setQuery} placeholder="바늘 이름을 검색해보세요." onFilter={() => openSheet({ kind: "filter", scope: "needle" })} />
+      <SearchRow value={query} onChange={setQuery} placeholder="바늘 이름을 검색해보세요." />
       <CategoryRow items={NEEDLE_CATEGORIES} value={category} onChange={setCategory} />
       <h2 className="px-4 pt-2 text-[16px] font-bold">최근 사용한 바늘</h2>
       <div className="mt-3 flex gap-3 overflow-x-auto px-4">

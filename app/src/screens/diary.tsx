@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon, Mascot, RowsIcon, SparkIcon } from "../ui.tsx";
+import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon, Mascot, PlusIcon, RowsIcon, SparkIcon } from "../ui.tsx";
 
 export function DiaryScreen({ id }: { id: string }) {
   const { data, back, saveDiary } = useApp();
@@ -146,8 +146,8 @@ export function DiaryScreen({ id }: { id: string }) {
               </button>
             </span>
           ))}
-          <button type="button" onClick={() => setPicking((value) => !value)} className="h-9 rounded-full bg-[#f4f4f4] px-4 text-[13px] font-semibold">
-            + 추가
+          <button type="button" onClick={() => setPicking((value) => !value)} className="inline-flex h-9 items-center gap-1 rounded-full bg-[#f4f4f4] px-4 text-[13px] font-semibold">
+            <PlusIcon className="h-3.5 w-3.5" /> 추가
           </button>
         </div>
         {picking ? (

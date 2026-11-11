@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
-import { BlackButton, CameraIcon, ChevronDown, Fab, InfoButton, Mascot, PencilIcon, PinkButton, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
+import { BlackButton, CameraIcon, ChevronDown, CloseIcon, Fab, InfoButton, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
 
 export function GaugeScreen({ tab }: { tab: GaugeTab }) {
   const { replace, push } = useApp();
@@ -586,22 +586,22 @@ export function CounterScreen({ id }: { id: string }) {
           <div className="flex items-center justify-between bg-ink px-4 py-2 text-white">
             <span className="text-[14px] font-semibold">{row.label}</span>
             <button type="button" aria-label={`${row.label} 초기화`} onClick={() => resetCounterRow(counter.id, row.id)}>
-              ×
+              <CloseIcon size={16} />
             </button>
           </div>
           <div className="flex items-center justify-between px-4 py-4">
             <StepButton label="감소" disabled={row.value === 0} onClick={() => bumpCounter(counter.id, row.id, -1)}>
-              –
+              <MinusIcon className="h-5 w-5" />
             </StepButton>
             <span className="text-[40px] font-bold">{row.value}</span>
             <StepButton label="증가" pink onClick={() => bumpCounter(counter.id, row.id, 1)}>
-              +
+              <PlusIcon className="h-5 w-5" />
             </StepButton>
           </div>
         </section>
       ))}
       <button type="button" onClick={() => addCounterRow(counter.id)} className="flex h-16 w-full items-center justify-center gap-2 rounded-[20px] bg-[#f6f6f6] font-semibold">
-        + 카운터 추가
+        <PlusIcon className="h-4 w-4" /> 카운터 추가
       </button>
     </div>
   );
@@ -614,7 +614,7 @@ function StepButton({
   pink,
   disabled,
 }: {
-  children: string;
+  children: ReactNode;
   onClick: () => void;
   label: string;
   pink?: boolean;

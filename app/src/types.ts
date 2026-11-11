@@ -4,7 +4,9 @@ export type BagTab = "projects" | "done" | "yarn" | "needles";
 export type HomeTab = "home" | "market";
 export type LoungeTab = "works" | "qa" | "shorts";
 export type GaugeTab = "manage" | "calc";
-export type SortKey = "recent" | "name" | "amount";
+export type SortField = "recent" | "registered" | "name" | "stock";
+export type SortDir = "asc" | "desc";
+export type SortKey = { field: SortField; dir: SortDir };
 
 export type Route =
   | { name: "splash" }

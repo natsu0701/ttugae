@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { PRODUCTS } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { ToolKind, UnitSystem } from "../types.ts";
-import { ChevronRight, FigmaIcon, GearIcon, Mascot, cx } from "../ui.tsx";
+import { BagFillIcon, BellFillIcon, BookmarkFillIcon, ChatFillIcon, CheckFillIcon, ClockFillIcon, CommunityFillIcon, FileTextFillIcon, HeartFillIcon, PencilFillIcon, SparkleFillIcon } from "../icons/webFill.tsx";
+import { ChevronRight, GearIcon, HeartIcon, Mascot, cx } from "../ui.tsx";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 const MARKS: Record<number, "heart" | "star" | "check"> = {
@@ -64,10 +65,10 @@ export function MyScreen() {
       </button>
 
       <div className="grid grid-cols-4 gap-2 px-4 py-4 text-center">
-        <Shortcut icon="bag" label="장바구니" onClick={() => { setHomeTab("market"); goTab("home"); }} />
-        <Shortcut icon="heart" label="관심 목록" onClick={() => push({ name: "likes" })} />
-        <Shortcut icon="clock" label="최근 본 글" onClick={() => { setLoungeTab("works"); goTab("lounge"); }} />
-        <Shortcut icon="mail" label="내 댓글" onClick={() => { setLoungeTab("qa"); goTab("lounge"); }} />
+        <Shortcut icon={<BagFillIcon className="h-6 w-6" />} label="장바구니" onClick={() => { setHomeTab("market"); goTab("home"); }} />
+        <Shortcut icon={<HeartFillIcon className="h-6 w-6" />} label="관심 목록" onClick={() => push({ name: "likes" })} />
+        <Shortcut icon={<ClockFillIcon className="h-6 w-6" />} label="최근 본 글" onClick={() => { setLoungeTab("works"); goTab("lounge"); }} />
+        <Shortcut icon={<ChatFillIcon className="h-6 w-6" />} label="내 댓글" onClick={() => { setLoungeTab("qa"); goTab("lounge"); }} />
       </div>
 
       <section className="mx-4 rounded-lg border border-[#f0f0f0] px-4 py-4 text-center">
@@ -106,9 +107,9 @@ export function MyScreen() {
             const mark = MARKS[day];
             return (
               <span key={day} className="flex h-8 flex-col items-center justify-center text-[#7a4d55]">
-                {mark === "heart" ? <FigmaIcon name="heart" className="h-3.5 w-3.5 text-blush" /> : null}
-                {mark === "star" ? <FigmaIcon name="star" className="h-3.5 w-3.5 text-[#f0b429]" /> : null}
-                {mark === "check" ? <FigmaIcon name="check" className="h-3.5 w-3.5 text-blush" /> : null}
+                {mark === "heart" ? <HeartIcon filled className="h-3.5 w-3.5" /> : null}
+                {mark === "star" ? <SparkleFillIcon className="h-3.5 w-3.5 text-[#f0b429]" /> : null}
+                {mark === "check" ? <CheckFillIcon className="h-3.5 w-3.5 text-blush" /> : null}
                 {mark ? null : day}
               </span>
             );
@@ -186,21 +187,21 @@ export function MyScreen() {
       </section>
 
       <Menu title="나의 거래">
-        <MenuRow icon="document" label="판매 관리" onClick={() => { setHomeTab("market"); goTab("home"); }} />
-        <MenuRow icon="bag" label="구매 내역" onClick={() => { setHomeTab("market"); goTab("home"); }} />
+        <MenuRow icon={<FileTextFillIcon className="h-5 w-5" />} label="판매 관리" onClick={() => { setHomeTab("market"); goTab("home"); }} />
+        <MenuRow icon={<BagFillIcon className="h-5 w-5" />} label="구매 내역" onClick={() => { setHomeTab("market"); goTab("home"); }} />
       </Menu>
       <Menu title="나의 활동">
-        <MenuRow icon="pencil" label="내 게시물" onClick={() => { setLoungeTab("works"); goTab("lounge"); }} />
-        <MenuRow icon="mail" label="내 댓글" onClick={() => { setLoungeTab("qa"); goTab("lounge"); }} />
-        <MenuRow icon="heart" label="저장한 글" onClick={() => push({ name: "likes" })} />
-        <MenuRow icon="profile" label="뜨개 모임" onClick={() => goTab("lounge")} />
+        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="내 게시물" onClick={() => { setLoungeTab("works"); goTab("lounge"); }} />
+        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="내 댓글" onClick={() => { setLoungeTab("qa"); goTab("lounge"); }} />
+        <MenuRow icon={<BookmarkFillIcon className="h-5 w-5" />} label="저장한 글" onClick={() => push({ name: "likes" })} />
+        <MenuRow icon={<CommunityFillIcon className="h-5 w-5" />} label="뜨개 모임" onClick={() => goTab("lounge")} />
       </Menu>
       <Menu title="고객 지원">
-        <MenuRow icon="info" label="공지사항" onClick={() => push({ name: "notifications" })} />
-        <MenuRow icon="mail" label="고객센터" onClick={() => push({ name: "chat" })} />
-        <MenuRow icon="pencil" label="의견 남기기" onClick={() => push({ name: "chat" })} />
+        <MenuRow icon={<BellFillIcon className="h-5 w-5" />} label="공지사항" onClick={() => push({ name: "notifications" })} />
+        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="고객센터" onClick={() => push({ name: "chat" })} />
+        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="의견 남기기" onClick={() => push({ name: "chat" })} />
         <MenuRow
-          icon="document"
+          icon={<FileTextFillIcon className="h-5 w-5" />}
           label="약관 및 정책"
           onClick={() => openSheet({ kind: "info", title: "약관 및 정책", body: "이 화면은 뜨개 연습용 프로토타입이에요. 계정과 결제 정보는 저장하지 않아요." })}
         />
@@ -247,12 +248,10 @@ export function MyScreen() {
   );
 }
 
-function Shortcut({ icon, label, onClick }: { icon: "bag" | "heart" | "clock" | "mail"; label: string; onClick: () => void }) {
+function Shortcut({ icon, label, onClick }: { icon: ReactNode; label: string; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} className="text-[12px]">
-      <span className="mx-auto grid h-14 w-14 place-items-center rounded-lg border border-[#ececec]">
-        <FigmaIcon name={icon} className="h-6 w-6" />
-      </span>
+      <span className="mx-auto grid h-14 w-14 place-items-center rounded-lg border border-[#ececec]">{icon}</span>
       <span className="mt-1 block">{label}</span>
     </button>
   );
@@ -267,18 +266,10 @@ function Menu({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function MenuRow({
-  icon,
-  label,
-  onClick,
-}: {
-  icon: "document" | "bag" | "pencil" | "mail" | "heart" | "profile" | "info";
-  label: string;
-  onClick: () => void;
-}) {
+function MenuRow({ icon, label, onClick }: { icon: ReactNode; label: string; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} className="flex h-12 w-full items-center gap-3 border-t border-[#f6f6f6] text-left text-[14px]">
-      <FigmaIcon name={icon} className="h-5 w-5 shrink-0" />
+      <span className="grid h-5 w-5 shrink-0 place-items-center">{icon}</span>
       <span className="flex-1">{label}</span>
       <ChevronRight />
     </button>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { FAQ, KINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { ChevronDown, ChevronRight, CrownIcon, FigmaIcon, GearIcon, HeartIcon, Mascot, NaviIcon, PauseIcon, PlayIcon, SearchIcon, cx } from "../ui.tsx";
+import { BellIcon, ChevronDown, ChevronRight, CrownIcon, FigmaIcon, GearIcon, HeartIcon, Mascot, MinusIcon, NaviIcon, PauseIcon, PlayIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
 
 export function HomeScreen() {
   const { homeTab } = useApp();
@@ -243,7 +243,7 @@ function HomePane() {
                   aria-expanded={open}
                 >
                   {item.q}
-                  <span>{open ? "–" : "+"}</span>
+                  <span>{open ? <MinusIcon className="h-4 w-4" /> : <PlusIcon className="h-4 w-4" />}</span>
                 </button>
                 {open ? <p className="px-4 pb-3 text-[13px] leading-relaxed text-[#666]">{item.a}</p> : null}
               </div>
@@ -362,7 +362,7 @@ function RoundIcon({
 }
 
 function Bell() {
-  return <FigmaIcon name="notification" className="h-5 w-5" />;
+  return <BellIcon />;
 }
 function CounterGlyph() {
   return <FigmaIcon name="counter" className="h-8 w-8" />;

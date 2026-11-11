@@ -211,7 +211,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [homeTab, setHomeTab] = useState<HomeTab>("home");
   const [bagTab, setBagTab] = useState<BagTab>("projects");
   const [loungeTab, setLoungeTab] = useState<LoungeTab>("works");
-  const [sort, setSort] = useState<SortKey>("recent");
+  const [sort, setSort] = useState<SortKey>({ field: "recent", dir: "desc" });
   const [toast, setToast] = useState<string | null>(null);
   const [sheet, setSheet] = useState<Sheet>(null);
   const [calcSts, setCalcSts] = useState("20");

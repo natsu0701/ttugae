@@ -1,6 +1,6 @@
 import { CODEX_POSTS, REVIEWS, ballsLabel } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { ClockIcon, HeartIcon, PinIcon, UnderlineTabs } from "../ui.tsx";
+import { ClockIcon, HeartIcon, MinusIcon, PinIcon, PlusIcon, UnderlineTabs } from "../ui.tsx";
 import type { ReactNode } from "react";
 
 const YARN_DOTS: Record<string, string> = {
@@ -50,11 +50,11 @@ export function YarnScreen({ id }: { id: string }) {
           <p className="text-center text-[13px] text-[#888]">남은 수량</p>
           <div className="mt-2 flex items-center justify-between">
             <Round onClick={() => setBalls(yarn.id, yarn.balls - 0.5)} label="수량 줄이기">
-              –
+              <MinusIcon className="h-4 w-4" />
             </Round>
             <p className="text-center text-[20px] font-bold">{formatBalls(yarn.balls)} 볼 남음</p>
             <Round onClick={() => setBalls(yarn.id, yarn.balls + 0.5)} label="수량 늘리기" pink>
-              +
+              <PlusIcon className="h-4 w-4" />
             </Round>
           </div>
         </section>
@@ -243,7 +243,7 @@ function Round({
   label,
   pink,
 }: {
-  children: string;
+  children: ReactNode;
   onClick: () => void;
   label: string;
   pink?: boolean;

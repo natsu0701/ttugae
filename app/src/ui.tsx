@@ -1,5 +1,25 @@
 import type { ButtonHTMLAttributes, CSSProperties, InputHTMLAttributes, ReactNode } from "react";
 import { figmaIcons, type FigmaIconName } from "./icons/figmaIcons.ts";
+import {
+  BellFillIcon,
+  CheckFillIcon,
+  ChevronFillIcon,
+  ChevronLeftFillIcon,
+  ChevronRightFillIcon,
+  ClockFillIcon,
+  CloseFillIcon,
+  FilterFillIcon,
+  HeartFillIcon,
+  MinusFillIcon,
+  PauseFillIcon,
+  PencilFillIcon,
+  PlayFillIcon,
+  PlusFillIcon,
+  SearchFillIcon,
+  SettingsFillIcon,
+  SparkleFillIcon,
+  TrashFillIcon,
+} from "./icons/webFill.tsx";
 import { showsTabBar, useApp } from "./store.tsx";
 
 export function cx(...parts: Array<string | false | undefined>) {
@@ -179,9 +199,9 @@ export function Fab({ label, onClick }: { label: string; onClick: () => void }) 
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="absolute bottom-24 right-4 z-30 grid h-14 w-14 place-items-center rounded-full bg-blush text-3xl font-light text-white shadow-card"
+      className="absolute bottom-24 right-4 z-30 grid h-14 w-14 place-items-center rounded-full bg-blush text-white shadow-card"
     >
-      +
+      <PlusFillIcon className="h-6 w-6" />
     </button>
   );
 }
@@ -270,7 +290,7 @@ export function UnderlineTabs<T extends string>({
 }
 
 export function SheetHost() {
-  const { sheet, closeSheet, sort, setSort } = useApp();
+  const { sheet, closeSheet } = useApp();
   if (!sheet) return null;
   return (
     <div className="absolute inset-0 z-40 flex items-end bg-black/30" onClick={closeSheet}>
@@ -284,35 +304,6 @@ export function SheetHost() {
           <>
             <h2 className="text-[17px] font-bold">{sheet.title}</h2>
             <p className="mt-2 whitespace-pre-wrap text-[14px] leading-relaxed text-[#666]">{sheet.body}</p>
-          </>
-        ) : null}
-        {sheet.kind === "filter" ? (
-          <>
-            <h2 className="text-[17px] font-bold">정렬</h2>
-            <div className="mt-3 grid gap-2">
-              {(
-                [
-                  ["recent", "최근 사용"],
-                  ["name", "이름"],
-                  ["amount", sheet.scope === "yarn" ? "남은 양" : "굵기"],
-                ] as const
-              ).map(([id, label]) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => {
-                    setSort(id);
-                    closeSheet();
-                  }}
-                  className={cx(
-                    "h-11 rounded-lg border px-4 text-left text-[14px]",
-                    sort === id ? "border-blush bg-blush-soft font-semibold" : "border-[#eee]",
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
           </>
         ) : null}
         {sheet.kind === "camera" ? <CameraSheet /> : null}
@@ -363,31 +354,45 @@ export function ToastHost() {
 }
 
 export function ChevronLeft() {
-  return <FigmaIcon name="arrow-left" className="h-5 w-4" />;
+  return <ChevronLeftFillIcon className="h-5 w-5" />;
 }
 export function ChevronRight() {
-  return <span className="inline-flex -scale-x-100"><FigmaIcon name="arrow-left" className="h-4 w-3" /></span>;
+  return <ChevronRightFillIcon className="h-5 w-5" />;
 }
-export function HeartIcon({ filled }: { filled?: boolean }) {
-  if (filled) return <FigmaIcon name="heart" className="h-5 w-5" />;
-  const outline = figmaIcons.heart.replace(/fill="currentColor"/g, 'fill="none" stroke="currentColor" stroke-width="1.6"');
-  return <span aria-hidden className="inline-flex h-5 w-5 shrink-0" dangerouslySetInnerHTML={{ __html: outline }} />;
+export function HeartIcon({ filled, className = "h-5 w-5" }: { filled?: boolean; className?: string }) {
+  return <HeartFillIcon filled={filled} className={className} />;
 }
 export function SearchIcon() {
-  return <FigmaIcon name="search" className="h-5 w-5" />;
+  return <SearchFillIcon className="h-5 w-5" />;
 }
 export function PlayIcon() {
-  return <FigmaIcon name="play" className="h-5 w-5" />;
+  return <PlayFillIcon className="h-5 w-5" />;
 }
 export function PauseIcon() {
-  return <FigmaIcon name="pause" className="h-5 w-5" />;
+  return <PauseFillIcon className="h-5 w-5" />;
 }
 export function GearIcon() {
-  return <FigmaIcon name="settings" className="h-5 w-5" />;
+  return <SettingsFillIcon className="h-5 w-5" />;
+}
+export function BellIcon() {
+  return <BellFillIcon className="h-5 w-5" />;
+}
+export function PlusIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return <PlusFillIcon className={className} />;
+}
+export function MinusIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return <MinusFillIcon className={className} />;
+}
+export function FilterIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return <FilterFillIcon className={className} />;
 }
 
 export function CloseIcon({ size = 18 }: { size?: number }) {
-  return <FigmaIcon name="close" className="shrink-0" style={{ width: size, height: size }} />;
+  return (
+    <span className="inline-flex shrink-0" style={{ width: size, height: size }}>
+      <CloseFillIcon className="h-full w-full" />
+    </span>
+  );
 }
 
 export function FolderIcon() {
@@ -397,7 +402,7 @@ export function FolderIcon() {
 export function PlayBadge() {
   return (
     <span aria-hidden className="grid h-7 w-7 place-items-center rounded-full bg-white text-blush">
-      <FigmaIcon name="play" className="h-4 w-4" />
+      <PlayFillIcon className="h-4 w-4" />
     </span>
   );
 }
@@ -411,7 +416,7 @@ export function LockIcon() {
 }
 
 export function TrashIcon() {
-  return <FigmaIcon name="trash" className="h-5 w-5" />;
+  return <TrashFillIcon className="h-5 w-5" />;
 }
 
 export function CameraIcon() {
@@ -431,11 +436,11 @@ export function CrownIcon({ color = "currentColor" }: { color?: string }) {
 }
 
 export function CheckIcon() {
-  return <FigmaIcon name="check" className="h-4 w-4" />;
+  return <CheckFillIcon className="h-4 w-4" />;
 }
 
 export function PencilIcon() {
-  return <FigmaIcon name="pencil" className="h-4 w-4" />;
+  return <PencilFillIcon className="h-4 w-4" />;
 }
 
 export function YarnBallIcon() {
@@ -447,11 +452,11 @@ export function ImagePlusIcon() {
 }
 
 export function SparkIcon() {
-  return <FigmaIcon name="star" className="h-4 w-4" />;
+  return <SparkleFillIcon className="h-4 w-4" />;
 }
 
-export function ChevronDown({ up = false }: { up?: boolean }) {
-  return <span className={cx("inline-flex", up && "-scale-y-100")}><FigmaIcon name="chevron-down" className="h-4 w-4" /></span>;
+export function ChevronDown({ up = false, className = "h-4 w-4" }: { up?: boolean; className?: string }) {
+  return <ChevronFillIcon className={className} up={up} />;
 }
 
 export function NaviIcon() {
@@ -463,7 +468,7 @@ export function GridIcon() {
 }
 
 export function ClockIcon() {
-  return <FigmaIcon name="clock" className="h-5 w-5" />;
+  return <ClockFillIcon className="h-5 w-5" />;
 }
 
 export function RowsIcon() {
