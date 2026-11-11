@@ -40,7 +40,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
       <HeroDecorations />
 
       {/* 텍스트 컨테이너 여백 (레이스 아래 안전지대 확보) */}
-      <div className="relative z-10 mx-auto w-full shrink-0 text-center pt-28 sm:pt-36 md:pt-44">
+      <div className="relative z-10 mx-auto w-full shrink-0 text-center pt-32 sm:pt-40 md:pt-52">
         <div className="page-shell py-4">
           <Reveal delay={0.4}>
             <h1 className="break-keep">

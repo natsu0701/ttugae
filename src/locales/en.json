@@ -1313,6 +1313,7 @@
     "seek": "Playback position",
     "time": "Time",
     "playlist": "Playlist",
+    "playlistCollapse": "Collapse playlist",
     "playlistEmpty": "The playlist is empty. Add videos in src/data/arPlaylist.ts.",
     "nowPlaying": "{{n}} · {{title}}",
     "playingNow": "Now playing",

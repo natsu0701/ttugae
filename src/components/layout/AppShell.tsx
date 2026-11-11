@@ -258,8 +258,13 @@ export default function AppShell({
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[170px] w-full bg-cover bg-top bg-no-repeat md:h-[190px]"
-          style={{ backgroundImage: `url(${assetUrl("/images/nav_lace.png")})` }}
+          className="pointer-events-none absolute inset-x-0 -top-16 z-0 h-[250px] w-full bg-no-repeat md:-top-24 md:h-[320px]"
+          style={{
+            backgroundImage: `url(${assetUrl("/images/nav_lace.png")})`,
+            backgroundSize: "auto 100%",
+            backgroundPosition: "center top",
+            backgroundRepeat: "repeat-x",
+          }}
         />
         <div className="nav-shell relative z-10 flex min-h-20 w-full items-center justify-between gap-3 py-2 md:min-h-24 md:gap-6">
           <button

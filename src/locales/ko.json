@@ -1312,6 +1312,7 @@
     "seek": "재생 위치",
     "time": "시간",
     "playlist": "재생목록",
+    "playlistCollapse": "재생목록 접기",
     "playlistEmpty": "재생목록이 비어 있어요. src/data/arPlaylist.ts 에 영상을 넣어 주세요.",
     "nowPlaying": "{{n}} · {{title}}",
     "playingNow": "재생 중",
