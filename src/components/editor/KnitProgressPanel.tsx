@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronFillIcon } from "../icons/FillIcons.tsx";
-import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
+import { editorChromeBtn, editorChromeBtnActive, editorSectionTitle } from "../ui/tabButtonStyles.ts";
 import { iconTip } from "../../utils/iconTip.ts";
 
 type KnitProgressPanelProps = {
@@ -27,7 +27,7 @@ function KnitProgressPanel({
 
   return (
     <div>
-      <p className="mb-3 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+      <p className={`mb-3 ${editorSectionTitle}`}>
         {t("editor.progress.title")}
       </p>
       <button

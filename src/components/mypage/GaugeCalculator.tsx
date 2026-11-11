@@ -1,6 +1,7 @@
 import { memo, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import SmoothInput from "../ui/SmoothInput.tsx";
+import { editorSectionTitle } from "../ui/tabButtonStyles.ts";
 import type { GaugeProfile } from "../../utils/personalizationStorage.ts";
 
 type GaugeCalculatorProps = {
@@ -48,7 +49,7 @@ function GaugeCalculator({
   return (
     <div className={compact ? "" : "rounded-xl border border-stone-200 bg-white p-6"}>
       {compact ? (
-        <p className="mb-3 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+        <p className={`mb-3 ${editorSectionTitle}`}>
           {t("editor.gaugeCalcTitle")}
         </p>
       ) : (

@@ -24,7 +24,7 @@ import YarnSearchPopover from "./components/editor/YarnSearchPopover.tsx";
 import EditorOnboardingSpotlight from "./components/editor/EditorOnboardingSpotlight.tsx";
 import GiftPackagingAnimation from "./components/ui/GiftPackagingAnimation.tsx";
 import { applyAiPatternFromMessage, getTteuniReply } from "./utils/aiPatternApply.ts";
-import { editorChromeBtn, editorChromeBtnActive, editorChromeTone, editorPanel } from "./components/ui/tabButtonStyles.ts";
+import { editorChromeBtn, editorChromeBtnActive, editorChromeTone, editorPanel, editorSectionTitle } from "./components/ui/tabButtonStyles.ts";
 import { STITCHES, stitchSymbol } from "./data/stitchSymbols.ts";
 import type { EditorYarn } from "./types/editorYarn.ts";
 import {
@@ -757,7 +757,7 @@ export default function PatternEditor({
         <EditorResizableSidebar side="left" asideRef={leftToolbarRef}>
         <div className="scrollbar-thin flex h-full min-h-0 flex-col overflow-y-auto p-4 pb-10 md:px-5 md:pt-5 md:pb-12">
           <div className="border-b border-stone-200 pb-8">
-            <p className="mb-3 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+            <p className={`mb-3 ${editorSectionTitle}`}>
               {t("editor.chartKey")}
             </p>
             <div className="grid grid-cols-2 gap-2.5">
@@ -827,7 +827,7 @@ export default function PatternEditor({
           </div>
 
           <div ref={yarnPaletteRef} className="relative pt-8">
-            <p className="mb-3 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+            <p className={`mb-3 ${editorSectionTitle}`}>
               {t("editor.yarnColors")}
             </p>
             <div className="grid grid-cols-3 gap-2.5">
@@ -921,7 +921,7 @@ export default function PatternEditor({
               <TteuniChatbot onUserMessage={handleAiMessage} />
             </div>
             <div>
-              <p className="mb-1 font-sans text-base font-bold text-stone-900">{t("editor.needlePanelTitle")}</p>
+              <p className={`mb-1 ${editorSectionTitle}`}>{t("editor.needlePanelTitle")}</p>
               <p className="mb-3 font-seoyun text-sm font-normal text-stone-500">
                 {t("editor.needlePanelHint")}
               </p>
@@ -948,7 +948,7 @@ export default function PatternEditor({
             />
             <div className={`relative min-w-0 p-4 ${editorPanel}`}>
               <div className="mb-2 flex shrink-0 items-center justify-between gap-2">
-                <p className="font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+                <p className={editorSectionTitle}>
                   {t("editor.narrativePreview")}
                 </p>
                 <button

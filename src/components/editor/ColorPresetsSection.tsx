@@ -5,7 +5,7 @@ import {
   pickRandomPresets,
   type ColorPreset,
 } from "../../data/colorPresets.ts";
-import { editorChromeBtn, editorChromeBtnActive, editorChromeTone } from "../ui/tabButtonStyles.ts";
+import { editorChromeBtn, editorChromeBtnActive, editorChromeTone, editorSectionTitle } from "../ui/tabButtonStyles.ts";
 import { iconTip } from "../../utils/iconTip.ts";
 
 const REFRESH_SPIN_MS = 500;
@@ -41,7 +41,7 @@ export default function ColorPresetsSection({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+        <p className={editorSectionTitle}>
           {t("editor.colorPresetsTitle")}
         </p>
         <button
