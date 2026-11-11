@@ -135,6 +135,7 @@ function hashToRoute(hash: string): Route {
     "lounge",
     "my",
     "gauge-form",
+    "gauge-help",
     "counters",
     "chat",
     "editor",

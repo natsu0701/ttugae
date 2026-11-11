@@ -1,28 +1,16 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { createPortal } from "react-dom";
+import { media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
 import { BlackButton, CameraIcon, ChevronDown, Fab, InfoButton, Mascot, PencilIcon, PinkButton, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
 
 export function GaugeScreen({ tab }: { tab: GaugeTab }) {
-  const { replace, openSheet } = useApp();
+  const { replace, push } = useApp();
   return (
     <div className="relative min-h-full pb-24">
-      <div className="flex items-center justify-end px-4">
-        <button
-          type="button"
-          aria-label="게이지 안내"
-          onClick={() =>
-            openSheet({
-              kind: "info",
-              title: "게이지",
-              body: "10cm 안에 들어가는 코와 목표 길이를 넣으면 필요한 코 수를 올림해서 계산해요. 세탁 전후를 둘 다 적어두면 치수가 덜 틀어져요.",
-            })
-          }
-          className="grid h-8 w-8 place-items-center rounded-full border border-[#ddd] text-[13px] font-bold"
-        >
-          !
-        </button>
+      <div className="flex items-center justify-end pr-1">
+        <InfoButton label="게이지 도움말" onClick={() => push({ name: "gauge-help" })} />
       </div>
       <div className="px-4">
         <Segment
@@ -35,6 +23,119 @@ export function GaugeScreen({ tab }: { tab: GaugeTab }) {
         />
       </div>
       {tab === "calc" ? <Calculator /> : <GaugeList />}
+    </div>
+  );
+}
+
+export function GaugeHelpScreen() {
+  const [tab, setTab] = useState<"tutorial" | "navi">("tutorial");
+  return (
+    <div className="px-4 pb-12">
+      <p className="rounded-lg bg-[#f4f4f4] px-4 py-3 text-[13px] leading-relaxed">
+        도안과 사이즈가 달라 속상했던 적 있나요? 사람마다 손힘(또는 뜨는 힘)이 달라서 그래요! 게이지 확인으로 사이즈 오차를 막을 수 있어요.
+      </p>
+      <div className="mt-4 flex gap-2">
+        <button type="button" onClick={() => setTab("tutorial")} className={cx("h-11 flex-1 rounded-full text-[14px] font-semibold", tab === "tutorial" ? "bg-ink text-white" : "border border-[#e4e4e4] bg-white")}>
+          튜토리얼
+        </button>
+        <button type="button" onClick={() => setTab("navi")} className={cx("h-11 flex-1 rounded-full text-[14px] font-semibold", tab === "navi" ? "bg-ink text-white" : "border border-[#e4e4e4] bg-white")}>
+          뜨개 내비
+        </button>
+      </div>
+      {tab === "tutorial" ? <GaugeTutorial /> : <NaviHelp />}
+    </div>
+  );
+}
+
+function GaugeTutorial() {
+  return (
+    <div className="mt-6 space-y-8">
+      <section>
+        <h2 className="text-[18px] font-bold"><span className="text-blush">1</span> 스와치 뜨기</h2>
+        <p className="mt-1 text-[14px]">15×15cm 정도의 편물(스와치)을 떠보세요!</p>
+        <div className="relative mt-3 overflow-hidden rounded-lg">
+          <img src={media("media/swatch-linen.jpg")} alt="" className="h-48 w-full object-cover" />
+          <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-0.5 text-[12px] font-semibold">2코</span>
+          <span className="absolute right-3 top-8 rounded-full bg-white/90 px-2 py-0.5 text-[12px] font-semibold">3코</span>
+          <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-[12px] font-semibold">릴랙스드 뜨기</span>
+        </div>
+        <div className="mt-2 flex justify-between px-2 text-[12px] text-[#777]">
+          <span>← 겉뜨기</span>
+          <span>안뜨기 →</span>
+        </div>
+        <p className="mt-2 text-[12px] leading-relaxed text-[#999]">겉뜨기는 오른쪽으로, 안뜨기는 왼쪽으로 떠요. 코의 크기가 일정하면 좋아요.</p>
+      </section>
+
+      <section>
+        <h2 className="text-[18px] font-bold"><span className="text-blush">2</span> 코 세기</h2>
+        <p className="mt-1 text-[14px] font-semibold">10cm 안에 몇 코가 있나요?</p>
+        <p className="mt-1 text-[13px] leading-relaxed text-[#666]">게이지 계산기에 숫자를 알려주세요. 나머지 계산은 뜨니가 할게요!</p>
+        <div className="relative mt-3 overflow-hidden rounded-lg">
+          <img src={media("media/swatch-gray.jpg")} alt="" className="h-40 w-full object-cover" />
+          <div className="absolute left-4 right-24 top-1/2">
+            <span className="block border-t-2 border-ink" />
+            <span className="mx-auto mt-1 block w-fit rounded-full bg-white/90 px-2 text-[12px] font-bold">10cm</span>
+          </div>
+          <div className="absolute bottom-2 right-2 flex items-end gap-1">
+            <span className="mb-3 max-w-[9rem] rounded-lg bg-white px-2 py-1 text-[11px] leading-snug shadow-card">10cm 안에 몇 코가 있나요?</span>
+            <Mascot mood="cheer" className="h-16 w-16" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-[18px] font-bold"><span className="text-blush">3</span> 결과 확인</h2>
+        <p className="mt-1 text-[14px] leading-relaxed">짠! 이번 프로젝트는 예) 20코로 시작하면 완벽해요!</p>
+        <div className="mt-3 flex items-end justify-end gap-2">
+          <span className="max-w-[12rem] rounded-lg bg-[#f6f6f6] px-3 py-2 text-[12px] leading-snug">세탁 전후 게이지를 입력하면 더 정확하게 관리할 수 있어요!</span>
+          <Mascot mood="knit" className="h-20 w-20" />
+        </div>
+      </section>
+
+      <section>
+        <p className="text-[28px] font-black leading-none text-[#d0d0d0]">Q.</p>
+        <h2 className="mt-1 text-[18px] font-bold">게이지, 어떻게 계산할까요?</h2>
+        <div className="mt-3 flex items-start gap-3">
+          <Mascot mood="cheer" className="h-16 w-16 shrink-0" />
+          <p className="text-[13px] leading-relaxed text-[#555]">
+            뜨니가 처리하는 계산식은 다음과 같습니다. 사용하는 나의 게이지와 목표 길이를 입력하면 됩니다. 어려운 수학 계산은 뜨니한테 맡기세요!
+          </p>
+        </div>
+        <div className="mt-4 rounded-lg bg-[#fafafa] px-3 py-4 text-center">
+          <p className="text-[13px] font-semibold">10cm 안에 코가 몇 개 들어가는지만 알려주면 끝!</p>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[12px]">
+            <span>게이지(10cm 코수)</span>
+            <span className="grid h-8 min-w-8 place-items-center rounded-lg bg-white px-2 text-[16px] font-bold">10</span>
+            <span className="text-[18px]">×</span>
+            <span>목표 길이(cm)</span>
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-[16px] font-bold text-white">11</span>
+          </div>
+          <p className="mt-3 text-[14px] font-bold">필요 코수</p>
+          <p className="mt-2 text-[11px] leading-relaxed text-[#999]">아까 센 코 수와 목표 길이를 곱하면 결과가 나와요.</p>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function NaviHelp() {
+  const steps = [
+    { n: "1", title: "프로젝트에서 열기", body: "진행 중인 프로젝트의 뜨개내비를 누르면 지금 할 단계만 순서대로 나와요." },
+    { n: "2", title: "한 단계씩 체크", body: "끝난 단계는 체크하고 다음으로 넘어가면 돼요. 막힌 단계는 뜨니챗에 물어볼 수 있어요." },
+    { n: "3", title: "끝나면 기록", body: "단계를 모두 마치면 완료 안내가 뜨고, 뜨개 일기에 오늘 한 코를 남길 수 있어요." },
+  ];
+  return (
+    <div className="mt-6 space-y-5">
+      {steps.map((step) => (
+        <section key={step.n}>
+          <h2 className="text-[18px] font-bold"><span className="text-blush">{step.n}</span> {step.title}</h2>
+          <p className="mt-1 text-[14px] leading-relaxed text-[#555]">{step.body}</p>
+        </section>
+      ))}
+      <div className="flex items-end justify-end gap-2 pt-2">
+        <span className="max-w-[12rem] rounded-lg bg-[#f6f6f6] px-3 py-2 text-[12px] leading-snug">순서가 헷갈리면 뜨개 내비가 지금 할 일만 보여줄게요.</span>
+        <Mascot mood="cheer" className="h-20 w-20" />
+      </div>
     </div>
   );
 }

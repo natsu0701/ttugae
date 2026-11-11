@@ -27,6 +27,7 @@ export type Route =
   | { name: "finished"; id: string }
   | { name: "gauge"; tab: GaugeTab }
   | { name: "gauge-form" }
+  | { name: "gauge-help" }
   | { name: "counters" }
   | { name: "counter"; id: string }
   | { name: "codex"; id: string }

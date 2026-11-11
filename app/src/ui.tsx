@@ -186,17 +186,27 @@ export function Fab({ label, onClick }: { label: string; onClick: () => void }) 
   );
 }
 
-export function InfoButton({ title, body }: { title: string; body: string }) {
+export function InfoButton({ title, body, onClick, label = "도움말" }: { title?: string; body?: string; onClick?: () => void; label?: string }) {
   const { openSheet } = useApp();
   return (
     <button
       type="button"
-      aria-label={`${title} 안내`}
-      onClick={() => openSheet({ kind: "info", title, body })}
-      className="grid h-6 w-6 place-items-center rounded-full bg-ink text-[12px] font-bold text-white"
+      aria-label={label}
+      onClick={onClick ?? (() => openSheet({ kind: "info", title: title ?? "도움말", body: body ?? "" }))}
+      className="grid h-11 w-11 shrink-0 place-items-center text-ink"
     >
-      i
+      <AppleHelpIcon />
     </button>
+  );
+}
+
+function AppleHelpIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" aria-hidden>
+      <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M9.55 9.2c.3-1.45 1.6-2.3 3-2.2 1.4.1 2.4 1.2 2.3 2.55-.1 1.1-.9 1.75-1.75 2.2-.75.4-1.2.95-1.2 1.75V14.4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="11.9" cy="16.75" r="0.85" fill="currentColor" />
+    </svg>
   );
 }
 

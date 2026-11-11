@@ -28,6 +28,7 @@ import {
   CounterScreen,
   EditorScreen,
   GaugeFormScreen,
+  GaugeHelpScreen,
   GaugeScreen,
 } from "./screens/tools.tsx";
 import { CameraScreen } from "./screens/camera.tsx";
@@ -51,6 +52,8 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
     case "gauge":
     case "gauge-form":
       return route.name === "gauge-form" ? "게이지 등록" : "게이지";
+    case "gauge-help":
+      return "도움말";
     case "counters":
       return "행/코 카운터";
     case "codex":
@@ -199,6 +202,8 @@ function renderRoute(route: Route): ReactNode {
       return <GaugeScreen tab={route.tab} />;
     case "gauge-form":
       return <GaugeFormScreen />;
+    case "gauge-help":
+      return <GaugeHelpScreen />;
     case "counters":
       return <CounterListScreen />;
     case "counter":
