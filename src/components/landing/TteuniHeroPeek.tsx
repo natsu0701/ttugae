@@ -14,12 +14,14 @@ function TteuniHeroPeek() {
       className="pointer-events-none relative z-10 mx-auto mt-auto flex min-h-0 w-full min-w-0 flex-1 basis-0 items-start justify-center overflow-hidden"
       aria-hidden
     >
-      <img
-        src={TTEUNI_IMAGES.hero}
-        alt=""
-        className="tteuni-peek relative w-auto max-w-none origin-top object-cover object-top"
-        style={{ height: FACE_CROP_HEIGHT, position: "relative" }}
-      />
+      <div className="tteuni-peek-shift" data-par-dx="22" data-par-dy="14">
+        <img
+          src={TTEUNI_IMAGES.hero}
+          alt=""
+          className="tteuni-peek relative w-auto max-w-none origin-top object-cover object-top"
+          style={{ height: FACE_CROP_HEIGHT, position: "relative" }}
+        />
+      </div>
     </div>
   );
 }

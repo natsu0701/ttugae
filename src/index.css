@@ -272,12 +272,8 @@ body {
     animation: hero-overlay-warm 1.8s ease-out;
   }
 
-  .hero-floater {
-    transform: translate3d(
-      calc(var(--par-x, 0) * var(--par-dx, 20px)),
-      calc(var(--par-y, 0) * var(--par-dy, 14px)),
-      0
-    );
+  .hero-floater,
+  .tteuni-peek-shift {
     will-change: transform;
     backface-visibility: hidden;
   }
@@ -352,7 +348,7 @@ body {
   display: none;
 }
 
-/* YarnStitchTrail — 커스텀 커서 (blur·blend 없음) */
+/* YarnStitchTrail — 테두리만 GPU blur로 보송하게 (경로별 shadowBlur 없음) */
 body.yarn-trail-active,
 body.yarn-trail-active * {
   cursor: none !important;
@@ -365,6 +361,7 @@ body.yarn-trail-active {
 .yarn-trail-svg {
   overflow: visible;
   mix-blend-mode: normal;
+  filter: blur(0.9px);
 }
 
 @keyframes tteuni-float {

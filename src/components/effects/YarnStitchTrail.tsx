@@ -10,9 +10,12 @@ type Point = {
   time: number;
 };
 
-const MAX_POINTS = 36;
-const POINT_LIFETIME = 900;
+const MAX_POINTS = 32;
+const POINT_LIFETIME = 960;
 const RECORD_THROTTLE_MS = 16;
+const MIN_POINT_DIST = 3;
+const SMOOTHING = 0.62;
+const HEAD_ALPHA = 0.8;
 const YARN_BODY = "#FC5F53";
 const YARN_EDGE = "#C4453C";
 const YARN_HIGHLIGHT = "#FFE6D8";
@@ -20,52 +23,45 @@ const YARN_HIGHLIGHT = "#FFE6D8";
 /** 커스텀 커서 핫스팟 = 바늘 끝(궤적 시작점) */
 export const CURSOR_HOTSPOT = { x: 28, y: 8 } as const;
 
-function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
+function segmentFade(now: number, a: Point, b: Point): number {
+  const age = now - (a.time + b.time) / 2;
+  return Math.max(0, 1 - age / POINT_LIFETIME);
+}
+
+function paintTrail(ctx: CanvasRenderingContext2D, points: Point[], now: number) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   if (points.length < 2) return;
 
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
+  ctx.strokeStyle = YARN_BODY;
+  ctx.lineWidth = 8.5;
+  ctx.globalCompositeOperation = "destination-over";
 
-  for (let index = 1; index < points.length; index += 1) {
-    const point = points[index];
-    const prevPoint = points[index - 1];
-    const ratio = index / (points.length - 1);
-    const opacity = 0.35 + ratio * 0.6;
-    const strokeWidth = 3.2 + ratio * 7.5;
-    const midX = (prevPoint.x + point.x) / 2;
-    const midY = (prevPoint.y + point.y) / 2;
-    const dx = point.x - prevPoint.x;
-    const dy = point.y - prevPoint.y;
-    const len = Math.hypot(dx, dy) || 1;
-    const nx = (-dy / len) * (1.1 + ratio * 1.4);
-    const ny = (dx / len) * (1.1 + ratio * 1.4);
-
-    ctx.strokeStyle = YARN_EDGE;
-    ctx.globalAlpha = opacity;
-    ctx.lineWidth = strokeWidth + 2.4;
+  for (let index = points.length - 2; index >= 0; index -= 1) {
+    const p0 = points[Math.max(0, index - 1)];
+    const p1 = points[index];
+    const p2 = points[index + 1];
+    const p3 = points[Math.min(points.length - 1, index + 2)];
+    ctx.globalAlpha = HEAD_ALPHA * segmentFade(now, p1, p2);
     ctx.beginPath();
-    ctx.moveTo(prevPoint.x, prevPoint.y);
-    ctx.quadraticCurveTo(midX, midY, point.x, point.y);
-    ctx.stroke();
-
-    ctx.strokeStyle = YARN_BODY;
-    ctx.globalAlpha = opacity;
-    ctx.lineWidth = strokeWidth;
-    ctx.beginPath();
-    ctx.moveTo(prevPoint.x, prevPoint.y);
-    ctx.quadraticCurveTo(midX, midY, point.x, point.y);
-    ctx.stroke();
-
-    ctx.strokeStyle = YARN_HIGHLIGHT;
-    ctx.globalAlpha = opacity * 0.55;
-    ctx.lineWidth = Math.max(1.4, strokeWidth * 0.28);
-    ctx.beginPath();
-    ctx.moveTo(prevPoint.x + nx, prevPoint.y + ny);
-    ctx.quadraticCurveTo(midX + nx, midY + ny, point.x + nx, point.y + ny);
+    ctx.moveTo(p1.x, p1.y);
+    if (points.length === 2) {
+      ctx.lineTo(p2.x, p2.y);
+    } else {
+      ctx.bezierCurveTo(
+        p1.x + (p2.x - p0.x) / 5,
+        p1.y + (p2.y - p0.y) / 5,
+        p2.x - (p3.x - p1.x) / 5,
+        p2.y - (p3.y - p1.y) / 5,
+        p2.x,
+        p2.y,
+      );
+    }
     ctx.stroke();
   }
 
+  ctx.globalCompositeOperation = "source-over";
   ctx.globalAlpha = 1;
 }
 
@@ -133,7 +129,7 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       const now = Date.now();
       const validPoints = pointsRef.current.filter((p) => now - p.time < POINT_LIFETIME);
       pointsRef.current = validPoints;
-      paintTrail(ctx, validPoints);
+      paintTrail(ctx, validPoints, now);
       if (validPoints.length === 0) {
         stopLoop();
         return;
@@ -155,11 +151,14 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
 
       const now = Date.now();
       if (now - lastRecordRef.current < RECORD_THROTTLE_MS) return;
-      lastRecordRef.current = now;
 
-      pointsRef.current = [...pointsRef.current, { x: e.clientX, y: e.clientY, time: now }].slice(
-        -MAX_POINTS,
-      );
+      const prev = pointsRef.current[pointsRef.current.length - 1];
+      const x = prev ? prev.x + (e.clientX - prev.x) * SMOOTHING : e.clientX;
+      const y = prev ? prev.y + (e.clientY - prev.y) * SMOOTHING : e.clientY;
+      if (prev && Math.hypot(x - prev.x, y - prev.y) < MIN_POINT_DIST) return;
+
+      lastRecordRef.current = now;
+      pointsRef.current = [...pointsRef.current, { x, y, time: now }].slice(-MAX_POINTS);
       startLoop();
     };
 
@@ -203,6 +202,12 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
         aria-hidden
       >
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <defs>
+            <filter id="yarn-ball-fuzz" x="-45%" y="-45%" width="190%" height="190%">
+              <feGaussianBlur stdDeviation="1.05" />
+            </filter>
+          </defs>
+          <circle cx="12" cy="28" r="10" fill={YARN_BODY} opacity="0.45" filter="url(#yarn-ball-fuzz)" />
           <circle cx="12" cy="28" r="9" fill={YARN_EDGE} />
           <circle cx="12" cy="28" r="7.4" fill={YARN_BODY} />
           <path
