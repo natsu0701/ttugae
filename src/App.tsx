@@ -45,6 +45,7 @@ import {
   type UserAccount,
 } from "./utils/accountStorage.ts";
 import { currentUserAvatar } from "./utils/identity.ts";
+import { useIdleHome } from "./hooks/useIdleHome.ts";
 
 const PatternEditor = lazy(() => import("./PatternEditor.tsx"));
 const MyPage = lazy(() => import("./MyPage.tsx"));
@@ -107,7 +108,7 @@ function AppRoutes() {
   const [patterns, setPatterns] = useState<StoredPattern[]>(() => loadStoredPatterns());
   const [accounts, setAccounts] = useState<UserAccount[]>(() => loadAccounts());
   const [activeAccount, setActiveAccount] = useState(() => loadActiveAccount());
-  const { pending, resolveLeave } = useUnsavedChanges();
+  const { pending, resolveLeave, silentLeave } = useUnsavedChanges();
 
   const persistPatterns = useCallback((next: StoredPattern[]) => {
     saveStoredPatterns(next);
@@ -137,6 +138,20 @@ function AppRoutes() {
     },
     [],
   );
+
+  const goHomeIdle = useCallback(() => {
+    setShowLogin(false);
+    setEditorEntryOpen(false);
+    setToastMessage(null);
+    silentLeave(() => {
+      setIncomingShare(null);
+      setActivePatternId(null);
+      if (viewFromPath(window.location.pathname) === "landing") return;
+      navigate("landing", "/", true);
+    });
+  }, [navigate, silentLeave]);
+
+  useIdleHome(goHomeIdle);
 
   const rememberReturn = useCallback(() => {
     setNavReturn({

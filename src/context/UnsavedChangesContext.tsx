@@ -7,6 +7,7 @@ type UnsavedApi = {
   setDirty: (value: boolean) => void;
   registerSaver: (save: () => boolean | void) => void;
   requestLeave: (proceed: () => void) => void;
+  silentLeave: (proceed: () => void) => void;
   pending: boolean;
   resolveLeave: (decision: LeaveDecision) => void;
 };
@@ -31,6 +32,22 @@ export function UnsavedChangesProvider({ children }: { children: ReactNode }) {
       }
       proceedRef.current = proceed;
       setPending(true);
+    },
+    [dirty],
+  );
+
+  const silentLeave = useCallback(
+    (proceed: () => void) => {
+      if (dirty) {
+        try {
+          saveRef.current();
+        } catch {
+          // still leave
+        }
+      }
+      setPending(false);
+      setDirty(false);
+      proceed();
     },
     [dirty],
   );
@@ -63,8 +80,8 @@ export function UnsavedChangesProvider({ children }: { children: ReactNode }) {
   }, [dirty]);
 
   const value = useMemo(
-    () => ({ dirty, setDirty, registerSaver, requestLeave, pending, resolveLeave }),
-    [dirty, registerSaver, requestLeave, pending, resolveLeave],
+    () => ({ dirty, setDirty, registerSaver, requestLeave, silentLeave, pending, resolveLeave }),
+    [dirty, registerSaver, requestLeave, silentLeave, pending, resolveLeave],
   );
 
   return (
@@ -80,6 +97,7 @@ export function useUnsavedChanges() {
       setDirty: () => undefined,
       registerSaver: () => undefined,
       requestLeave: (proceed: () => void) => proceed(),
+      silentLeave: (proceed: () => void) => proceed(),
       pending: false,
       resolveLeave: () => undefined,
     } satisfies UnsavedApi;
