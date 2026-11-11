@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
-import { BlackButton, Fab, InfoButton, Mascot, PinkButton, Segment, cx } from "../ui.tsx";
+import { BlackButton, CameraIcon, Fab, InfoButton, Mascot, PencilIcon, PinkButton, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
 
 export function GaugeScreen({ tab }: { tab: GaugeTab }) {
   const { replace, openSheet } = useApp();
@@ -59,7 +59,7 @@ function Calculator() {
       <div className="flex items-center justify-between">
         <p className="text-[16px] font-bold">{span} 측정한 코수</p>
         <button type="button" aria-label="스와치 사진으로 읽기" onClick={() => openSheet({ kind: "camera" })}>
-          📷
+          <CameraIcon />
         </button>
       </div>
       <label className="mt-2 flex h-12 items-center rounded-full border border-[#eee] px-4">
@@ -132,8 +132,8 @@ function GaugeList() {
           <li key={gauge.id} className="flex gap-3 rounded-[24px] border border-[#f0f0f0] p-3">
             <div className="flex-1">
               <p className="font-bold">{gauge.name}</p>
-              <p className="mt-1 text-[12px] text-[#777]">✎ {gauge.thickness}</p>
-              <p className="text-[12px] text-[#777]">🧶 {gauge.yarnName}</p>
+              <p className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><PencilIcon /> {gauge.thickness}</p>
+              <p className="flex items-center gap-1 text-[12px] text-[#777]"><YarnBallIcon /> {gauge.yarnName}</p>
               <p className="mt-2 text-[12px] text-[#999]">세탁 전</p>
               <p className="text-[13px] font-semibold">{gauge.before}</p>
               <p className="mt-1 text-[12px] text-[#999]">세탁 후</p>
@@ -141,7 +141,7 @@ function GaugeList() {
             </div>
             <div className="flex flex-col items-end">
               <button type="button" aria-label="게이지 삭제" onClick={() => removeGauge(gauge.id)} className="text-[#bbb]">
-                🗑
+                <TrashIcon />
               </button>
               <img src={gauge.image} alt="" className="mt-2 h-16 w-16 rounded-2xl object-cover" />
             </div>

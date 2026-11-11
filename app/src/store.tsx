@@ -77,6 +77,8 @@ function routeToHash(route: Route) {
       return "#/";
     case "project":
     case "navi":
+    case "camera":
+    case "diary":
     case "yarn":
     case "needle":
     case "finished":
@@ -104,6 +106,8 @@ function hashToRoute(hash: string): Route {
   if (!name) return { name: "splash" };
   if (name === "project" && id) return { name: "project", id };
   if (name === "navi" && id) return { name: "navi", id };
+  if (name === "camera" && id) return { name: "camera", id };
+  if (name === "diary" && id) return { name: "diary", id };
   if (name === "yarn" && id) return { name: "yarn", id };
   if (name === "needle" && id) return { name: "needle", id };
   if (name === "finished" && id) return { name: "finished", id };
@@ -181,6 +185,11 @@ type AppApi = {
   toggleLike: (workId: string) => void;
   toggleNavi: (projectId: string, step: string) => void;
   finishOnboarding: (level: string | null) => void;
+  finishId: string | null;
+  completeSession: (id: string) => void;
+  dismissFinish: () => void;
+  openDiary: () => void;
+  saveDiary: (id: string, body: string) => void;
 };
 
 const AppContext = createContext<AppApi | null>(null);
@@ -203,6 +212,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [calcSts, setCalcSts] = useState("20");
   const [calcLen, setCalcLen] = useState("60");
   const [calcResult, setCalcResult] = useState<number | null>(120);
+  const [finishId, setFinishId] = useState<string | null>(null);
 
   const route = stack[stack.length - 1] ?? { name: "splash" as const };
 
@@ -430,8 +440,42 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setStack([next]);
         writeHash(next);
       },
+      finishId,
+      completeSession: (id) => {
+        updateProject(id, (project) => ({ ...project, running: false }));
+        setFinishId(id);
+        setStack((current) => {
+          const next = current.length > 1 ? current.slice(0, -1) : [{ name: "home" as const }];
+          const top = next[next.length - 1];
+          if (top) writeHash(top);
+          return next;
+        });
+      },
+      dismissFinish: () => setFinishId(null),
+      openDiary: () => {
+        const id = finishId;
+        setFinishId(null);
+        if (id) push({ name: "diary", id });
+      },
+      saveDiary: (id, body) => {
+        const date = new Intl.DateTimeFormat("ko-KR", {
+          timeZone: "Asia/Seoul",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        })
+          .format(new Date())
+          .replace(/\. /g, ".")
+          .replace(/\.$/, "");
+        updateProject(id, (project) => ({
+          ...project,
+          diary: [{ title: "오늘의 뜨개", body, date }, ...project.diary],
+        }));
+        setToast("뜨개일기를 저장했어요");
+        back();
+      },
     };
-  }, [bagTab, calcLen, calcResult, calcSts, data, homeTab, loungeTab, route, sheet, sort, toast]);
+  }, [bagTab, calcLen, calcResult, calcSts, data, finishId, homeTab, loungeTab, route, sheet, sort, toast]);
 
   return <AppContext.Provider value={api}>{children}</AppContext.Provider>;
 }

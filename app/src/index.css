@@ -46,6 +46,7 @@ button {
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  padding-top: env(safe-area-inset-top);
 }
 
 @media (min-width: 840px) {

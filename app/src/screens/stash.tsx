@@ -1,6 +1,7 @@
 import { CODEX_POSTS, REVIEWS, ballsLabel } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { UnderlineTabs } from "../ui.tsx";
+import { ClockIcon, HeartIcon, PinIcon, UnderlineTabs } from "../ui.tsx";
+import type { ReactNode } from "react";
 
 export function YarnScreen({ id }: { id: string }) {
   const { data, setBagTab, goTab, setBalls } = useApp();
@@ -26,7 +27,7 @@ export function YarnScreen({ id }: { id: string }) {
       <div className="px-5 pt-4">
         <div className="relative mx-auto w-52">
           <img src={yarn.image} alt="" className="h-44 w-full rounded-[28px] object-cover object-center" />
-          <span className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-white/95 px-3 py-1 text-[12px] shadow-card">
+          <span className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-white px-3 py-1 text-[12px] shadow-card">
             <i className="h-2 w-2 rounded-full bg-[#f3b6c0]" />
             {yarn.colorName}
           </span>
@@ -46,14 +47,14 @@ export function YarnScreen({ id }: { id: string }) {
           </div>
         </section>
         <div className="mt-3 grid grid-cols-2 gap-3">
-          <Spec icon="◎" value={yarn.material} label="소재" />
-          <Spec icon="◷" value={yarn.weight} label="무게" />
-          <Spec icon="◷" value={yarn.length} label="길이" />
-          <Spec icon="◷" value={yarn.needle} label="권장 바늘" />
+          <Spec icon={<ClockIcon />} value={yarn.material} label="소재" />
+          <Spec icon={<ClockIcon />} value={yarn.weight} label="무게" />
+          <Spec icon={<ClockIcon />} value={yarn.length} label="길이" />
+          <Spec icon={<ClockIcon />} value={yarn.needle} label="권장 바늘" />
         </div>
         <section className="mt-3 rounded-[24px] border border-[#f0f0f0] px-4 py-3">
           <p className="text-[12px] text-[#999]">보관 위치</p>
-          <p className="font-bold">📍 {yarn.place}</p>
+          <p className="flex items-center gap-1 font-bold"><PinIcon /> {yarn.place}</p>
         </section>
         <section className="memo-lines mt-3 rounded-[24px] border border-[#f0f0f0] border-l-4 border-l-blush px-4 py-3">
           <p className="text-[12px] text-[#999]">메모</p>
@@ -89,21 +90,21 @@ export function NeedleScreen({ id }: { id: string }) {
       <div className="px-5 pt-4">
         <div className="relative mx-auto w-52">
           <img src={needle.image} alt="" className="h-44 w-full rounded-[28px] object-cover object-center" />
-          <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white/95 px-3 py-1 text-[12px] shadow-card">
-            ● {needle.brandLine}
+          <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-1 text-[12px] shadow-card">
+            {needle.brandLine}
           </span>
         </div>
         <h2 className="mt-4 text-center text-[20px] font-bold">{needle.name}</h2>
         <p className="text-center text-[12px] text-[#999]">{needle.lot}</p>
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <Spec icon="◎" value={needle.size} label="사이즈" />
-          <Spec icon="◷" value={needle.material} label="소재" />
-          <Spec icon="◷" value={needle.kind} label="종류" />
-          <Spec icon="◷" value={needle.cable} label="케이블" />
+          <Spec icon={<ClockIcon />} value={needle.size} label="사이즈" />
+          <Spec icon={<ClockIcon />} value={needle.material} label="소재" />
+          <Spec icon={<ClockIcon />} value={needle.kind} label="종류" />
+          <Spec icon={<ClockIcon />} value={needle.cable} label="케이블" />
         </div>
         <section className="mt-3 rounded-[24px] border border-[#f0f0f0] px-4 py-3">
           <p className="text-[12px] text-[#999]">보관 위치</p>
-          <p className="font-bold">📍 {needle.place}</p>
+          <p className="flex items-center gap-1 font-bold"><PinIcon /> {needle.place}</p>
         </section>
         <section className="memo-lines mt-3 rounded-[24px] border border-[#f0f0f0] border-l-4 border-l-blush px-4 py-3">
           <p className="text-[12px] text-[#999]">메모</p>
@@ -126,10 +127,10 @@ export function CodexScreen({ id }: { id: string }) {
         <p className="text-[12px] text-[#999]">{yarn.lot}</p>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-3 px-4">
-        <Spec icon="◎" value={yarn.material} label="소재" />
-        <Spec icon="◷" value={yarn.weight} label="무게" />
-        <Spec icon="◷" value={yarn.length} label="길이" />
-        <Spec icon="◷" value={yarn.needle} label="권장 바늘" />
+        <Spec icon={<ClockIcon />} value={yarn.material} label="소재" />
+        <Spec icon={<ClockIcon />} value={yarn.weight} label="무게" />
+        <Spec icon={<ClockIcon />} value={yarn.length} label="길이" />
+        <Spec icon={<ClockIcon />} value={yarn.needle} label="권장 바늘" />
       </div>
       <section className="px-4 pt-6">
         <h3 className="text-[16px] font-bold">실 후기</h3>
@@ -138,10 +139,10 @@ export function CodexScreen({ id }: { id: string }) {
           {REVIEWS.map((review) => (
             <article key={review.name} className="w-64 shrink-0 rounded-3xl bg-[#f7f7f7] p-4">
               <p className="text-[13px] font-bold">
-                {review.name} <span className="text-blush">{"★".repeat(review.stars)}</span>
+                {review.name} <Stars count={review.stars} />
               </p>
               <p className="mt-2 text-[13px] leading-relaxed">{review.body}</p>
-              <p className="mt-3 text-[12px] text-[#999]">💬 {review.comments}</p>
+              <p className="mt-3 flex items-center gap-1 text-[12px] text-[#999]"><CommentMark /> {review.comments}</p>
             </article>
           ))}
         </div>
@@ -156,7 +157,7 @@ export function CodexScreen({ id }: { id: string }) {
                 <p className="text-[12px] font-bold">{post.team}</p>
                 <p className="mt-1 text-[12px] leading-snug">{post.body}</p>
                 <p className="mt-2 text-[11px] text-[#888]">{post.tags.join(" ")}</p>
-                <p className="mt-1 text-[12px] text-blush">♥ {post.likes}</p>
+                <p className="mt-1 flex items-center gap-1 text-[12px] text-blush"><HeartIcon filled /> {post.likes}</p>
               </div>
             </article>
           ))}
@@ -177,7 +178,27 @@ export function CodexScreen({ id }: { id: string }) {
   );
 }
 
-function Spec({ icon, value, label }: { icon: string; value: string; label: string }) {
+function Stars({ count }: { count: number }) {
+  return (
+    <span className="inline-flex gap-0.5 text-blush" aria-label={`별 ${count}개`}>
+      {Array.from({ length: count }, (_, index) => (
+        <svg key={index} width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
+          <path d="M6 1.2 7.3 4.3 10.6 4.6 8.1 6.8 8.9 10 6 8.3 3.1 10 3.9 6.8 1.4 4.6 4.7 4.3 6 1.2z" />
+        </svg>
+      ))}
+    </span>
+  );
+}
+
+function CommentMark() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+      <path d="M2.2 3.2h9.6v6.2H6.2L3.4 11.6V9.4H2.2V3.2z" />
+    </svg>
+  );
+}
+
+function Spec({ icon, value, label }: { icon: ReactNode; value: string; label: string }) {
   return (
     <div className="rounded-[22px] border border-[#f0f0f0] px-3 py-3">
       <p className="text-[16px]">{icon}</p>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { FAQ, KINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { ChevronRight, HeartIcon, Mascot, PauseIcon, PlayIcon, SearchIcon, cx } from "../ui.tsx";
+import { ChevronDown, ChevronRight, CrownIcon, GearIcon, HeartIcon, Mascot, NaviIcon, PauseIcon, PlayIcon, SearchIcon, cx } from "../ui.tsx";
 
 export function HomeScreen() {
   const { homeTab } = useApp();
@@ -18,7 +18,7 @@ function HomePane() {
 
   return (
     <div className="pb-8">
-      <header className="sticky top-0 z-20 flex items-end justify-between bg-white/95 px-4 pb-2 backdrop-blur">
+      <header className="sticky top-0 z-20 flex items-end justify-between bg-white px-4 pb-2">
         <div className="flex gap-4 text-[18px]">
           <button type="button" className="border-b-2 border-blush pb-1 font-bold" onClick={() => setHomeTab("home")}>
             홈
@@ -45,7 +45,7 @@ function HomePane() {
             <button type="button" onClick={() => push({ name: "project", id: project.id })} className="block w-full text-left">
               <div className="relative">
                 <img src={project.image} alt="" className="h-52 w-full object-cover" />
-                <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[12px] font-semibold">진행중</span>
+                <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[12px] font-semibold">진행중</span>
                 <span className="absolute bottom-3 left-3 rounded-full bg-blush px-2 py-0.5 text-[12px] font-bold text-white">
                   {project.progress}%
                 </span>
@@ -70,7 +70,7 @@ function HomePane() {
                         push({ name: "project-form", id: project.id });
                       }}
                     >
-                      ⚙
+                      <GearIcon />
                     </RoundIcon>
                   </span>
                 </div>
@@ -83,14 +83,14 @@ function HomePane() {
             <div className="px-4 pb-4">
               <button
                 type="button"
-                onClick={() => push({ name: "navi", id: project.id })}
+                onClick={() => push({ name: "camera", id: project.id })}
                 className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-blush font-semibold text-white"
               >
-                <span className="grid h-5 w-5 place-items-center rounded bg-white/30 text-[11px]">▣</span>
+                <NaviIcon />
                 뜨개내비
               </button>
-              <button type="button" aria-label="프로젝트 더 보기" onClick={() => setExpanded((value) => !value)} className="mx-auto mt-2 block text-[#bbb]">
-                {expanded ? "▴" : "▾"}
+              <button type="button" aria-label="프로젝트 더 보기" onClick={() => setExpanded((value) => !value)} className="mx-auto mt-2 grid h-8 w-8 place-items-center text-[#bbb]">
+                <ChevronDown up={expanded} />
               </button>
               {expanded ? (
                 <ul className="mt-1 space-y-1 text-[13px] text-[#666]">
@@ -184,12 +184,12 @@ function HomePane() {
       </section>
 
       <section className="px-4 pt-8">
-        <SectionTitle title="이번달 뜨개왕 발표!" icon="♛" onMore={() => push({ name: "ranking" })} />
+        <SectionTitle title="이번달 뜨개왕 발표!" icon={<CrownIcon />} onMore={() => push({ name: "ranking" })} />
         <div className="mt-4 grid grid-cols-3 gap-2 text-center">
           {KINGS.map((king) => (
             <button key={king.name} type="button" onClick={() => push({ name: "ranking" })}>
-              <span className="text-lg" style={{ color: king.crown }}>
-                ♛
+              <span className="inline-flex justify-center">
+                <CrownIcon color={king.crown} />
               </span>
               <span className="mx-auto mt-1 grid h-16 w-16 place-items-center rounded-full bg-[#f6f6f6] text-[13px] font-bold">
                 {king.name.slice(0, 1)}
@@ -320,7 +320,7 @@ function MarketPane() {
   );
 }
 
-function SectionTitle({ title, onMore, icon }: { title: string; onMore?: () => void; icon?: string }) {
+function SectionTitle({ title, onMore, icon }: { title: string; onMore?: () => void; icon?: ReactNode }) {
   return (
     <div className="flex items-center justify-between px-4">
       <h2 className="text-[20px] font-bold">

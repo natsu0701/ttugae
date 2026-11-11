@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useApp } from "../store.tsx";
 import type { ToolKind, UnitSystem } from "../types.ts";
-import { BlackButton, Mascot, TextField, Wordmark, cx } from "../ui.tsx";
+import { BlackButton, FlowerIcon, LockIcon, MailIcon, Mascot, TextField, Wordmark, cx } from "../ui.tsx";
 
 export function SplashScreen() {
   const { replace } = useApp();
@@ -60,7 +60,7 @@ export function LoginScreen() {
         }}
       >
         <label className="relative block">
-          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#b9b9b9]">✉</span>
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#b9b9b9]"><MailIcon /></span>
           <TextField
             type="email"
             autoComplete="username"
@@ -72,7 +72,7 @@ export function LoginScreen() {
           />
         </label>
         <label className="relative block">
-          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#b9b9b9]">🔒</span>
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#b9b9b9]"><LockIcon /></span>
           <TextField
             type="password"
             autoComplete="current-password"
@@ -151,8 +151,8 @@ function AppleMark() {
 
 function Flower({ className }: { className?: string }) {
   return (
-    <span className={cx("absolute text-2xl text-[#ffe56a]", className)} aria-hidden>
-      ✿
+    <span className={cx("absolute", className)} aria-hidden>
+      <FlowerIcon />
     </span>
   );
 }

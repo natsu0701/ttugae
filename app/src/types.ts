@@ -20,6 +20,8 @@ export type Route =
   | { name: "project"; id: string }
   | { name: "project-form"; id?: string }
   | { name: "navi"; id: string }
+  | { name: "camera"; id: string }
+  | { name: "diary"; id: string }
   | { name: "yarn"; id: string }
   | { name: "needle"; id: string }
   | { name: "finished"; id: string }

@@ -30,7 +30,9 @@ import {
   GaugeFormScreen,
   GaugeScreen,
 } from "./screens/tools.tsx";
-import { ChevronLeft, SheetHost, StatusBar, TabBar, ToastHost } from "./ui.tsx";
+import { CameraScreen } from "./screens/camera.tsx";
+import { DiaryScreen } from "./screens/diary.tsx";
+import { ChevronLeft, FolderIcon, PlayBadge, SheetHost, TabBar, ToastHost } from "./ui.tsx";
 
 function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
   if (route.name === "project" || route.name === "finished" || route.name === "navi") {
@@ -80,7 +82,20 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
   }
 }
 
-const OWN_CHROME = new Set(["splash", "login", "signup", "forgot", "onboarding", "skill", "home", "bag", "lounge", "my"]);
+const OWN_CHROME = new Set([
+  "splash",
+  "login",
+  "signup",
+  "forgot",
+  "onboarding",
+  "skill",
+  "home",
+  "bag",
+  "lounge",
+  "my",
+  "camera",
+  "diary",
+]);
 
 function Shell() {
   const { route, back, data } = useApp();
@@ -89,19 +104,46 @@ function Shell() {
   return (
     <div className="stage">
       <div className="phone">
-        <StatusBar />
         {showBack ? (
-          <div className="flex h-12 shrink-0 items-center px-1">
+          <div className="flex h-12 shrink-0 items-center bg-white px-1">
             <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
               <ChevronLeft />
             </button>
             <h1 className="flex-1 truncate pr-10 text-center text-[17px] font-bold">{titleFor(route, data)}</h1>
           </div>
         ) : null}
-        <div className="scroll">{screen}</div>
+        <div className={route.name === "camera" ? "scroll bg-black" : "scroll"}>{screen}</div>
         {showsTabBar(route) ? <TabBar /> : null}
+        <FinishPrompt />
         <ToastHost />
         <SheetHost />
+      </div>
+    </div>
+  );
+}
+
+function FinishPrompt() {
+  const { finishId, dismissFinish, openDiary } = useApp();
+  if (!finishId) return null;
+  return (
+    <div className="absolute inset-0 z-40 grid place-items-center bg-black/45 px-5">
+      <div className="w-full rounded-[32px] border-[6px] border-black bg-white px-6 pb-8 pt-10 text-center">
+        <h2 className="text-[28px] font-black tracking-tight">오늘의 뜨개 완료!</h2>
+        <p className="mx-auto mt-4 max-w-[240px] text-[16px] font-semibold leading-snug">
+          지금 기록해 두면 다음 작업을
+          <br />
+          더 쉽게 이어갈 수 있어요.
+        </p>
+        <div className="mt-8 flex gap-3">
+          <button type="button" onClick={openDiary} className="flex h-[104px] flex-1 flex-col items-center justify-center gap-1.5 rounded-full bg-blush text-[16px] font-bold text-white shadow-card">
+            <PlayBadge />
+            작성하기
+          </button>
+          <button type="button" onClick={dismissFinish} className="flex h-[104px] flex-1 flex-col items-center justify-center gap-1.5 rounded-full bg-white text-[16px] font-bold text-black shadow-card">
+            <FolderIcon />
+            닫기
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -135,6 +177,10 @@ function renderRoute(route: Route): ReactNode {
       return <ProjectFormScreen id={route.id} />;
     case "navi":
       return <NaviScreen id={route.id} />;
+    case "camera":
+      return <CameraScreen id={route.id} />;
+    case "diary":
+      return <DiaryScreen id={route.id} />;
     case "yarn":
       return <YarnScreen id={route.id} />;
     case "needle":

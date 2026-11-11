@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { BagTab, Needle, Project, Yarn } from "../types.ts";
-import { Fab, InfoButton, ProgressRing, SearchIcon, UnderlineTabs, cx } from "../ui.tsx";
+import { CheckIcon, Fab, GearIcon, GridIcon, InfoButton, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
 
 const TABS: { id: BagTab; label: string }[] = [
   { id: "projects", label: "프로젝트" },
@@ -242,14 +242,14 @@ function YarnRow({ yarn, onOpen, onRemove }: { yarn: Yarn; onOpen: () => void; o
           <span>
             <span className="rounded-full bg-[#f6f6f6] px-2 py-0.5 text-[11px]">{yarn.category}</span>
             <span className="mt-1 block font-bold">{yarn.name}</span>
-            <span className="mt-1 block text-[12px] text-[#777]">✎ {yarn.code}</span>
+            <span className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><PencilIcon /> {yarn.code}</span>
             <span className="text-[12px] text-[#777]">
-              ✎ {yarn.thickness} · {ballsLabel(yarn.balls)}
+              <PencilIcon /> {yarn.thickness} · {ballsLabel(yarn.balls)}
             </span>
           </span>
         </button>
         <button type="button" aria-label="실 삭제" onClick={onRemove} className="h-8 text-[16px] text-[#bbb]">
-          🗑
+          <TrashIcon />
         </button>
       </div>
       <div className="mt-2 flex gap-3 text-[12px] text-[#888]">
@@ -317,12 +317,12 @@ function NeedleRow({ needle, onOpen, onRemove }: { needle: Needle; onOpen: () =>
         <button type="button" onClick={onOpen} className="flex-1 text-left">
           <span className="rounded-full bg-[#f6f6f6] px-2 py-0.5 text-[11px]">{needle.category}</span>
           <span className="mt-1 block font-bold">{needle.name}</span>
-          <span className="mt-1 block text-[12px] text-[#777]">✎ {needle.size} · {needle.meta}</span>
+          <span className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><PencilIcon /> {needle.size} · {needle.meta}</span>
           <span className="text-[12px] text-[#777]">⌂ {needle.material}</span>
         </button>
         <img src={needle.image} alt="" className="h-16 w-16 rounded-2xl object-cover" />
         <button type="button" aria-label="바늘 삭제" onClick={onRemove} className="h-8 text-[#bbb]">
-          🗑
+          <TrashIcon />
         </button>
       </div>
     </li>
@@ -337,9 +337,9 @@ export function ProjectScreen({ id }: { id: string }) {
   return (
     <div className="pb-10">
       <div className="mt-1 flex justify-between px-5 text-[13px]">
-        <span>✓ {project.progress}% 완성</span>
+        <span className="inline-flex items-center gap-1"><CheckIcon /> {project.progress}% 완성</span>
         <span className="flex items-center gap-2">
-          ▦ 시작일 {project.started}
+          <GridIcon /> 시작일 {project.started}
           <InfoButton title={project.title} body="타이머로 뜬 시간을 재고, 부위마다 진행을 체크해요. 뜨개나비는 지금 할 단계만 보여 줘요." />
         </span>
       </div>
@@ -349,10 +349,10 @@ export function ProjectScreen({ id }: { id: string }) {
           <p className="font-mono text-[28px] font-semibold tracking-wider">{formatClock(project.elapsed)}</p>
           <span className="flex gap-2">
             <button type="button" aria-label={project.running ? "일시정지" : "시작"} onClick={() => toggleTimer(project.id)} className="grid h-10 w-10 place-items-center rounded-full bg-ink text-white">
-              {project.running ? "Ⅱ" : "▶"}
+              {project.running ? <PauseIcon /> : <PlayIcon />}
             </button>
             <button type="button" aria-label="시간 초기화" onClick={() => resetTimer(project.id)} className="grid h-10 w-10 place-items-center rounded-full bg-ink text-white">
-              ⚙
+              <GearIcon />
             </button>
           </span>
         </div>
@@ -360,14 +360,15 @@ export function ProjectScreen({ id }: { id: string }) {
           {project.parts.map((part) => (
             <button key={part.id} type="button" onClick={() => togglePart(project.id, part.id)} className="text-center">
               <span className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-[#eee] bg-white text-[18px] font-bold">
-                {part.done ? "✓" : part.count}
+                {part.done ? <CheckIcon /> : part.count}
               </span>
               <span className="mt-1 block text-[13px] font-semibold">{part.name}</span>
               <span className="text-[11px] text-[#999]">{part.ago}</span>
             </button>
           ))}
         </div>
-        <button type="button" onClick={() => push({ name: "navi", id: project.id })} className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-blush font-semibold text-white">
+        <button type="button" onClick={() => push({ name: "camera", id: project.id })} className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-blush font-semibold text-white">
+          <NaviIcon />
           뜨개내비
         </button>
         <div className="mt-3 flex items-center gap-2 text-[12px]">
@@ -467,7 +468,7 @@ export function NaviScreen({ id }: { id: string }) {
                 )}
               >
                 <span className={cx("grid h-6 w-6 shrink-0 place-items-center rounded-full text-[12px]", checked ? "bg-ink text-white" : "bg-[#f3f3f3]")}>
-                  {checked ? "✓" : index + 1}
+                  {checked ? <CheckIcon /> : index + 1}
                 </span>
                 <span>
                   <span className="block text-[14px] font-semibold">{step}</span>
