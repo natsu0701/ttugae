@@ -12,10 +12,14 @@ html,
 body,
 #root {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
+  word-break: keep-all;
+  line-break: strict;
+  overflow-wrap: anywhere;
 }
 
 button,

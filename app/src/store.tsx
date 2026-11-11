@@ -172,13 +172,14 @@ type AppApi = {
   toggleTimer: (id: string) => void;
   resetTimer: (id: string) => void;
   togglePart: (projectId: string, partId: string) => void;
-  saveProject: (input: { id?: string; title: string; category: string; patternId: string }) => void;
+  saveProject: (input: { id?: string; title: string; category: string; patternId: string; yarnIds: string[]; needleIds: string[] }) => void;
   setBalls: (id: string, balls: number) => void;
   removeYarn: (id: string) => void;
   removeNeedle: (id: string) => void;
   saveGauge: (gauge: GaugeRecord) => void;
   removeGauge: (id: string) => void;
   addCounter: () => void;
+  renameCounter: (id: string, name: string) => void;
   setCounterProject: (id: string, projectId: string | null) => void;
   bumpCounter: (counterId: string, rowId: string, delta: number) => void;
   resetCounterRow: (counterId: string, rowId: string) => void;
@@ -377,13 +378,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const progress = Math.max(project.progress, Math.round((done / parts.length) * 100));
           return { ...project, parts, progress };
         }),
-      saveProject: ({ id, title, category, patternId }) => {
+      saveProject: ({ id, title, category, patternId, yarnIds, needleIds }) => {
         setData((current) => {
           if (id) {
             return {
               ...current,
               projects: current.projects.map((project) =>
-                project.id === id ? { ...project, title, category, patternId } : project,
+                project.id === id ? { ...project, title, category, patternId, yarnIds, needleIds } : project,
               ),
             };
           }
@@ -398,6 +399,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             image: current.projects[0]?.image ?? "",
             ago: "방금",
             patternId,
+            yarnIds,
+            needleIds,
             parts: [{ id: "body", name: "몸통", count: 0, done: false, ago: "방금" }],
             diary: [],
           };
@@ -435,6 +438,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setData((current) => ({ ...current, counters: [created, ...current.counters] }));
         push({ name: "counter", id: created.id });
       },
+      renameCounter: (id, name) =>
+        setData((current) => ({
+          ...current,
+          counters: current.counters.map((counter) => (counter.id === id ? { ...counter, name } : counter)),
+        })),
       setCounterProject: (id, projectId) =>
         setData((current) => ({
           ...current,
@@ -504,13 +512,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
       completeSession: (id) => {
         updateProject(id, (project) => ({ ...project, running: false }));
         setFinishId(id);
-        back();
       },
-      dismissFinish: () => setFinishId(null),
+      dismissFinish: () => {
+        const onCamera = stackRef.current[stackRef.current.length - 1]?.name === "camera";
+        setFinishId(null);
+        if (onCamera) back();
+      },
       openDiary: () => {
         const id = finishId;
         setFinishId(null);
-        if (id) push({ name: "diary", id });
+        if (!id) return;
+        const current = stackRef.current;
+        const base = current[current.length - 1]?.name === "camera" ? current.slice(0, -1) : current;
+        const next = [...base, { name: "diary" as const, id }];
+        const top = next[next.length - 1];
+        if (top) writeHash(top);
+        setStack(next);
       },
       saveDiary: (id, body) => {
         const date = new Intl.DateTimeFormat("ko-KR", {

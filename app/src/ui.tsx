@@ -1,4 +1,23 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+import {
+  BagFillIcon,
+  CameraFillIcon,
+  CheckFillIcon,
+  ChevronLeftFillIcon,
+  ChevronRightFillIcon,
+  ClockFillIcon,
+  CloseFillIcon,
+  FolderFillIcon,
+  HeartFillIcon,
+  ImageFillIcon,
+  LockFillIcon,
+  PauseFillIcon,
+  PinFillIcon,
+  PlayFillIcon,
+  SettingsFillIcon,
+  SparkleFillIcon,
+  UserFillIcon,
+} from "./icons/FillIcons.tsx";
 import { showsTabBar, useApp } from "./store.tsx";
 
 export function cx(...parts: Array<string | false | undefined>) {
@@ -136,9 +155,9 @@ export function TabBar() {
   const { route, goTab } = useApp();
   const items = [
     { id: "home" as const, label: "홈", icon: <YarnIcon /> },
-    { id: "bag" as const, label: "뜨개가방", icon: <BagIcon /> },
+    { id: "bag" as const, label: "뜨개가방", icon: <BagFillIcon className="h-5 w-5" /> },
     { id: "lounge" as const, label: "뜨개 라운지", icon: <ChairIcon /> },
-    { id: "my" as const, label: "마이페이지", icon: <PersonIcon /> },
+    { id: "my" as const, label: "마이페이지", icon: <UserFillIcon className="h-5 w-5" /> },
   ];
   return (
     <nav className="relative z-30 grid shrink-0 grid-cols-4 border-t border-[#f2f2f2] bg-white px-1 pb-2 pt-1 shadow-nav">
@@ -348,32 +367,16 @@ export function ToastHost() {
 }
 
 export function ChevronLeft() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M13 5 L7 11 L13 17" />
-    </svg>
-  );
+  return <ChevronLeftFillIcon className="h-5 w-5" />;
 }
 export function ChevronRight() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <path d="M7 4l5 5-5 5" />
-    </svg>
-  );
+  return <ChevronRightFillIcon className="h-4 w-4" />;
 }
 function YarnIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6">
       <circle cx="11" cy="11" r="7" />
       <path d="M7 8c2 2 6 2 8 0M6.5 12c2.2 1.4 6.6 1.4 9 0M8 15.2c1.6.8 4.4.8 6 0" />
-    </svg>
-  );
-}
-function BagIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <path d="M6 8h10l-1 10H7L6 8z" />
-      <path d="M8.5 8V6.5a2.5 2.5 0 0 1 5 0V8" />
     </svg>
   );
 }
@@ -387,20 +390,8 @@ function ChairIcon() {
     </svg>
   );
 }
-function PersonIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <circle cx="11" cy="8" r="3" />
-      <path d="M5.5 17.5c1.2-2.4 3-3.5 5.5-3.5s4.3 1.1 5.5 3.5" />
-    </svg>
-  );
-}
 export function HeartIcon({ filled }: { filled?: boolean }) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill={filled ? "#f29c9b" : "none"} stroke={filled ? "#f29c9b" : "currentColor"} strokeWidth="1.6">
-      <path d="M10 16s-6-3.6-6-7.2C4 6.4 5.8 5 7.6 5c1.1 0 2 .5 2.4 1.3C10.4 5.5 11.3 5 12.4 5 14.2 5 16 6.4 16 8.8 16 12.4 10 16 10 16z" />
-    </svg>
-  );
+  return <HeartFillIcon filled={filled} className="h-5 w-5" />;
 }
 export function SearchIcon() {
   return (
@@ -411,42 +402,25 @@ export function SearchIcon() {
   );
 }
 export function PlayIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
-      <path d="M6 4.5v9l8-4.5-8-4.5z" />
-    </svg>
-  );
+  return <PlayFillIcon className="h-5 w-5" />;
 }
 export function PauseIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
-      <rect x="4.5" y="4" width="3" height="10" rx="0.6" />
-      <rect x="10.5" y="4" width="3" height="10" rx="0.6" />
-    </svg>
-  );
+  return <PauseFillIcon className="h-5 w-5" />;
 }
 export function GearIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden>
-      <path d="M7.2 1.4h3.6l.4 1.8c.4.1.8.3 1.1.5l1.7-.7 1.8 1.8-.7 1.7c.2.3.4.7.5 1.1l1.8.4v3.6l-1.8.4c-.1.4-.3.8-.5 1.1l.7 1.7-1.8 1.8-1.7-.7c-.3.2-.7.4-1.1.5l-.4 1.8H7.2l-.4-1.8a5 5 0 0 1-1.1-.5l-1.7.7-1.8-1.8.7-1.7a5 5 0 0 1-.5-1.1l-1.8-.4V7.2l1.8-.4c.1-.4.3-.8.5-1.1L1.9 3l1.8-1.8 1.7.7c.3-.2.7-.4 1.1-.5l.7-1.8zM9 11.3A2.3 2.3 0 1 0 9 6.7a2.3 2.3 0 0 0 0 4.6z" />
-    </svg>
-  );
+  return <SettingsFillIcon className="h-5 w-5" />;
 }
 
 export function CloseIcon({ size = 18 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-      <path d="M4.5 4.5l9 9M13.5 4.5l-9 9" />
-    </svg>
+    <span className="inline-flex shrink-0" style={{ width: size, height: size }}>
+      <CloseFillIcon className="h-full w-full" />
+    </span>
   );
 }
 
 export function FolderIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="currentColor" aria-hidden>
-      <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h4.2c.5 0 1 .2 1.4.6l1.2 1.3H21.5A2.5 2.5 0 0 1 24 10.4v9.1a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 4 19.5v-11z" />
-    </svg>
-  );
+  return <FolderFillIcon className="h-7 w-7" />;
 }
 
 export function PlayBadge() {
@@ -468,12 +442,7 @@ export function MailIcon() {
 }
 
 export function LockIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <rect x="4" y="8" width="10" height="7" rx="1.6" />
-      <path d="M6.5 8V6.2a2.5 2.5 0 0 1 5 0V8" />
-    </svg>
-  );
+  return <LockFillIcon className="h-4 w-4" />;
 }
 
 export function TrashIcon() {
@@ -487,20 +456,11 @@ export function TrashIcon() {
 }
 
 export function CameraIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <path d="M3 7.5h2.2l1.2-1.8h7.2l1.2 1.8H17v8.2H3V7.5z" />
-      <circle cx="10" cy="11.2" r="2.2" />
-    </svg>
-  );
+  return <CameraFillIcon className="h-5 w-5" />;
 }
 
 export function PinIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden>
-      <path d="M7 1.2a3.6 3.6 0 0 0-3.6 3.6c0 2.7 3.6 7.8 3.6 7.8s3.6-5.1 3.6-7.8A3.6 3.6 0 0 0 7 1.2zm0 4.8a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4z" />
-    </svg>
-  );
+  return <PinFillIcon className="h-3.5 w-3.5" />;
 }
 
 export function CrownIcon({ color = "currentColor" }: { color?: string }) {
@@ -512,11 +472,7 @@ export function CrownIcon({ color = "currentColor" }: { color?: string }) {
 }
 
 export function CheckIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-      <path d="M3 7.2 5.8 10 11 4.2" />
-    </svg>
-  );
+  return <CheckFillIcon className="h-3.5 w-3.5" />;
 }
 
 export function PencilIcon() {
@@ -537,21 +493,11 @@ export function YarnBallIcon() {
 }
 
 export function ImagePlusIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <rect x="2" y="3.5" width="14" height="11" rx="2" />
-      <path d="M3.5 12.2 7 8.8l2.4 2.2 1.6-1.4 3.5 3" />
-      <circle cx="12.2" cy="6.6" r="0.8" fill="currentColor" />
-    </svg>
-  );
+  return <ImageFillIcon className="h-5 w-5" />;
 }
 
 export function SparkIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden>
-      <path d="M7 1.2 8.1 5.2 12.2 6.3 8.1 7.4 7 11.4 5.9 7.4 1.8 6.3 5.9 5.2 7 1.2z" />
-    </svg>
-  );
+  return <SparkleFillIcon className="h-3.5 w-3.5" />;
 }
 
 export function ChevronDown({ up = false }: { up?: boolean }) {
@@ -583,12 +529,7 @@ export function GridIcon() {
 }
 
 export function ClockIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <circle cx="11" cy="11" r="8" />
-      <path d="M11 6.5V11l3 2" />
-    </svg>
-  );
+  return <ClockFillIcon className="h-5 w-5" />;
 }
 
 export function RowsIcon() {

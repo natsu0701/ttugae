@@ -105,9 +105,48 @@ function ProjectPane() {
       ) : (
         <p className="px-4 pt-8 text-center text-[14px] text-[#999]">이 카테고리의 프로젝트가 없어요.</p>
       )}
-      <h2 className="px-4 pt-6 text-[16px] font-bold">전체 프로젝트</h2>
-      <ProjectGrid projects={projects} />
+      <ProjectCatalog projects={projects} />
     </div>
+  );
+}
+
+function ProjectCatalog({ projects }: { projects: Project[] }) {
+  const [mode, setMode] = useState<"card" | "list">("card");
+  return (
+    <section>
+      <div className="flex items-center justify-between px-4 pt-6">
+        <h2 className="text-[16px] font-bold">전체 프로젝트</h2>
+        <div className="flex rounded-full bg-[#f4f4f4] p-1 text-[12px] font-semibold">
+          <button type="button" onClick={() => setMode("card")} className={cx("h-8 rounded-full px-3", mode === "card" ? "bg-white shadow-card" : "text-[#888]")}>
+            카드
+          </button>
+          <button type="button" onClick={() => setMode("list")} className={cx("h-8 rounded-full px-3", mode === "list" ? "bg-white shadow-card" : "text-[#888]")}>
+            목록
+          </button>
+        </div>
+      </div>
+      {mode === "card" ? <ProjectGrid projects={projects} /> : <ProjectList projects={projects} />}
+    </section>
+  );
+}
+
+function ProjectList({ projects }: { projects: Project[] }) {
+  const { push } = useApp();
+  return (
+    <ul className="space-y-2 px-4 pt-3">
+      {projects.map((project) => (
+        <li key={project.id}>
+          <button type="button" onClick={() => push({ name: "project", id: project.id })} className="flex w-full items-center gap-3 rounded-2xl border border-[#f0f0f0] p-2 text-left">
+            <img src={project.image} alt="" className="h-16 w-16 rounded-lg object-cover" />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[15px] font-bold">{project.title}</span>
+              <span className="text-[12px] text-[#888]">시작일 {project.started} · {project.ago}</span>
+            </span>
+            <span className="text-[16px] font-bold text-blush">{project.progress}%</span>
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -118,7 +157,7 @@ function ProjectGrid({ projects }: { projects: Project[] }) {
       {projects.map((project) => (
         <li key={project.id}>
           <button type="button" onClick={() => push({ name: "project", id: project.id })} className="w-full text-left">
-            <img src={project.image} alt="" className="aspect-square w-full rounded-3xl object-cover object-bottom" />
+            <img src={project.image} alt="" className="aspect-square w-full rounded-lg object-cover object-bottom" />
             <span className="mt-2 flex items-center gap-2">
               <ProgressRing value={project.progress} size={40} />
               <span>
@@ -206,7 +245,7 @@ function YarnPane() {
       <div className="mt-3 flex gap-3 overflow-x-auto px-4">
         {recent.map((yarn) => (
           <button key={yarn.id} type="button" onClick={() => push({ name: "yarn", id: yarn.id })} className="w-36 shrink-0 rounded-3xl border border-[#f0f0f0] p-2 text-left">
-            <img src={yarn.image} alt="" className="h-24 w-full rounded-2xl object-cover" />
+            <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
             <p className="mt-2 truncate text-[13px] font-bold">{yarn.name}</p>
             <p className="truncate text-[11px] text-[#999]">{yarn.code}</p>
             <p className="text-[11px] text-[#999]">
@@ -238,7 +277,7 @@ function YarnRow({ yarn, onOpen, onRemove }: { yarn: Yarn; onOpen: () => void; o
     <li className="rounded-3xl border border-[#f0f0f0] p-3">
       <div className="flex gap-3">
         <button type="button" onClick={onOpen} className="flex flex-1 gap-3 text-left">
-          <img src={yarn.image} alt="" className="h-16 w-16 rounded-2xl object-cover" />
+          <img src={yarn.image} alt="" className="h-16 w-16 rounded-lg object-cover" />
           <span>
             <span className="rounded-full bg-[#f6f6f6] px-2 py-0.5 text-[11px]">{yarn.category}</span>
             <span className="mt-1 block font-bold">{yarn.name}</span>
@@ -286,7 +325,7 @@ function NeedlePane() {
           .filter((needle) => needle.recent)
           .map((needle) => (
             <button key={needle.id} type="button" onClick={() => push({ name: "needle", id: needle.id })} className="w-36 shrink-0 rounded-3xl border border-[#f0f0f0] p-2 text-left">
-              <img src={needle.image} alt="" className="h-24 w-full rounded-2xl object-cover" />
+              <img src={needle.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
               <p className="mt-2 truncate text-[13px] font-bold">{needle.name}</p>
               <p className="text-[11px] text-[#999]">{needle.brandLine}</p>
             </button>
@@ -320,7 +359,7 @@ function NeedleRow({ needle, onOpen, onRemove }: { needle: Needle; onOpen: () =>
           <span className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><PencilIcon /> {needle.size} · {needle.meta}</span>
           <span className="text-[12px] text-[#777]">⌂ {needle.material}</span>
         </button>
-        <img src={needle.image} alt="" className="h-16 w-16 rounded-2xl object-cover" />
+        <img src={needle.image} alt="" className="h-16 w-16 rounded-lg object-cover" />
         <button type="button" aria-label="바늘 삭제" onClick={onRemove} className="h-8 text-[#bbb]">
           <TrashIcon />
         </button>
@@ -340,7 +379,6 @@ export function ProjectScreen({ id }: { id: string }) {
         <span className="inline-flex items-center gap-1"><CheckIcon /> {project.progress}% 완성</span>
         <span className="flex items-center gap-2">
           <GridIcon /> 시작일 {project.started}
-          <InfoButton title={project.title} body="타이머로 뜬 시간을 재고, 부위마다 진행을 체크해요. 뜨개나비는 지금 할 단계만 보여 줘요." />
         </span>
       </div>
       <img src={project.image} alt="" className="mx-4 mt-3 h-52 w-[calc(100%-2rem)] rounded-[28px] object-cover" />
@@ -494,6 +532,15 @@ export function ProjectFormScreen({ id }: { id?: string }) {
   const [afterSts, setAfterSts] = useState("");
   const [afterRows, setAfterRows] = useState("");
   const [memo, setMemo] = useState("");
+  const [yarnIds, setYarnIds] = useState<string[]>(() => {
+    if (existing?.yarnIds) return existing.yarnIds;
+    if (!existing) return [];
+    return data.yarns.filter((yarn) => yarn.linkedProject === existing.title).map((yarn) => yarn.id);
+  });
+  const [needleIds, setNeedleIds] = useState<string[]>(existing?.needleIds ?? []);
+  const toggleId = (list: string[], idValue: string, setList: (next: string[]) => void) => {
+    setList(list.includes(idValue) ? list.filter((item) => item !== idValue) : [...list, idValue]);
+  };
 
   return (
     <form
@@ -504,7 +551,7 @@ export function ProjectFormScreen({ id }: { id?: string }) {
           notify("프로젝트 이름을 입력해 주세요");
           return;
         }
-        saveProject({ id, title: title.trim(), category, patternId });
+        saveProject({ id, title: title.trim(), category, patternId, yarnIds, needleIds });
         notify(id ? "프로젝트를 수정했어요" : "프로젝트를 만들었어요");
         back();
       }}
@@ -524,14 +571,46 @@ export function ProjectFormScreen({ id }: { id?: string }) {
         </select>
       </label>
       <div>
-        <p className="text-[14px] font-bold">실 정보</p>
-        <div className="mt-2 flex gap-2 overflow-x-auto">
-          {data.yarns.slice(0, 3).map((yarn) => (
-            <span key={yarn.id} className="w-28 shrink-0 rounded-2xl border border-[#f0f0f0] p-2 text-[12px]">
-              <img src={yarn.image} alt="" className="h-14 w-full rounded-xl object-cover" />
-              <span className="mt-1 block font-semibold">{yarn.name}</span>
-            </span>
-          ))}
+        <p className="text-[14px] font-bold">사용한 실</p>
+        <p className="mt-1 text-[12px] text-[#888]">가진 실에서 이 프로젝트에 쓴 것을 골라 주세요.</p>
+        <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+          {data.yarns.map((yarn) => {
+            const selected = yarnIds.includes(yarn.id);
+            return (
+              <button
+                key={yarn.id}
+                type="button"
+                onClick={() => toggleId(yarnIds, yarn.id, setYarnIds)}
+                aria-pressed={selected}
+                className={cx("w-28 shrink-0 rounded-2xl border p-2 text-left text-[12px]", selected ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
+              >
+                <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
+                <span className="mt-1 block font-semibold">{yarn.name}</span>
+                <span className="text-[#888]">{selected ? "사용함" : "사용 안 함"}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div>
+        <p className="text-[14px] font-bold">사용한 바늘</p>
+        <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+          {data.needles.map((needle) => {
+            const selected = needleIds.includes(needle.id);
+            return (
+              <button
+                key={needle.id}
+                type="button"
+                onClick={() => toggleId(needleIds, needle.id, setNeedleIds)}
+                aria-pressed={selected}
+                className={cx("w-28 shrink-0 rounded-2xl border p-2 text-left text-[12px]", selected ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
+              >
+                <img src={needle.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
+                <span className="mt-1 block font-semibold">{needle.name}</span>
+                <span className="text-[#888]">{needle.size} · {selected ? "사용함" : "사용 안 함"}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
       <label className="block">

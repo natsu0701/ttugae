@@ -1,0 +1,671 @@
+const CORAL = "#FC5F53";
+
+type IconProps = {
+  className?: string;
+  filled?: boolean;
+};
+
+export function UserFillIcon({ className = "h-6 w-6" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="12" cy="8" r="4.5" fill="currentColor" />
+      <path
+        d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function ProfileFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return <UserFillIcon className={className} />;
+}
+
+export function PinFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M12 2.4c3.5 0 6.4 2.7 6.4 6.1 0 4.6-6.4 13.1-6.4 13.1S5.6 13.1 5.6 8.5C5.6 5.1 8.5 2.4 12 2.4zm0 4a2.3 2.3 0 100 4.6 2.3 2.3 0 000-4.6z"
+      />
+    </svg>
+  );
+}
+
+export function CalendarFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="5" width="18" height="16" rx="3" fill="currentColor" />
+      <rect x="3" y="5" width="18" height="5" rx="3" fill="currentColor" />
+      <rect x="7" y="12" width="3" height="3" rx="0.6" fill="white" />
+      <rect x="10.5" y="12" width="3" height="3" rx="0.6" fill="white" />
+      <rect x="14" y="12" width="3" height="3" rx="0.6" fill="white" />
+    </svg>
+  );
+}
+
+export function QrFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor" />
+      <rect x="14" y="14" width="3" height="3" rx="0.6" fill="currentColor" />
+      <rect x="18" y="14" width="3" height="3" rx="0.6" fill="currentColor" />
+      <rect x="14" y="18" width="3" height="3" rx="0.6" fill="currentColor" />
+      <rect x="18" y="18" width="3" height="3" rx="0.6" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function CompassFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="12" cy="12" r="9" fill="currentColor" />
+      <path d="M12 5.2l2.2 6.2 6.2 2.2-6.2 2.2L12 21.8l-2.2-6.2L3.6 13.4l6.2-2.2L12 5.2z" fill="white" opacity="0.15" />
+      <path d="M12 6.4l1.6 5.1 5.1 1.5-5.1 1.5L12 19.6l-1.6-5.1-5.1-1.5 5.1-1.5L12 6.4z" fill="white" />
+      <circle cx="12" cy="13" r="1.35" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function PatternsFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="3" width="7" height="7" rx="2" fill="currentColor" />
+      <rect x="14" y="3" width="7" height="7" rx="2" fill="currentColor" />
+      <rect x="3" y="14" width="7" height="7" rx="2" fill="currentColor" />
+      <rect x="14" y="14" width="7" height="7" rx="2" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function ImageFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="5" width="18" height="14" rx="3" fill="currentColor" />
+      <circle cx="9" cy="11" r="2" fill="white" />
+      <path d="M3 16l5-4 4 3 3-2 6 5" fill="white" />
+    </svg>
+  );
+}
+
+export function HeartFillIcon({
+  className = "h-5 w-5",
+  filled = false,
+}: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+        fill={filled ? CORAL : "currentColor"}
+      />
+    </svg>
+  );
+}
+
+export function BookmarkFillIcon({
+  className = "h-5 w-5",
+  filled = false,
+}: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M6 3h12a2 2 0 012 2v16l-8-4.5L4 21V5a2 2 0 012-2z"
+        fill={filled ? CORAL : "currentColor"}
+      />
+    </svg>
+  );
+}
+
+export function SettingsFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z"
+        fill="currentColor"
+      />
+      <path
+        d="M19.4 13a7.9 7.9 0 01.1 1 7.9 7.9 0 01-.1 1l2 1.5-2 3.5-2.4-1a8.2 8.2 0 01-1.7 1l-.4 2.6H9l-.4-2.6a8.2 8.2 0 01-1.7-1l-2.4 1-2-3.5 2-1.5a7.9 7.9 0 01-.1-1 7.9 7.9 0 01.1-1L2.6 10.5l2-3.5 2.4 1a8.2 8.2 0 011.7-1L9.1 4.3h5.8l.4 2.6a8.2 8.2 0 011.7 1l2.4-1 2 3.5-2 1.5z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function FilterFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M4.2 5.2A1.2 1.2 0 015.2 4.5h13.6a1.2 1.2 0 01.95 1.94l-5.35 6.2v5.16a1.2 1.2 0 01-.52 1l-3.2 2.2a1.2 1.2 0 01-1.88-1v-7.36L4.25 6.44A1.2 1.2 0 014.2 5.2z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function StatsFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="4" y="12" width="4" height="8" rx="1.5" fill="currentColor" />
+      <rect x="10" y="8" width="4" height="12" rx="1.5" fill="currentColor" />
+      <rect x="16" y="4" width="4" height="16" rx="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function CommunityFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="8" cy="9" r="3" fill="currentColor" />
+      <circle cx="16" cy="9" r="3" fill="currentColor" />
+      <path
+        d="M3 19c0-2.8 2.2-5 5-5h8c2.8 0 5 2.2 5 5"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function DashboardFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="3" width="8" height="8" rx="2.5" fill="currentColor" />
+      <rect x="13" y="3" width="8" height="5" rx="2.5" fill="currentColor" />
+      <rect x="13" y="10" width="8" height="11" rx="2.5" fill="currentColor" />
+      <rect x="3" y="13" width="8" height="8" rx="2.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function UserPlusFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="10" cy="8" r="4" fill="currentColor" />
+      <path d="M3.5 19.5c.6-3.2 3.4-5.5 6.5-5.5s5.9 2.3 6.5 5.5" fill="currentColor" />
+      <path
+        d="M18 8.5h1.5v1.5H21v1.5h-1.5V13H18v-1.5h-1.5V10H18V8.5z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function LogoutFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="4" width="11" height="16" rx="3.5" fill="currentColor" />
+      <path
+        d="M15.2 11.1h4.4l-1.55-1.55a.95.95 0 011.34-1.34l3.2 3.2a.95.95 0 010 1.34l-3.2 3.2a.95.95 0 11-1.34-1.34L19.6 12.9h-4.4a.95.95 0 010-1.8z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function AccountFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3" y="5" width="18" height="14" rx="4" fill="currentColor" />
+      <circle cx="9" cy="12" r="2.4" fill="white" />
+      <rect x="13" y="10" width="5.5" height="1.6" rx="0.8" fill="white" />
+      <rect x="13" y="13" width="4" height="1.6" rx="0.8" fill="white" />
+    </svg>
+  );
+}
+
+export function WithdrawFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="10" cy="8" r="4" fill="currentColor" />
+      <path d="M3.5 19.5c.6-3.2 3.4-5.5 6.5-5.5s5.9 2.3 6.5 5.5" fill="currentColor" />
+      <rect x="16" y="7.2" width="6" height="2.4" rx="1.2" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function GlobeFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="12" cy="12" r="9" fill="currentColor" />
+      <ellipse cx="12" cy="12" rx="3.6" ry="9" fill="white" fillOpacity="0.22" />
+      <ellipse cx="12" cy="12" rx="9" ry="3.6" fill="white" fillOpacity="0.18" />
+    </svg>
+  );
+}
+
+export function CheckFillIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M9.3 16.8L4.6 12.1l1.7-1.7 3 3 8.4-8.4 1.7 1.7-10.1 10.1z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function LockFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="5" y="11" width="14" height="10" rx="3" fill="currentColor" />
+      <path
+        d="M8 11V8.2a4 4 0 018 0V11h-2.3V8.5a1.7 1.7 0 10-3.4 0V11H8z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function ChevronFillIcon({
+  className = "h-3 w-3",
+  open = false,
+}: IconProps & { open?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={`${className} transition-transform ${open ? "rotate-180" : ""}`}
+      aria-hidden
+    >
+      <path
+        d="M6.2 9.2a1.2 1.2 0 011.7 0L12 13.3l4.1-4.1a1.2 1.2 0 111.7 1.7l-5 5a1.2 1.2 0 01-1.7 0l-5-5a1.2 1.2 0 010-1.7z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function ChevronLeftFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M14.8 6.2a1.2 1.2 0 010 1.7L10.7 12l4.1 4.1a1.2 1.2 0 11-1.7 1.7l-5-5a1.2 1.2 0 010-1.7l5-5a1.2 1.2 0 011.7 0z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function ChevronRightFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M9.2 6.2a1.2 1.2 0 011.7 0l5 5a1.2 1.2 0 010 1.7l-5 5a1.2 1.2 0 11-1.7-1.7L13.3 12 9.2 7.9a1.2 1.2 0 010-1.7z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function PlusFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M10.6 4.4h2.8v6.2h6.2v2.8h-6.2v6.2h-2.8v-6.2H4.4v-2.8h6.2V4.4z"
+      />
+    </svg>
+  );
+}
+
+export function ChatFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M4.5 6.2A3.7 3.7 0 018.2 2.5h7.6A3.7 3.7 0 0119.5 6.2v6.2a3.7 3.7 0 01-3.7 3.7h-5.4L6 19.6a1.1 1.1 0 01-1.5-1V6.2z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function FileTextFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="5" y="3" width="14" height="18" rx="3.5" fill="currentColor" />
+      <rect x="8" y="8" width="8" height="1.8" rx="0.9" fill="white" />
+      <rect x="8" y="12" width="8" height="1.8" rx="0.9" fill="white" />
+      <rect x="8" y="16" width="5.2" height="1.8" rx="0.9" fill="white" />
+    </svg>
+  );
+}
+
+export function FolderFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M3.2 8A3.3 3.3 0 016.5 4.7H10l1.6 2H17.5A3.3 3.3 0 0120.8 10v7.3a3.3 3.3 0 01-3.3 3.3h-11A3.3 3.3 0 013.2 17.3V8z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function BrushFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M14.8 3.4c1.6-.2 3 .8 3.4 2.2.3 1.2-.2 2.4-1.6 3.8-1.6 1.6-4.4 3.2-6.4 4.2l-3.2-3.2c1-2 2.6-4.8 4.2-6.4 1.2-1.2 2.4-1.8 3.6-1.6z"
+        fill="currentColor"
+      />
+      <path
+        d="M4.4 14.6c1.8-1.2 3.8-1 5.2.4s1.6 3.4.4 5.2c-.8 1.2-2.6 1.6-4 .8L4 22l.8-2c-.8-1.4-.4-3.2.8-4.4z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function EraserFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M13.6 4.2a2.6 2.6 0 013.7 0l2.5 2.5a2.6 2.6 0 010 3.7L12 18.2H7.4L4.2 15a2.6 2.6 0 010-3.7l9.4-7.1z"
+        fill="currentColor"
+      />
+      <rect x="6" y="19.2" width="14" height="2.2" rx="1.1" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function SelectFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3.5" y="3.5" width="12" height="12" rx="3" fill="currentColor" opacity="0.35" />
+      <path
+        d="M12.2 11.4l1.8 8.4 2.2-3.1 3.4-.1-7.4-5.2z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function CopyFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="8" y="8" width="12" height="13" rx="3.2" fill="currentColor" />
+      <rect x="4" y="3" width="12" height="13" rx="3.2" fill="currentColor" opacity="0.55" />
+    </svg>
+  );
+}
+
+export function OpenLinkFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M14 5h5v5h-1.8V8.05l-6.72 6.73-1.26-1.26 6.73-6.72H14V5zM6.5 7H11V8.8H6.5A.7.7 0 005.8 9.5v8a.7.7 0 00.7.7h8a.7.7 0 00.7-.7V13H17v4.5a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 014 17.5v-8A2.5 2.5 0 016.5 7z"
+      />
+    </svg>
+  );
+}
+
+export function CloseFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <g transform="rotate(45 12 12)">
+        <path
+          fill="currentColor"
+          d="M10.6 4.4h2.8v6.2h6.2v2.8h-6.2v6.2h-2.8v-6.2H4.4v-2.8h6.2V4.4z"
+        />
+      </g>
+    </svg>
+  );
+}
+
+export function RefreshFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M12 4.2a7.8 7.8 0 106.6 3.7 1.3 1.3 0 10-2.3 1.2A5.2 5.2 0 1112 6.8V8.7L16.4 5.8 12 2.9V4.2z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function RotateFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M12 3.1a8.9 8.9 0 1 0 8.1 5.3 1.45 1.45 0 0 0-2.7 1.1A6 6 0 1 1 12 6v2.5l5.4-3.5L12 1.5V3.1z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function ZoomInFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M10.5 17.9a7.4 7.4 0 1 1 0-14.8 7.4 7.4 0 0 1 0 14.8ZM11.7 6.4h-2.4v2.9H6.4v2.4h2.9v2.9h2.4v-2.9h2.9v-2.4h-2.9V6.4Z"
+      />
+      <path
+        fill="currentColor"
+        d="M15.3 16.1a1.3 1.3 0 0 1 1.8 0l3.2 3.2a1.3 1.3 0 1 1-1.8 1.8l-3.2-3.2a1.3 1.3 0 0 1 0-1.8Z"
+      />
+    </svg>
+  );
+}
+
+export function ZoomOutFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M10.5 17.9a7.4 7.4 0 1 1 0-14.8 7.4 7.4 0 0 1 0 14.8ZM6.4 9.3h8.2v2.4H6.4V9.3Z"
+      />
+      <path
+        fill="currentColor"
+        d="M15.3 16.1a1.3 1.3 0 0 1 1.8 0l3.2 3.2a1.3 1.3 0 1 1-1.8 1.8l-3.2-3.2a1.3 1.3 0 0 1 0-1.8Z"
+      />
+    </svg>
+  );
+}
+
+export function PencilFillIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M16.7 3.6a2.2 2.2 0 013.1 0l.6.6a2.2 2.2 0 010 3.1L9.2 18.5 4 20l1.5-5.2L16.7 3.6z"
+      />
+    </svg>
+  );
+}
+
+export function FlagFillIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M6 3.4h.2A1.4 1.4 0 017.6 4.6V21H5.2V4.6A1.2 1.2 0 016 3.4zm2.8 1.5h9.4c.7 0 1.1.8.7 1.4l-1.7 2.6 1.7 2.6c.4.6 0 1.4-.7 1.4H8.8V4.9z"
+      />
+    </svg>
+  );
+}
+
+export function SwitchFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M7.2 6.2l-3 3 3 3V9.8h8.2V7.4H7.2V6.2zm9.6 5.6v2.4H8.6v2.4h8.2v2.4l3-3-3-3.2z"
+      />
+    </svg>
+  );
+}
+
+export function SpinnerFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="12" cy="12" r="8.2" fill="currentColor" opacity="0.22" />
+      <path d="M12 3.8a8.2 8.2 0 018.2 8.2h-3.3A4.9 4.9 0 0012 7.1V3.8z" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function ArrowUpFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M12 4.4a1.2 1.2 0 01.8.3l6.2 5.6a1.2 1.2 0 01-1.6 1.8L13.2 8v11.3a1.2 1.2 0 11-2.4 0V8L6.6 12.1a1.2 1.2 0 11-1.6-1.8l6.2-5.6a1.2 1.2 0 01.8-.3z"
+      />
+    </svg>
+  );
+}
+
+export function PanFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M13.2 3.4a1.6 1.6 0 00-1.6 1.6v6.1h-.2V6.2a1.5 1.5 0 10-3 0v8.2l-1.4-1.2a1.6 1.6 0 00-2.2 2.3l4.3 4.1c.5.5 1.2.8 1.9.8h4.6a3.4 3.4 0 003.3-2.8l.7-3.7a3.2 3.2 0 00-3.1-3.8h-1.1V5a1.6 1.6 0 00-1.6-1.6z"
+      />
+    </svg>
+  );
+}
+
+export function BagFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M8.2 7.2V6.1A3.8 3.8 0 0112 2.3a3.8 3.8 0 013.8 3.8v1.1h2.4A1.8 1.8 0 0120 9v10.2A2.5 2.5 0 0117.5 21.7h-11A2.5 2.5 0 014 19.2V9a1.8 1.8 0 011.8-1.8h2.4zm2.2-1.1c0-.9.7-1.6 1.6-1.6s1.6.7 1.6 1.6v1.1h-3.2V6.1z"
+      />
+    </svg>
+  );
+}
+
+export function ExpandFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M4 4h6.2v2.2H6.2V10.2H4V4zm9.8 0H20v6.2h-2.2V6.2H13.8V4zM4 13.8H6.2V17.8H10.2V20H4v-6.2zm13.8 0H20V20h-6.2v-2.2H17.8V13.8z"
+      />
+    </svg>
+  );
+}
+
+export function CollapseFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M8.2 4H10.4V10.4H4V8.2H8.2V4zm5.4 0H15.8V8.2H20V10.4H13.6V4zM4 13.6H10.4V20H8.2V15.8H4V13.6zm9.6 0H20V15.8H15.8V20H13.6V13.6z"
+      />
+    </svg>
+  );
+}
+
+export function PlaylistFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="3.4" y="5" width="13.2" height="2.3" rx="1.15" fill="currentColor" />
+      <rect x="3.4" y="10.85" width="13.2" height="2.3" rx="1.15" fill="currentColor" />
+      <rect x="3.4" y="16.7" width="8.4" height="2.3" rx="1.15" fill="currentColor" />
+      <path fill="currentColor" d="M17.2 14.1l5 3.1-5 3.1V14.1z" />
+    </svg>
+  );
+}
+
+export function SendFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M2.6 4.8v5.1L14.4 12 2.6 14.1v5.1c0 .7.7 1.1 1.3.8l17-7.1c.6-.3.6-1.3 0-1.6l-17-7.1c-.6-.3-1.3.1-1.3.8z"
+      />
+    </svg>
+  );
+}
+
+export function ResizeFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path fill="currentColor" d="M4.4 4.4H10.6V7.2H7.2V10.6H4.4V4.4z" />
+    </svg>
+  );
+}
+
+export function PlayFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path fill="currentColor" d="M8 5.4c0-.8.9-1.3 1.6-.9l10 6.6a1 1 0 010 1.8l-10 6.6A1 1 0 018 18.6V5.4z" />
+    </svg>
+  );
+}
+
+export function PauseFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <rect x="6" y="5" width="4.2" height="14" rx="1.4" fill="currentColor" />
+      <rect x="13.8" y="5" width="4.2" height="14" rx="1.4" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function EyeFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M12 5c4.5 0 8.3 2.6 10 6.5C20.3 15.4 16.5 18 12 18S3.7 15.4 2 11.5C3.7 7.6 7.5 5 12 5zm0 3.2a3.8 3.8 0 100 7.6 3.8 3.8 0 000-7.6zM12 10.2a1.8 1.8 0 110 3.6 1.8 1.8 0 010-3.6z"
+      />
+    </svg>
+  );
+}
+
+export function EyeOffFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M12 5c4.5 0 8.3 2.6 10 6.5C20.3 15.4 16.5 18 12 18S3.7 15.4 2 11.5C3.7 7.6 7.5 5 12 5zm0 3.2a3.8 3.8 0 100 7.6 3.8 3.8 0 000-7.6zM12 10.2a1.8 1.8 0 110 3.6 1.8 1.8 0 010-3.6z"
+        opacity="0.45"
+      />
+      <path fill="currentColor" d="M4.2 3.5L20.5 19.8l-1.4 1.4L2.8 4.9 4.2 3.5z" />
+    </svg>
+  );
+}
+
+export function CameraFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M9.1 4.2h5.8l1.2 1.7h2.4A2.7 2.7 0 0121.2 8.6v8.8a2.7 2.7 0 01-2.7 2.7H5.5A2.7 2.7 0 012.8 17.4V8.6A2.7 2.7 0 015.5 5.9h2.4l1.2-1.7zM12 9.1a4.5 4.5 0 100 9 4.5 4.5 0 000-9zm0 2.1a2.4 2.4 0 110 4.8 2.4 2.4 0 010-4.8z"
+      />
+    </svg>
+  );
+}
+
+export function ClockFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M12 3.2a8.8 8.8 0 100 17.6 8.8 8.8 0 000-17.6zM12 6a1.1 1.1 0 011.1 1.1v4.4l3 1.8a1.1 1.1 0 11-1.1 1.9l-3.6-2.2A1.1 1.1 0 0110.9 12V7.1A1.1 1.1 0 0112 6z"
+      />
+    </svg>
+  );
+}
+
+export function SparkleFillIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M12 2.4l2.1 6.4 6.5 2.2-6.5 2.1L12 21.6l-2.1-6.5-6.5-2.1 6.5-2.2L12 2.4z"
+      />
+    </svg>
+  );
+}

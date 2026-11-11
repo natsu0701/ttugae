@@ -26,7 +26,7 @@ export function YarnScreen({ id }: { id: string }) {
       </div>
       <div className="px-5 pt-4">
         <div className="relative mx-auto w-52">
-          <img src={yarn.image} alt="" className="h-44 w-full rounded-[28px] object-cover object-center" />
+          <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover object-center" />
           <span className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-white px-3 py-1 text-[12px] shadow-card">
             <i className="h-2 w-2 rounded-full bg-[#f3b6c0]" />
             {yarn.colorName}
@@ -89,7 +89,7 @@ export function NeedleScreen({ id }: { id: string }) {
       </div>
       <div className="px-5 pt-4">
         <div className="relative mx-auto w-52">
-          <img src={needle.image} alt="" className="h-44 w-full rounded-[28px] object-cover object-center" />
+          <img src={needle.image} alt="" className="aspect-square w-full rounded-lg object-cover object-center" />
           <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-1 text-[12px] shadow-card">
             {needle.brandLine}
           </span>
@@ -122,7 +122,7 @@ export function CodexScreen({ id }: { id: string }) {
   return (
     <div className="pb-12">
       <div className="px-5 pt-2 text-center">
-        <img src={yarn.image} alt="" className="mx-auto h-40 w-40 rounded-[28px] object-cover object-top" />
+        <img src={yarn.image} alt="" className="mx-auto aspect-square w-40 rounded-lg object-cover object-top" />
         <h2 className="mt-3 text-[20px] font-bold">{yarn.name}</h2>
         <p className="text-[12px] text-[#999]">{yarn.lot}</p>
       </div>

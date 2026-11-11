@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
-import { BlackButton, CameraIcon, Fab, InfoButton, Mascot, PencilIcon, PinkButton, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
+import { BlackButton, CameraIcon, ChevronDown, Fab, InfoButton, Mascot, PencilIcon, PinkButton, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
 
 export function GaugeScreen({ tab }: { tab: GaugeTab }) {
   const { replace, openSheet } = useApp();
@@ -287,26 +287,71 @@ export function CounterListScreen() {
 }
 
 export function CounterScreen({ id }: { id: string }) {
-  const { data, setCounterProject, bumpCounter, resetCounterRow, addCounterRow } = useApp();
+  const { data, setCounterProject, bumpCounter, resetCounterRow, addCounterRow, renameCounter } = useApp();
   const counter = data.counters.find((item) => item.id === id);
+  const [openProjects, setOpenProjects] = useState(false);
   if (!counter) return <p className="px-6 py-16 text-center">카운터를 찾지 못했어요.</p>;
+  const linked = data.projects.find((project) => project.id === counter.projectId);
   return (
     <div className="space-y-4 px-4 pb-10">
-      <label className="block rounded-[24px] border border-[#f2f2f2] p-4">
-        <span className="text-[14px] font-bold">연결 프로젝트</span>
-        <select
-          value={counter.projectId ?? ""}
-          onChange={(event) => setCounterProject(counter.id, event.target.value || null)}
-          className="mt-2 h-11 w-full rounded-full bg-[#f6f6f6] px-3"
-        >
-          <option value="">프로젝트 선택하기</option>
-          {data.projects.map((project) => (
-            <option key={project.id} value={project.id}>
-              {project.title}
-            </option>
-          ))}
-        </select>
+      <label className="block">
+        <span className="text-[14px] font-bold">카운터 이름</span>
+        <input
+          value={counter.name}
+          onChange={(event) => renameCounter(counter.id, event.target.value)}
+          aria-label="카운터 이름"
+          className="mt-2 h-12 w-full rounded-2xl bg-[#f6f6f6] px-4 text-[16px] font-semibold outline-none"
+        />
       </label>
+      <div className="rounded-[24px] border border-[#f2f2f2] p-4">
+        <span className="text-[14px] font-bold">연결 프로젝트</span>
+        <button
+          type="button"
+          onClick={() => setOpenProjects((value) => !value)}
+          className="mt-2 flex h-12 w-full items-center justify-between rounded-2xl bg-[#f6f6f6] px-4 text-left text-[14px]"
+          aria-expanded={openProjects}
+        >
+          <span className="truncate">{linked ? linked.title : "프로젝트 선택하기"}</span>
+          <ChevronDown up={openProjects} />
+        </button>
+        {openProjects ? (
+          <ul className="mt-3 space-y-2">
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  setCounterProject(counter.id, null);
+                  setOpenProjects(false);
+                }}
+                className={cx("w-full rounded-2xl border px-4 py-3 text-left text-[14px]", !linked ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
+              >
+                연결 안 함
+              </button>
+            </li>
+            {data.projects.map((project) => {
+              const selected = project.id === counter.projectId;
+              return (
+                <li key={project.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCounterProject(counter.id, project.id);
+                      setOpenProjects(false);
+                    }}
+                    className={cx("flex w-full items-center gap-3 rounded-2xl border p-2 text-left", selected ? "border-blush bg-blush-soft" : "border-[#f0f0f0] bg-white")}
+                  >
+                    <img src={project.image} alt="" className="h-14 w-14 rounded-lg object-cover" />
+                    <span className="min-w-0">
+                      <span className="block truncate text-[15px] font-bold">{project.title}</span>
+                      <span className="text-[12px] text-[#888]">{project.progress}% · {project.ago}</span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
+      </div>
       {counter.rows.map((row) => (
         <section key={row.id} className="overflow-hidden rounded-[24px] border border-[#eee]">
           <div className="flex items-center justify-between bg-ink px-4 py-2 text-white">
@@ -389,8 +434,8 @@ export function ChatScreen() {
   const suggestions = useMemo(() => ["게이지가 뭐예요?", "내비 어떻게 써요?", "바늘 추천"], []);
 
   return (
-    <div className="flex min-h-full flex-col">
-      <div className="flex-1 space-y-3 px-4 py-3">
+    <div className="flex h-full min-h-0 flex-col bg-white">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3">
         {messages.map((message, index) => (
           <div key={`${message.from}-${index}`} className={cx("flex", message.from === "me" ? "justify-end" : "justify-start gap-2")}>
             {message.from === "bot" ? <Mascot className="h-10 w-10 shrink-0" /> : null}
@@ -408,14 +453,14 @@ export function ChatScreen() {
         </div>
       </div>
       <form
-        className="flex gap-2 border-t border-[#f2f2f2] px-3 py-3"
+        className="flex shrink-0 gap-2 border-t border-[#f2f2f2] bg-white px-3 py-3"
         onSubmit={(event) => {
           event.preventDefault();
           send(text);
         }}
       >
         <input value={text} onChange={(event) => setText(event.target.value)} placeholder="뜨니에게 물어보기" aria-label="메시지" className="h-11 flex-1 rounded-full bg-[#f6f6f6] px-4 outline-none" />
-        <button type="submit" className="h-11 rounded-full bg-blush px-4 text-[14px] font-semibold text-white">
+        <button type="submit" className="h-11 shrink-0 rounded-full bg-blush px-4 text-[14px] font-semibold text-white">
           보내기
         </button>
       </form>

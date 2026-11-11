@@ -69,6 +69,8 @@ export type Project = {
   parts: ProjectPart[];
   diary: DiaryEntry[];
   patternId: string;
+  yarnIds?: string[];
+  needleIds?: string[];
 };
 
 export type Yarn = {

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { AppProvider, showsTabBar, useApp } from "./store.tsx";
 import type { Route } from "./types.ts";
 import { ForgotScreen, LoginScreen, OnboardingScreen, SignupScreen, SkillScreen, SplashScreen } from "./screens/auth.tsx";
@@ -101,6 +101,12 @@ function Shell() {
   const { route, back, data } = useApp();
   const screen = renderRoute(route);
   const showBack = !OWN_CHROME.has(route.name);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const routeKey = `${route.name}${"id" in route ? route.id : ""}${"tab" in route ? route.tab : ""}`;
+  useEffect(() => {
+    scrollRef.current?.scrollTo(0, 0);
+  }, [routeKey]);
+  const scrolling = route.name !== "chat";
   return (
     <div className="stage">
       <div className="phone">
@@ -112,7 +118,9 @@ function Shell() {
             <h1 className="flex-1 truncate pr-10 text-center text-[17px] font-bold">{titleFor(route, data)}</h1>
           </div>
         ) : null}
-        <div className={route.name === "camera" ? "scroll bg-black" : "scroll"}>{screen}</div>
+        <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : scrolling ? "scroll" : "flex min-h-0 flex-1 flex-col"}>
+          {screen}
+        </div>
         {showsTabBar(route) ? <TabBar /> : null}
         <FinishPrompt />
         <ToastHost />
