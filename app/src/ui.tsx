@@ -151,7 +151,7 @@ export function Mascot({
   className?: string;
   mood?: "wave" | "knit" | "cheer";
 }) {
-  return <img src={`${import.meta.env.BASE_URL}tteuni.svg`} alt="" className={cx("object-contain", className)} />;
+  return <img src={`${import.meta.env.BASE_URL}tteuni.png`} alt="" className={cx("object-contain", className)} />;
 }
 
 export function Wordmark({ className = "w-56" }: { className?: string }) {
