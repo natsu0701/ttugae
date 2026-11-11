@@ -11,6 +11,7 @@ import {
 import { PUBLIC_AR_URL } from "../../utils/appPath.ts";
 import {
   CheckFillIcon,
+  ChevronRightFillIcon,
   CollapseFillIcon,
   CopyFillIcon,
   ExpandFillIcon,
@@ -52,10 +53,6 @@ function nextRepeatMode(mode: RepeatMode): RepeatMode {
   return REPEAT_MODES[(REPEAT_MODES.indexOf(mode) + 1) % REPEAT_MODES.length];
 }
 
-function isWideLayout(): boolean {
-  return typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches;
-}
-
 type FsDocument = Document & {
   webkitFullscreenElement?: Element | null;
   webkitFullscreenEnabled?: boolean;
@@ -80,6 +77,61 @@ function cameraErrorStatus(error: unknown): CameraStatus {
   if (name === "NotAllowedError" || name === "SecurityError") return "blocked";
   if (name === "NotFoundError" || name === "OverconstrainedError") return "missing";
   return "missing";
+}
+
+function prefersRearCamera(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent;
+  if (/Android|iP(ad|hone|od)/i.test(ua)) return true;
+  return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+}
+
+async function openCameraStream(): Promise<MediaStream> {
+  const rear = prefersRearCamera();
+  const attempts: MediaStreamConstraints[] = rear
+    ? [
+        { audio: false, video: { facingMode: { ideal: "environment" } } },
+        { audio: false, video: { facingMode: { ideal: "user" } } },
+        { audio: false, video: true },
+      ]
+    : [
+        { audio: false, video: true },
+        { audio: false, video: { facingMode: { ideal: "user" } } },
+      ];
+
+  let lastError: unknown;
+  for (const constraints of attempts) {
+    try {
+      return await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (error) {
+      lastError = error;
+      const name =
+        error && typeof error === "object" && "name" in error
+          ? String((error as { name?: string }).name)
+          : "";
+      if (name === "NotAllowedError" || name === "SecurityError") throw error;
+    }
+  }
+
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  const cameras = devices.filter((device) => device.kind === "videoinput" && device.deviceId);
+  for (const camera of cameras) {
+    try {
+      return await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: { deviceId: { exact: camera.deviceId } },
+      });
+    } catch (error) {
+      lastError = error;
+      const name =
+        error && typeof error === "object" && "name" in error
+          ? String((error as { name?: string }).name)
+          : "";
+      if (name === "NotAllowedError" || name === "SecurityError") throw error;
+    }
+  }
+
+  throw lastError ?? new DOMException("No camera", "NotFoundError");
 }
 
 function prepareOverlayVideo(video: HTMLVideoElement) {
@@ -172,12 +224,11 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [playhead, setPlayhead] = useState(0);
   const [duration, setDuration] = useState(0);
   const [durations, setDurations] = useState<Record<string, number>>({});
-  const [playlistOpen, setPlaylistOpen] = useState(isWideLayout);
+  const [playlistOpen, setPlaylistOpen] = useState(false);
   const [nativeFullscreen, setNativeFullscreen] = useState(false);
   const [cssFullscreen, setCssFullscreen] = useState(false);
   const [scrubbing, setScrubbing] = useState(false);
   const [playbackRate, setPlaybackRate] = useState<PlaybackRate>(1);
-  const [wideLayout, setWideLayout] = useState(isWideLayout);
   const [chromeVisible, setChromeVisible] = useState(true);
   const [overlayOn, setOverlayOn] = useState(true);
   const [overlayOpacity, setOverlayOpacity] = useState(50);
@@ -185,6 +236,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const chromeTimerRef = useRef<number | null>(null);
   const lastOpacityRef = useRef(50);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const playlistPanelRef = useRef<HTMLElement>(null);
   const [webmOk] = useState(() => canPlayWebmVp9Alpha());
 
   const activeItem = AR_PLAYLIST[activeIndex] ?? null;
@@ -237,26 +289,14 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     }
 
     try {
-      let stream: MediaStream;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: { facingMode: { ideal: "environment" } },
-        });
-      } catch {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: true,
-        });
-      }
-
+      const stream = await openCameraStream();
       streamRef.current = stream;
       if (video) {
         video.srcObject = stream;
         try {
           await video.play();
         } catch {
-          // iPad Safari may wait for a tap; the retry button covers that.
+          // Autoplay can wait for a tap; the preview still attaches.
         }
       }
       setCameraStatus("live");
@@ -362,14 +402,6 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       }
     };
   }, [isFullscreen, playlistOpen, scrubbing, opacityScrubbing, revealChrome]);
-
-  useEffect(() => {
-    const media = window.matchMedia("(min-width: 1024px)");
-    const sync = () => setWideLayout(media.matches);
-    sync();
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
-  }, []);
 
   useEffect(() => {
     const loaders = AR_PLAYLIST.map((item) => {
@@ -706,6 +738,21 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     setRepeatMode((current) => nextRepeatMode(current));
   }, []);
 
+  const closePlaylist = useCallback(() => setPlaylistOpen(false), []);
+
+  useEffect(() => {
+    if (!playlistOpen) return;
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (playlistPanelRef.current?.contains(target)) return;
+      if (target.closest("[data-ar-playlist-toggle]")) return;
+      setPlaylistOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [playlistOpen]);
+
   const toggleFullscreen = useCallback(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -713,7 +760,6 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     if (fullscreenElement() || cssFullscreen) {
       void exitNativeFullscreen();
       setCssFullscreen(false);
-      if (wideLayout) setPlaylistOpen(true);
       return;
     }
 
@@ -729,7 +775,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       window.clearTimeout(fallback);
       if (!ok && !fullscreenElement()) setCssFullscreen(true);
     });
-  }, [cssFullscreen, wideLayout]);
+  }, [cssFullscreen]);
 
   const copyIpadLink = useCallback(async () => {
     try {
@@ -755,7 +801,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
               : "";
 
   const playlistList = (
-    <ul className="ar-playlist h-full overflow-y-auto">
+    <ul className="ar-playlist min-h-0 flex-1 overflow-y-auto">
       {AR_PLAYLIST.length === 0 ? (
         <li className="px-4 py-3 font-sans text-sm text-white/70">{t("ar.playlistEmpty")}</li>
       ) : (
@@ -903,7 +949,20 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       ) : null}
 
       {playlistOpen ? (
-        <aside className={`ar-chrome ar-playlist-panel ${chromeVisible ? "" : "ar-chrome-hidden"}`}>
+        <aside
+          ref={playlistPanelRef}
+          className={`ar-chrome ar-playlist-panel ${chromeVisible ? "" : "ar-chrome-hidden"}`}
+        >
+          <div className="flex h-11 shrink-0 items-center justify-end border-b border-white/10 px-1">
+            <button
+              type="button"
+              onClick={closePlaylist}
+              className={`${CONTROL_BTN} rounded-full text-white hover:bg-white hover:text-gray-900`}
+              {...iconTip(t("ar.playlistCollapse"))}
+            >
+              <ChevronRightFillIcon className="h-6 w-6" />
+            </button>
+          </div>
           {playlistList}
         </aside>
       ) : null}
@@ -1017,6 +1076,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           </button>
           <button
             type="button"
+            data-ar-playlist-toggle
             onClick={() => setPlaylistOpen((open) => !open)}
             className="hidden min-w-0 flex-1 touch-manipulation items-center rounded-xl bg-white/15 px-4 text-left hover:bg-white/25 sm:flex sm:h-11"
             aria-expanded={playlistOpen}
@@ -1028,6 +1088,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
           </button>
           <button
             type="button"
+            data-ar-playlist-toggle
             onClick={() => setPlaylistOpen((open) => !open)}
             className={`${CONTROL_BTN} rounded-full bg-white/15 text-white hover:bg-white hover:text-gray-900 sm:hidden`}
             aria-expanded={playlistOpen}
