@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
+import { editorChromeBtn, editorChromeBtnActive, editorSectionTitle } from "../ui/tabButtonStyles.ts";
 
 /** 전문 공방 매칭 내추럴 컬러 팔레트 (베이스 / 기호·포인트1 / 포인트2) */
 export type WorkshopPalette = {
@@ -49,7 +49,7 @@ export default function WorkshopPalettePanel({
   };
   return (
     <div>
-      <p className="mb-3 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+      <p className={`mb-3 ${editorSectionTitle}`}>
         {t("editor.workshopTitle")}
       </p>
 
