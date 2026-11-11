@@ -11,10 +11,11 @@ type Point = {
 };
 
 const MAX_POINTS = 32;
-const POINT_LIFETIME = 820;
+const POINT_LIFETIME = 960;
 const RECORD_THROTTLE_MS = 16;
 const MIN_POINT_DIST = 3;
 const SMOOTHING = 0.62;
+const HEAD_ALPHA = 0.8;
 const YARN_BODY = "#FC5F53";
 const YARN_EDGE = "#C4453C";
 const YARN_HIGHLIGHT = "#FFE6D8";
@@ -22,41 +23,46 @@ const YARN_HIGHLIGHT = "#FFE6D8";
 /** 커스텀 커서 핫스팟 = 바늘 끝(궤적 시작점) */
 export const CURSOR_HOTSPOT = { x: 28, y: 8 } as const;
 
-function strokeYarnPath(ctx: CanvasRenderingContext2D, points: Point[]) {
-  ctx.beginPath();
-  ctx.moveTo(points[0].x, points[0].y);
-  if (points.length === 2) {
-    ctx.lineTo(points[1].x, points[1].y);
-    return;
-  }
-
-  for (let index = 0; index < points.length - 1; index += 1) {
-    const p0 = points[Math.max(0, index - 1)];
-    const p1 = points[index];
-    const p2 = points[index + 1];
-    const p3 = points[Math.min(points.length - 1, index + 2)];
-    ctx.bezierCurveTo(
-      p1.x + (p2.x - p0.x) / 5,
-      p1.y + (p2.y - p0.y) / 5,
-      p2.x - (p3.x - p1.x) / 5,
-      p2.y - (p3.y - p1.y) / 5,
-      p2.x,
-      p2.y,
-    );
-  }
+function segmentFade(now: number, a: Point, b: Point): number {
+  const age = now - (a.time + b.time) / 2;
+  return Math.max(0, 1 - age / POINT_LIFETIME);
 }
 
-function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
+function paintTrail(ctx: CanvasRenderingContext2D, points: Point[], now: number) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   if (points.length < 2) return;
 
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   ctx.strokeStyle = YARN_BODY;
-  ctx.globalAlpha = 1;
   ctx.lineWidth = 8.5;
-  strokeYarnPath(ctx, points);
-  ctx.stroke();
+  ctx.globalCompositeOperation = "destination-over";
+
+  for (let index = points.length - 2; index >= 0; index -= 1) {
+    const p0 = points[Math.max(0, index - 1)];
+    const p1 = points[index];
+    const p2 = points[index + 1];
+    const p3 = points[Math.min(points.length - 1, index + 2)];
+    ctx.globalAlpha = HEAD_ALPHA * segmentFade(now, p1, p2);
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    if (points.length === 2) {
+      ctx.lineTo(p2.x, p2.y);
+    } else {
+      ctx.bezierCurveTo(
+        p1.x + (p2.x - p0.x) / 5,
+        p1.y + (p2.y - p0.y) / 5,
+        p2.x - (p3.x - p1.x) / 5,
+        p2.y - (p3.y - p1.y) / 5,
+        p2.x,
+        p2.y,
+      );
+    }
+    ctx.stroke();
+  }
+
+  ctx.globalCompositeOperation = "source-over";
+  ctx.globalAlpha = 1;
 }
 
 type YarnStitchTrailProps = {
@@ -123,7 +129,7 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
       const now = Date.now();
       const validPoints = pointsRef.current.filter((p) => now - p.time < POINT_LIFETIME);
       pointsRef.current = validPoints;
-      paintTrail(ctx, validPoints);
+      paintTrail(ctx, validPoints, now);
       if (validPoints.length === 0) {
         stopLoop();
         return;

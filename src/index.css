@@ -365,7 +365,6 @@ body.yarn-trail-active {
 .yarn-trail-svg {
   overflow: visible;
   mix-blend-mode: normal;
-  opacity: 0.68;
   filter: blur(0.9px);
 }
 
