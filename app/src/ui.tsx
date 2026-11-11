@@ -121,43 +121,11 @@ export function ProgressRing({ value, size = 46 }: { value: number; size?: numbe
 
 export function Mascot({
   className = "h-28 w-28",
-  mood = "wave",
 }: {
   className?: string;
   mood?: "wave" | "knit" | "cheer";
 }) {
-  return (
-    <svg viewBox="0 0 160 180" className={className} aria-hidden>
-      <ellipse cx="80" cy="168" rx="28" ry="6" fill="#000" opacity="0.08" />
-      <g transform={mood === "knit" ? "translate(0,4)" : undefined}>
-        <line x1="58" y1="28" x2="92" y2="8" stroke="#e2b07a" strokeWidth="6" strokeLinecap="round" />
-        <line x1="102" y1="28" x2="68" y2="8" stroke="#c9845a" strokeWidth="6" strokeLinecap="round" />
-        <path d="M108 46c8-16 22-10 18 2-6 4-14 2-18-2z" fill="#7dbe72" />
-        <path d="M112 42c6 8 2 16-6 14 2-8 0-12 6-14z" fill="#3f8f4e" />
-        <circle cx="80" cy="92" r="48" fill="#f4a3a8" />
-        <circle cx="80" cy="92" r="48" fill="none" stroke="#e98990" strokeWidth="3" />
-        <path d="M48 78c8 10 14 8 18-2" stroke="#e7b4b6" strokeWidth="4" fill="none" strokeLinecap="round" />
-        <path d="M70 80c6 8 12 6 14-2" stroke="#e7b4b6" strokeWidth="3" fill="none" strokeLinecap="round" />
-        <circle cx="64" cy="90" r="3.2" fill="#2b2b2b" />
-        <circle cx="96" cy="90" r="3.2" fill="#2b2b2b" />
-        <path d="M70 104c6 8 14 8 20 0" stroke="#2b2b2b" strokeWidth="2.4" fill="none" strokeLinecap="round" />
-        {mood === "knit" ? (
-          <g>
-            <rect x="62" y="128" width="36" height="22" rx="4" fill="#8eb7d6" />
-            <path d="M62 134h36M62 142h36M70 128v22M86 128v22" stroke="#fff" strokeWidth="1.4" />
-            <circle cx="118" cy="150" r="8" fill="#7eb6e0" />
-          </g>
-        ) : (
-          <g>
-            <path d={mood === "cheer" ? "M28 110c-16 8-18 28 2 30 8-14 8-22-2-30z" : "M30 108c-18 2-16 26 4 24 6-12 4-20-4-24z"} fill="#f4a3a8" />
-            <path d="M128 104c18-6 24 16 8 24-8-8-10-16-8-24z" fill="#f4a3a8" />
-            <ellipse cx="62" cy="156" rx="8" ry="5" fill="#f4a3a8" />
-            <ellipse cx="98" cy="156" rx="8" ry="5" fill="#f4a3a8" />
-          </g>
-        )}
-      </g>
-    </svg>
-  );
+  return <img src={`${import.meta.env.BASE_URL}tteuni.svg`} alt="" className={cx("object-contain", className)} />;
 }
 
 export function Wordmark({ className = "w-56" }: { className?: string }) {

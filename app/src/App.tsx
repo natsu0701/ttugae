@@ -127,7 +127,7 @@ function FinishPrompt() {
   if (!finishId) return null;
   return (
     <div className="absolute inset-0 z-40 grid place-items-center bg-black/45 px-5">
-      <div className="w-full rounded-[32px] border-[6px] border-black bg-white px-6 pb-8 pt-10 text-center">
+      <div className="w-full rounded-[32px] bg-white px-6 pb-8 pt-10 text-center shadow-card">
         <h2 className="text-[28px] font-black tracking-tight">오늘의 뜨개 완료!</h2>
         <p className="mx-auto mt-4 max-w-[240px] text-[16px] font-semibold leading-snug">
           지금 기록해 두면 다음 작업을

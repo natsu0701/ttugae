@@ -27,7 +27,7 @@ export function SplashScreen() {
 }
 
 export function LoginScreen() {
-  const { replace, data } = useApp();
+  const { replace, push, data } = useApp();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -89,11 +89,11 @@ export function LoginScreen() {
         </button>
       </form>
       <div className="mt-4 flex justify-center gap-3 text-[13px] text-white/90">
-        <button type="button" onClick={() => replace({ name: "forgot" })}>
+        <button type="button" onClick={() => push({ name: "forgot" })}>
           비밀번호 찾기
         </button>
         <span aria-hidden>|</span>
-        <button type="button" onClick={() => replace({ name: "signup" })}>
+        <button type="button" onClick={() => push({ name: "signup" })}>
           회원가입
         </button>
       </div>

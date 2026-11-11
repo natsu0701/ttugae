@@ -3,6 +3,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -215,6 +216,50 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [finishId, setFinishId] = useState<string | null>(null);
 
   const route = stack[stack.length - 1] ?? { name: "splash" as const };
+  const stackRef = useRef(stack);
+  stackRef.current = stack;
+
+  useEffect(() => {
+    const current = hashToRoute(window.location.hash);
+    window.history.replaceState({ ttg: 1 }, "", routeToHash(current));
+  }, []);
+
+  useEffect(() => {
+    const onPop = () => {
+      const marker = window.history.state as { ttg?: number } | null;
+      setStack((current) => {
+        if (current.length > 1 && marker?.ttg) return current.slice(0, -1);
+        const next = hashToRoute(window.location.hash);
+        if (next.name === "splash") return [{ name: "home" }];
+        return [next];
+      });
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  useEffect(() => {
+    let timer = 0;
+    const arm = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        const name = stackRef.current[stackRef.current.length - 1]?.name;
+        if (name === "login" || name === "splash") return;
+        setFinishId(null);
+        setSheet(null);
+        const login = { name: "login" as const };
+        setStack([login]);
+        window.history.replaceState({ ttg: 1 }, "", routeToHash(login));
+      }, 10 * 60 * 1000);
+    };
+    arm();
+    const events = ["pointerdown", "touchstart", "keydown"] as const;
+    events.forEach((event) => window.addEventListener(event, arm, { passive: true }));
+    return () => {
+      window.clearTimeout(timer);
+      events.forEach((event) => window.removeEventListener(event, arm));
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -243,29 +288,44 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const api = useMemo<AppApi>(() => {
     const writeHash = (next: Route) => {
       const hash = routeToHash(next);
-      if (window.location.hash !== hash) window.history.replaceState(null, "", hash);
+      const marker = window.history.state as { ttg?: number } | null;
+      window.history.replaceState({ ttg: marker?.ttg ?? 1 }, "", hash);
     };
 
     const push = (next: Route) => {
+      const marker = window.history.state as { ttg?: number } | null;
+      window.history.pushState({ ttg: (marker?.ttg ?? 1) + 1 }, "", routeToHash(next));
       setStack((current) => [...current, next]);
-      writeHash(next);
     };
     const replace = (next: Route) => {
-      setStack((current) => [...current.slice(0, -1), next]);
       writeHash(next);
+      setStack((current) => [...(current.length > 0 ? current.slice(0, -1) : []), next]);
     };
     const back = () => {
-      setStack((current) => {
-        const next = current.length > 1 ? current.slice(0, -1) : current;
+      const current = stackRef.current;
+      const marker = window.history.state as { ttg?: number } | null;
+      if (current.length > 1 && (marker?.ttg ?? 1) > 1) {
+        window.history.back();
+        return;
+      }
+      if (current.length > 1) {
+        const next = current.slice(0, -1);
         const top = next[next.length - 1];
         if (top) writeHash(top);
-        return next;
-      });
+        setStack(next);
+        return;
+      }
+      const top = current[current.length - 1];
+      if (!top || top.name === "home") return;
+      const home = { name: "home" as const };
+      window.history.replaceState({ ttg: 1 }, "", routeToHash(home));
+      setStack([home]);
     };
     const goTab = (name: "home" | "bag" | "lounge" | "my") => {
       const next = { name } as Route;
+      const marker = window.history.state as { ttg?: number } | null;
+      window.history.pushState({ ttg: (marker?.ttg ?? 1) + 1 }, "", routeToHash(next));
       setStack([next]);
-      writeHash(next);
     };
 
     const patch = (partial: Partial<Persisted>) => setData((current) => ({ ...current, ...partial }));
@@ -444,12 +504,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       completeSession: (id) => {
         updateProject(id, (project) => ({ ...project, running: false }));
         setFinishId(id);
-        setStack((current) => {
-          const next = current.length > 1 ? current.slice(0, -1) : [{ name: "home" as const }];
-          const top = next[next.length - 1];
-          if (top) writeHash(top);
-          return next;
-        });
+        back();
       },
       dismissFinish: () => setFinishId(null),
       openDiary: () => {

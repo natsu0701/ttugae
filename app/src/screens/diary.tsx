@@ -1,22 +1,39 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon, Mascot, RowsIcon, SparkIcon } from "../ui.tsx";
+import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon, Mascot, RowsIcon, SparkIcon } from "../ui.tsx";
 
 export function DiaryScreen({ id }: { id: string }) {
   const { data, back, saveDiary } = useApp();
   const project = data.projects.find((item) => item.id === id);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [memo, setMemo] = useState("");
-  const [photo, setPhoto] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<string[]>([]);
   const materials = useMemo(() => {
     if (!project) return [];
     return data.yarns
       .filter((yarn) => yarn.linkedProject === project.title)
       .map((yarn) => `${yarn.name} ${yarn.balls}볼`);
   }, [data.yarns, project]);
+  const catalog = useMemo(
+    () => [
+      ...data.yarns.map((yarn) => ({
+        id: `yarn-${yarn.id}`,
+        kind: "실",
+        label: `${yarn.name} ${yarn.balls}볼`,
+        image: yarn.image,
+      })),
+      ...data.needles.map((needle) => ({
+        id: `needle-${needle.id}`,
+        kind: "바늘",
+        label: `${needle.name} ${needle.size}`,
+        image: needle.image,
+      })),
+    ],
+    [data.needles, data.yarns],
+  );
   const [chips, setChips] = useState<string[]>(materials);
-  const [adding, setAdding] = useState(false);
-  const [draft, setDraft] = useState("");
+  const [picking, setPicking] = useState(false);
 
   if (!project) return <p className="px-6 py-16 text-center text-[14px]">프로젝트를 찾지 못했어요.</p>;
 
@@ -33,12 +50,8 @@ export function DiaryScreen({ id }: { id: string }) {
     setMemo(text);
   };
 
-  const addChip = () => {
-    const next = draft.trim();
-    if (!next) return;
-    setChips((current) => [...current, next]);
-    setDraft("");
-    setAdding(false);
+  const toggleChip = (label: string) => {
+    setChips((current) => (current.includes(label) ? current.filter((item) => item !== label) : [...current, label]));
   };
 
   const save = () => {
@@ -48,13 +61,13 @@ export function DiaryScreen({ id }: { id: string }) {
       `소요 시간 ${minutes}분 (${formatClock(project.elapsed)})`,
       chips.length ? `재료: ${chips.join(", ")}` : "",
       memo.trim(),
-      photo ? "사진 1장을 첨부했어요." : "",
+      photos.length ? `사진 ${photos.length}장` : "",
     ].filter(Boolean);
     saveDiary(project.id, lines.join("\n"));
   };
 
   return (
-    <div className="bg-white pb-10">
+    <div className="bg-white pb-4">
       <header className="sticky top-0 z-20 flex h-12 items-center bg-white px-1">
         <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
           <ChevronLeft />
@@ -128,28 +141,34 @@ export function DiaryScreen({ id }: { id: string }) {
           {chips.map((chip) => (
             <span key={chip} className="inline-flex h-9 items-center gap-1 rounded-full border border-[#eee] bg-white px-3 text-[13px]">
               {chip}
-              <button type="button" aria-label={`${chip} 빼기`} onClick={() => setChips((current) => current.filter((item) => item !== chip))} className="grid h-5 w-5 place-items-center">
+              <button type="button" aria-label={`${chip} 빼기`} onClick={() => toggleChip(chip)} className="grid h-5 w-5 place-items-center">
                 <CloseIcon size={12} />
               </button>
             </span>
           ))}
-          <button type="button" onClick={() => setAdding(true)} className="h-9 rounded-full bg-[#f4f4f4] px-4 text-[13px] font-semibold">
+          <button type="button" onClick={() => setPicking((value) => !value)} className="h-9 rounded-full bg-[#f4f4f4] px-4 text-[13px] font-semibold">
             + 추가
           </button>
         </div>
-        {adding ? (
-          <div className="mt-2 flex gap-2">
-            <input
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              placeholder="재료 이름"
-              aria-label="재료 이름"
-              className="h-10 flex-1 rounded-full border border-[#eee] px-4 text-[14px] outline-none"
-            />
-            <button type="button" onClick={addChip} className="h-10 rounded-full bg-ink px-4 text-[13px] font-semibold text-white">
-              넣기
-            </button>
-          </div>
+        {picking ? (
+          <ul className="mt-3 overflow-hidden rounded-[24px] border border-[#f0f0f0] bg-white">
+            {catalog.length === 0 ? <li className="px-4 py-4 text-[13px] text-[#888]">등록된 재료가 없어요.</li> : null}
+            {catalog.map((item) => {
+              const selected = chips.includes(item.label);
+              return (
+                <li key={item.id} className="border-t border-[#f4f4f4] first:border-t-0">
+                  <button type="button" onClick={() => toggleChip(item.label)} className="flex w-full items-center gap-3 px-3 py-2 text-left">
+                    <img src={item.image} alt="" className="h-12 w-12 rounded-2xl object-contain bg-[#f7f7f7]" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[11px] text-[#999]">{item.kind}</span>
+                      <span className="block truncate text-[14px] font-semibold">{item.label}</span>
+                    </span>
+                    {selected ? <CheckIcon /> : null}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         ) : null}
       </section>
 
@@ -182,21 +201,45 @@ export function DiaryScreen({ id }: { id: string }) {
       </section>
 
       <div className="px-4 pt-6">
-        <label className="flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#f4f4f4] text-[15px] font-semibold">
+        <button type="button" onClick={() => fileRef.current?.click()} className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f4f4f4] text-[15px] font-semibold">
           <ImagePlusIcon />
           이미지 추가
-          <input
-            type="file"
-            accept="image/*"
-            className="sr-only"
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              if (!file) return;
-              setPhoto(URL.createObjectURL(file));
-            }}
-          />
-        </label>
-        {photo ? <img src={photo} alt="추가한 이미지" className="mt-3 h-40 w-full rounded-2xl object-cover" /> : null}
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            event.target.value = "";
+            if (!file) return;
+            setPhotos((current) => [...current, URL.createObjectURL(file)]);
+          }}
+        />
+        {photos.length > 0 ? (
+          <ul className="mt-3 space-y-3">
+            {photos.map((url) => (
+              <li key={url} className="overflow-hidden rounded-[28px] bg-white shadow-card">
+                <img src={url} alt="" className="block h-auto w-full bg-[#f7f7f7]" />
+                <div className="flex items-center justify-between px-4 py-3">
+                  <span>
+                    <span className="block text-[15px] font-bold">{project.title}</span>
+                    <span className="text-[12px] text-[#888]">리뷰 이미지</span>
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="이미지 빼기"
+                    onClick={() => setPhotos((current) => current.filter((item) => item !== url))}
+                    className="grid h-8 w-8 place-items-center"
+                  >
+                    <CloseIcon />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     </div>
   );
