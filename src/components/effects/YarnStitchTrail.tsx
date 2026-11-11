@@ -10,9 +10,11 @@ type Point = {
   time: number;
 };
 
-const MAX_POINTS = 36;
-const POINT_LIFETIME = 900;
+const MAX_POINTS = 32;
+const POINT_LIFETIME = 820;
 const RECORD_THROTTLE_MS = 16;
+const MIN_POINT_DIST = 3;
+const SMOOTHING = 0.62;
 const YARN_BODY = "#FC5F53";
 const YARN_EDGE = "#C4453C";
 const YARN_HIGHLIGHT = "#FFE6D8";
@@ -20,72 +22,41 @@ const YARN_HIGHLIGHT = "#FFE6D8";
 /** 커스텀 커서 핫스팟 = 바늘 끝(궤적 시작점) */
 export const CURSOR_HOTSPOT = { x: 28, y: 8 } as const;
 
+function strokeYarnPath(ctx: CanvasRenderingContext2D, points: Point[]) {
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  if (points.length === 2) {
+    ctx.lineTo(points[1].x, points[1].y);
+    return;
+  }
+
+  for (let index = 0; index < points.length - 1; index += 1) {
+    const p0 = points[Math.max(0, index - 1)];
+    const p1 = points[index];
+    const p2 = points[index + 1];
+    const p3 = points[Math.min(points.length - 1, index + 2)];
+    ctx.bezierCurveTo(
+      p1.x + (p2.x - p0.x) / 5,
+      p1.y + (p2.y - p0.y) / 5,
+      p2.x - (p3.x - p1.x) / 5,
+      p2.y - (p3.y - p1.y) / 5,
+      p2.x,
+      p2.y,
+    );
+  }
+}
+
 function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   if (points.length < 2) return;
 
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
-
-  for (let index = 1; index < points.length; index += 1) {
-    const point = points[index];
-    const prevPoint = points[index - 1];
-    const ratio = index / (points.length - 1);
-    const opacity = 0.28 + ratio * 0.62;
-    const strokeWidth = 5 + ratio * 7.2;
-    const dx = point.x - prevPoint.x;
-    const dy = point.y - prevPoint.y;
-    const len = Math.hypot(dx, dy) || 1;
-    const twist = Math.sin(index * 0.85) * (1.1 + ratio * 1.6);
-    const nx = (-dy / len) * twist;
-    const ny = (dx / len) * twist;
-
-    ctx.strokeStyle = YARN_BODY;
-    ctx.globalAlpha = opacity * 0.32;
-    ctx.lineWidth = strokeWidth + 8;
-    ctx.beginPath();
-    ctx.moveTo(prevPoint.x, prevPoint.y);
-    ctx.lineTo(point.x, point.y);
-    ctx.stroke();
-
-    ctx.strokeStyle = YARN_EDGE;
-    ctx.globalAlpha = opacity * 0.55;
-    ctx.lineWidth = strokeWidth + 2.6;
-    ctx.beginPath();
-    ctx.moveTo(prevPoint.x + nx * 0.35, prevPoint.y + ny * 0.35);
-    ctx.lineTo(point.x + nx * 0.35, point.y + ny * 0.35);
-    ctx.stroke();
-
-    ctx.strokeStyle = YARN_BODY;
-    ctx.globalAlpha = opacity;
-    ctx.lineWidth = strokeWidth;
-    ctx.beginPath();
-    ctx.moveTo(prevPoint.x, prevPoint.y);
-    ctx.lineTo(point.x, point.y);
-    ctx.stroke();
-
-    ctx.strokeStyle = YARN_HIGHLIGHT;
-    ctx.globalAlpha = opacity * 0.42;
-    ctx.lineWidth = Math.max(1.6, strokeWidth * 0.34);
-    ctx.beginPath();
-    ctx.moveTo(prevPoint.x + nx, prevPoint.y + ny);
-    ctx.lineTo(point.x + nx, point.y + ny);
-    ctx.stroke();
-  }
-
-  for (let index = 0; index < points.length; index += 1) {
-    const point = points[index];
-    const ratio = index / (points.length - 1);
-    const radius = 1.8 + ratio * 3.1;
-    const jitter = ((index * 17) % 7) - 3;
-    ctx.fillStyle = YARN_BODY;
-    ctx.globalAlpha = 0.22 + ratio * 0.28;
-    ctx.beginPath();
-    ctx.arc(point.x + jitter * 0.45, point.y - jitter * 0.35, radius, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
+  ctx.strokeStyle = YARN_BODY;
   ctx.globalAlpha = 1;
+  ctx.lineWidth = 8.5;
+  strokeYarnPath(ctx, points);
+  ctx.stroke();
 }
 
 type YarnStitchTrailProps = {
@@ -174,11 +145,14 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
 
       const now = Date.now();
       if (now - lastRecordRef.current < RECORD_THROTTLE_MS) return;
-      lastRecordRef.current = now;
 
-      pointsRef.current = [...pointsRef.current, { x: e.clientX, y: e.clientY, time: now }].slice(
-        -MAX_POINTS,
-      );
+      const prev = pointsRef.current[pointsRef.current.length - 1];
+      const x = prev ? prev.x + (e.clientX - prev.x) * SMOOTHING : e.clientX;
+      const y = prev ? prev.y + (e.clientY - prev.y) * SMOOTHING : e.clientY;
+      if (prev && Math.hypot(x - prev.x, y - prev.y) < MIN_POINT_DIST) return;
+
+      lastRecordRef.current = now;
+      pointsRef.current = [...pointsRef.current, { x, y, time: now }].slice(-MAX_POINTS);
       startLoop();
     };
 
