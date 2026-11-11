@@ -1,27 +1,13 @@
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
-import {
-  BagFillIcon,
-  CameraFillIcon,
-  CheckFillIcon,
-  ChevronLeftFillIcon,
-  ChevronRightFillIcon,
-  ClockFillIcon,
-  CloseFillIcon,
-  FolderFillIcon,
-  HeartFillIcon,
-  ImageFillIcon,
-  LockFillIcon,
-  PauseFillIcon,
-  PinFillIcon,
-  PlayFillIcon,
-  SettingsFillIcon,
-  SparkleFillIcon,
-  UserFillIcon,
-} from "./icons/FillIcons.tsx";
+import type { ButtonHTMLAttributes, CSSProperties, InputHTMLAttributes, ReactNode } from "react";
+import { figmaIcons, type FigmaIconName } from "./icons/figmaIcons.ts";
 import { showsTabBar, useApp } from "./store.tsx";
 
 export function cx(...parts: Array<string | false | undefined>) {
   return parts.filter(Boolean).join(" ");
+}
+
+export function FigmaIcon({ name, className, style }: { name: FigmaIconName; className?: string; style?: CSSProperties }) {
+  return <span aria-hidden className={cx("inline-flex shrink-0", className)} style={style} dangerouslySetInnerHTML={{ __html: figmaIcons[name] }} />;
 }
 
 export function TopBar({
@@ -154,10 +140,10 @@ export function Wordmark({ className = "w-56" }: { className?: string }) {
 export function TabBar() {
   const { route, goTab } = useApp();
   const items = [
-    { id: "home" as const, label: "홈", icon: <YarnIcon /> },
-    { id: "bag" as const, label: "뜨개가방", icon: <BagFillIcon className="h-5 w-5" /> },
-    { id: "lounge" as const, label: "뜨개 라운지", icon: <ChairIcon /> },
-    { id: "my" as const, label: "마이페이지", icon: <UserFillIcon className="h-5 w-5" /> },
+    { id: "home" as const, label: "홈", icon: <FigmaIcon name="tab-yarn" className="h-7 w-7" /> },
+    { id: "bag" as const, label: "뜨개가방", icon: <FigmaIcon name="bag" className="h-6 w-6" /> },
+    { id: "lounge" as const, label: "뜨개 라운지", icon: <FigmaIcon name="tab-chair" className="h-6 w-6" /> },
+    { id: "my" as const, label: "마이페이지", icon: <FigmaIcon name="profile" className="h-6 w-6" /> },
   ];
   return (
     <nav className="relative z-30 grid shrink-0 grid-cols-4 border-t border-[#f2f2f2] bg-white px-1 pb-2 pt-1 shadow-nav">
@@ -168,7 +154,7 @@ export function TabBar() {
             key={item.id}
             type="button"
             onClick={() => goTab(item.id)}
-            className="flex flex-col items-center gap-0.5 py-1 text-[11px]"
+            className={cx("flex flex-col items-center gap-0.5 py-1 text-[11px]", active ? "text-ink" : "text-[#8d8d8d]")}
           >
             <span
               className={cx(
@@ -367,100 +353,63 @@ export function ToastHost() {
 }
 
 export function ChevronLeft() {
-  return <ChevronLeftFillIcon className="h-5 w-5" />;
+  return <FigmaIcon name="arrow-left" className="h-5 w-4" />;
 }
 export function ChevronRight() {
-  return <ChevronRightFillIcon className="h-4 w-4" />;
-}
-function YarnIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <circle cx="11" cy="11" r="7" />
-      <path d="M7 8c2 2 6 2 8 0M6.5 12c2.2 1.4 6.6 1.4 9 0M8 15.2c1.6.8 4.4.8 6 0" />
-    </svg>
-  );
-}
-function ChairIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <path d="M4 11h14" />
-      <path d="M6 11V7.2A2.2 2.2 0 0 1 8.2 5h5.6A2.2 2.2 0 0 1 16 7.2V11" />
-      <path d="M5 11v3.5h12V11" />
-      <path d="M7 14.5V18M15 14.5V18" />
-    </svg>
-  );
+  return <span className="inline-flex -scale-x-100"><FigmaIcon name="arrow-left" className="h-4 w-3" /></span>;
 }
 export function HeartIcon({ filled }: { filled?: boolean }) {
-  return <HeartFillIcon filled={filled} className="h-5 w-5" />;
+  if (filled) return <FigmaIcon name="heart" className="h-5 w-5" />;
+  const outline = figmaIcons.heart.replace(/fill="currentColor"/g, 'fill="none" stroke="currentColor" stroke-width="1.6"');
+  return <span aria-hidden className="inline-flex h-5 w-5 shrink-0" dangerouslySetInnerHTML={{ __html: outline }} />;
 }
 export function SearchIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <circle cx="8" cy="8" r="5" />
-      <path d="M12 12l3 3" />
-    </svg>
-  );
+  return <FigmaIcon name="search" className="h-5 w-5" />;
 }
 export function PlayIcon() {
-  return <PlayFillIcon className="h-5 w-5" />;
+  return <FigmaIcon name="play" className="h-5 w-5" />;
 }
 export function PauseIcon() {
-  return <PauseFillIcon className="h-5 w-5" />;
+  return <FigmaIcon name="pause" className="h-5 w-5" />;
 }
 export function GearIcon() {
-  return <SettingsFillIcon className="h-5 w-5" />;
+  return <FigmaIcon name="settings" className="h-5 w-5" />;
 }
 
 export function CloseIcon({ size = 18 }: { size?: number }) {
-  return (
-    <span className="inline-flex shrink-0" style={{ width: size, height: size }}>
-      <CloseFillIcon className="h-full w-full" />
-    </span>
-  );
+  return <FigmaIcon name="close" className="shrink-0" style={{ width: size, height: size }} />;
 }
 
 export function FolderIcon() {
-  return <FolderFillIcon className="h-7 w-7" />;
+  return <FigmaIcon name="folder" className="h-7 w-7" />;
 }
 
 export function PlayBadge() {
   return (
-    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden>
-      <circle cx="14" cy="14" r="12" fill="#fff" />
-      <path d="M12 9.2v9.6l8-4.8-8-4.8z" fill="#f29c9b" />
-    </svg>
+    <span aria-hidden className="grid h-7 w-7 place-items-center rounded-full bg-white text-blush">
+      <FigmaIcon name="play" className="h-4 w-4" />
+    </span>
   );
 }
 
 export function MailIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <rect x="2" y="4" width="14" height="10" rx="2" />
-      <path d="M3 6l6 4 6-4" />
-    </svg>
-  );
+  return <FigmaIcon name="mail" className="h-5 w-5" />;
 }
 
 export function LockIcon() {
-  return <LockFillIcon className="h-4 w-4" />;
+  return <FigmaIcon name="lock" className="h-5 w-5" />;
 }
 
 export function TrashIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <path d="M4 5.5h10" />
-      <path d="M7 5.2V4h4v1.2" />
-      <path d="M6 5.5l.6 8.2h4.8L12 5.5" />
-    </svg>
-  );
+  return <FigmaIcon name="trash" className="h-5 w-5" />;
 }
 
 export function CameraIcon() {
-  return <CameraFillIcon className="h-5 w-5" />;
+  return <FigmaIcon name="camera" className="h-5 w-5" />;
 }
 
 export function PinIcon() {
-  return <PinFillIcon className="h-3.5 w-3.5" />;
+  return <FigmaIcon name="pin" className="h-4 w-4" />;
 }
 
 export function CrownIcon({ color = "currentColor" }: { color?: string }) {
@@ -472,73 +421,43 @@ export function CrownIcon({ color = "currentColor" }: { color?: string }) {
 }
 
 export function CheckIcon() {
-  return <CheckFillIcon className="h-3.5 w-3.5" />;
+  return <FigmaIcon name="check" className="h-4 w-4" />;
 }
 
 export function PencilIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
-      <path d="M8.2 2.4 11.6 5.8 5 12.4H1.6V9L8.2 2.4z" />
-    </svg>
-  );
+  return <FigmaIcon name="pencil" className="h-4 w-4" />;
 }
 
 export function YarnBallIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
-      <circle cx="7" cy="7" r="4.6" />
-      <path d="M4.2 5.2c1.6 1.2 3.9 1.2 5.6 0M4 8.2c1.5.8 4.5.8 6 0" />
-    </svg>
-  );
+  return <FigmaIcon name="yarn" className="h-4 w-4" />;
 }
 
 export function ImagePlusIcon() {
-  return <ImageFillIcon className="h-5 w-5" />;
+  return <FigmaIcon name="image" className="h-5 w-5" />;
 }
 
 export function SparkIcon() {
-  return <SparkleFillIcon className="h-3.5 w-3.5" />;
+  return <FigmaIcon name="star" className="h-4 w-4" />;
 }
 
 export function ChevronDown({ up = false }: { up?: boolean }) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" className={up ? "rotate-180" : undefined} aria-hidden>
-      <path d="M3.5 6.2 8 10.4l4.5-4.2" />
-    </svg>
-  );
+  return <span className={cx("inline-flex", up && "-scale-y-100")}><FigmaIcon name="chevron-down" className="h-4 w-4" /></span>;
 }
 
 export function NaviIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <path d="M2.5 6.2V3.2h3M15.5 6.2V3.2h-3M2.5 11.8v3h3M15.5 11.8v3h-3" />
-      <circle cx="9" cy="9" r="2.1" />
-    </svg>
-  );
+  return <FigmaIcon name="scan" className="h-5 w-5" />;
 }
 
 export function GridIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden>
-      <rect x="1" y="1" width="5" height="5" rx="1" />
-      <rect x="8" y="1" width="5" height="5" rx="1" />
-      <rect x="1" y="8" width="5" height="5" rx="1" />
-      <rect x="8" y="8" width="5" height="5" rx="1" />
-    </svg>
-  );
+  return <FigmaIcon name="category" className="h-4 w-4" />;
 }
 
 export function ClockIcon() {
-  return <ClockFillIcon className="h-5 w-5" />;
+  return <FigmaIcon name="clock" className="h-5 w-5" />;
 }
 
 export function RowsIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <rect x="3" y="4" width="16" height="14" rx="2" />
-      <path d="M3 9h16M3 14h16" />
-    </svg>
-  );
+  return <FigmaIcon name="counter" className="h-5 w-5" />;
 }
 
 export function FlowerIcon() {

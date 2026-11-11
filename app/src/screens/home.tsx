@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { FAQ, KINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { ChevronDown, ChevronRight, CrownIcon, GearIcon, HeartIcon, Mascot, NaviIcon, PauseIcon, PlayIcon, SearchIcon, cx } from "../ui.tsx";
+import { ChevronDown, ChevronRight, CrownIcon, FigmaIcon, GearIcon, HeartIcon, Mascot, NaviIcon, PauseIcon, PlayIcon, SearchIcon, cx } from "../ui.tsx";
 
 export function HomeScreen() {
   const { homeTab } = useApp();
@@ -362,38 +362,16 @@ function RoundIcon({
 }
 
 function Bell() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-      <path d="M10 2.5a4.5 4.5 0 0 0-4.5 4.5v2.2L4 12.5h12l-1.5-3.3V7A4.5 4.5 0 0 0 10 2.5z" />
-      <path d="M8.2 14.5a1.8 1.8 0 0 0 3.6 0" />
-    </svg>
-  );
+  return <FigmaIcon name="notification" className="h-5 w-5" />;
 }
 function CounterGlyph() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="currentColor">
-      {Array.from({ length: 9 }, (_, index) => (
-        <rect key={index} x={4 + (index % 3) * 7} y={4 + Math.floor(index / 3) * 7} width="4.5" height="4.5" rx="1" />
-      ))}
-    </svg>
-  );
+  return <FigmaIcon name="counter" className="h-8 w-8" />;
 }
 function GaugeGlyph() {
-  return (
-    <svg width="28" height="18" viewBox="0 0 28 18" fill="none" stroke="currentColor" strokeWidth="1.7">
-      <rect x="1" y="4" width="26" height="10" rx="2" />
-      {Array.from({ length: 7 }, (_, index) => (
-        <path key={index} d={`${4 + index * 3.4} 4 v${index % 2 ? 4 : 7}`} />
-      ))}
-    </svg>
-  );
+  return <FigmaIcon name="gauge" className="h-8 w-5" />;
 }
 function BookGlyph() {
-  return (
-    <svg width="24" height="22" viewBox="0 0 24 22" fill="currentColor">
-      <path d="M12 3c-2.2-1.4-5-1.6-8-.8v15c3-1 5.6-.6 8 1 2.4-1.6 5-2 8-1V2.2c-3-.8-5.8-.6-8 .8z" />
-    </svg>
-  );
+  return <FigmaIcon name="book" className="h-7 w-7" />;
 }
 
 export function RankingScreen() {
