@@ -99,6 +99,8 @@ function routeToHash(route: Route) {
       return `#/gauge/${route.tab}`;
     case "codex":
       return route.id ? `#/codex/${route.id}` : "#/codex";
+    case "collection":
+      return route.id ? `#/collection/${route.id}` : "#/collection";
     default:
       return `#/${route.name}`;
   }
@@ -117,6 +119,7 @@ function hashToRoute(hash: string): Route {
   if (name === "finished" && id) return { name: "finished", id };
   if (name === "counter" && id) return { name: "counter", id };
   if (name === "codex") return { name: "codex", id };
+  if (name === "collection") return { name: "collection", id };
   if (name === "pattern" && id) return { name: "pattern", id };
   if (name === "work" && id) return { name: "work", id };
   if (name === "news" && id) return { name: "news", id };

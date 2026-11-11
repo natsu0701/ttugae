@@ -35,6 +35,7 @@ export type Route =
   | { name: "codex"; id?: string }
   | { name: "chat" }
   | { name: "editor" }
+  | { name: "collection"; id?: string }
   | { name: "pattern"; id: string }
   | { name: "work"; id: string }
   | { name: "ranking" }

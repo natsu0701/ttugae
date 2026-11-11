@@ -22,6 +22,7 @@ import {
 import { LoungeScreen, QuestionScreen, ShortScreen } from "./screens/lounge.tsx";
 import { MyScreen } from "./screens/my.tsx";
 import { CodexScreen } from "./screens/codex.tsx";
+import { CollectionScreen } from "./screens/collection.tsx";
 import { codexById } from "./codex.ts";
 import { NeedleScreen, YarnScreen } from "./screens/stash.tsx";
 import {
@@ -65,6 +66,8 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
       return "뜨니챗";
     case "editor":
       return "뜨개에디터";
+    case "collection":
+      return "뜨개컬렉션";
     case "pattern":
       return "추천 도안";
     case "work":
@@ -104,7 +107,7 @@ const OWN_CHROME = new Set([
 ]);
 
 function Shell() {
-  const { route, back, data } = useApp();
+  const { route, back, data, openSheet } = useApp();
   const screen = renderRoute(route);
   const showBack = !OWN_CHROME.has(route.name);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -121,7 +124,29 @@ function Shell() {
             <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
               <ChevronLeft />
             </button>
-            <h1 className="flex-1 truncate pr-10 text-center text-[17px] font-bold">{titleFor(route, data)}</h1>
+            <h1 className="flex min-w-0 flex-1 items-center justify-center gap-1 pr-10 text-[17px] font-bold">
+              <span className="truncate">{titleFor(route, data)}</span>
+              {route.name === "collection" ? (
+                <button
+                  type="button"
+                  aria-label="컬렉션 안내"
+                  onClick={() =>
+                    openSheet({
+                      kind: "info",
+                      title: "뜨개컬렉션",
+                      body: "실 종류를 고른 뒤 도안을 누르면 제작자, 뜨는 부분, 도안 설명을 볼 수 있어요.",
+                    })
+                  }
+                  className="grid h-6 w-6 shrink-0 place-items-center"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+                    <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                    <path d="M12 10.6v5.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    <circle cx="12" cy="7.7" r="0.9" fill="currentColor" />
+                  </svg>
+                </button>
+              ) : null}
+            </h1>
           </div>
         ) : null}
         <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : scrolling ? "scroll" : "flex min-h-0 flex-1 flex-col"}>
@@ -213,6 +238,8 @@ function renderRoute(route: Route): ReactNode {
       return <CounterScreen id={route.id} />;
     case "codex":
       return <CodexScreen id={route.id} />;
+    case "collection":
+      return <CollectionScreen id={route.id} />;
     case "chat":
       return <ChatScreen />;
     case "editor":
