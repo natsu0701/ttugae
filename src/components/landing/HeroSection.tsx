@@ -1,4 +1,4 @@
-import { memo, useRef, type MouseEvent } from "react";
+import { memo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import { landingSection } from "./landingStyles.ts";
@@ -18,12 +18,6 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
   const { t } = useTranslation();
   const heroRef = useRef<HTMLElement>(null);
   useHeroParallax(heroRef);
-  const handleCharMove = (e: MouseEvent<HTMLSpanElement>) => {
-    const el = e.currentTarget;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-    el.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-  };
 
   return (
     <section ref={heroRef} className={`${landingSection.hero} relative isolate overflow-hidden`}>
@@ -52,30 +46,15 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
                 {t("landing.heroLead")}
               </span>
 
-              {/*
-                2줄 메인 슬로건 - 문경감홍사과체
-                마우스 위치를 정교하게 트래킹하는 솜사탕 그라데이션 효과
-              */}
               <span
-                className="interactive-gradient-text mt-3 flex cursor-pointer flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] sm:text-5xl md:mt-4 md:gap-1 md:text-6xl lg:text-7xl xl:text-7xl 2xl:text-[clamp(3rem,4vw,4.5rem)]"
+                className="mt-3 flex flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] text-white sm:text-5xl md:mt-4 md:gap-1 md:text-6xl lg:text-7xl xl:text-7xl 2xl:text-[clamp(3rem,4vw,4.5rem)]"
                 style={{ fontFamily: "Mungyeong-Gamhong-Apple, sans-serif" }}
               >
-                {HERO_SLOGAN_KEYS.map((key) => {
-                  const line = t(key);
-                  return (
+                {HERO_SLOGAN_KEYS.map((key) => (
                   <span key={key} className="block overflow-visible py-0.5">
-                    {line.split("").map((char, index) => (
-                      <span
-                        key={`${key}-${char}-${index}`}
-                        className="interactive-gradient-char"
-                        onMouseMove={handleCharMove}
-                      >
-                        {char}
-                      </span>
-                    ))}
+                    {t(key)}
                   </span>
-                  );
-                })}
+                ))}
               </span>
             </h1>
           </Reveal>
@@ -95,74 +74,6 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
 
       {/* 마스코트 뜨니 배치 */}
       <TteuniHeroPeek />
-
-      {/*
-        hover 시 텍스트 컬러가 transparent로 스르륵 변하며 클립된 그라데이션이 자연스럽게 투사됩니다.
-        메인 옐로우(#FFD438) 중심부에서 밝은 레몬(#FFE89A)으로 펼쳐지는 180px 반경의 빛의 털실 질감입니다.
-      */}
-      <style>{`
-        .interactive-gradient-text {
-          color: #ffffff;
-          -webkit-text-fill-color: #ffffff;
-          -webkit-text-stroke: 0;
-          text-shadow: none;
-          paint-order: fill;
-        }
-
-        .interactive-gradient-char {
-          display: inline-block;
-          overflow: visible;
-          /* 장식 서체 획이 박스 밖으로 나가도 잘리지 않도록 클립 영역을 넓힘 */
-          padding: 0.22em 0.1em 0.28em;
-          margin: -0.22em -0.1em -0.28em;
-          line-height: 1.15;
-          color: #ffffff;
-          -webkit-text-fill-color: #ffffff;
-          -webkit-text-stroke: 0;
-          text-shadow: none;
-          paint-order: fill;
-          background-color: #ffffff;
-          background-image: radial-gradient(
-            circle 0px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            #FFD438 0%,
-            #FFE89A 45%,
-            #FFFFFF 100%
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          transition: -webkit-text-fill-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-            color 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .interactive-gradient-char:hover {
-          color: transparent;
-          -webkit-text-fill-color: transparent;
-          transition: none;
-          background-color: #ffffff;
-          background-image: radial-gradient(
-            circle 72px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            #FFD438 0%,
-            #FFE89A 55%,
-            #FFD438 100%
-          );
-          animation: slogan-char-solidify 0.8s ease-out forwards;
-        }
-
-        @keyframes slogan-char-solidify {
-          0% {
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-          }
-          40% {
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-          }
-          100% {
-            color: #FFD438;
-            -webkit-text-fill-color: #FFD438;
-          }
-        }
-      `}</style>
     </section>
   );
 }
