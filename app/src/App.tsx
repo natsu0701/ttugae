@@ -59,6 +59,7 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
     case "counters":
       return "행/코 카운터";
     case "codex":
+      if (route.id === "care") return "세탁 & 관리";
       return route.id ? (codexById(route.id)?.name ?? "뜨개도감") : "뜨개도감";
     case "chat":
       return "뜨니챗";

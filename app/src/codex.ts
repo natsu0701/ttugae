@@ -298,3 +298,101 @@ export const CODEX: CodexEntry[] = [
 export function codexById(id: string | undefined) {
   return CODEX.find((entry) => entry.id === id);
 }
+
+export type PopularYarn = {
+  id: string;
+  title: string;
+  image: string;
+  badge: string;
+  tone: "dark" | "green" | "pink";
+  tags: { label: string; value: string }[];
+  flags: string[];
+  material: boolean;
+  use: boolean;
+  beginner: boolean;
+};
+
+export const POPULAR_YARNS: PopularYarn[] = [
+  {
+    id: "wool",
+    title: "메리노 울 베이비",
+    image: media("media/yarn-pink.jpg"),
+    badge: "베스트",
+    tone: "dark",
+    tags: [
+      { label: "재질", value: "베이비 울" },
+      { label: "특징", value: "부드러움" },
+      { label: "추천", value: "겨울 소품" },
+    ],
+    flags: ["겨울용", "인기 선물", "친환경"],
+    material: true,
+    use: true,
+    beginner: false,
+  },
+  {
+    id: "cotton",
+    title: "코튼 블렌드 여름실",
+    image: media("media/news-yarn.jpg"),
+    badge: "여름",
+    tone: "green",
+    tags: [
+      { label: "재질", value: "면 · 혼방" },
+      { label: "특징", value: "시원함" },
+      { label: "추천", value: "여름 가디건" },
+    ],
+    flags: ["여름용", "쉬운 세탁", "친환경"],
+    material: true,
+    use: true,
+    beginner: false,
+  },
+  {
+    id: "acrylic",
+    title: "아크릴 라이트",
+    image: media("media/needles.jpg"),
+    badge: "초보",
+    tone: "pink",
+    tags: [
+      { label: "재질", value: "아크릴" },
+      { label: "특징", value: "가벼움" },
+      { label: "추천", value: "첫 작품" },
+    ],
+    flags: ["쉬운 도안", "인기 선물"],
+    material: true,
+    use: true,
+    beginner: true,
+  },
+  {
+    id: "linen",
+    title: "린넨 슬러브",
+    image: media("media/swatch-linen.jpg"),
+    badge: "여름",
+    tone: "green",
+    tags: [
+      { label: "재질", value: "린넨" },
+      { label: "특징", value: "시원한 결" },
+      { label: "추천", value: "여름 상의" },
+    ],
+    flags: ["여름용", "친환경", "쉬운 세탁"],
+    material: true,
+    use: true,
+    beginner: false,
+  },
+  {
+    id: "mohair",
+    title: "모헤어 숄 실",
+    image: media("media/swatch-wool.jpg"),
+    badge: "베스트",
+    tone: "dark",
+    tags: [
+      { label: "재질", value: "모헤어" },
+      { label: "특징", value: "가벼움" },
+      { label: "추천", value: "선물 숄" },
+    ],
+    flags: ["겨울용", "인기 선물"],
+    material: true,
+    use: true,
+    beginner: false,
+  },
+];
+
+export const DISCOVER_FILTERS = ["겨울용", "여름용", "인기 선물", "쉬운 도안", "쉬운 세탁", "친환경"] as const;
