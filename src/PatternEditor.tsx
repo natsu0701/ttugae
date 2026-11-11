@@ -178,8 +178,12 @@ function initCharts(initial: PatternEditorProps["initialPattern"]): {
   };
 }
 
-function isCheckerCell(r: number, c: number) {
-  return (r + c) % 2 === 0;
+function isCheckerCell(r: number, c: number, originR = 0, originC = 0) {
+  return ((r + c) & 1) === ((originR + originC) & 1);
+}
+
+function cloneGrid(grid: EditorCell[][]): EditorCell[][] {
+  return grid.map((row) => row.map((cell) => ({ ...cell })));
 }
 
 function loadEditorGauge(): GaugeProfile {
@@ -239,7 +243,7 @@ export default function PatternEditor({
     r1: number;
     c1: number;
   } | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const isDraggingRef = useRef(false);
   const [toolHintOpen, setToolHintOpen] = useState(true);
   const [sizeMenuOpen, setSizeMenuOpen] = useState(false);
   const [customW, setCustomW] = useState(
@@ -252,6 +256,7 @@ export default function PatternEditor({
     return saved != null && saved >= 1 ? saved : 1;
   });
   const dragStart = useRef<{ r: number; c: number } | null>(null);
+  const dragGridSnapshot = useRef<EditorCell[][] | null>(null);
   const leftToolbarRef = useRef<HTMLElement>(null);
   const chatbotPanelRef = useRef<HTMLDivElement>(null);
   const sizeMenuRef = useRef<HTMLDivElement>(null);
@@ -582,13 +587,10 @@ export default function PatternEditor({
   const applyCell = useCallback(
     (r: number, c: number) => {
       patchActiveGrid((prev) => {
-        const next = prev.map((row) => row.map((cell) => ({ ...cell })));
+        const next = cloneGrid(prev);
         if (tool === "eraser") {
           next[r][c] = { colorId: "white", stitchId: "empty" };
           return next;
-        }
-        if (tool === "checker" && !isCheckerCell(r, c)) {
-          return prev;
         }
         next[r][c] = { colorId: activeColor, stitchId: activeStitch };
         return next;
@@ -596,6 +598,29 @@ export default function PatternEditor({
       if (!progressMode) persistCurrentProgressRow(knittingRowNumber(r, gridRows));
     },
     [tool, activeColor, activeStitch, patchActiveGrid, gridRows, progressMode],
+  );
+
+  const applyCheckerRange = useCallback(
+    (r0: number, c0: number, r1: number, c1: number) => {
+      const snapshot = dragGridSnapshot.current;
+      if (!snapshot) return;
+      const rMin = Math.min(r0, r1);
+      const rMax = Math.max(r0, r1);
+      const cMin = Math.min(c0, c1);
+      const cMax = Math.max(c0, c1);
+      patchActiveGrid(() => {
+        const next = cloneGrid(snapshot);
+        for (let r = rMin; r <= rMax; r++) {
+          for (let c = cMin; c <= cMax; c++) {
+            if (!isCheckerCell(r, c, r0, c0)) continue;
+            next[r][c] = { colorId: activeColor, stitchId: activeStitch };
+          }
+        }
+        return next;
+      });
+      if (!progressMode) persistCurrentProgressRow(knittingRowNumber(r1, gridRows));
+    },
+    [activeColor, activeStitch, patchActiveGrid, progressMode, gridRows],
   );
 
   const fillSelection = useCallback(() => {
@@ -609,7 +634,6 @@ export default function PatternEditor({
       const next = prev.map((row) => row.map((cell) => ({ ...cell })));
       for (let r = rMin; r <= rMax; r++) {
         for (let c = cMin; c <= cMax; c++) {
-          if (tool === "checker" && !isCheckerCell(r, c)) continue;
           if (tool === "eraser") {
             next[r][c] = { colorId: "white", stitchId: "empty" };
           } else {
@@ -623,21 +647,30 @@ export default function PatternEditor({
 
   const handlePointerDown = useCallback((r: number, c: number) => {
     if (tool === "pan" || spacePan) return;
-    if (tool === "paint" || tool === "eraser" || tool === "checker") {
-      setIsDragging(true);
+    isDraggingRef.current = true;
+    if (tool === "paint" || tool === "eraser") {
       applyCell(r, c);
+      return;
+    }
+    if (tool === "checker") {
+      dragStart.current = { r, c };
+      dragGridSnapshot.current = cloneGrid(grid);
+      applyCheckerRange(r, c, r, c);
       return;
     }
     dragStart.current = { r, c };
     setSelection({ r0: r, c0: c, r1: r, c1: c });
-    setIsDragging(true);
-  }, [tool, spacePan, applyCell]);
+  }, [tool, spacePan, applyCell, applyCheckerRange, grid]);
 
   const handlePointerEnter = useCallback((r: number, c: number) => {
-    if ((tool === "paint" || tool === "eraser" || tool === "checker") && isDragging) {
+    if (!isDraggingRef.current) return;
+    if (tool === "paint" || tool === "eraser") {
       applyCell(r, c);
     }
-    if (tool === "select" && isDragging && dragStart.current) {
+    if (tool === "checker" && dragStart.current) {
+      applyCheckerRange(dragStart.current.r, dragStart.current.c, r, c);
+    }
+    if (tool === "select" && dragStart.current) {
       setSelection({
         r0: dragStart.current.r,
         c0: dragStart.current.c,
@@ -645,11 +678,12 @@ export default function PatternEditor({
         c1: c,
       });
     }
-  }, [tool, isDragging, applyCell]);
+  }, [tool, applyCell, applyCheckerRange]);
 
   const endDrag = useCallback(() => {
-    setIsDragging(false);
+    isDraggingRef.current = false;
     dragStart.current = null;
+    dragGridSnapshot.current = null;
   }, []);
 
   const handleToolChange = useCallback((next: Tool) => {
