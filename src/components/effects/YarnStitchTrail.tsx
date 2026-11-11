@@ -31,22 +31,29 @@ function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
     const point = points[index];
     const prevPoint = points[index - 1];
     const ratio = index / (points.length - 1);
-    const opacity = 0.35 + ratio * 0.6;
-    const strokeWidth = 3.2 + ratio * 7.5;
-    const midX = (prevPoint.x + point.x) / 2;
-    const midY = (prevPoint.y + point.y) / 2;
+    const opacity = 0.28 + ratio * 0.62;
+    const strokeWidth = 5 + ratio * 7.2;
     const dx = point.x - prevPoint.x;
     const dy = point.y - prevPoint.y;
     const len = Math.hypot(dx, dy) || 1;
-    const nx = (-dy / len) * (1.1 + ratio * 1.4);
-    const ny = (dx / len) * (1.1 + ratio * 1.4);
+    const twist = Math.sin(index * 0.85) * (1.1 + ratio * 1.6);
+    const nx = (-dy / len) * twist;
+    const ny = (dx / len) * twist;
 
-    ctx.strokeStyle = YARN_EDGE;
-    ctx.globalAlpha = opacity;
-    ctx.lineWidth = strokeWidth + 2.4;
+    ctx.strokeStyle = YARN_BODY;
+    ctx.globalAlpha = opacity * 0.32;
+    ctx.lineWidth = strokeWidth + 8;
     ctx.beginPath();
     ctx.moveTo(prevPoint.x, prevPoint.y);
-    ctx.quadraticCurveTo(midX, midY, point.x, point.y);
+    ctx.lineTo(point.x, point.y);
+    ctx.stroke();
+
+    ctx.strokeStyle = YARN_EDGE;
+    ctx.globalAlpha = opacity * 0.55;
+    ctx.lineWidth = strokeWidth + 2.6;
+    ctx.beginPath();
+    ctx.moveTo(prevPoint.x + nx * 0.35, prevPoint.y + ny * 0.35);
+    ctx.lineTo(point.x + nx * 0.35, point.y + ny * 0.35);
     ctx.stroke();
 
     ctx.strokeStyle = YARN_BODY;
@@ -54,16 +61,28 @@ function paintTrail(ctx: CanvasRenderingContext2D, points: Point[]) {
     ctx.lineWidth = strokeWidth;
     ctx.beginPath();
     ctx.moveTo(prevPoint.x, prevPoint.y);
-    ctx.quadraticCurveTo(midX, midY, point.x, point.y);
+    ctx.lineTo(point.x, point.y);
     ctx.stroke();
 
     ctx.strokeStyle = YARN_HIGHLIGHT;
-    ctx.globalAlpha = opacity * 0.55;
-    ctx.lineWidth = Math.max(1.4, strokeWidth * 0.28);
+    ctx.globalAlpha = opacity * 0.42;
+    ctx.lineWidth = Math.max(1.6, strokeWidth * 0.34);
     ctx.beginPath();
     ctx.moveTo(prevPoint.x + nx, prevPoint.y + ny);
-    ctx.quadraticCurveTo(midX + nx, midY + ny, point.x + nx, point.y + ny);
+    ctx.lineTo(point.x + nx, point.y + ny);
     ctx.stroke();
+  }
+
+  for (let index = 0; index < points.length; index += 1) {
+    const point = points[index];
+    const ratio = index / (points.length - 1);
+    const radius = 1.8 + ratio * 3.1;
+    const jitter = ((index * 17) % 7) - 3;
+    ctx.fillStyle = YARN_BODY;
+    ctx.globalAlpha = 0.22 + ratio * 0.28;
+    ctx.beginPath();
+    ctx.arc(point.x + jitter * 0.45, point.y - jitter * 0.35, radius, 0, Math.PI * 2);
+    ctx.fill();
   }
 
   ctx.globalAlpha = 1;
@@ -203,6 +222,12 @@ function YarnStitchTrail({ disabled = false }: YarnStitchTrailProps) {
         aria-hidden
       >
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <defs>
+            <filter id="yarn-ball-fuzz" x="-45%" y="-45%" width="190%" height="190%">
+              <feGaussianBlur stdDeviation="1.05" />
+            </filter>
+          </defs>
+          <circle cx="12" cy="28" r="10" fill={YARN_BODY} opacity="0.45" filter="url(#yarn-ball-fuzz)" />
           <circle cx="12" cy="28" r="9" fill={YARN_EDGE} />
           <circle cx="12" cy="28" r="7.4" fill={YARN_BODY} />
           <path

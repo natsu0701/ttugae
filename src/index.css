@@ -352,7 +352,7 @@ body {
   display: none;
 }
 
-/* YarnStitchTrail — 커스텀 커서 (blur·blend 없음) */
+/* YarnStitchTrail — 테두리만 GPU blur로 보송하게 (경로별 shadowBlur 없음) */
 body.yarn-trail-active,
 body.yarn-trail-active * {
   cursor: none !important;
@@ -365,6 +365,7 @@ body.yarn-trail-active {
 .yarn-trail-svg {
   overflow: visible;
   mix-blend-mode: normal;
+  filter: blur(1.15px);
 }
 
 @keyframes tteuni-float {
