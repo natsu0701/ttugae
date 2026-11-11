@@ -491,7 +491,7 @@
     "toolHints": {
       "paint": "Click or drag cells to place stitches and colors",
       "eraser": "Click or drag to clear cells",
-      "checker": "Fills every other cell in a checkerboard pattern",
+      "checker": "Drag a range to fill it in a checkerboard pattern",
       "select": "Drag to select, then tap “Fill selection”",
       "pan": "Drag, or hold Space and drag, to move the canvas"
     },
