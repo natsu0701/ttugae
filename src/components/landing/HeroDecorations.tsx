@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from "react";
+import { memo } from "react";
 import { assetUrl } from "../../utils/appPath.ts";
 
 type Floater = {
@@ -82,48 +82,8 @@ const FLOATERS: Floater[] = [
 ];
 
 function HeroDecorations() {
-  const layerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const layer = layerRef.current;
-    if (!layer) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let targetX = 0;
-    let targetY = 0;
-    let currentX = 0;
-    let currentY = 0;
-    let frame = 0;
-
-    const tick = () => {
-      currentX += (targetX - currentX) * 0.08;
-      currentY += (targetY - currentY) * 0.08;
-      layer.style.setProperty("--par-x", currentX.toFixed(4));
-      layer.style.setProperty("--par-y", currentY.toFixed(4));
-      frame = requestAnimationFrame(tick);
-    };
-
-    const onMove = (event: MouseEvent | PointerEvent) => {
-      if ("pointerType" in event && event.pointerType === "touch") return;
-      const width = window.innerWidth || 1;
-      const height = window.innerHeight || 1;
-      targetX = (event.clientX / width - 0.5) * 2;
-      targetY = (event.clientY / height - 0.5) * 2;
-    };
-
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("mousemove", onMove, { passive: true });
-    frame = requestAnimationFrame(tick);
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("mousemove", onMove);
-      cancelAnimationFrame(frame);
-    };
-  }, []);
-
   return (
     <div
-      ref={layerRef}
       className="pointer-events-none absolute inset-0 z-[5] h-full w-full overflow-hidden"
       aria-hidden
     >
@@ -131,10 +91,8 @@ function HeroDecorations() {
         <div
           key={item.src}
           className={`hero-floater absolute ${item.className}`}
-          style={{
-            ["--par-dx" as string]: `${item.dx}px`,
-            ["--par-dy" as string]: `${item.dy}px`,
-          }}
+          data-par-dx={item.dx}
+          data-par-dy={item.dy}
         >
           <div
             className="hero-floater-bob h-full w-full"

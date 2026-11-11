@@ -1,4 +1,4 @@
-import { memo, type MouseEvent } from "react";
+import { memo, useRef, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import { landingSection } from "./landingStyles.ts";
@@ -6,6 +6,7 @@ import HeroDecorations from "./HeroDecorations.tsx";
 import Reveal from "./Reveal.tsx";
 import TteuniHeroPeek from "./TteuniHeroPeek.tsx";
 import { assetUrl } from "../../utils/appPath.ts";
+import { useHeroParallax } from "../../hooks/useHeroParallax.ts";
 
 type HeroSectionProps = {
   onOpenEditor: () => void;
@@ -15,6 +16,8 @@ const HERO_SLOGAN_KEYS = ["landing.heroLine1", "landing.heroLine2"] as const;
 
 function HeroSection({ onOpenEditor }: HeroSectionProps) {
   const { t } = useTranslation();
+  const heroRef = useRef<HTMLElement>(null);
+  useHeroParallax(heroRef);
   const handleCharMove = (e: MouseEvent<HTMLSpanElement>) => {
     const el = e.currentTarget;
     const rect = el.getBoundingClientRect();
@@ -23,7 +26,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
   };
 
   return (
-    <section className={`${landingSection.hero} relative isolate overflow-hidden`}>
+    <section ref={heroRef} className={`${landingSection.hero} relative isolate overflow-hidden`}>
       <video
         src={assetUrl("/web_back.mp4")}
         className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"

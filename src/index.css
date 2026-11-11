@@ -272,12 +272,8 @@ body {
     animation: hero-overlay-warm 1.8s ease-out;
   }
 
-  .hero-floater {
-    transform: translate3d(
-      calc(var(--par-x, 0) * var(--par-dx, 20px)),
-      calc(var(--par-y, 0) * var(--par-dy, 14px)),
-      0
-    );
+  .hero-floater,
+  .tteuni-peek-shift {
     will-change: transform;
     backface-visibility: hidden;
   }
