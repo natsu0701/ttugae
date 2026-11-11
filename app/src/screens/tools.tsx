@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { createPortal } from "react-dom";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
 import { BlackButton, CameraIcon, ChevronDown, Fab, InfoButton, Mascot, PencilIcon, PinkButton, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
@@ -40,6 +41,7 @@ export function GaugeScreen({ tab }: { tab: GaugeTab }) {
 
 function Calculator() {
   const { calcSts, calcLen, calcResult, setCalc, data, push, openSheet } = useApp();
+  const [ruler, setRuler] = useState(false);
   const unitLabel = data.unit === "imperial" ? "in" : "cm";
   const span = data.unit === "imperial" ? "4in" : "10cm";
   const divisor = data.unit === "imperial" ? 4 : 10;
@@ -98,15 +100,141 @@ function Calculator() {
       <PinkButton className="mt-3" disabled={calcResult === null} onClick={() => push({ name: "gauge-form" })}>
         게이지 저장하기
       </PinkButton>
-      <button type="button" onClick={() => openSheet({ kind: "info", title: "자가가 필요할 때", body: "10cm 자를 스와치에 대고 그 안의 코를 세면 돼요. 사진 버튼은 예시로 20코를 넣어 줘요." })} className="mt-8 flex items-end justify-between">
-        <span className="max-w-[180px] rounded-lg bg-[#f4f4f4] px-3 py-2 text-left text-[13px] leading-snug">
+      <button type="button" aria-label="자 열기" onClick={() => setRuler(true)} className="mt-8 flex w-full items-end justify-between text-left">
+        <span className="max-w-[180px] rounded-lg bg-[#f4f4f4] px-3 py-2 text-[13px] leading-snug">
           자가 필요하면
           <br />
           저를 클릭하세요!
         </span>
         <Mascot mood="cheer" className="h-28 w-28" />
       </button>
+      {ruler ? <GaugeRuler onClose={() => setRuler(false)} /> : null}
     </div>
+  );
+}
+
+const SWATCH_EDGE = (() => {
+  const edge: string[] = [];
+  for (let y = 0; y <= 1000; y += 10) {
+    const x = 36 + Math.sin(y / 26) * 11 + Math.sin(y / 8.5) * 4;
+    edge.push(`${x.toFixed(1)} ${y}`);
+  }
+  return `M0 0 H${edge[0]?.split(" ")[0] ?? 36} L${edge.join(" L")} L0 1000 Z`;
+})();
+
+function GaugeRuler({ onClose }: { onClose: () => void }) {
+  const [y, setY] = useState(100);
+  const [motion, setMotion] = useState(true);
+  const yRef = useRef(100);
+  const drag = useRef<{ startY: number; start: number; height: number } | null>(null);
+  const closing = useRef(false);
+  const [host, setHost] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setHost(document.querySelector(".phone") as HTMLElement | null);
+    const frame = requestAnimationFrame(() => {
+      yRef.current = 0;
+      setY(0);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const dismiss = () => {
+    if (closing.current) return;
+    closing.current = true;
+    setMotion(true);
+    yRef.current = 100;
+    setY(100);
+    window.setTimeout(onClose, 340);
+  };
+
+  const moveY = (next: number) => {
+    const clamped = Math.max(0, next);
+    yRef.current = clamped;
+    setY(clamped);
+  };
+
+  const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (closing.current) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setMotion(false);
+    drag.current = { startY: event.clientY, start: yRef.current, height: event.currentTarget.getBoundingClientRect().height };
+  };
+
+  const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const current = drag.current;
+    if (!current) return;
+    const delta = ((event.clientY - current.startY) / current.height) * 100;
+    moveY(current.start + delta);
+  };
+
+  const onPointerUp = () => {
+    if (!drag.current) return;
+    drag.current = null;
+    setMotion(true);
+    if (yRef.current > 12) dismiss();
+    else moveY(0);
+  };
+
+  if (!host) return null;
+  const marks = Array.from({ length: 16 }, (_, cm) => cm);
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-label="게이지 자"
+      className="absolute inset-0 z-50 touch-none select-none bg-white"
+      style={{ transform: `translateY(${y}%)`, transition: motion ? "transform 320ms ease" : "none" }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+    >
+      <div className="flex justify-center pt-3">
+        <span className="h-1.5 w-16 rounded-full bg-[#d5d5d5]" />
+      </div>
+      <div className="relative mx-3 mt-2 h-[calc(100%-2.25rem)]">
+        <svg className="pointer-events-none absolute left-[4.25rem] w-16" style={{ bottom: 28, top: 44 }} viewBox="0 0 64 1000" preserveAspectRatio="none" aria-hidden>
+          <path d={SWATCH_EDGE} fill="#f6aeb6" />
+        </svg>
+        {marks.map((cm) => {
+          const major = cm % 5 === 0;
+          const decade = cm % 10 === 0;
+          return (
+            <div key={cm} className="absolute left-0 right-0" style={{ bottom: `calc(40px + (100% - 96px) * ${cm / 15})` }}>
+              {major ? (
+                <span className="absolute left-0 w-14 text-center text-[40px] font-black leading-none" style={{ top: "50%", transform: "translateY(-50%) rotate(-90deg)" }}>
+                  {cm}
+                </span>
+              ) : null}
+              <span
+                className="absolute right-1"
+                style={{
+                  left: "7.5rem",
+                  height: decade ? 4 : major ? 3 : 1,
+                  marginTop: decade ? -2 : major ? -1 : 0,
+                  background: major ? "#171717" : "#d9d9d9",
+                }}
+              />
+            </div>
+          );
+        })}
+        <div
+          className="pointer-events-none absolute left-[8.4rem]"
+          style={{ bottom: "calc(52px + (100% - 96px) * 10 / 15)", height: "calc((100% - 96px) * 4.2 / 15)" }}
+        >
+          <p
+            className="relative h-full w-max rounded-2xl bg-white px-3 py-2 text-[13px] text-[#8a8a8a] shadow-card"
+            style={{ writingMode: "vertical-rl", textOrientation: "mixed", lineHeight: 1.25 }}
+          >
+            <span className="font-bold text-blush">10cm</span>
+            에 총 몇 코가 들어가는지 세어보세요!
+            <span aria-hidden className="absolute -bottom-1.5 left-4 h-3 w-3 rotate-45 bg-white" />
+          </p>
+        </div>
+      </div>
+    </div>,
+    host,
   );
 }
 
