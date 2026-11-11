@@ -635,6 +635,7 @@
     "paletteNordic": "노르딕 자카드",
     "paletteForest": "클래식 빈티지 포레스트",
     "pausePreview": "미리보기 일시 정지",
+    "previewUnavailable": "3D 미리보기를 불러오지 못했어요. 도안 그리기는 그대로 사용할 수 있어요.",
     "loadingItem": "뜨니가 실시간 3D {{item}} 준비하고 있어요...",
     "itemAccSweater": "스웨터를",
     "itemAccVest": "조끼를",

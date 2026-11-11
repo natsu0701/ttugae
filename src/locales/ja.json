@@ -636,6 +636,7 @@
     "paletteNordic": "ノルディックジャカード",
     "paletteForest": "クラシックヴィンテージフォレスト",
     "pausePreview": "プレビュー一時停止",
+    "previewUnavailable": "3Dプレビューを読み込めませんでした。チャート編集はそのまま使えます。",
     "loadingItem": "トゥニがリアルタイム3D {{item}} を準備しています…",
     "itemAccSweater": "セーターを",
     "itemAccVest": "ベストを",

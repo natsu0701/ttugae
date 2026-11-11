@@ -1,4 +1,15 @@
-import { memo, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  Component,
+  memo,
+  Suspense,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ErrorInfo,
+  type ReactNode,
+} from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { Canvas, useThree } from "@react-three/fiber";
@@ -288,6 +299,37 @@ function PreviewLoadingFallback({ itemType }: { itemType: KnitItemType }) {
   );
 }
 
+class PreviewErrorBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn("3D preview failed", error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.failed) return this.props.fallback;
+    return this.props.children;
+  }
+}
+
+function PreviewCrashFallback() {
+  const { t } = useTranslation();
+  return (
+    <div className="flex h-[300px] min-h-[220px] items-center justify-center bg-stone-100 px-6 text-center">
+      <p className="font-sans text-sm font-normal leading-relaxed text-stone-500">
+        {t("editor.previewUnavailable")}
+      </p>
+    </div>
+  );
+}
+
 type GarmentModelProps = {
   modelUrl: string;
   fitScale?: [number, number, number];
@@ -329,12 +371,13 @@ function applyCoveringUVs(root: THREE.Object3D, splitFaces: boolean) {
   root.traverse((child) => {
     if (!(child as THREE.Mesh).isMesh) return;
     const mesh = child as THREE.Mesh;
-    let geometry = mesh.geometry.clone();
-    if (geometry.index) {
-      const nonIndexed = geometry.toNonIndexed();
-      geometry.dispose();
-      geometry = nonIndexed;
-    }
+    const source =
+      (mesh.userData.patternSourceGeometry as THREE.BufferGeometry | undefined) ??
+      mesh.geometry;
+    if (!source?.attributes.position) return;
+    mesh.userData.patternSourceGeometry = source;
+
+    const geometry = source.clone();
     if (!geometry.attributes.normal) {
       geometry.computeVertexNormals();
     }
@@ -378,7 +421,7 @@ function applyCoveringUVs(root: THREE.Object3D, splitFaces: boolean) {
 
     geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
     if (geometry.hasAttribute("color")) geometry.deleteAttribute("color");
-    if (mesh.geometry !== geometry) {
+    if (mesh.geometry !== geometry && mesh.geometry !== source) {
       mesh.geometry.dispose();
     }
     mesh.geometry = geometry;
@@ -608,6 +651,7 @@ function Knitting3DCanvas({
   return (
     <div className="relative h-[300px] min-h-[220px] w-full min-w-0 overflow-hidden bg-stone-100">
       {active ? (
+        <PreviewErrorBoundary fallback={<PreviewCrashFallback />}>
         <Canvas
           className="absolute inset-0 block h-full w-full"
           camera={{ position: [0, 0, 8.5], fov: 45 }}
@@ -644,6 +688,7 @@ function Knitting3DCanvas({
             />
           </Suspense>
         </Canvas>
+        </PreviewErrorBoundary>
       ) : (
         <div className="flex h-full w-full items-center justify-center bg-stone-100 text-sm text-stone-500">
           {t("editor.pausePreview")}
@@ -711,6 +756,7 @@ function Knitting3DPreview({
 }: Knitting3DPreviewProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+  const [idleReady, setIdleReady] = useState(false);
   const pattern = useMemo(() => {
     const source = gridData && gridData.length > 0 ? gridData : grid;
     return source && source.length > 0 ? source : [[EMPTY_CELL]];
@@ -758,12 +804,30 @@ function Knitting3DPreview({
     return () => io.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!inView) {
+      setIdleReady(false);
+      return;
+    }
+    let cancelled = false;
+    const start = () => {
+      if (!cancelled) setIdleReady(true);
+    };
+    const idle = window.requestIdleCallback?.(start, { timeout: 400 });
+    const fallback = idle == null ? window.setTimeout(start, 50) : 0;
+    return () => {
+      cancelled = true;
+      if (idle != null) window.cancelIdleCallback?.(idle);
+      if (fallback) window.clearTimeout(fallback);
+    };
+  }, [inView]);
+
   return (
     <div
       ref={hostRef}
       className="flex w-full min-w-0 flex-col overflow-hidden rounded-xl bg-stone-100"
     >
-      {inView ? (
+      {inView && idleReady ? (
         <Knitting3DCanvas
           cells={stable.pattern}
           backCells={stable.backPattern}

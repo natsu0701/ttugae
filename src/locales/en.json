@@ -636,6 +636,7 @@
     "paletteNordic": "Nordic jacquard",
     "paletteForest": "Classic vintage forest",
     "pausePreview": "Preview paused",
+    "previewUnavailable": "The 3D preview couldn’t load. You can keep drawing the chart.",
     "loadingItem": "Tteuni is preparing a live 3D {{item}}…",
     "itemAccSweater": "sweater",
     "itemAccVest": "vest",
