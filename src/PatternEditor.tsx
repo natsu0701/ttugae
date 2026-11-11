@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import {
   CheckFillIcon,
   CopyFillIcon,
@@ -26,7 +27,7 @@ import GiftPackagingAnimation from "./components/ui/GiftPackagingAnimation.tsx";
 import { applyAiPatternFromMessage, getTteuniReply } from "./utils/aiPatternApply.ts";
 import { editorChromeBtn, editorChromeBtnActive, editorChromeTone, editorPanel, editorSectionTitle } from "./components/ui/tabButtonStyles.ts";
 import { STITCHES, stitchSymbol } from "./data/stitchSymbols.ts";
-import type { EditorYarn } from "./types/editorYarn.ts";
+import type { EditorYarn, YarnCatalogEntry } from "./types/editorYarn.ts";
 import {
   createRealisticDemoGrid,
   emptyGrid,
@@ -36,9 +37,15 @@ import {
 } from "./utils/patternGrid.ts";
 import {
   buildPatternMetadata,
+  clearNeedleCustomLabel,
   DEFAULT_NEEDLE,
+  HEADER_NEEDLE_PRESETS,
+  needleFromPresetId,
+  needlePresetId,
+  parseNeedleFromText,
   type NeedleSpec,
 } from "./data/knittingMetadataLibrary.ts";
+import { YARN_CATALOG } from "./data/yarnCatalog.ts";
 import {
   backBodyChart,
   CHART_PART_LABELS,
@@ -51,7 +58,7 @@ import {
   loadCurrentProgressRow,
   persistCurrentProgressRow,
 } from "./utils/editorProgressStorage.ts";
-import { formatNeedleBadgeI18n } from "./utils/i18nContent.ts";
+import { formatNeedleBadgeI18n, loc } from "./utils/i18nContent.ts";
 import { countCellsByColor, knitOrderedRows, knittingRowNumber } from "./utils/knittingChart.ts";
 import { isActionTarget } from "./utils/keyboard.ts";
 import {
@@ -68,6 +75,17 @@ import {
 
 const MAX_GRID = 50;
 
+function editorYarnFromCatalog(entry: YarnCatalogEntry, t: TFunction): EditorYarn {
+  return {
+    id: `yarn-${entry.id}`,
+    label: loc(t, `content.yarns.${entry.id}.name`, entry.name),
+    hex: entry.hex,
+    brand: loc(t, `content.yarns.${entry.id}.brand`, entry.brand),
+    fiberType: loc(t, `content.yarns.${entry.id}.fiber`, entry.fiberType),
+    texture: entry.texture,
+  };
+}
+
 type Tool = "paint" | "eraser" | "checker" | "select" | "pan";
 
 type PatternEditorProps = {
@@ -81,6 +99,7 @@ type PatternEditorProps = {
     facesIndependent?: boolean;
     colorMap?: Record<string, string>;
     needle?: NeedleSpec;
+    yarnNote?: string;
   } | null;
   onSave: (pattern: {
     id: string;
@@ -91,6 +110,7 @@ type PatternEditorProps = {
     backGrid?: EditorCell[][];
     facesIndependent?: boolean;
     needle?: NeedleSpec;
+    yarnNote?: string;
     metadata?: ReturnType<typeof buildPatternMetadata>;
   }) => void;
   onShare: (payload: {
@@ -200,6 +220,9 @@ export default function PatternEditor({
   const [castOnMode, setCastOnMode] = useState<"replace" | "add" | "gauge">("replace");
   const [needle, setNeedle] = useState<NeedleSpec>(
     () => initialPattern?.needle ?? DEFAULT_NEEDLE,
+  );
+  const [yarnNote, setYarnNote] = useState<string>(
+    () => initialPattern?.yarnNote?.trim() ?? "",
   );
   const [gauge, setGauge] = useState<GaugeProfile>(loadEditorGauge);
   const [isPackOpen, setIsPackOpen] = useState(false);
@@ -357,6 +380,113 @@ export default function PatternEditor({
       .map((id) => paletteYarns.find((y) => y.id === id))
       .filter((y): y is EditorYarn => Boolean(y));
   }, [charts, paletteYarns]);
+
+  const usedYarnLabel = usedYarns.map((y) => y.label).join(", ") || t("editor.yarnUnset");
+  const yarnLabel = yarnNote.trim() || usedYarnLabel;
+
+  const needleOptions = useMemo(() => {
+    const specs = [...HEADER_NEEDLE_PRESETS];
+    const current = clearNeedleCustomLabel(needle);
+    const currentId = needlePresetId(current);
+    if (current.needleSize && !specs.some((spec) => needlePresetId(spec) === currentId)) {
+      specs.unshift(current);
+    }
+    return specs.map((spec) => ({
+      id: needlePresetId(spec),
+      label: formatNeedleBadgeI18n(t, spec),
+    }));
+  }, [needle, t]);
+
+  const yarnOptions = useMemo(() => {
+    const palette = paletteYarns.map((yarn) => ({
+      id: `palette:${yarn.id}`,
+      label: yarn.label,
+      swatch: yarn.hex,
+    }));
+    const have = new Set(paletteYarns.map((yarn) => yarn.id));
+    const catalog = YARN_CATALOG.filter((entry) => !have.has(`yarn-${entry.id}`)).map((entry) => {
+      const yarn = editorYarnFromCatalog(entry, t);
+      return {
+        id: `catalog:${entry.id}`,
+        label: yarn.label,
+        swatch: yarn.hex,
+      };
+    });
+    return [...palette, ...catalog];
+  }, [paletteYarns, t]);
+
+  const selectedNeedleId = needle.customLabel?.trim()
+    ? null
+    : needlePresetId(clearNeedleCustomLabel(needle));
+  const selectedYarnId = yarnNote.trim()
+    ? yarnOptions.find((option) => option.label === yarnNote.trim())?.id ?? null
+    : null;
+
+  const commitNeedle = useCallback(
+    (next: NeedleSpec) => {
+      setNeedle(next);
+      markDirty();
+    },
+    [markDirty],
+  );
+
+  const handlePickNeedle = useCallback(
+    (id: string) => {
+      const spec = needleFromPresetId(id);
+      if (spec) commitNeedle(spec);
+    },
+    [commitNeedle],
+  );
+
+  const handleCustomNeedle = useCallback(
+    (text: string) => {
+      const parsed = parseNeedleFromText(text);
+      if (parsed) {
+        commitNeedle(parsed);
+        return;
+      }
+      commitNeedle({ ...clearNeedleCustomLabel(needle), customLabel: text });
+    },
+    [commitNeedle, needle],
+  );
+
+  const handlePickYarn = useCallback(
+    (id: string) => {
+      if (id.startsWith("palette:")) {
+        const yarnId = id.slice("palette:".length);
+        const yarn = paletteYarns.find((item) => item.id === yarnId);
+        if (!yarn) return;
+        setYarnNote(yarn.label);
+        setActiveColor(yarn.id);
+        markDirty();
+        return;
+      }
+      if (id.startsWith("catalog:")) {
+        const catalogId = id.slice("catalog:".length);
+        const entry = YARN_CATALOG.find((item) => item.id === catalogId);
+        if (!entry) return;
+        const yarn = editorYarnFromCatalog(entry, t);
+        setPaletteYarns((prev) => {
+          if (prev.some((item) => item.id === yarn.id)) return prev;
+          return [...prev, yarn];
+        });
+        setActiveColor(yarn.id);
+        setYarnNote(yarn.label);
+        markDirty();
+      }
+    },
+    [markDirty, paletteYarns, t],
+  );
+
+  const handleCustomYarn = useCallback(
+    (text: string) => {
+      const next = text.trim();
+      const auto = usedYarns.map((y) => y.label).join(", ");
+      setYarnNote(next && next !== auto ? next : "");
+      markDirty();
+    },
+    [markDirty, usedYarns],
+  );
 
   const changeYarnColor = useCallback((colorId: string, hex: string) => {
     const normalized = hex.toUpperCase();
@@ -564,6 +694,7 @@ export default function PatternEditor({
       facesIndependent,
       backGrid: back?.gridData,
       needle,
+      yarnNote: yarnNote.trim() || undefined,
       metadata: buildPatternMetadata({
         title: title.trim() || t("editor.defaultTitle"),
         author: "나",
@@ -588,7 +719,7 @@ export default function PatternEditor({
       setDirty(false);
     });
     return () => registerSaver(() => undefined);
-  }, [registerSaver, onSave, patternId, saveCollectionId, setDirty, title, charts, needle]);
+  }, [registerSaver, onSave, patternId, saveCollectionId, setDirty, title, charts, needle, yarnNote]);
 
   const handleShareToCommunity = () => {
     const payload = buildPatternPayload();
@@ -727,7 +858,15 @@ export default function PatternEditor({
         }}
         sizeMenuRef={sizeMenuRef}
         needleLabel={formatNeedleBadgeI18n(t, needle)}
-        yarnLabel={usedYarns.map((y) => y.label).join(", ") || t("editor.yarnUnset")}
+        yarnLabel={yarnLabel}
+        needleOptions={needleOptions}
+        yarnOptions={yarnOptions}
+        selectedNeedleId={selectedNeedleId}
+        selectedYarnId={selectedYarnId}
+        onPickNeedle={handlePickNeedle}
+        onCustomNeedle={handleCustomNeedle}
+        onPickYarn={handlePickYarn}
+        onCustomYarn={handleCustomYarn}
         chartTabs={
           <ChartTabs
             charts={charts}
@@ -745,7 +884,7 @@ export default function PatternEditor({
         onApply={handleCastOnCanvas}
         onAddChart={handleAddChart}
         needle={needle}
-        onNeedleChange={setNeedle}
+        onNeedleChange={(next) => commitNeedle(clearNeedleCustomLabel(next))}
       />
 
       <EditorOnboardingSpotlight
@@ -927,10 +1066,7 @@ export default function PatternEditor({
               </p>
               <NeedleSpecFields
                 value={needle}
-                onChange={(next) => {
-                  setNeedle(next);
-                  markDirty();
-                }}
+                onChange={(next) => commitNeedle(clearNeedleCustomLabel(next))}
               />
             </div>
             <FinishedWorkScanPanel

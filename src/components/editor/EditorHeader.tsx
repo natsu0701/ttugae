@@ -1,4 +1,4 @@
-import { memo, type ReactNode, type RefObject } from "react";
+import { memo, useEffect, useState, type ReactNode, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
@@ -6,6 +6,7 @@ import BackButton from "../ui/BackButton.tsx";
 import { PlusFillIcon } from "../icons/FillIcons.tsx";
 import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
 import { iconTip } from "../../utils/iconTip.ts";
+import HeaderSpecPicker, { type HeaderSpecOption } from "./HeaderSpecPicker.tsx";
 
 const SIZE_PRESETS = [
   { label: "10 × 10", w: 10, h: 10 },
@@ -32,6 +33,14 @@ type EditorHeaderProps = {
   sizeMenuRef: RefObject<HTMLDivElement>;
   needleLabel: string;
   yarnLabel: string;
+  needleOptions: HeaderSpecOption[];
+  yarnOptions: HeaderSpecOption[];
+  selectedNeedleId?: string | null;
+  selectedYarnId?: string | null;
+  onPickNeedle: (id: string) => void;
+  onCustomNeedle: (text: string) => void;
+  onPickYarn: (id: string) => void;
+  onCustomYarn: (text: string) => void;
   chartTabs?: ReactNode;
 };
 
@@ -54,9 +63,27 @@ function EditorHeader({
   sizeMenuRef,
   needleLabel,
   yarnLabel,
+  needleOptions,
+  yarnOptions,
+  selectedNeedleId,
+  selectedYarnId,
+  onPickNeedle,
+  onCustomNeedle,
+  onPickYarn,
+  onCustomYarn,
   chartTabs,
 }: EditorHeaderProps) {
   const { t } = useTranslation();
+  const [specMenu, setSpecMenu] = useState<"needle" | "yarn" | null>(null);
+
+  useEffect(() => {
+    if (sizeMenuOpen) setSpecMenu(null);
+  }, [sizeMenuOpen]);
+
+  const openSpec = (which: "needle" | "yarn") => {
+    if (sizeMenuOpen) onToggleSizeMenu();
+    setSpecMenu((current) => (current === which ? null : which));
+  };
 
   return (
     <header className="relative z-20 flex min-h-16 shrink-0 items-center gap-4 border-b border-stone-200 bg-white px-4 py-2 md:px-6">
@@ -145,13 +172,39 @@ function EditorHeader({
         )}
       </div>
 
-      <div className="min-w-0 flex-1">
-        <p className="break-keep font-sans text-sm leading-snug text-stone-500">
-          {t("editor.needleShort")}: {needleLabel}
-        </p>
-        <p className="break-keep font-sans text-sm leading-snug text-stone-500">
-          {t("editor.yarnShort")}: {yarnLabel}
-        </p>
+      <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-1.5">
+        <HeaderSpecPicker
+          className="min-w-0 shrink"
+          fieldLabel={t("editor.needleShort")}
+          value={needleLabel}
+          options={needleOptions}
+          selectedId={selectedNeedleId}
+          open={specMenu === "needle"}
+          onToggle={() => openSpec("needle")}
+          onClose={() => setSpecMenu(null)}
+          onPick={onPickNeedle}
+          onCustom={onCustomNeedle}
+          placeholder={t("editor.headerNeedlePlaceholder")}
+          ariaLabel={t("editor.headerNeedleAria")}
+        />
+        <span className="shrink-0 text-xs text-stone-300" aria-hidden>
+          ·
+        </span>
+        <HeaderSpecPicker
+          className="min-w-0 flex-1"
+          align="end"
+          fieldLabel={t("editor.yarnShort")}
+          value={yarnLabel}
+          options={yarnOptions}
+          selectedId={selectedYarnId}
+          open={specMenu === "yarn"}
+          onToggle={() => openSpec("yarn")}
+          onClose={() => setSpecMenu(null)}
+          onPick={onPickYarn}
+          onCustom={onCustomYarn}
+          placeholder={t("editor.headerYarnPlaceholder")}
+          ariaLabel={t("editor.headerYarnAria")}
+        />
       </div>
 
       <div className="ml-auto flex shrink-0 items-center gap-3">

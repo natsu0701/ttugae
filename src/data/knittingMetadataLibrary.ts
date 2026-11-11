@@ -10,6 +10,8 @@ export type NeedleSpec = {
   needleType: NeedleType;
   needleSize: string;
   needleDetail?: NeedleDetailId;
+  /** 목록에 없는 바늘을 직접 적은 표시 문구 */
+  customLabel?: string;
 };
 
 export interface PatternMetadata {
@@ -80,6 +82,45 @@ export const DEFAULT_NEEDLE: NeedleSpec = {
   needleDetail: "circular",
 };
 
+/** 헤더에서 바로 고를 수 있는 자주 쓰는 바늘 */
+export const HEADER_NEEDLE_PRESETS: NeedleSpec[] = [
+  { needleType: "knitting", needleSize: "3.5mm", needleDetail: "circular" },
+  { needleType: "knitting", needleSize: "4.0mm", needleDetail: "circular" },
+  { needleType: "knitting", needleSize: "4.5mm", needleDetail: "circular" },
+  { needleType: "knitting", needleSize: "5.0mm", needleDetail: "circular" },
+  { needleType: "knitting", needleSize: "5.5mm", needleDetail: "circular" },
+  { needleType: "knitting", needleSize: "4.5mm", needleDetail: "straight" },
+  { needleType: "knitting", needleSize: "3.5mm", needleDetail: "dpn" },
+  { needleType: "knitting", needleSize: "2.5mm", needleDetail: "dpn" },
+  { needleType: "crochet", needleSize: "3호", needleDetail: "standard" },
+  { needleType: "crochet", needleSize: "4호", needleDetail: "standard" },
+  { needleType: "crochet", needleSize: "5호", needleDetail: "standard" },
+  { needleType: "crochet", needleSize: "6호", needleDetail: "standard" },
+];
+
+export function needlePresetId(spec: NeedleSpec): string {
+  return `${spec.needleType}|${spec.needleSize}|${spec.needleDetail ?? ""}`;
+}
+
+export function needleFromPresetId(id: string): NeedleSpec | null {
+  const [needleType, needleSize, needleDetail] = id.split("|");
+  if (needleType !== "knitting" && needleType !== "crochet") return null;
+  if (!needleSize) return null;
+  return {
+    needleType,
+    needleSize,
+    needleDetail: needleDetail ? (needleDetail as NeedleDetailId) : undefined,
+  };
+}
+
+export function clearNeedleCustomLabel(spec: NeedleSpec): NeedleSpec {
+  return {
+    needleType: spec.needleType,
+    needleSize: spec.needleSize,
+    needleDetail: spec.needleDetail,
+  };
+}
+
 export function needleDetailOptions(type: NeedleType) {
   return type === "knitting" ? KNITTING_DETAIL_OPTIONS : CROCHET_DETAIL_OPTIONS;
 }
@@ -95,6 +136,7 @@ export function needleDetailLabel(spec: NeedleSpec): string | undefined {
 }
 
 export function formatNeedleBadge(spec: NeedleSpec): string {
+  if (spec.customLabel?.trim()) return spec.customLabel.trim();
   return `${NEEDLE_TYPE_LABELS[spec.needleType]} ${spec.needleSize}`;
 }
 

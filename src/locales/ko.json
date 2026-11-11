@@ -501,6 +501,12 @@
     "needleShort": "바늘",
     "yarnShort": "실",
     "yarnUnset": "미지정",
+    "headerNeedlePlaceholder": "바늘을 고르거나 직접 입력하세요",
+    "headerYarnPlaceholder": "실을 고르거나 직접 입력하세요",
+    "headerNeedleAria": "바늘 바꾸기",
+    "headerYarnAria": "실 바꾸기",
+    "headerSpecPick": "목록에서 고르기",
+    "headerSpecEmpty": "맞는 항목이 없어요. 위에 직접 입력해 주세요.",
     "stitches": {
       "empty": "코 없음",
       "knit": "겉뜨기",

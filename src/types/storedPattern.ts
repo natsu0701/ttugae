@@ -11,5 +11,6 @@ export type StoredPattern = {
   facesIndependent?: boolean;
   colorMap?: Record<string, string>;
   needle?: NeedleSpec;
+  yarnNote?: string;
   metadata?: PatternMetadata;
 };
