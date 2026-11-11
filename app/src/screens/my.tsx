@@ -154,7 +154,7 @@ export function MyScreen() {
       <section className="mt-5">
         <div className="flex items-center justify-between px-4">
           <h2 className="text-[16px] font-bold">판매 물품 {PRODUCTS.length}</h2>
-          <button type="button" aria-label="마켓으로" onClick={() => { setHomeTab("market"); goTab("home"); }}>
+          <button type="button" aria-label="마켓으로" onClick={() => { setHomeTab("market"); goTab("home"); }} className="grid h-6 w-6 place-items-center leading-none">
             <ChevronRight />
           </button>
         </div>

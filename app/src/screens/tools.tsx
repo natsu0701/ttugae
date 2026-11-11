@@ -161,7 +161,7 @@ function Calculator() {
     <div className="px-4 pt-6">
       <div className="flex items-center justify-between">
         <p className="text-[16px] font-bold">{span} 측정한 코수</p>
-        <button type="button" aria-label="스와치 사진으로 읽기" onClick={() => openSheet({ kind: "camera" })}>
+        <button type="button" aria-label="스와치 사진으로 읽기" onClick={() => openSheet({ kind: "camera" })} className="grid h-6 w-6 place-items-center leading-none">
           <CameraIcon />
         </button>
       </div>
@@ -369,7 +369,7 @@ function GaugeList() {
               <p className="text-[13px] font-semibold">{gauge.after}</p>
             </div>
             <div className="flex flex-col items-end">
-              <button type="button" aria-label="게이지 삭제" onClick={() => removeGauge(gauge.id)} className="text-[#bbb]">
+              <button type="button" aria-label="게이지 삭제" onClick={() => removeGauge(gauge.id)} className="grid h-8 w-8 place-items-center text-[#bbb]">
                 <TrashIcon />
               </button>
               <img src={gauge.image} alt="" className="mt-2 h-16 w-16 rounded-lg object-cover" />

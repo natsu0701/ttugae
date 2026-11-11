@@ -331,12 +331,12 @@ function YarnRow({ yarn, onOpen, onRemove }: { yarn: Yarn; onOpen: () => void; o
             <span className="rounded-full bg-[#f6f6f6] px-2 py-0.5 text-[11px]">{yarn.category}</span>
             <span className="mt-1 block font-bold">{yarn.name}</span>
             <span className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><PencilIcon /> {yarn.code}</span>
-            <span className="text-[12px] text-[#777]">
+            <span className="flex items-center gap-1 text-[12px] text-[#777]">
               <PencilIcon /> {yarn.thickness} · {ballsLabel(yarn.balls)}
             </span>
           </span>
         </button>
-        <button type="button" aria-label="실 삭제" onClick={onRemove} className="h-8 text-[16px] text-[#bbb]">
+        <button type="button" aria-label="실 삭제" onClick={onRemove} className="grid h-8 w-8 place-items-center text-[16px] text-[#bbb]">
           <TrashIcon />
         </button>
       </div>
@@ -405,7 +405,7 @@ function NeedleRow({ needle, onOpen, onRemove }: { needle: Needle; onOpen: () =>
           <span className="text-[12px] text-[#777]">⌂ {needle.material}</span>
         </button>
         <img src={needle.image} alt="" className="h-16 w-16 rounded-lg object-cover" />
-        <button type="button" aria-label="바늘 삭제" onClick={onRemove} className="h-8 text-[#bbb]">
+        <button type="button" aria-label="바늘 삭제" onClick={onRemove} className="grid h-8 w-8 place-items-center text-[#bbb]">
           <TrashIcon />
         </button>
       </div>
@@ -546,7 +546,7 @@ export function NaviScreen({ id }: { id: string }) {
                 type="button"
                 onClick={() => toggleNavi(id, step)}
                 className={cx(
-                  "flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left",
+                  "flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-left",
                   current ? "border-blush bg-blush-soft" : "border-[#f0f0f0]",
                 )}
               >

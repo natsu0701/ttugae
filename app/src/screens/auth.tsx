@@ -60,7 +60,7 @@ export function LoginScreen() {
         }}
       >
         <label className="relative block">
-          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#b9b9b9]"><MailIcon /></span>
+          <span className="pointer-events-none absolute left-4 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center leading-none text-[#b9b9b9]"><MailIcon /></span>
           <TextField
             type="email"
             autoComplete="username"
@@ -72,7 +72,7 @@ export function LoginScreen() {
           />
         </label>
         <label className="relative block">
-          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#b9b9b9]"><LockIcon /></span>
+          <span className="pointer-events-none absolute left-4 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center leading-none text-[#b9b9b9]"><LockIcon /></span>
           <TextField
             type="password"
             autoComplete="current-password"

@@ -28,7 +28,14 @@ export function cx(...parts: Array<string | false | undefined>) {
 }
 
 export function FigmaIcon({ name, className, style }: { name: FigmaIconName; className?: string; style?: CSSProperties }) {
-  return <span aria-hidden className={cx("inline-flex shrink-0", className)} style={style} dangerouslySetInnerHTML={{ __html: figmaIcons[name] }} />;
+  return (
+    <span
+      aria-hidden
+      className={cx("inline-grid shrink-0 place-items-center leading-none [&>svg]:h-full [&>svg]:w-full", className)}
+      style={style}
+      dangerouslySetInnerHTML={{ __html: figmaIcons[name] }}
+    />
+  );
 }
 
 export function TopBar({

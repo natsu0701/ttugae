@@ -5,10 +5,12 @@ const CORAL = "#FC5F53";
 export function HeartFillIcon({ className = "h-5 w-5", filled = false }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path
-        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-        fill={filled ? CORAL : "currentColor"}
-      />
+      <g transform="translate(0 -0.9)">
+        <path
+          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+          fill={filled ? CORAL : "currentColor"}
+        />
+      </g>
     </svg>
   );
 }
@@ -16,11 +18,13 @@ export function HeartFillIcon({ className = "h-5 w-5", filled = false }: IconPro
 export function SettingsFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path d="M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z" fill="currentColor" />
-      <path
-        d="M19.4 13a7.9 7.9 0 01.1 1 7.9 7.9 0 01-.1 1l2 1.5-2 3.5-2.4-1a8.2 8.2 0 01-1.7 1l-.4 2.6H9l-.4-2.6a8.2 8.2 0 01-1.7-1l-2.4 1-2-3.5 2-1.5a7.9 7.9 0 01-.1-1 7.9 7.9 0 01.1-1L2.6 10.5l2-3.5 2.4 1a8.2 8.2 0 011.7-1L9.1 4.3h5.8l.4 2.6a8.2 8.2 0 011.7 1l2.4-1 2 3.5-2 1.5z"
-        fill="currentColor"
-      />
+      <g transform="translate(0 -1.45)">
+        <path d="M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z" fill="currentColor" />
+        <path
+          d="M19.4 13a7.9 7.9 0 01.1 1 7.9 7.9 0 01-.1 1l2 1.5-2 3.5-2.4-1a8.2 8.2 0 01-1.7 1l-.4 2.6H9l-.4-2.6a8.2 8.2 0 01-1.7-1l-2.4 1-2-3.5 2-1.5a7.9 7.9 0 01-.1-1 7.9 7.9 0 01.1-1L2.6 10.5l2-3.5 2.4 1a8.2 8.2 0 011.7-1L9.1 4.3h5.8l.4 2.6a8.2 8.2 0 011.7 1l2.4-1 2 3.5-2 1.5z"
+          fill="currentColor"
+        />
+      </g>
     </svg>
   );
 }
@@ -31,6 +35,7 @@ export function FilterFillIcon({ className = "h-5 w-5" }: IconProps) {
       <path
         d="M4.2 5.2A1.2 1.2 0 015.2 4.5h13.6a1.2 1.2 0 01.95 1.94l-5.35 6.2v5.16a1.2 1.2 0 01-.52 1l-3.2 2.2a1.2 1.2 0 01-1.88-1v-7.36L4.25 6.44A1.2 1.2 0 014.2 5.2z"
         fill="currentColor"
+        transform="translate(0 -0.86)"
       />
     </svg>
   );
@@ -91,6 +96,7 @@ export function ChatFillIcon({ className = "h-5 w-5" }: IconProps) {
       <path
         d="M4.5 6.2A3.7 3.7 0 018.2 2.5h7.6A3.7 3.7 0 0119.5 6.2v6.2a3.7 3.7 0 01-3.7 3.7h-5.4L6 19.6a1.1 1.1 0 01-1.5-1V6.2z"
         fill="currentColor"
+        transform="translate(0 0.91)"
       />
     </svg>
   );
@@ -194,7 +200,7 @@ export function PauseFillIcon({ className = "h-5 w-5" }: IconProps) {
 export function CheckFillIcon({ className = "h-4 w-4" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path d="M9.3 16.8L4.6 12.1l1.7-1.7 3 3 8.4-8.4 1.7 1.7-10.1 10.1z" fill="currentColor" />
+      <path d="M9.3 16.8L4.6 12.1l1.7-1.7 3 3 8.4-8.4 1.7 1.7-10.1 10.1z" fill="currentColor" transform="translate(0 1.1)" />
     </svg>
   );
 }
@@ -214,6 +220,7 @@ export function SearchFillIcon({ className = "h-5 w-5" }: IconProps) {
         fill="currentColor"
         fillRule="evenodd"
         d="M10.4 3.6a6.8 6.8 0 014.86 11.58l4.16 4.16a1.35 1.35 0 01-1.91 1.91l-4.16-4.16A6.8 6.8 0 1110.4 3.6zm0 2.5a4.3 4.3 0 100 8.6 4.3 4.3 0 000-8.6z"
+        transform="translate(0 -0.62)"
       />
     </svg>
   );

@@ -51,7 +51,7 @@ function HomePane() {
                 </span>
               </div>
               <div className="px-4 pt-3">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center justify-between gap-3">
                   <h3 className="text-[22px] font-bold">{project.title}</h3>
                   <span className="flex gap-2">
                     <RoundIcon
@@ -243,7 +243,7 @@ function HomePane() {
                   aria-expanded={open}
                 >
                   {item.q}
-                  <span>{open ? <MinusIcon className="h-4 w-4" /> : <PlusIcon className="h-4 w-4" />}</span>
+                  {open ? <MinusIcon className="h-4 w-4 shrink-0" /> : <PlusIcon className="h-4 w-4 shrink-0" />}
                 </button>
                 {open ? <p className="px-4 pb-3 text-[13px] leading-relaxed text-[#666]">{item.a}</p> : null}
               </div>
@@ -323,12 +323,12 @@ function MarketPane() {
 function SectionTitle({ title, onMore, icon }: { title: string; onMore?: () => void; icon?: ReactNode }) {
   return (
     <div className="flex items-center justify-between px-4">
-      <h2 className="text-[20px] font-bold">
-        {icon ? <span className="mr-1">{icon}</span> : null}
-        {title}
+      <h2 className="inline-flex items-center gap-1.5 text-[20px] font-bold">
+        {icon}
+        <span>{title}</span>
       </h2>
       {onMore ? (
-        <button type="button" aria-label={`${title} 더 보기`} onClick={onMore}>
+        <button type="button" aria-label={`${title} 더 보기`} onClick={onMore} className="grid h-6 w-6 place-items-center leading-none">
           <ChevronRight />
         </button>
       ) : null}
