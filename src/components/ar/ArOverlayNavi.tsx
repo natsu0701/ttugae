@@ -143,6 +143,37 @@ function prepareOverlayVideo(video: HTMLVideoElement) {
   video.autoplay = true;
 }
 
+function syncOverlayCanvasSize(canvas: HTMLCanvasElement) {
+  const host = canvas.parentElement;
+  const cssW = Math.max(1, host?.clientWidth || window.innerWidth);
+  const cssH = Math.max(1, host?.clientHeight || window.innerHeight);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const nextW = Math.floor(cssW * dpr);
+  const nextH = Math.floor(cssH * dpr);
+  if (canvas.width !== nextW || canvas.height !== nextH) {
+    canvas.width = nextW;
+    canvas.height = nextH;
+  }
+}
+
+function drawCoverBottom(
+  ctx: CanvasRenderingContext2D,
+  source: CanvasImageSource,
+  srcW: number,
+  srcH: number,
+) {
+  const dstW = ctx.canvas.width;
+  const dstH = ctx.canvas.height;
+  if (srcW <= 0 || srcH <= 0 || dstW <= 0 || dstH <= 0) return;
+  const scale = Math.max(dstW / srcW, dstH / srcH);
+  const drawW = srcW * scale;
+  const drawH = srcH * scale;
+  const dx = (dstW - drawW) / 2;
+  const dy = dstH - drawH;
+  ctx.clearRect(0, 0, dstW, dstH);
+  ctx.drawImage(source, 0, 0, srcW, srcH, dx, dy, drawW, drawH);
+}
+
 function fullscreenElement(): Element | null {
   const doc = document as FsDocument;
   return document.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
@@ -594,12 +625,8 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       const width = video.videoWidth;
       const height = video.videoHeight;
       if (width > 0 && height > 0) {
-        if (canvas.width !== width || canvas.height !== height) {
-          canvas.width = width;
-          canvas.height = height;
-        }
-        ctx.clearRect(0, 0, width, height);
-        ctx.drawImage(video, 0, 0, width, height);
+        syncOverlayCanvasSize(canvas);
+        drawCoverBottom(ctx, video, width, height);
       }
       const time = video.currentTime;
       const max = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : durationRef.current;
