@@ -143,14 +143,14 @@ function HomePane() {
         </div>
       </section>
 
-      <section className="mt-8 overflow-hidden bg-[#f7b7b6] px-4 py-5 text-white">
+      <section className="mt-8 overflow-hidden bg-[#f7b7b6] px-4 py-5 text-ink">
         <p className="text-[20px] font-bold leading-snug">뜨개 고수와 함께 도안을 제작해요!</p>
-        <p className="mt-1 text-[13px] text-white/90">지금 바로 체험해보세요!</p>
-        <button type="button" onClick={() => push({ name: "editor" })} className="mt-3 h-10 rounded-full bg-ink px-4 text-[13px] font-semibold">
+        <p className="mt-1 text-[13px]">지금 바로 체험해보세요!</p>
+        <button type="button" onClick={() => push({ name: "editor" })} className="mt-3 h-10 rounded-full bg-ink px-4 text-[13px] font-semibold text-white">
           뜨개에디터 Web ›
         </button>
-        <div className="mt-2 flex justify-end">
-          <Mascot className="h-20 w-20" mood="knit" />
+        <div className="mt-1 flex justify-end">
+          <Mascot className="h-36 w-36" mood="knit" />
         </div>
       </section>
 
