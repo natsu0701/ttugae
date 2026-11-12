@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useModalKeyboard } from "../../hooks/useModalKeyboard.ts";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
+import Select from "../ui/Select.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
-import { softShadow } from "../ui/tabButtonStyles.ts";
+import { editorSectionTitle, softShadow } from "../ui/tabButtonStyles.ts";
 import {
   CAST_ON_PARTS,
   CHART_PART_LABELS,
@@ -163,19 +164,14 @@ export default function CastOnModal({
                   <label className="mb-1.5 block font-sans text-sm font-normal text-gray-600">
                     {t("editor.castOn.partLabel")}
                   </label>
-                  <select
+                  <Select
                     value={targetPart}
-                    onChange={(e) =>
-                      setTargetPart(e.target.value as ChartTargetPart)
-                    }
-                    className="w-full rounded-2xl bg-white px-3 py-2 font-sans text-base text-gray-800 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
-                  >
-                    {PARTS.map((part) => (
-                      <option key={part} value={part}>
-                        {chartPartLabel(t, part, CHART_PART_LABELS[part])}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(next) => setTargetPart(next as ChartTargetPart)}
+                    options={PARTS.map((part) => ({
+                      value: part,
+                      label: chartPartLabel(t, part, CHART_PART_LABELS[part]),
+                    }))}
+                  />
                 </div>
               </div>
             )}
@@ -263,7 +259,7 @@ export default function CastOnModal({
             <>
             {!isAdd ? (
             <div className="mt-5 rounded-2xl bg-stone-100/80 p-4">
-              <p className="font-sans text-sm font-normal uppercase tracking-wide text-gray-500">
+              <p className={editorSectionTitle}>
                 {t("editor.castOn.needleTitle")}
               </p>
               <p className="mt-1 font-seoyun text-sm font-normal text-gray-500">

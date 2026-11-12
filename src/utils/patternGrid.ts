@@ -177,6 +177,30 @@ export function emptyGrid(rows: number, cols: number): EditorCell[][] {
   );
 }
 
+/** 새 도안 시작 색 — 흰 칸과 겹치지 않게 팔레트에서 고른다 */
+export function randomCheckerStartColor(rng: () => number = Math.random): string {
+  const ids = BASE_EDITOR_YARNS.filter((yarn) => yarn.id !== "white").map(
+    (yarn) => yarn.id,
+  );
+  return ids[Math.floor(rng() * ids.length)] ?? "coral";
+}
+
+/** 격자 채우기(체크무늬)로 채운 새 도안 */
+export function createCheckerStartGrid(
+  rows: number,
+  cols: number,
+  colorId: string,
+  stitchId = "knit",
+): EditorCell[][] {
+  return Array.from({ length: rows }, (_, r) =>
+    Array.from({ length: cols }, (_, c) =>
+      ((r + c) & 1) === 0
+        ? { colorId, stitchId }
+        : { colorId: "white", stitchId: "empty" },
+    ),
+  );
+}
+
 export function resizeGrid(
   prev: EditorCell[][],
   newRows: number,

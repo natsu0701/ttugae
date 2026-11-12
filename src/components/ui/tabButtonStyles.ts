@@ -8,6 +8,9 @@ export const editorChromeTone =
 export const editorPanel =
   "rounded-2xl border border-stone-200 bg-white";
 
+/** 도안 그리기 기능 제목 — 완성작 미리보기와 같은 굵기·크기 */
+export const editorSectionTitle = "font-sans text-base font-bold text-stone-900";
+
 export const editorChromeBtn = `rounded-xl ${editorChromeTone}`;
 
 export const editorChromeBtnActive = "rounded-xl border border-coral bg-coral text-white";

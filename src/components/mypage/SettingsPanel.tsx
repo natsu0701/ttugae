@@ -1,6 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
+import Select from "../ui/Select.tsx";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import { softShadow } from "../ui/tabButtonStyles.ts";
 import type { AppLanguage } from "../../i18n.ts";
@@ -212,18 +213,16 @@ export default function SettingsPanel() {
           <p className="mt-2 font-seoyun text-sm font-normal text-gray-500">
             {t("mypage.settings.appliedHint")}
           </p>
-          <select
+          <Select
             id="language-select"
+            className="mt-4"
             value={current}
-            onChange={(e) => handleLanguageChange(e.target.value as AppLanguage)}
-            className={`mt-4 w-full rounded-xl bg-gray-50 px-4 py-3 font-sans text-base font-normal text-gray-800 outline-none transition-colors focus:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral ${softShadow}`}
-          >
-            {LANG_OPTIONS.map((lang) => (
-              <option key={lang.id} value={lang.id}>
-                {t(lang.labelKey)}
-              </option>
-            ))}
-          </select>
+            onChange={(next) => handleLanguageChange(next as AppLanguage)}
+            options={LANG_OPTIONS.map((lang) => ({
+              value: lang.id,
+              label: t(lang.labelKey),
+            }))}
+          />
         </div>
       </SettingsCard>
 

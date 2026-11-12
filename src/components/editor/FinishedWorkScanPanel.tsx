@@ -5,6 +5,7 @@ import { generatePatternFromPhoto } from "../../utils/scanFinishedWork.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { EditorYarn } from "../../types/editorYarn.ts";
 import { iconTip } from "../../utils/iconTip.ts";
+import { editorSectionTitle } from "../ui/tabButtonStyles.ts";
 
 type FinishedWorkScanPanelProps = {
   onApply: (nextGrid: EditorCell[][], yarns: EditorYarn[]) => void;
@@ -40,7 +41,7 @@ export default function FinishedWorkScanPanel({ onApply }: FinishedWorkScanPanel
 
   return (
     <div>
-      <p className="mb-1 font-sans text-base font-bold text-stone-900">{t("editor.scanTitle")}</p>
+      <p className={`mb-1 ${editorSectionTitle}`}>{t("editor.scanTitle")}</p>
       <p className="mb-3 font-seoyun text-sm font-normal leading-snug text-stone-500">
         {t("editor.scanHint")}
       </p>

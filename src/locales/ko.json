@@ -445,6 +445,7 @@
     "gaugeCalcTitle": "게이지 계산",
     "gaugeApplySize": "이 코·단으로 맞추기",
     "yarnColors": "실 색상",
+    "yarnSelect": "실 선택",
     "addYarn": "+ 실 추가하기",
     "usedColors": "Selection Colors",
     "usedColorsHint": "칩을 눌러 그 색으로 칠해진 칸을 한꺼번에 바꿔요",
@@ -489,7 +490,7 @@
     "toolHints": {
       "paint": "셀을 클릭하거나 드래그하여 기호/색을 찍으세요",
       "eraser": "셀을 클릭하거나 드래그하여 지우세요",
-      "checker": "바둑판처럼 한 칸 건너뛰며 교차로 채워집니다",
+      "checker": "드래그한 범위가 바둑판처럼 한 칸 건너 채워집니다",
       "select": "드래그로 범위를 지정한 뒤 ‘선택 영역 채우기’를 누르세요",
       "pan": "드래그하거나 Space를 누른 채 드래그하면 캔버스를 이동합니다"
     },
@@ -501,6 +502,12 @@
     "needleShort": "바늘",
     "yarnShort": "실",
     "yarnUnset": "미지정",
+    "headerNeedlePlaceholder": "바늘을 고르거나 직접 입력하세요",
+    "headerYarnPlaceholder": "실을 고르거나 직접 입력하세요",
+    "headerNeedleAria": "바늘 바꾸기",
+    "headerYarnAria": "실 바꾸기",
+    "headerSpecPick": "목록에서 고르기",
+    "headerSpecEmpty": "맞는 항목이 없어요. 위에 직접 입력해 주세요.",
     "stitches": {
       "empty": "코 없음",
       "knit": "겉뜨기",
@@ -635,6 +642,7 @@
     "paletteNordic": "노르딕 자카드",
     "paletteForest": "클래식 빈티지 포레스트",
     "pausePreview": "미리보기 일시 정지",
+    "previewUnavailable": "3D 미리보기를 불러오지 못했어요. 도안 그리기는 그대로 사용할 수 있어요.",
     "loadingItem": "뜨니가 실시간 3D {{item}} 준비하고 있어요...",
     "itemAccSweater": "스웨터를",
     "itemAccVest": "조끼를",

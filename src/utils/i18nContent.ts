@@ -82,8 +82,14 @@ export function formatNeedleDetailI18n(t: TFunction, detail?: string) {
 
 export function formatNeedleBadgeI18n(
   t: TFunction,
-  spec: { needleType: "knitting" | "crochet"; needleSize: string; needleDetail?: string },
+  spec: {
+    needleType: "knitting" | "crochet";
+    needleSize: string;
+    needleDetail?: string;
+    customLabel?: string;
+  },
 ) {
+  if (spec.customLabel?.trim()) return spec.customLabel.trim();
   const detail = formatNeedleDetailI18n(t, spec.needleDetail);
   const base = `${formatNeedleTypeI18n(t, spec.needleType)} ${formatNeedleSizeI18n(t, spec.needleSize)}`;
   return detail ? `${base} · ${detail}` : base;

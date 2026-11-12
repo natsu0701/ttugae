@@ -59,7 +59,7 @@ function CanvasToolDock({
   const { t } = useTranslation();
 
   return (
-    <div className="flex w-full shrink-0 flex-col items-center gap-2 px-4 pb-4 pt-2">
+    <div className="flex w-full shrink-0 flex-col items-center gap-3 px-4 pb-5 pt-3">
       {hintOpen ? (
         <div
           className="flex max-w-[min(100%,28rem)] items-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 py-2 shadow-sm"
@@ -79,8 +79,8 @@ function CanvasToolDock({
         </div>
       ) : null}
 
-      <div className="flex items-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 py-2 shadow-sm">
-        <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-3 rounded-2xl border border-stone-200 bg-white px-3.5 py-2.5 shadow-sm">
+        <div className="flex items-center gap-2.5">
           {TOOLS.map((toolItem) => {
             const ToolIcon = toolItem.Icon;
             const isActive = tool === toolItem.id;

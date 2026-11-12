@@ -1,11 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
+import { editorChromeBtn, editorChromeBtnActive, editorSectionTitle } from "../ui/tabButtonStyles.ts";
 
 /** 전문 공방 매칭 내추럴 컬러 팔레트 (베이스 / 기호·포인트1 / 포인트2) */
 export type WorkshopPalette = {
   id: string;
   name: string;
-  sub: string;
   colors: [string, string, string];
 };
 
@@ -13,19 +12,16 @@ const WORKSHOP_PALETTES: WorkshopPalette[] = [
   {
     id: "cherry-blossom",
     name: "체리 버블검",
-    sub: "Cherry Blossom",
     colors: ["#F7F5F0", "#FC5F53", "#88C399"],
   },
   {
     id: "nordic-jacquard",
     name: "노르딕 자카드",
-    sub: "Nordic Jacquard",
     colors: ["#E8DDD0", "#5C4A42", "#F4A4B8"],
   },
   {
     id: "classic-forest",
     name: "클래식 빈티지 포레스트",
-    sub: "Classic Forest",
     colors: ["#FFFBF7", "#3A5F43", "#D94B40"],
   },
 ];
@@ -48,12 +44,12 @@ export default function WorkshopPalettePanel({
     return fallback;
   };
   return (
-    <div className="mt-4">
-      <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+    <div>
+      <p className={`mb-3 ${editorSectionTitle}`}>
         {t("editor.workshopTitle")}
       </p>
 
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2.5">
         {WORKSHOP_PALETTES.map((palette) => {
           const active = activePaletteId === palette.id;
           return (
@@ -66,17 +62,8 @@ export default function WorkshopPalettePanel({
                 active ? editorChromeBtnActive : editorChromeBtn
               }`}
             >
-              <span className="min-w-0">
-                <span className="block truncate font-sans text-sm font-normal text-inherit">
-                  {paletteTitle(palette.id, palette.name)}
-                </span>
-                <span
-                  className={`block truncate font-sans text-xs font-normal uppercase tracking-wide ${
-                    active ? "text-white/80" : "text-stone-500"
-                  }`}
-                >
-                  {palette.sub}
-                </span>
+              <span className="min-w-0 truncate font-sans text-sm font-normal text-inherit">
+                {paletteTitle(palette.id, palette.name)}
               </span>
 
               <span className="flex shrink-0 -space-x-1.5">

@@ -2,6 +2,7 @@ import { memo, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useModalKeyboard } from "../../hooks/useModalKeyboard.ts";
 import { CloseFillIcon } from "../icons/FillIcons.tsx";
+import Select from "./Select.tsx";
 import SmoothInput from "./SmoothInput.tsx";
 import type { PatternCollection } from "../../utils/collectionStorage.ts";
 import { UNFILED_COLLECTION_ID } from "../../utils/collectionStorage.ts";
@@ -112,18 +113,18 @@ function GiftPackagingAnimation({
             />
             <label className="block font-sans text-base text-stone-600">
               {t("gift.collection")}
-              <select
-                className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2 text-base text-stone-800"
+              <Select
+                className="mt-1"
                 value={collectionId}
-                onChange={(e) => onCollectionChange(e.target.value)}
-              >
-                <option value={UNFILED_COLLECTION_ID}>{t("mypage.patterns.unfiled")}</option>
-                {collections.map((folder) => (
-                  <option key={folder.id} value={folder.id}>
-                    {folder.name}
-                  </option>
-                ))}
-              </select>
+                onChange={onCollectionChange}
+                options={[
+                  { value: UNFILED_COLLECTION_ID, label: t("mypage.patterns.unfiled") },
+                  ...collections.map((folder) => ({
+                    value: folder.id,
+                    label: folder.name,
+                  })),
+                ]}
+              />
             </label>
           </div>
 

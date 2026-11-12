@@ -45,6 +45,7 @@ import {
   type UserAccount,
 } from "./utils/accountStorage.ts";
 import { currentUserAvatar } from "./utils/identity.ts";
+import { useIdleHome } from "./hooks/useIdleHome.ts";
 
 const PatternEditor = lazy(() => import("./PatternEditor.tsx"));
 const MyPage = lazy(() => import("./MyPage.tsx"));
@@ -104,10 +105,11 @@ function AppRoutes() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activePatternId, setActivePatternId] = useState<string | null>(null);
   const [incomingShare, setIncomingShare] = useState<StoredPattern | null>(null);
+  const [freshEditor, setFreshEditor] = useState(false);
   const [patterns, setPatterns] = useState<StoredPattern[]>(() => loadStoredPatterns());
   const [accounts, setAccounts] = useState<UserAccount[]>(() => loadAccounts());
   const [activeAccount, setActiveAccount] = useState(() => loadActiveAccount());
-  const { pending, resolveLeave } = useUnsavedChanges();
+  const { pending, resolveLeave, silentLeave } = useUnsavedChanges();
 
   const persistPatterns = useCallback((next: StoredPattern[]) => {
     saveStoredPatterns(next);
@@ -138,6 +140,21 @@ function AppRoutes() {
     [],
   );
 
+  const goHomeIdle = useCallback(() => {
+    setShowLogin(false);
+    setEditorEntryOpen(false);
+    setToastMessage(null);
+    silentLeave(() => {
+      setIncomingShare(null);
+      setActivePatternId(null);
+      setFreshEditor(false);
+      if (viewFromPath(window.location.pathname) === "landing") return;
+      navigate("landing", "/", true);
+    });
+  }, [navigate, silentLeave]);
+
+  useIdleHome(goHomeIdle);
+
   const rememberReturn = useCallback(() => {
     setNavReturn({
       view,
@@ -146,13 +163,24 @@ function AppRoutes() {
   }, [view]);
 
   const openEditor = useCallback(
-    (options?: { patternId?: string | null; share?: StoredPattern | null }) => {
+    (options?: {
+      patternId?: string | null;
+      share?: StoredPattern | null;
+      fresh?: boolean;
+    }) => {
       rememberReturn();
-      if (options && "patternId" in options) {
-        setActivePatternId(options.patternId ?? null);
-      }
-      if (options && "share" in options) {
-        setIncomingShare(options.share ?? null);
+      if (options?.fresh) {
+        setActivePatternId(null);
+        setIncomingShare(null);
+        setFreshEditor(true);
+      } else {
+        setFreshEditor(false);
+        if (options && "patternId" in options) {
+          setActivePatternId(options.patternId ?? null);
+        }
+        if (options && "share" in options) {
+          setIncomingShare(options.share ?? null);
+        }
       }
       navigate("editor");
     },
@@ -162,6 +190,7 @@ function AppRoutes() {
   const leaveEditor = useCallback(() => {
     setIncomingShare(null);
     setActivePatternId(null);
+    setFreshEditor(false);
     goBack(isLoggedIn ? "/mypage" : "/");
   }, [isLoggedIn]);
 
@@ -408,7 +437,9 @@ function AppRoutes() {
 
   if (view === "editor") {
     const fromWorkspace =
-      incomingShare || activePatternId ? null : readFreshWorkspaceGrid();
+      incomingShare || activePatternId || freshEditor
+        ? null
+        : readFreshWorkspaceGrid();
     const initial =
       incomingShare ??
       (fromWorkspace ? workspaceGridToStoredPattern(fromWorkspace) : null) ??
@@ -501,7 +532,9 @@ function AppRoutes() {
                 setShowLogin(true);
               }}
               onDeleteAccount={handleDeleteAccount}
-              onCreateNew={() => openEditor({ patternId: null, share: null })}
+              onCreateNew={() =>
+                openEditor({ patternId: null, share: null, fresh: true })
+              }
               onOpenPattern={(id) => openEditor({ patternId: id, share: null })}
               onOpenAr={openAr}
               onDeletePattern={(id) => {
@@ -555,7 +588,7 @@ function AppRoutes() {
         onClose={() => setEditorEntryOpen(false)}
         onCreateNew={() => {
           setEditorEntryOpen(false);
-          openEditor({ patternId: null, share: null });
+          openEditor({ patternId: null, share: null, fresh: true });
         }}
         onLoadExisting={(id) => {
           setEditorEntryOpen(false);

@@ -1,12 +1,42 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Component,
+  lazy,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ErrorInfo,
+  type ReactNode,
+} from "react";
 import { useTranslation } from "react-i18next";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { KnittingChart } from "../../types/knittingProject.ts";
 import { inferKnitItemType, type KnitItemType } from "../../utils/knitItemType.ts";
-import { editorChromeTone } from "../ui/tabButtonStyles.ts";
+import { editorChromeTone, editorSectionTitle } from "../ui/tabButtonStyles.ts";
 import { SpinnerFillIcon } from "../icons/FillIcons.tsx";
 
 const Knitting3DPreview = lazy(() => import("./Knitting3DPreview.tsx"));
+
+class PreviewErrorBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn("3D preview failed", error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.failed) return this.props.fallback;
+    return this.props.children;
+  }
+}
 
 type AiPreviewNavigatorProps = {
   title?: string;
@@ -50,11 +80,11 @@ export default function AiPreviewNavigator({
 
   return (
     <div>
-      <p className="mb-2 font-sans text-base font-bold text-stone-900">
+      <p className={`mb-2 ${editorSectionTitle}`}>
         {t("editor.preview3d")}
       </p>
 
-      <div className="mb-3 flex flex-wrap gap-1">
+      <div className="mb-3 flex flex-wrap gap-2">
         {ITEM_OPTIONS.map((item) => {
           const active = itemType === item.id;
           return (
@@ -73,24 +103,34 @@ export default function AiPreviewNavigator({
       </div>
 
       <div className="relative w-full overflow-hidden rounded-lg">
-        <Suspense
+        <PreviewErrorBoundary
           fallback={
-            <div className="flex h-[300px] min-h-[220px] items-center justify-center bg-stone-100">
-              <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
+            <div className="flex h-[300px] min-h-[220px] items-center justify-center bg-stone-100 px-6 text-center">
+              <p className="font-sans text-sm font-normal leading-relaxed text-stone-500">
+                {t("editor.previewUnavailable")}
+              </p>
             </div>
           }
         >
-          <Knitting3DPreview
-            grid={frontGrid ?? grid}
-            gridData={frontGrid ?? grid}
-            backGrid={backGrid}
-            facesIndependent={facesIndependent}
-            charts={charts}
-            colorMap={colorMap}
-            stitchSymbols={stitchSymbols}
-            itemType={itemType}
-          />
-        </Suspense>
+          <Suspense
+            fallback={
+              <div className="flex h-[300px] min-h-[220px] items-center justify-center bg-stone-100">
+                <SpinnerFillIcon className="h-6 w-6 animate-spin text-coral" />
+              </div>
+            }
+          >
+            <Knitting3DPreview
+              grid={frontGrid ?? grid}
+              gridData={frontGrid ?? grid}
+              backGrid={backGrid}
+              facesIndependent={facesIndependent}
+              charts={charts}
+              colorMap={colorMap}
+              stitchSymbols={stitchSymbols}
+              itemType={itemType}
+            />
+          </Suspense>
+        </PreviewErrorBoundary>
       </div>
       {facesIndependent ? (
         <p className="mt-2 font-seoyun text-sm font-normal leading-snug text-stone-500">

@@ -1,6 +1,7 @@
 import { memo, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import SmoothInput from "../ui/SmoothInput.tsx";
+import { editorSectionTitle } from "../ui/tabButtonStyles.ts";
 import type { GaugeProfile } from "../../utils/personalizationStorage.ts";
 
 type GaugeCalculatorProps = {
@@ -48,7 +49,7 @@ function GaugeCalculator({
   return (
     <div className={compact ? "" : "rounded-xl border border-stone-200 bg-white p-6"}>
       {compact ? (
-        <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+        <p className={`mb-3 ${editorSectionTitle}`}>
           {t("editor.gaugeCalcTitle")}
         </p>
       ) : (
@@ -57,7 +58,7 @@ function GaugeCalculator({
           <p className="mt-1 font-seoyun text-base text-stone-500">{t("mypage.profile.gaugeHint")}</p>
         </>
       )}
-      <div className={compact ? "grid grid-cols-2 gap-2" : "mt-5 grid grid-cols-2 gap-3"}>
+      <div className={compact ? "grid grid-cols-2 gap-2.5" : "mt-5 grid grid-cols-2 gap-3"}>
         <SmoothInput
           label={t("mypage.profile.gaugeBeforeSts")}
           value={gauge.beforeSts}
@@ -87,7 +88,7 @@ function GaugeCalculator({
           className={inputClass}
         />
       </div>
-      <div className={compact ? "mt-2" : "mt-5"}>
+      <div className={compact ? "mt-3" : "mt-5"}>
         <SmoothInput
           label={t("mypage.gauge.targetCm")}
           value={targetCm}
@@ -96,7 +97,7 @@ function GaugeCalculator({
           className={inputClass}
         />
       </div>
-      <div className={compact ? "mt-2 rounded-lg bg-stone-50 p-3" : "mt-5 rounded-lg bg-stone-50 p-4"}>
+      <div className={compact ? "mt-3 rounded-lg bg-stone-50 p-3" : "mt-5 rounded-lg bg-stone-50 p-4"}>
         <p className="font-sans text-base font-bold text-stone-800">{t("mypage.gauge.resultTitle")}</p>
         <p className={compact ? "mt-1 font-sans text-sm text-stone-600" : "mt-2 text-body text-stone-600"}>
           {t("mypage.gauge.resultLine", { sts: recSts, rows: recRows, cm: target })}

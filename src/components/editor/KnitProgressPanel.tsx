@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronFillIcon } from "../icons/FillIcons.tsx";
-import { editorChromeBtn, editorChromeBtnActive } from "../ui/tabButtonStyles.ts";
+import { editorChromeBtn, editorChromeBtnActive, editorSectionTitle } from "../ui/tabButtonStyles.ts";
 import { iconTip } from "../../utils/iconTip.ts";
 
 type KnitProgressPanelProps = {
@@ -27,13 +27,13 @@ function KnitProgressPanel({
 
   return (
     <div>
-      <p className="mb-2 font-sans text-sm font-normal uppercase tracking-wide text-stone-500">
+      <p className={`mb-3 ${editorSectionTitle}`}>
         {t("editor.progress.title")}
       </p>
       <button
         type="button"
         onClick={onToggle}
-        className={`mb-2 w-full px-3 py-2 font-sans text-sm font-medium ${
+        className={`mb-3 w-full px-3 py-2.5 font-sans text-sm font-medium ${
           enabled ? editorChromeBtnActive : editorChromeBtn
         }`}
         aria-pressed={enabled}
@@ -41,14 +41,14 @@ function KnitProgressPanel({
         {enabled ? t("editor.progress.on") : t("editor.progress.start")}
       </button>
       {enabled ? (
-        <div className="space-y-2 rounded-xl border border-amber-200 bg-amber-50 p-3">
+        <div className="space-y-3 rounded-xl border border-stone-200 bg-white p-3">
           <p className="text-center font-sans text-sm font-semibold text-stone-800">
             {t("editor.progress.current")}{" "}
             <span className="text-coral">
               {t("editor.progress.currentOf", { current, total })}
             </span>
           </p>
-          <div className="flex gap-1.5">
+          <div className="flex gap-2.5">
             <button
               type="button"
               onClick={onPrev}

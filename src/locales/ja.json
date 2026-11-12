@@ -446,6 +446,7 @@
     "gaugeCalcTitle": "ゲージ計算",
     "gaugeApplySize": "この目数に合わせる",
     "yarnColors": "毛糸の色",
+    "yarnSelect": "糸",
     "addYarn": "+ 毛糸を追加",
     "usedColors": "Selection Colors",
     "usedColorsHint": "チップを押すとその色で塗ったマスをまとめて変更できます",
@@ -490,7 +491,7 @@
     "toolHints": {
       "paint": "セルをクリックまたはドラッグして記号・色を置きます",
       "eraser": "クリックまたはドラッグで消去します",
-      "checker": "チェッカーボード状に交互に塗りつぶします",
+      "checker": "ドラッグした範囲を市松模様で塗りつぶします",
       "select": "ドラッグで範囲を指定し、「選択範囲を塗りつぶす」を押します",
       "pan": "ドラッグ、または Space を押しながらドラッグしてキャンバスを動かします"
     },
@@ -502,6 +503,12 @@
     "needleShort": "針",
     "yarnShort": "糸",
     "yarnUnset": "未設定",
+    "headerNeedlePlaceholder": "針を選ぶか、直接入力してください",
+    "headerYarnPlaceholder": "糸を選ぶか、直接入力してください",
+    "headerNeedleAria": "針を変更",
+    "headerYarnAria": "糸を変更",
+    "headerSpecPick": "リストから選ぶ",
+    "headerSpecEmpty": "一致する項目がありません。上に直接入力してください。",
     "stitches": {
       "empty": "目なし",
       "knit": "表目",
@@ -636,6 +643,7 @@
     "paletteNordic": "ノルディックジャカード",
     "paletteForest": "クラシックヴィンテージフォレスト",
     "pausePreview": "プレビュー一時停止",
+    "previewUnavailable": "3Dプレビューを読み込めませんでした。チャート編集はそのまま使えます。",
     "loadingItem": "トゥニがリアルタイム3D {{item}} を準備しています…",
     "itemAccSweater": "セーターを",
     "itemAccVest": "ベストを",
