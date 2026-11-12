@@ -8,6 +8,27 @@ export function HomeScreen() {
   return homeTab === "market" ? <MarketPane /> : <HomePane />;
 }
 
+function RowProgress({ value }: { value: number }) {
+  const progress = Math.min(100, Math.max(0, value));
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setWidth(progress));
+    return () => window.cancelAnimationFrame(frame);
+  }, [progress]);
+  return (
+    <div className="mt-1">
+      <div className="flex items-center justify-between text-[13px]">
+        <span className="font-semibold">단</span>
+        <span className="font-bold text-blush">{progress}%</span>
+      </div>
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#f3f3f3]" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label="단 진행도">
+        <div className="h-full rounded-full bg-blush transition-[width] duration-500 ease-out" style={{ width: `${width}%` }} />
+      </div>
+      <p className="mt-2 text-[12px] text-[#888]">단 {progress}% 완료</p>
+    </div>
+  );
+}
+
 function HomePane() {
   const { data, push, toggleTimer, toggleLike, setHomeTab } = useApp();
   const project = data.projects[0];
@@ -47,7 +68,7 @@ function HomePane() {
                 <img src={project.image} alt="" className="h-52 w-full object-cover" />
                 <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[12px] font-semibold">진행중</span>
                 <span className="absolute bottom-3 left-3 rounded-full bg-blush px-2 py-0.5 text-[12px] font-bold text-white">
-                  {project.progress}%
+                  단 {project.progress}%
                 </span>
               </div>
               <div className="px-4 pt-3">
@@ -89,18 +110,16 @@ function HomePane() {
                 <NaviIcon />
                 뜨개내비
               </button>
-              <button type="button" aria-label="프로젝트 더 보기" onClick={() => setExpanded((value) => !value)} className="mx-auto mt-2 grid h-8 w-8 place-items-center text-[#bbb]">
+              <button
+                type="button"
+                aria-label={expanded ? "진행도 접기" : "진행도 펼치기"}
+                aria-expanded={expanded}
+                onClick={() => setExpanded((value) => !value)}
+                className="mx-auto mt-2 grid h-8 w-8 place-items-center text-[#bbb]"
+              >
                 <ChevronDown up={expanded} />
               </button>
-              {expanded ? (
-                <ul className="mt-1 space-y-1 text-[13px] text-[#666]">
-                  {project.parts.map((part) => (
-                    <li key={part.id}>
-                      {part.name} · {part.done ? "완료" : `${part.count ?? 0}단`} · {part.ago}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+              {expanded ? <RowProgress value={project.progress} /> : null}
             </div>
           </article>
         ) : null}
