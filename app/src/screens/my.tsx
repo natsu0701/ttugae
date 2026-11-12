@@ -3,7 +3,7 @@ import { PRODUCTS } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { ToolKind, UnitSystem } from "../types.ts";
 import { BagFillIcon, BellFillIcon, BookmarkFillIcon, ChatFillIcon, CheckFillIcon, ClockFillIcon, CommunityFillIcon, FileTextFillIcon, HeartFillIcon, PencilFillIcon, SparkleFillIcon } from "../icons/webFill.tsx";
-import { ChevronRight, GearIcon, HeartIcon, Mascot, cx } from "../ui.tsx";
+import { ChevronRight, DragScroll, GearIcon, HeartIcon, Mascot, cx } from "../ui.tsx";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 const MARKS: Record<number, "heart" | "star" | "check"> = {
@@ -158,7 +158,7 @@ export function MyScreen() {
             <ChevronRight />
           </button>
         </div>
-        <ul className="mt-2 flex gap-2 overflow-x-auto px-4 pb-1">
+        <DragScroll as="ul" className="mt-2 flex gap-2 overflow-x-auto px-4 pb-1">
           {PRODUCTS.map((item) => (
             <li key={item.id} className="w-28 shrink-0">
               <button type="button" onClick={() => push({ name: "product", id: item.id })} className="w-full text-left">
@@ -168,7 +168,7 @@ export function MyScreen() {
               </button>
             </li>
           ))}
-        </ul>
+        </DragScroll>
       </section>
 
       <section className="mx-4 mt-4 rounded-lg bg-[#ffe8ea] px-3 py-4">

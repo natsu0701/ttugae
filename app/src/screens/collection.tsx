@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { media } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { ChevronRight, FilterIcon, PencilIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
+import { ChevronRight, DragScroll, FilterIcon, PencilIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
 
 type Fiber = "코튼" | "린넨" | "울" | "폴리에스터" | "나일론";
 
@@ -280,7 +280,7 @@ function CollectionBrowse() {
 
       <section className="px-4 pt-5">
         <h2 className="text-[16px] font-bold">카테고리</h2>
-        <ul className="mt-3 flex gap-3 overflow-x-auto pb-1">
+        <DragScroll as="ul" className="mt-3 flex gap-3 overflow-x-auto pb-1">
           {FIBERS.map((item) => {
             const on = fiber === item.id;
             return (
@@ -292,7 +292,7 @@ function CollectionBrowse() {
               </li>
             );
           })}
-        </ul>
+        </DragScroll>
       </section>
 
       {recent ? (
@@ -345,7 +345,7 @@ function CollectionBrowse() {
             <ChevronRight />
           </div>
           <p className="px-4 text-[12px] text-[#999]">지금 주목받고 있는 도안을 살펴보세요.</p>
-          <ul className="mt-3 flex gap-3 overflow-x-auto px-4 pb-2">
+          <DragScroll as="ul" className="mt-3 flex gap-3 overflow-x-auto px-4 pb-2">
             {popular.map((item) => (
               <li key={item.id} className="w-36 shrink-0">
                 <button type="button" onClick={() => push({ name: "collection", id: item.id })} className="w-full text-left">
@@ -355,7 +355,7 @@ function CollectionBrowse() {
                 </button>
               </li>
             ))}
-          </ul>
+          </DragScroll>
         </section>
       ) : null}
     </div>
@@ -397,7 +397,7 @@ function PatternDetail({ pattern }: { pattern: PatternCard }) {
         </div>
       ) : null}
 
-      <ul className="mt-5 flex gap-2 overflow-x-auto px-4 pb-1">
+      <DragScroll as="ul" className="mt-5 flex gap-2 overflow-x-auto px-4 pb-1">
         {pattern.parts.map((part) => (
           <li key={part.name} className="w-24 shrink-0">
             <p className="text-[14px] font-bold">{part.name}</p>
@@ -407,20 +407,20 @@ function PatternDetail({ pattern }: { pattern: PatternCard }) {
         <li className="grid w-8 shrink-0 place-items-center text-[#ccc]">
           <ChevronRight />
         </li>
-      </ul>
+      </DragScroll>
 
       <section className="px-4 pt-6">
         <h2 className="text-[18px] font-bold">도안 설명</h2>
         <p className="mt-2 text-[14px] leading-relaxed text-[#333]">{pattern.description}</p>
       </section>
 
-      <ul className="mt-4 flex gap-2 overflow-x-auto px-4">
+      <DragScroll as="ul" className="mt-4 flex gap-2 overflow-x-auto px-4">
         {pattern.photos.map((photo) => (
           <li key={photo} className="w-40 shrink-0">
             <img src={photo} alt="" className="aspect-[4/3] w-full rounded-lg object-cover" />
           </li>
         ))}
-      </ul>
+      </DragScroll>
 
       <section className="mt-6 flex items-center justify-between px-4">
         <h2 className="text-[16px] font-bold">뜨개 풀착장 입기</h2>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type InputHTMLAttributes, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type InputHTMLAttributes, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { figmaIcons, type FigmaIconName } from "./icons/figmaIcons.ts";
 import {
@@ -25,6 +25,87 @@ import { showsTabBar, useApp } from "./store.tsx";
 
 export function cx(...parts: Array<string | false | undefined>) {
   return parts.filter(Boolean).join(" ");
+}
+
+export function DragScroll({
+  className,
+  children,
+  as = "div",
+}: {
+  className?: string;
+  children: ReactNode;
+  as?: "div" | "ul";
+}) {
+  const [node, setNode] = useState<HTMLElement | null>(null);
+  const assign = useCallback((element: HTMLElement | null) => {
+    setNode((current) => (current === element ? current : element));
+  }, []);
+  useEffect(() => {
+    if (!node) return;
+    let active = false;
+    let startX = 0;
+    let startLeft = 0;
+    let blockClick = false;
+
+    const onDown = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
+      active = true;
+      blockClick = false;
+      startX = event.clientX;
+      startLeft = node.scrollLeft;
+    };
+    const onMove = (event: PointerEvent) => {
+      if (!active || event.pointerType !== "mouse") return;
+      const dx = event.clientX - startX;
+      if (!blockClick && Math.abs(dx) < 5) return;
+      if (!blockClick) {
+        blockClick = true;
+        node.setPointerCapture(event.pointerId);
+      }
+      node.scrollLeft = startLeft - dx;
+    };
+    const onUp = (event: PointerEvent) => {
+      if (!active) return;
+      active = false;
+      if (node.hasPointerCapture(event.pointerId)) node.releasePointerCapture(event.pointerId);
+    };
+    const onClick = (event: MouseEvent) => {
+      if (!blockClick) return;
+      event.preventDefault();
+      event.stopPropagation();
+      blockClick = false;
+    };
+    const onDragStart = (event: DragEvent) => event.preventDefault();
+
+    node.addEventListener("pointerdown", onDown);
+    node.addEventListener("pointermove", onMove);
+    node.addEventListener("pointerup", onUp);
+    node.addEventListener("pointercancel", onUp);
+    node.addEventListener("click", onClick, true);
+    node.addEventListener("dragstart", onDragStart);
+    return () => {
+      node.removeEventListener("pointerdown", onDown);
+      node.removeEventListener("pointermove", onMove);
+      node.removeEventListener("pointerup", onUp);
+      node.removeEventListener("pointercancel", onUp);
+      node.removeEventListener("click", onClick, true);
+      node.removeEventListener("dragstart", onDragStart);
+    };
+  }, [node]);
+
+  const classNames = cx(className, "cursor-grab select-none active:cursor-grabbing");
+  if (as === "ul") {
+    return (
+      <ul ref={assign} className={classNames}>
+        {children}
+      </ul>
+    );
+  }
+  return (
+    <div ref={assign} className={classNames}>
+      {children}
+    </div>
+  );
 }
 
 export function FigmaIcon({ name, className, style }: { name: FigmaIconName; className?: string; style?: CSSProperties }) {
@@ -276,7 +357,7 @@ export function UnderlineTabs<T extends string>({
   onChange: (id: T) => void;
 }) {
   return (
-    <div className="flex gap-4 overflow-x-auto px-4">
+    <DragScroll className="flex gap-4 overflow-x-auto px-4">
       {options.map((option) => {
         const active = value === option.id;
         return (
@@ -293,7 +374,7 @@ export function UnderlineTabs<T extends string>({
           </button>
         );
       })}
-    </div>
+    </DragScroll>
   );
 }
 

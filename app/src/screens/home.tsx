@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { FAQ, KINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { BellIcon, ChevronDown, ChevronRight, CrownIcon, FigmaIcon, GearIcon, HeartIcon, Mascot, MinusIcon, NaviIcon, PauseIcon, PlayIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
+import { BellIcon, ChevronDown, ChevronRight, CrownIcon, DragScroll, FigmaIcon, GearIcon, HeartIcon, Mascot, MinusIcon, NaviIcon, PauseIcon, PlayIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
 
 export function HomeScreen() {
   const { homeTab } = useApp();
@@ -156,7 +156,7 @@ function HomePane() {
 
       <section className="pt-8">
         <SectionTitle title="오늘의 추천 도안" onMore={() => push({ name: "pattern", id: PATTERNS[0].id })} />
-        <div className="mt-3 flex gap-3 overflow-x-auto px-4 pb-2">
+        <DragScroll className="mt-3 flex gap-3 overflow-x-auto px-4 pb-2">
           {PATTERNS.map((pattern) => (
             <button
               key={pattern.id}
@@ -175,7 +175,7 @@ function HomePane() {
               </div>
             </button>
           ))}
-        </div>
+        </DragScroll>
       </section>
 
       <section className="pt-6">
@@ -226,14 +226,14 @@ function HomePane() {
 
       <section className="pt-8">
         <h2 className="px-4 text-[20px] font-bold">뜨개 소식</h2>
-        <div className="mt-3 flex gap-3 overflow-x-auto px-4">
+        <DragScroll className="mt-3 flex gap-3 overflow-x-auto px-4">
           {NEWS.map((item) => (
             <button key={item.id} type="button" onClick={() => push({ name: "news", id: item.id })} className="w-40 shrink-0 text-left">
               <img src={item.image} alt="" className="h-28 w-full rounded-lg object-cover" />
               <p className="mt-2 text-[13px] font-semibold">{item.title}</p>
             </button>
           ))}
-        </div>
+        </DragScroll>
       </section>
 
       <section className="px-4 pb-4 pt-10 text-center">
@@ -307,7 +307,7 @@ function MarketPane() {
             aria-label="마켓 검색"
           />
         </label>
-        <div className="mt-3 flex gap-2 overflow-x-auto">
+        <DragScroll className="mt-3 flex gap-2 overflow-x-auto">
           {kinds.map((item) => (
             <button
               key={item}
@@ -318,7 +318,7 @@ function MarketPane() {
               {item}
             </button>
           ))}
-        </div>
+        </DragScroll>
       </div>
       <ul className="mt-4 space-y-3 px-4">
         {items.map((item) => (

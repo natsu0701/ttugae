@@ -3,7 +3,7 @@ import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock }
 import { useApp } from "../store.tsx";
 import type { BagTab, Needle, Project, Yarn } from "../types.ts";
 import type { SortDir, SortField } from "../types.ts";
-import { CheckIcon, ChevronDown, DoneMark, Fab, FilterIcon, GearIcon, GridIcon, InfoButton, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
+import { CheckIcon, ChevronDown, DoneMark, DragScroll, Fab, FilterIcon, GearIcon, GridIcon, InfoButton, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
 
 const TABS: { id: BagTab; label: string }[] = [
   { id: "projects", label: "프로젝트" },
@@ -56,7 +56,7 @@ function CategoryRow({
   return (
     <div className="px-4 pt-4">
       <p className="text-[14px] font-semibold">카테고리</p>
-      <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
+      <DragScroll className="mt-3 flex gap-3 overflow-x-auto pb-1">
         {items.map((item, index) => {
           const active = value === item;
           return (
@@ -69,7 +69,7 @@ function CategoryRow({
             </button>
           );
         })}
-      </div>
+      </DragScroll>
     </div>
   );
 }
@@ -291,7 +291,7 @@ function YarnPane() {
       <SearchRow value={query} onChange={setQuery} placeholder="실 이름을 검색해보세요." />
       <CategoryRow items={YARN_CATEGORIES} value={category} onChange={setCategory} />
       <h2 className="px-4 pt-2 text-[16px] font-bold">최근 사용한 실</h2>
-      <div className="mt-3 flex gap-3 overflow-x-auto px-4">
+      <DragScroll className="mt-3 flex gap-3 overflow-x-auto px-4">
         {recent.map((yarn) => (
           <button key={yarn.id} type="button" onClick={() => push({ name: "yarn", id: yarn.id })} className="w-36 shrink-0 rounded-lg border border-[#f0f0f0] p-2 text-left">
             <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
@@ -302,7 +302,7 @@ function YarnPane() {
             </p>
           </button>
         ))}
-      </div>
+      </DragScroll>
       <h2 className="px-4 pt-6 text-[16px] font-bold">모든 실</h2>
       <ul className="mt-3 space-y-3 px-4">
         {yarns.map((yarn) => (
@@ -365,7 +365,7 @@ function NeedlePane() {
       <SearchRow value={query} onChange={setQuery} placeholder="바늘 이름을 검색해보세요." />
       <CategoryRow items={NEEDLE_CATEGORIES} value={category} onChange={setCategory} />
       <h2 className="px-4 pt-2 text-[16px] font-bold">최근 사용한 바늘</h2>
-      <div className="mt-3 flex gap-3 overflow-x-auto px-4">
+      <DragScroll className="mt-3 flex gap-3 overflow-x-auto px-4">
         {needles
           .filter((needle) => needle.recent)
           .map((needle) => (
@@ -375,7 +375,7 @@ function NeedlePane() {
               <p className="text-[11px] text-[#999]">{needle.brandLine}</p>
             </button>
           ))}
-      </div>
+      </DragScroll>
       <h2 className="px-4 pt-6 text-[16px] font-bold">모든 바늘</h2>
       <ul className="mt-3 space-y-3 px-4">
         {needles.map((needle) => (
@@ -624,7 +624,7 @@ export function ProjectFormScreen({ id }: { id?: string }) {
       <div>
         <p className="text-[14px] font-bold">사용한 실</p>
         <p className="mt-1 text-[12px] text-[#888]">가진 실에서 이 프로젝트에 쓴 것을 골라 주세요.</p>
-        <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+        <DragScroll className="mt-2 flex gap-2 overflow-x-auto pb-1">
           {data.yarns.map((yarn) => {
             const selected = yarnIds.includes(yarn.id);
             return (
@@ -641,11 +641,11 @@ export function ProjectFormScreen({ id }: { id?: string }) {
               </button>
             );
           })}
-        </div>
+        </DragScroll>
       </div>
       <div>
         <p className="text-[14px] font-bold">사용한 바늘</p>
-        <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+        <DragScroll className="mt-2 flex gap-2 overflow-x-auto pb-1">
           {data.needles.map((needle) => {
             const selected = needleIds.includes(needle.id);
             return (
@@ -662,7 +662,7 @@ export function ProjectFormScreen({ id }: { id?: string }) {
               </button>
             );
           })}
-        </div>
+        </DragScroll>
       </div>
       <label className="block">
         <span className="text-[14px] font-bold">카테고리</span>

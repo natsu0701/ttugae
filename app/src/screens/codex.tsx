@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { CODEX, CODEX_GROUPS, CODEX_TABS, DISCOVER_FILTERS, POPULAR_YARNS, type CodexEntry, type CodexKind, type PopularYarn } from "../codex.ts";
 import { media } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { CloseIcon, FilterIcon, SearchIcon, cx } from "../ui.tsx";
+import { CloseIcon, DragScroll, FilterIcon, SearchIcon, cx } from "../ui.tsx";
 
 const DEFAULT_RECENT = ["안뜨기", "겉뜨기", "린넨"];
 
@@ -330,11 +330,11 @@ function CodexDiscover() {
             {popular.length === 0 ? (
               <p className="px-4 py-8 text-[14px] text-[#888]">이 조건에 맞는 실이 없어요.</p>
             ) : (
-              <ul className="mt-3 flex gap-3 overflow-x-auto px-4 pb-1">
+              <DragScroll as="ul" className="mt-3 flex gap-3 overflow-x-auto px-4 pb-1">
                 {popular.map((yarn) => (
                   <PopularCard key={yarn.id} yarn={yarn} onOpen={() => push({ name: "codex", id: yarn.id })} />
                 ))}
-              </ul>
+              </DragScroll>
             )}
           </section>
 
