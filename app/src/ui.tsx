@@ -550,7 +550,7 @@ export function DoneMark({ message, onDone }: { message: string; onDone: () => v
           <path
             d="M16 33.5 27 44.5 48 20"
             fill="none"
-            stroke="#171717"
+            stroke="#ffffff"
             strokeWidth="5"
             strokeLinecap="round"
             strokeLinejoin="round"
