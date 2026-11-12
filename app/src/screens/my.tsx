@@ -28,7 +28,7 @@ const STAMPS = [
 ];
 
 export function MyScreen() {
-  const { data, patch, push, goTab, replace, setHomeTab, setLoungeTab, openSheet } = useApp();
+  const { data, patch, push, goTab, replace, openSheet } = useApp();
   const units: { id: UnitSystem; label: string }[] = [
     { id: "metric", label: "미터법" },
     { id: "imperial", label: "영미식" },
@@ -65,10 +65,10 @@ export function MyScreen() {
       </button>
 
       <div className="grid grid-cols-4 gap-2 px-4 py-4 text-center">
-        <Shortcut icon={<BagFillIcon className="h-6 w-6" />} label="장바구니" onClick={() => { setHomeTab("market"); goTab("home"); }} />
+        <Shortcut icon={<BagFillIcon className="h-6 w-6" />} label="장바구니" onClick={() => goTab("home", "market")} />
         <Shortcut icon={<HeartFillIcon className="h-6 w-6" />} label="관심 목록" onClick={() => push({ name: "likes" })} />
-        <Shortcut icon={<ClockFillIcon className="h-6 w-6" />} label="최근 본 글" onClick={() => { setLoungeTab("works"); goTab("lounge"); }} />
-        <Shortcut icon={<ChatFillIcon className="h-6 w-6" />} label="내 댓글" onClick={() => { setLoungeTab("qa"); goTab("lounge"); }} />
+        <Shortcut icon={<ClockFillIcon className="h-6 w-6" />} label="최근 본 글" onClick={() => goTab("lounge", "works")} />
+        <Shortcut icon={<ChatFillIcon className="h-6 w-6" />} label="내 댓글" onClick={() => goTab("lounge", "qa")} />
       </div>
 
       <section className="mx-4 rounded-lg border border-[#f0f0f0] px-4 py-4 text-center">
@@ -154,7 +154,7 @@ export function MyScreen() {
       <section className="mt-5">
         <div className="flex items-center justify-between px-4">
           <h2 className="text-[16px] font-bold">판매 물품 {PRODUCTS.length}</h2>
-          <button type="button" aria-label="마켓으로" onClick={() => { setHomeTab("market"); goTab("home"); }} className="grid h-6 w-6 place-items-center leading-none">
+          <button type="button" aria-label="마켓으로" onClick={() => goTab("home", "market")} className="grid h-6 w-6 place-items-center leading-none">
             <ChevronRight />
           </button>
         </div>
@@ -187,12 +187,12 @@ export function MyScreen() {
       </section>
 
       <Menu title="나의 거래">
-        <MenuRow icon={<FileTextFillIcon className="h-5 w-5" />} label="판매 관리" onClick={() => { setHomeTab("market"); goTab("home"); }} />
-        <MenuRow icon={<BagFillIcon className="h-5 w-5" />} label="구매 내역" onClick={() => { setHomeTab("market"); goTab("home"); }} />
+        <MenuRow icon={<FileTextFillIcon className="h-5 w-5" />} label="판매 관리" onClick={() => goTab("home", "market")} />
+        <MenuRow icon={<BagFillIcon className="h-5 w-5" />} label="구매 내역" onClick={() => goTab("home", "market")} />
       </Menu>
       <Menu title="나의 활동">
-        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="내 게시물" onClick={() => { setLoungeTab("works"); goTab("lounge"); }} />
-        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="내 댓글" onClick={() => { setLoungeTab("qa"); goTab("lounge"); }} />
+        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="내 게시물" onClick={() => goTab("lounge", "works")} />
+        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="내 댓글" onClick={() => goTab("lounge", "qa")} />
         <MenuRow icon={<BookmarkFillIcon className="h-5 w-5" />} label="저장한 글" onClick={() => push({ name: "likes" })} />
         <MenuRow icon={<CommunityFillIcon className="h-5 w-5" />} label="뜨개 모임" onClick={() => goTab("lounge")} />
       </Menu>

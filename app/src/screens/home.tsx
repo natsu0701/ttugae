@@ -131,7 +131,7 @@ function HomePane() {
           <ToolButton label="행/코 카운터" onClick={() => push({ name: "counters" })}>
             <CounterGlyph />
           </ToolButton>
-          <ToolButton label="게이지" onClick={() => push({ name: "gauge", tab: "calc" })}>
+          <ToolButton label="게이지" onClick={() => push({ name: "gauge", tab: "manage" })}>
             <GaugeGlyph />
           </ToolButton>
           <ToolButton label="뜨개 도감" onClick={() => push({ name: "codex" })}>

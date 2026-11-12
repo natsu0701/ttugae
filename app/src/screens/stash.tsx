@@ -15,7 +15,7 @@ function yarnDot(color: string) {
 }
 
 export function YarnScreen({ id }: { id: string }) {
-  const { data, setBagTab, goTab, setBalls } = useApp();
+  const { data, goTab, setBalls } = useApp();
   const yarn = data.yarns.find((item) => item.id === id);
   if (!yarn) return <p className="px-6 py-16 text-center text-[14px]">실을 찾지 못했어요.</p>;
   return (
@@ -29,10 +29,7 @@ export function YarnScreen({ id }: { id: string }) {
             { id: "yarn", label: "실장고" },
             { id: "needles", label: "바늘 창고" },
           ]}
-          onChange={(tab) => {
-            setBagTab(tab);
-            goTab("bag");
-          }}
+          onChange={(tab) => goTab("bag", tab)}
         />
       </div>
       <div className="px-5 pt-4">
@@ -78,7 +75,7 @@ export function YarnScreen({ id }: { id: string }) {
 }
 
 export function NeedleScreen({ id }: { id: string }) {
-  const { data, setBagTab, goTab } = useApp();
+  const { data, goTab } = useApp();
   const needle = data.needles.find((item) => item.id === id);
   if (!needle) return <p className="px-6 py-16 text-center text-[14px]">바늘을 찾지 못했어요.</p>;
   return (
@@ -92,10 +89,7 @@ export function NeedleScreen({ id }: { id: string }) {
             { id: "yarn", label: "실장고" },
             { id: "needles", label: "바늘 창고" },
           ]}
-          onChange={(tab) => {
-            setBagTab(tab);
-            goTab("bag");
-          }}
+          onChange={(tab) => goTab("bag", tab)}
         />
       </div>
       <div className="px-5 pt-4">

@@ -127,7 +127,7 @@ function hashToRoute(hash: string): Route {
   if (name === "short" && id) return { name: "short", id };
   if (name === "question" && id) return { name: "question", id };
   if (name === "project-form") return { name: "project-form", id };
-  if (name === "gauge") return { name: "gauge", tab: id === "manage" ? "manage" : "calc" };
+  if (name === "gauge") return { name: "gauge", tab: id === "calc" ? "calc" : "manage" };
   const known: Route["name"][] = [
     "login",
     "signup",
@@ -166,7 +166,7 @@ type AppApi = {
   push: (route: Route) => void;
   replace: (route: Route) => void;
   back: () => void;
-  goTab: (name: "home" | "bag" | "lounge" | "my") => void;
+  goTab: (name: "home" | "bag" | "lounge" | "my", section?: string) => void;
   setHomeTab: (tab: HomeTab) => void;
   setBagTab: (tab: BagTab) => void;
   setLoungeTab: (tab: LoungeTab) => void;
@@ -255,19 +255,43 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (name === "login" || name === "splash") return;
         setFinishId(null);
         setSheet(null);
+        setHomeTab("home");
+        setBagTab("projects");
+        setLoungeTab("works");
+        setSort({ field: "recent", dir: "desc" });
+        setCalcSts("20");
+        setCalcLen("60");
+        setCalcResult(120);
         const login = { name: "login" as const };
         setStack([login]);
         window.history.replaceState({ ttg: 1 }, "", routeToHash(login));
-      }, 10 * 60 * 1000);
+      }, 20 * 60 * 1000);
     };
     arm();
-    const events = ["pointerdown", "touchstart", "keydown"] as const;
+    const events = ["pointerdown", "keydown", "wheel"] as const;
     events.forEach((event) => window.addEventListener(event, arm, { passive: true }));
+    window.addEventListener("scroll", arm, { passive: true, capture: true });
     return () => {
       window.clearTimeout(timer);
       events.forEach((event) => window.removeEventListener(event, arm));
+      window.removeEventListener("scroll", arm, { capture: true });
     };
   }, []);
+
+  useEffect(() => {
+    if (route.name === "gauge" || route.name === "gauge-form" || route.name === "gauge-help") return;
+    setCalcSts("20");
+    setCalcLen("60");
+    setCalcResult(120);
+  }, [route.name]);
+
+  useEffect(() => {
+    if (route.name !== "login" && route.name !== "splash") return;
+    setHomeTab("home");
+    setBagTab("projects");
+    setLoungeTab("works");
+    setSort({ field: "recent", dir: "desc" });
+  }, [route.name]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -329,11 +353,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
       window.history.replaceState({ ttg: 1 }, "", routeToHash(home));
       setStack([home]);
     };
-    const goTab = (name: "home" | "bag" | "lounge" | "my") => {
+    const goTab = (name: "home" | "bag" | "lounge" | "my", section?: string) => {
       const next = { name } as Route;
       const marker = window.history.state as { ttg?: number } | null;
       window.history.pushState({ ttg: (marker?.ttg ?? 1) + 1 }, "", routeToHash(next));
-      if (name === "home") setHomeTab("home");
+      setSheet(null);
+      if (name === "home") setHomeTab(section === "market" ? "market" : "home");
+      if (name === "bag") {
+        setBagTab(section === "done" || section === "yarn" || section === "needles" ? section : "projects");
+        setSort({ field: "recent", dir: "desc" });
+      }
+      if (name === "lounge") setLoungeTab(section === "qa" || section === "shorts" ? section : "works");
       setStack([next]);
     };
 
