@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useApp } from "../store.tsx";
 import type { ToolKind, UnitSystem } from "../types.ts";
-import { BlackButton, FlowerIcon, LockIcon, MailIcon, Mascot, TextField, Wordmark, cx } from "../ui.tsx";
+import { BlackButton, DoneMark, FlowerIcon, LockIcon, MailIcon, Mascot, TextField, Wordmark, cx } from "../ui.tsx";
 
 export function SplashScreen() {
   const { replace } = useApp();
@@ -31,14 +31,19 @@ export function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const finish = () => replace(data.onboarded ? { name: "home" } : { name: "onboarding" });
 
   const enter = () => {
     if (!email.trim() || !password.trim()) {
       setError("이메일과 비밀번호를 입력해 주세요");
       return;
     }
-    replace(data.onboarded ? { name: "home" } : { name: "onboarding" });
+    setSuccess(true);
   };
+
+  const enterSocial = () => setSuccess(true);
 
   return (
     <div className="relative min-h-full bg-blush-wash px-6 pb-10 pt-8">
@@ -98,16 +103,17 @@ export function LoginScreen() {
         </button>
       </div>
       <div className="mt-10 flex justify-center gap-4">
-        <SocialButton label="카카오로 로그인" className="bg-[#fee500] text-ink" onClick={enter}>
+        <SocialButton label="카카오로 로그인" className="bg-[#fee500] text-ink" onClick={enterSocial}>
           <KakaoMark />
         </SocialButton>
-        <SocialButton label="네이버로 로그인" className="bg-[#03c75a] text-white" onClick={enter}>
+        <SocialButton label="네이버로 로그인" className="bg-[#03c75a] text-white" onClick={enterSocial}>
           <span className="font-black">N</span>
         </SocialButton>
-        <SocialButton label="Apple로 로그인" className="bg-ink text-white" onClick={enter}>
+        <SocialButton label="Apple로 로그인" className="bg-ink text-white" onClick={enterSocial}>
           <AppleMark />
         </SocialButton>
       </div>
+      {success ? <DoneMark message={"로그인에\n성공했어요!"} onDone={finish} /> : null}
     </div>
   );
 }

@@ -668,7 +668,7 @@ export function ChatScreen() {
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3">
         {messages.map((message, index) => (
           <div key={`${message.from}-${index}`} className={cx("flex", message.from === "me" ? "justify-end" : "justify-start gap-2")}>
-            {message.from === "bot" ? <Mascot className="h-10 w-10 shrink-0" /> : null}
+            {message.from === "bot" ? <Mascot className="h-11 w-11 shrink-0" /> : null}
             <p className={cx("max-w-[75%] rounded-lg px-3 py-2 text-[14px] leading-relaxed", message.from === "me" ? "bg-ink text-white" : "bg-[#f5f5f5]")}>
               {message.text}
             </p>
