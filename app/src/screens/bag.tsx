@@ -249,7 +249,7 @@ function SearchRow({
       {open ? (
         <>
           <button type="button" aria-label="정렬 닫기" className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
-          <div className="absolute right-4 top-[4.25rem] z-30 w-[15.5rem] rounded-2xl border border-[#eee] bg-white p-3 shadow-card">
+          <div className="absolute right-4 top-[4.25rem] z-30 w-[15.5rem] max-w-[calc(100%-1rem)] rounded-2xl border border-[#eee] bg-white p-3 shadow-card">
             <p className="px-1 text-[14px] font-bold">정렬</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
               {SORTS.map((item) => (

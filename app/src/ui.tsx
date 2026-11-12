@@ -273,7 +273,7 @@ export function TabBar() {
             >
               {item.icon}
             </span>
-            <span className={active ? "font-bold" : "text-[#8d8d8d]"}>{item.label}</span>
+            <span className={cx("max-w-full truncate text-center text-[10px] leading-none min-[400px]:text-[11px]", active ? "font-bold" : "text-[#8d8d8d]")}>{item.label}</span>
             <span className={cx("mt-0.5 h-1 w-8 rounded-full", active ? "bg-ink" : "bg-transparent")} />
           </button>
         );

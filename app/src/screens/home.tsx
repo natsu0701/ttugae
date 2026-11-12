@@ -127,7 +127,7 @@ function HomePane() {
 
       <section className="px-4 pt-8">
         <h2 className="text-[18px] font-bold">뜨개 도구</h2>
-        <div className="mt-4 grid grid-cols-4 gap-2 text-center text-[12px]">
+        <div className="mx-auto mt-4 grid max-w-md grid-cols-4 gap-2 text-center text-[12px]">
           <ToolButton label="행/코 카운터" onClick={() => push({ name: "counters" })}>
             <CounterGlyph />
           </ToolButton>
@@ -162,7 +162,7 @@ function HomePane() {
               key={pattern.id}
               type="button"
               onClick={() => push({ name: "pattern", id: pattern.id })}
-              className="w-[86%] shrink-0 rounded-lg bg-white p-3 text-left shadow-card"
+              className="w-[min(86%,20rem)] shrink-0 rounded-lg bg-white p-3 text-left shadow-card"
             >
               <div className="flex gap-3">
                 <img src={pattern.image} alt="" className="h-28 w-28 rounded-lg object-cover" />
