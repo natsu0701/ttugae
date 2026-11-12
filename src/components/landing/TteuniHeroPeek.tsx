@@ -18,7 +18,7 @@ function TteuniHeroPeek() {
         <img
           src={TTEUNI_IMAGES.hero}
           alt=""
-          className="tteuni-peek relative w-auto max-w-none origin-top object-cover object-top"
+          className="tteuni-peek tteuni-white-stroke relative w-auto max-w-none origin-top object-cover object-top"
           style={{ height: FACE_CROP_HEIGHT, position: "relative" }}
         />
       </div>

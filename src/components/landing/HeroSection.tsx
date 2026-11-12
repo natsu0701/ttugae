@@ -41,8 +41,8 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
         <div className="page-shell py-4">
           <Reveal delay={0.4}>
             <h1 className="break-keep">
-              {/* 1줄 리드 카피 - 슬림하고 세련된 고딕 */}
-              <span className="block font-sans text-xl font-semibold leading-relaxed tracking-[0.04em] text-white/80 [text-shadow:0_1px_3px_rgba(0,0,0,0.12),0_6px_24px_rgba(0,0,0,0.18)] sm:text-2xl md:text-3xl">
+              {/* 1줄 리드 카피 — 기능 설명 본문과 같은 이숙윤체 */}
+              <span className="block font-seoyun text-xl font-normal leading-relaxed text-white/80 [text-shadow:0_1px_3px_rgba(0,0,0,0.12),0_6px_24px_rgba(0,0,0,0.18)] sm:text-2xl md:text-3xl">
                 {t("landing.heroLead")}
               </span>
 
