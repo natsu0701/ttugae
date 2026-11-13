@@ -527,9 +527,33 @@ export const QUESTIONS: Question[] = [
 ];
 
 export const KINGS = [
-  { name: "김뜨개", crown: "#f0c14a", works: 13, rows: 223, sts: 1023, image: media("media/king-kim.jpg") },
-  { name: "이현수", crown: "#c9c9c9", works: 13, rows: 223, sts: 1023, image: media("media/king-lee.jpg") },
-  { name: "김미니", crown: "#f3b4b0", works: 13, rows: 223, sts: 1023, image: media("media/king-mini.jpg") },
+  {
+    name: "김뜨개",
+    crown: "#f0c14a",
+    works: 13,
+    rows: 223,
+    sts: 1023,
+    image: media("media/king-kim.jpg"),
+    bio: "이번 달 가장 많은 단을 쌓았어요. 가디건과 스웨터를 주로 뜹니다.",
+  },
+  {
+    name: "이현수",
+    crown: "#c9c9c9",
+    works: 13,
+    rows: 223,
+    sts: 1023,
+    image: media("media/king-lee.jpg"),
+    bio: "양말과 장갑을 짝 맞춰 꼼꼼하게 뜨는 손이에요.",
+  },
+  {
+    name: "김미니",
+    crown: "#f3b4b0",
+    works: 13,
+    rows: 223,
+    sts: 1023,
+    image: media("media/king-mini.jpg"),
+    bio: "모자와 소품을 빠르게 완성하는 뜨개인이에요.",
+  },
 ];
 
 export const NAVI_STEPS = [

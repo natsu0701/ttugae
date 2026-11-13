@@ -73,7 +73,7 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
     case "work":
       return "작품";
     case "ranking":
-      return "뜨개왕";
+      return "뜨개왕 프로필";
     case "news":
       return "뜨개 소식";
     case "notifications":

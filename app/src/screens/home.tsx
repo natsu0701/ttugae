@@ -217,7 +217,7 @@ function HomePane() {
       </section>
 
       <section className="px-4 pt-8">
-        <SectionTitle title="이번달 뜨개왕 발표!" icon={<CrownIcon />} onMore={() => push({ name: "ranking" })} />
+        <SectionTitle title="이번달 뜨개왕 발표!" icon={<CrownIcon />} moreLabel="자세히 보기" onMore={() => push({ name: "ranking" })} />
         <div className="mt-4 grid grid-cols-3 gap-2 text-center">
           {KINGS.map((king) => (
             <button key={king.name} type="button" onClick={() => push({ name: "ranking" })}>
@@ -351,17 +351,33 @@ function MarketPane() {
   );
 }
 
-function SectionTitle({ title, onMore, icon }: { title: string; onMore?: () => void; icon?: ReactNode }) {
+function SectionTitle({
+  title,
+  onMore,
+  icon,
+  moreLabel,
+}: {
+  title: string;
+  onMore?: () => void;
+  icon?: ReactNode;
+  moreLabel?: string;
+}) {
   return (
-    <div className="flex items-center justify-between px-4">
-      <h2 className="inline-flex items-center gap-1.5 text-[20px] font-bold">
+    <div className="flex items-center justify-between gap-3 px-4">
+      <h2 className="inline-flex min-w-0 items-center gap-1.5 text-[20px] font-bold">
         {icon}
-        <span>{title}</span>
+        <span className="truncate">{title}</span>
       </h2>
       {onMore ? (
-        <button type="button" aria-label={`${title} 더 보기`} onClick={onMore} className="grid h-6 w-6 place-items-center leading-none">
-          <ChevronRight />
-        </button>
+        moreLabel ? (
+          <button type="button" onClick={onMore} className="shrink-0 text-[13px] font-semibold text-[#777]">
+            {moreLabel}
+          </button>
+        ) : (
+          <button type="button" aria-label={`${title} 더 보기`} onClick={onMore} className="grid h-6 w-6 shrink-0 place-items-center leading-none">
+            <ChevronRight />
+          </button>
+        )
       ) : null}
     </div>
   );
@@ -409,19 +425,34 @@ export function RankingScreen() {
   return (
     <div className="px-4 pb-10">
       <h2 className="pt-2 text-center text-[20px] font-bold">이번달 뜨개왕</h2>
-      <ul className="mt-6 space-y-3">
+      <ul className="mt-5 space-y-4">
         {KINGS.map((king, index) => (
-          <li key={king.name} className="flex items-center gap-3 rounded-lg border border-[#eee] p-4">
-            <span className="text-2xl" style={{ color: king.crown }}>
-              {index + 1}
-            </span>
-            <img src={king.image} alt="" className="h-12 w-12 rounded-full object-cover" />
-            <span>
-              <span className="block font-bold">{king.name}</span>
-              <span className="text-[13px] text-[#777]">
-                작품 {king.works} · 행 {king.rows} · 코 {king.sts}
-              </span>
-            </span>
+          <li key={king.name} className="overflow-hidden rounded-lg border border-[#eee] bg-white">
+            <div className="flex items-center gap-4 p-4">
+              <img src={king.image} alt="" className="h-20 w-20 shrink-0 rounded-full object-cover" />
+              <div className="min-w-0">
+                <p className="inline-flex items-center gap-1 text-[13px] font-bold" style={{ color: king.crown }}>
+                  <CrownIcon color={king.crown} />
+                  {index + 1}위
+                </p>
+                <p className="text-[18px] font-bold">{king.name}</p>
+                <p className="mt-1 text-[13px] leading-snug text-[#666]">{king.bio}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 border-t border-[#f4f4f4] text-center text-[12px] text-[#777]">
+              <p className="py-3">
+                <span className="block text-[16px] font-bold text-ink">{king.works}</span>
+                작품
+              </p>
+              <p className="border-x border-[#f4f4f4] py-3">
+                <span className="block text-[16px] font-bold text-ink">{king.rows}</span>
+                행
+              </p>
+              <p className="py-3">
+                <span className="block text-[16px] font-bold text-ink">{king.sts}</span>
+                코
+              </p>
+            </div>
           </li>
         ))}
       </ul>
