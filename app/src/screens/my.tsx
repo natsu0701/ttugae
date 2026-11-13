@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { LISTINGS, PURCHASES } from "../data.ts";
+import { LISTINGS, PURCHASES, media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { ToolKind, UnitSystem } from "../types.ts";
 import { BagFillIcon, BellFillIcon, BookmarkFillIcon, ChatFillIcon, ClockFillIcon, CommunityFillIcon, FileTextFillIcon, HeartFillIcon, PencilFillIcon } from "../icons/webFill.tsx";
@@ -27,15 +27,17 @@ function formatKnit(seconds: number) {
 }
 
 const STAMPS = [
-  { name: "첫 만남", on: true },
-  { name: "한 땀의 정성", on: true },
-  { name: "게이지 장인", on: true },
-  { name: "프로 다작러", on: false },
-  { name: "문야의 시작", on: false },
-  { name: "라운지 개근러", on: true },
-  { name: "도안술사", on: false },
-  { name: "마법의 완성", on: false },
-  { name: "철저한 기록가", on: true },
+  { name: "첫 바늘의 설렘", image: media("badges/badge1.png"), on: true },
+  { name: "푸르시오 극복가", image: media("badges/badge2.png"), on: true },
+  { name: "꼬막음 완성", image: media("badges/badge3.png"), on: true },
+  { name: "게이지 계산요정", image: media("badges/badge4.png"), on: true },
+  { name: "배색 가디건 컬렉터", image: media("badges/badge5.png"), on: false },
+  { name: "문어발 뜨개질러", image: media("badges/badge6.png"), on: false },
+  { name: "실 보관 마스터", image: media("badges/badge7.png"), on: true },
+  { name: "따뜻한 뜨개라운지 리더", image: media("badges/badge8.png"), on: true },
+  { name: "뜨니의 소울메이트", image: media("badges/badge9.png"), on: false },
+  { name: "공방 골목대장", image: media("badges/badge10.png"), on: false },
+  { name: "한 땀의 예술가", image: media("badges/badge11.png"), on: false },
 ];
 
 export function MyScreen() {
@@ -252,9 +254,9 @@ export function MyScreen() {
         </div>
         <ul className="grid grid-cols-3 gap-3 text-center">
           {STAMPS.map((stamp) => (
-            <li key={stamp.name} className={cx("text-[11px]", stamp.on ? "text-[#7a4d55]" : "opacity-40 grayscale")}>
-              <Mascot className="mx-auto h-14 w-14" mood={stamp.on ? "cheer" : "wave"} />
-              <p className="mt-1">{stamp.name}</p>
+            <li key={stamp.name} className={cx("text-[11px] leading-tight", stamp.on ? "text-[#7a4d55]" : "opacity-40 grayscale")}>
+              <img src={stamp.image} alt="" className="mx-auto h-14 w-14 object-contain" />
+              <p className="mt-1 line-clamp-2">{stamp.name}</p>
             </li>
           ))}
         </ul>
