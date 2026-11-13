@@ -7,6 +7,7 @@ import type {
   Product,
   Project,
   Question,
+  Route,
   ShortClip,
   Work,
   Yarn,
@@ -539,10 +540,10 @@ export const NAVI_STEPS = [
   "시보리로 마감하고 실을 정리해요",
 ];
 
-export const NOTIFICATIONS = [
-  { title: "벤쿠버 가디건", body: "어제 몸통까지 떠 두었어요. 오늘은 왼쪽 팔 23단부터예요." },
-  { title: "게이지", body: "10cm에 20코, 목표 60cm면 120코예요. 저장해 둘까요?" },
-  { title: "이번 달 뜨개왕", body: "김뜨개, 이현수, 김미니의 기록이 올라왔어요." },
+export const NOTIFICATIONS: { title: string; body: string; to: Route }[] = [
+  { title: "벤쿠버 가디건", body: "어제 몸통까지 떠 두었어요. 오늘은 왼쪽 팔 23단부터예요.", to: { name: "project", id: "p1" } },
+  { title: "게이지", body: "10cm에 20코, 목표 60cm면 120코예요. 저장해 둘까요?", to: { name: "gauge", tab: "calc" } },
+  { title: "이번 달 뜨개왕", body: "김뜨개, 이현수, 김미니의 기록이 올라왔어요.", to: { name: "ranking" } },
 ];
 
 export const REVIEWS = [

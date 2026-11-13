@@ -456,16 +456,21 @@ export function LikesScreen() {
 }
 
 export function NotificationsScreen() {
-  const { data, patch } = useApp();
+  const { data, patch, push } = useApp();
   useEffect(() => {
     if (!data.notifRead) patch({ notifRead: true });
   }, [data.notifRead, patch]);
   return (
     <ul className="space-y-2 px-4 pb-8">
       {NOTIFICATIONS.map((item) => (
-        <li key={item.title} className="rounded-lg bg-[#fafafa] px-4 py-3">
-          <p className="font-bold">{item.title}</p>
-          <p className="mt-1 text-[13px] leading-relaxed text-[#666]">{item.body}</p>
+        <li key={item.title}>
+          <button type="button" onClick={() => push(item.to)} className="flex w-full items-center gap-3 rounded-lg bg-[#fafafa] px-4 py-3 text-left">
+            <span className="min-w-0 flex-1">
+              <span className="block font-bold">{item.title}</span>
+              <span className="mt-1 block text-[13px] leading-relaxed text-[#666]">{item.body}</span>
+            </span>
+            <ChevronRight />
+          </button>
         </li>
       ))}
     </ul>
