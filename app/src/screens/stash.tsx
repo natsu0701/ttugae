@@ -132,18 +132,23 @@ function Spec({ icon, value, label }: { icon: ReactNode; value: string; label: s
 }
 
 function ShopCard({ name, url }: { name: string; url: string }) {
+  const { openSheet } = useApp();
+  const showNotice = () =>
+    openSheet({
+      kind: "info",
+      title: "추가 구매",
+      body: "연습용 화면이라 상점 페이지로는 연결되지 않아요.",
+    });
   return (
     <section className="mt-3 flex items-center justify-between rounded-lg border border-[#f0f0f0] px-4 py-3">
       <span>
         <span className="block text-[12px] text-[#999]">상점</span>
         <span className="font-bold">{name}</span>
-        <a href={url} target="_blank" rel="noreferrer" className="block text-[12px] text-[#888]">
-          {url.replace("http://", "")}
-        </a>
+        <span className="block text-[12px] text-[#888]">{url.replace(/^https?:\/\//, "")}</span>
       </span>
-      <a href={url} target="_blank" rel="noreferrer" className="rounded-full bg-ink px-3 py-2 text-[12px] font-semibold text-white">
+      <button type="button" onClick={showNotice} className="rounded-full bg-ink px-3 py-2 text-[12px] font-semibold text-white">
         추가 구매
-      </a>
+      </button>
     </section>
   );
 }
