@@ -1,7 +1,10 @@
 import { useMemo, useRef, useState } from "react";
 import { formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon, Mascot, PlusIcon, RowsIcon, SparkIcon } from "../ui.tsx";
+import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon, Mascot, PlusIcon, RowsIcon, SearchIcon, SparkIcon, cx } from "../ui.tsx";
+
+const MATERIAL_KINDS = ["바늘", "실", "기타"] as const;
+type MaterialKind = (typeof MATERIAL_KINDS)[number];
 
 export function DiaryScreen({ id }: { id: string }) {
   const { data, back, saveDiary } = useApp();
@@ -15,25 +18,40 @@ export function DiaryScreen({ id }: { id: string }) {
       .filter((yarn) => yarn.linkedProject === project.title)
       .map((yarn) => `${yarn.name} ${yarn.balls}볼`);
   }, [data.yarns, project]);
+  const [chips, setChips] = useState<string[]>(materials);
+  const [picking, setPicking] = useState(false);
+  const [query, setQuery] = useState("");
+  const [kind, setKind] = useState<MaterialKind>("실");
+  const [addingYarn, setAddingYarn] = useState(false);
+  const [newYarn, setNewYarn] = useState("");
+  const [customYarns, setCustomYarns] = useState<{ id: string; label: string }[]>([]);
   const catalog = useMemo(
     () => [
       ...data.yarns.map((yarn) => ({
         id: `yarn-${yarn.id}`,
-        kind: "실",
+        kind: "실" as const,
         label: `${yarn.name} ${yarn.balls}볼`,
         image: yarn.image,
       })),
+      ...customYarns.map((yarn) => ({
+        id: yarn.id,
+        kind: "실" as const,
+        label: yarn.label,
+        image: "",
+      })),
       ...data.needles.map((needle) => ({
         id: `needle-${needle.id}`,
-        kind: "바늘",
+        kind: (needle.category === "기타" ? "기타" : "바늘") as MaterialKind,
         label: `${needle.name} ${needle.size}`,
         image: needle.image,
       })),
     ],
-    [data.needles, data.yarns],
+    [customYarns, data.needles, data.yarns],
   );
-  const [chips, setChips] = useState<string[]>(materials);
-  const [picking, setPicking] = useState(false);
+  const visible = useMemo(() => {
+    const text = query.trim();
+    return catalog.filter((item) => item.kind === kind && (!text || item.label.includes(text)));
+  }, [catalog, kind, query]);
 
   if (!project) return <p className="px-6 py-16 text-center text-[14px]">프로젝트를 찾지 못했어요.</p>;
 
@@ -52,6 +70,17 @@ export function DiaryScreen({ id }: { id: string }) {
 
   const toggleChip = (label: string) => {
     setChips((current) => (current.includes(label) ? current.filter((item) => item !== label) : [...current, label]));
+  };
+
+  const addNewYarn = () => {
+    const name = newYarn.trim();
+    if (!name) return;
+    setCustomYarns((current) => (current.some((item) => item.label === name) ? current : [...current, { id: `custom-${name}`, label: name }]));
+    setChips((current) => (current.includes(name) ? current : [...current, name]));
+    setNewYarn("");
+    setAddingYarn(false);
+    setKind("실");
+    setQuery("");
   };
 
   const save = () => {
@@ -151,24 +180,89 @@ export function DiaryScreen({ id }: { id: string }) {
           </button>
         </div>
         {picking ? (
-          <ul className="mt-3 overflow-hidden rounded-lg border border-[#f0f0f0] bg-white">
-            {catalog.length === 0 ? <li className="px-4 py-4 text-[13px] text-[#888]">등록된 재료가 없어요.</li> : null}
-            {catalog.map((item) => {
-              const selected = chips.includes(item.label);
-              return (
-                <li key={item.id} className="border-t border-[#f4f4f4] first:border-t-0">
-                  <button type="button" onClick={() => toggleChip(item.label)} className="flex w-full items-center gap-3 px-3 py-2 text-left">
-                    <img src={item.image} alt="" className="h-12 w-12 rounded-lg object-contain bg-[#f7f7f7]" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[11px] text-[#999]">{item.kind}</span>
-                      <span className="block truncate text-[14px] font-semibold">{item.label}</span>
-                    </span>
-                    {selected ? <CheckIcon /> : null}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="mt-3 overflow-hidden rounded-lg border border-[#f0f0f0] bg-white">
+            <label className="flex h-11 items-center gap-2 border-b border-[#f4f4f4] px-3">
+              <SearchIcon />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="재료 검색"
+                aria-label="재료 검색"
+                className="w-full bg-transparent text-[14px] outline-none"
+              />
+            </label>
+            {addingYarn ? (
+              <form
+                className="flex items-center gap-3 border-b border-[#f4f4f4] px-3 py-2"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  addNewYarn();
+                }}
+              >
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#f4f4f4]">
+                  <PlusIcon className="h-4 w-4" />
+                </span>
+                <input
+                  value={newYarn}
+                  onChange={(event) => setNewYarn(event.target.value)}
+                  placeholder="새 실 이름"
+                  aria-label="새 실 이름"
+                  autoFocus
+                  className="h-10 min-w-0 flex-1 bg-transparent text-[14px] outline-none"
+                />
+                <button type="submit" className="shrink-0 rounded-full bg-ink px-3 py-1.5 text-[12px] font-semibold text-white">
+                  추가
+                </button>
+              </form>
+            ) : (
+              <button type="button" onClick={() => setAddingYarn(true)} className="flex w-full items-center gap-3 border-b border-[#f4f4f4] px-3 py-2 text-left">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#f4f4f4]">
+                  <PlusIcon className="h-4 w-4" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[11px] text-[#999]">실</span>
+                  <span className="block text-[14px] font-semibold">목록에 없는 실 추가</span>
+                </span>
+              </button>
+            )}
+            <div className="grid grid-cols-3 border-b border-[#f4f4f4]">
+              {MATERIAL_KINDS.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  aria-pressed={kind === item}
+                  onClick={() => setKind(item)}
+                  className={cx("h-10 border-b-2 text-[13px]", kind === item ? "border-ink font-bold text-ink" : "border-transparent text-[#b0b0b0]")}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+            <ul className="max-h-52 overflow-y-auto">
+              {visible.length === 0 ? (
+                <li className="px-4 py-6 text-center text-[13px] text-[#888]">{query.trim() ? "찾는 재료가 없어요." : `가진 ${kind} 재료가 없어요.`}</li>
+              ) : null}
+              {visible.map((item) => {
+                const selected = chips.includes(item.label);
+                return (
+                  <li key={item.id} className="border-t border-[#f4f4f4] first:border-t-0">
+                    <button type="button" onClick={() => toggleChip(item.label)} className="flex w-full items-center gap-3 px-3 py-2 text-left">
+                      {item.image ? (
+                        <img src={item.image} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />
+                      ) : (
+                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#f3f3f3] text-[14px] font-bold">{item.label.slice(0, 1)}</span>
+                      )}
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-[11px] text-[#999]">{item.kind}</span>
+                        <span className="block truncate text-[14px] font-semibold">{item.label}</span>
+                      </span>
+                      {selected ? <CheckIcon /> : null}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         ) : null}
       </section>
 
