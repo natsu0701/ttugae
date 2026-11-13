@@ -185,21 +185,87 @@ function ProjectGrid({ projects }: { projects: Project[] }) {
   );
 }
 
+type DoneSort = "name" | "newest" | "oldest" | "longest" | "shortest";
+
+const DONE_SORTS: { id: DoneSort; label: string }[] = [
+  { id: "name", label: "이름순" },
+  { id: "newest", label: "최신순" },
+  { id: "oldest", label: "오래된순" },
+  { id: "longest", label: "오래걸린순" },
+  { id: "shortest", label: "적게 걸린순" },
+];
+
+function sortFinished(projects: Project[], sort: DoneSort) {
+  const list = [...projects];
+  if (sort === "name") return list.sort((a, b) => a.title.localeCompare(b.title, "ko"));
+  if (sort === "newest") return list.sort((a, b) => b.started.localeCompare(a.started));
+  if (sort === "oldest") return list.sort((a, b) => a.started.localeCompare(b.started));
+  if (sort === "longest") return list.sort((a, b) => b.elapsed - a.elapsed);
+  return list.sort((a, b) => a.elapsed - b.elapsed);
+}
+
+function finishedMeta(project: Project, sort: DoneSort) {
+  if (sort === "newest" || sort === "oldest") return `시작일 ${project.started}`;
+  if (sort === "longest" || sort === "shortest") return `작업 ${formatClock(project.elapsed)}`;
+  return "완성 기록";
+}
+
 function DonePane() {
   const { data, push } = useApp();
-  const done = data.projects.filter((project) => project.progress >= 50);
+  const [sort, setSort] = useState<DoneSort>("newest");
+  const [open, setOpen] = useState(false);
+  const done = sortFinished(data.projects.filter((project) => project.progress >= 50), sort);
+  const items = done.length ? done : sortFinished(data.projects.slice(0, 2), sort);
+  const current = DONE_SORTS.find((item) => item.id === sort) ?? DONE_SORTS[1];
   return (
-    <ul className="grid grid-cols-2 gap-3 px-4 pt-4">
-      {(done.length ? done : data.projects.slice(0, 2)).map((project) => (
-        <li key={project.id}>
-          <button type="button" onClick={() => push({ name: "finished", id: project.id })} className="w-full text-left">
-            <img src={project.image} alt="" className="aspect-[3/4] w-full rounded-lg object-cover" />
-            <span className="mt-2 block text-[14px] font-bold">{project.title}</span>
-            <span className="text-[12px] text-[#999]">완성 기록</span>
-          </button>
-        </li>
-      ))}
-    </ul>
+    <div>
+      <div className="relative flex justify-end px-4 pt-4">
+        <button
+          type="button"
+          aria-label="정렬"
+          aria-expanded={open}
+          onClick={() => setOpen((value) => !value)}
+          className={cx(
+            "flex h-11 items-center gap-1.5 rounded-full border px-3 text-[13px]",
+            open ? "border-ink bg-ink text-white" : "border-[#e6e6e6] bg-white",
+          )}
+        >
+          <span>{current.label}</span>
+          <FilterIcon />
+        </button>
+        {open ? (
+          <>
+            <button type="button" aria-label="정렬 닫기" className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
+            <div className="absolute right-4 top-16 z-30 w-40 rounded-2xl border border-[#eee] bg-white p-2 shadow-card">
+              {DONE_SORTS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    setSort(item.id);
+                    setOpen(false);
+                  }}
+                  className={cx("block h-10 w-full rounded-lg px-3 text-left text-[13px]", sort === item.id ? "bg-[#f6f6f6] font-bold" : "")}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </>
+        ) : null}
+      </div>
+      <ul className="grid grid-cols-2 gap-3 px-4 pt-3">
+        {items.map((project) => (
+          <li key={project.id}>
+            <button type="button" onClick={() => push({ name: "finished", id: project.id })} className="w-full text-left">
+              <img src={project.image} alt="" className="aspect-[3/4] w-full rounded-lg object-cover" />
+              <span className="mt-2 block text-[14px] font-bold">{project.title}</span>
+              <span className="text-[12px] text-[#999]">{finishedMeta(project, sort)}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
