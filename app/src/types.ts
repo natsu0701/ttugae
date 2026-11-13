@@ -217,6 +217,7 @@ export type Persisted = {
   gauges: GaugeRecord[];
   counters: Counter[];
   likes: string[];
+  calendarMarks: Record<string, string>;
   notifRead: boolean;
   naviDone: Record<string, string[]>;
   catalogVersion?: number;

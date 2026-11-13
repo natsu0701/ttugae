@@ -45,6 +45,14 @@ function freshPersisted(): Persisted {
     gauges: seedGauges(),
     counters: seedCounters(),
     likes: [],
+    calendarMarks: {
+      "2025-01-02": "❤️",
+      "2025-01-04": "⭐",
+      "2025-01-08": "✅",
+      "2025-01-11": "❤️",
+      "2025-01-15": "⭐",
+      "2025-01-18": "✅",
+    },
     notifRead: false,
     naviDone: {},
     catalogVersion: 2,
@@ -67,6 +75,7 @@ function loadPersisted(): Persisted {
       gauges: parsed.gauges ?? base.gauges,
       counters: parsed.counters?.length ? parsed.counters : base.counters,
       likes: parsed.likes ?? [],
+      calendarMarks: parsed.calendarMarks ?? base.calendarMarks,
       naviDone: parsed.naviDone ?? {},
     };
   } catch {

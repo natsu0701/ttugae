@@ -1,19 +1,16 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { PRODUCTS } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { ToolKind, UnitSystem } from "../types.ts";
-import { BagFillIcon, BellFillIcon, BookmarkFillIcon, ChatFillIcon, CheckFillIcon, ClockFillIcon, CommunityFillIcon, FileTextFillIcon, HeartFillIcon, PencilFillIcon, SparkleFillIcon } from "../icons/webFill.tsx";
-import { ChevronRight, DragScroll, GearIcon, HeartIcon, Mascot, cx } from "../ui.tsx";
+import { BagFillIcon, BellFillIcon, BookmarkFillIcon, ChatFillIcon, ClockFillIcon, CommunityFillIcon, FileTextFillIcon, HeartFillIcon, PencilFillIcon } from "../icons/webFill.tsx";
+import { ChevronRight, DragScroll, GearIcon, Mascot, cx } from "../ui.tsx";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
-const MARKS: Record<number, "heart" | "star" | "check"> = {
-  2: "heart",
-  4: "star",
-  8: "check",
-  11: "heart",
-  15: "star",
-  18: "check",
-};
+const CALENDAR_EMOJIS = ["🧶", "❤️", "⭐", "✅", "🌸", "😊", "☕", "🌙"];
+
+function calendarKey(day: number) {
+  return `2025-01-${String(day).padStart(2, "0")}`;
+}
 
 const STAMPS = [
   { name: "첫 만남", on: true },
@@ -36,6 +33,15 @@ export function MyScreen() {
   const tools: ToolKind[] = ["코바늘", "대바늘", "손뜨개"];
   const minutes = Math.floor(data.projects.reduce((sum, project) => sum + project.elapsed, 0) / 60);
   const level = data.level ?? "입문자";
+  const calendarMarks = data.calendarMarks ?? {};
+  const [pickedDay, setPickedDay] = useState<number | null>(null);
+  const setCalendarMark = (day: number, emoji: string | null) => {
+    const key = calendarKey(day);
+    const next = { ...calendarMarks };
+    if (emoji) next[key] = emoji;
+    else delete next[key];
+    patch({ calendarMarks: next });
+  };
 
   return (
     <div className="pb-8">
@@ -104,17 +110,50 @@ export function MyScreen() {
           ))}
           {Array.from({ length: 31 }, (_, index) => {
             const day = index + 1;
-            const mark = MARKS[day];
+            const emoji = calendarMarks[calendarKey(day)];
+            const selected = pickedDay === day;
             return (
-              <span key={day} className="flex h-8 flex-col items-center justify-center text-[#7a4d55]">
-                {mark === "heart" ? <HeartIcon filled className="h-3.5 w-3.5" /> : null}
-                {mark === "star" ? <SparkleFillIcon className="h-3.5 w-3.5 text-[#f0b429]" /> : null}
-                {mark === "check" ? <CheckFillIcon className="h-3.5 w-3.5 text-blush" /> : null}
-                {mark ? null : day}
-              </span>
+              <button
+                key={day}
+                type="button"
+                aria-label={emoji ? `${day}일 ${emoji}` : `${day}일`}
+                aria-pressed={selected}
+                onClick={() => setPickedDay(selected ? null : day)}
+                className="flex h-11 flex-col items-center pt-1 text-[#7a4d55]"
+              >
+                <span className={cx("grid h-5 w-5 place-items-center rounded-full leading-none", selected && "bg-white font-bold")}>{day}</span>
+                <span className="mt-0.5 h-4 text-[13px] leading-none">{emoji ?? ""}</span>
+              </button>
             );
           })}
         </div>
+        {pickedDay ? (
+          <div className="mt-3 rounded-lg bg-white/80 px-2 py-3">
+            <p className="text-center text-[13px] font-semibold text-[#7a4d55]">{pickedDay}일에 이모티콘</p>
+            <div className="mt-2 grid grid-cols-8 gap-1">
+              {CALENDAR_EMOJIS.map((emoji) => (
+                <button
+                  key={emoji}
+                  type="button"
+                  aria-label={`${pickedDay}일에 ${emoji} 넣기`}
+                  aria-pressed={calendarMarks[calendarKey(pickedDay)] === emoji}
+                  onClick={() => setCalendarMark(pickedDay, emoji)}
+                  className={cx(
+                    "grid h-9 place-items-center rounded-full bg-white text-[18px]",
+                    calendarMarks[calendarKey(pickedDay)] === emoji && "ring-2 ring-blush",
+                  )}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+            {calendarMarks[calendarKey(pickedDay)] ? (
+              <button type="button" onClick={() => setCalendarMark(pickedDay, null)} className="mt-2 w-full text-[12px] text-[#999]">
+                이모티콘 지우기
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </section>
 
       <section className="mx-4 mt-3 flex items-center gap-3 rounded-lg border border-[#f0f0f0] px-4 py-3">
