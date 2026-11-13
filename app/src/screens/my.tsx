@@ -195,7 +195,7 @@ export function MyScreen() {
         <Mascot className="h-14 w-14" mood="cheer" />
         <div>
           <p className="text-[12px] font-semibold text-blush">연속 뜨개 기록</p>
-          <p className="text-[18px] font-bold">0일 연속 달성!</p>
+          <p className="text-[18px] font-bold">32일 연속 달성!</p>
         </div>
       </section>
 
