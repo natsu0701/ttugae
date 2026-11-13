@@ -181,7 +181,7 @@ function CodexDiscover() {
   const needle = query.trim();
   const landing = category === "all" && filters.length === 1 && filters[0] === "겨울용";
   const popular = landing
-    ? POPULAR_YARNS.slice(0, 3)
+    ? POPULAR_YARNS.slice(0, 6)
     : POPULAR_YARNS.filter((item) => {
         const categoryOk =
           category === "all" ||
@@ -354,14 +354,14 @@ function CodexDiscover() {
               <GuideRow
                 image={media("media/yarn-pink.jpg")}
                 title="실 재질"
-                meta="울/면/아크릴/혼방"
+                meta="울 · 캐시미어 · 면 · 양말실"
                 body="각 재질의 장단점과 계절 추천을 확인해요."
                 onClick={() => push({ name: "codex", id: "yarns" })}
               />
               <GuideRow
                 image={media("media/needle-wood.jpg")}
                 title="권장 바늘/게이지"
-                meta="실 굵기별 추천"
+                meta="일자 · 줄 · 양면 · 코바늘"
                 body="실 굵기에 맞는 바늘 호수를 손쉽게 찾아요."
                 onClick={() => push({ name: "codex", id: "needles" })}
               />
@@ -498,6 +498,7 @@ function CodexCare() {
       <Explain title="손세탁" body="미지근한 물에 중성세제를 풀어 짧게 눌러 빨아요. 비비거나 탈수기로 짜면 코가 늘어지고 털이 뭉칩니다." />
       <Explain title="세탁망" body="수면사, 모헤어, 레이스는 세탁망에 넣어 마찰을 줄여요. 색이 진한 실은 처음 몇 번은 따로 빨아요." />
       <Explain title="건조" body="수건 위에 눕혀 눌러 물기를 빼고, 그늘에서 말려요. 아크릴과 수면사는 건조기 열에 눌리면 자국이 남아요." />
+      <Explain title="캐시미어 · 실크 · 알파카" body="고급 동물성 섬유는 미지근한 물에 짧게 담그고 비틀어 짜지 않아요. 캐시미어와 앙고라는 보풀과 털 빠짐이 있어 세탁망에 넣고, 실크는 광택이 상하지 않게 그늘에서 눕혀 말려요." />
     </div>
   );
 }
