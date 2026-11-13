@@ -224,9 +224,7 @@ function HomePane() {
               <span className="inline-flex justify-center">
                 <CrownIcon color={king.crown} />
               </span>
-              <span className="mx-auto mt-1 grid h-16 w-16 place-items-center rounded-full bg-[#f6f6f6] text-[13px] font-bold">
-                {king.name.slice(0, 1)}
-              </span>
+              <img src={king.image} alt="" className="mx-auto mt-1 h-16 w-16 rounded-full object-cover" />
               <p className="mt-2 text-[13px] font-bold">{king.name}</p>
               <div className="mt-2 rounded-lg border border-[#eee] px-1 py-2 text-[12px] leading-relaxed">
                 <p className="font-bold">작품 {king.works}개</p>
@@ -417,6 +415,7 @@ export function RankingScreen() {
             <span className="text-2xl" style={{ color: king.crown }}>
               {index + 1}
             </span>
+            <img src={king.image} alt="" className="h-12 w-12 rounded-full object-cover" />
             <span>
               <span className="block font-bold">{king.name}</span>
               <span className="text-[13px] text-[#777]">

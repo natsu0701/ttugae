@@ -527,9 +527,9 @@ export const QUESTIONS: Question[] = [
 ];
 
 export const KINGS = [
-  { name: "김뜨개", crown: "#f0c14a", works: 13, rows: 223, sts: 1023 },
-  { name: "이현수", crown: "#c9c9c9", works: 13, rows: 223, sts: 1023 },
-  { name: "김미니", crown: "#f3b4b0", works: 13, rows: 223, sts: 1023 },
+  { name: "김뜨개", crown: "#f0c14a", works: 13, rows: 223, sts: 1023, image: media("media/king-kim.jpg") },
+  { name: "이현수", crown: "#c9c9c9", works: 13, rows: 223, sts: 1023, image: media("media/king-lee.jpg") },
+  { name: "김미니", crown: "#f3b4b0", works: 13, rows: 223, sts: 1023, image: media("media/king-mini.jpg") },
 ];
 
 export const NAVI_STEPS = [
