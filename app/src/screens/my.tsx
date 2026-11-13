@@ -8,8 +8,22 @@ import { ChevronRight, DragScroll, GearIcon, Mascot, cx } from "../ui.tsx";
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 const CALENDAR_EMOJIS = ["🧶", "❤️", "⭐", "✅", "🌸", "😊", "☕", "🌙"];
 
-function calendarKey(day: number) {
-  return `2025-01-${String(day).padStart(2, "0")}`;
+function calendarKey(year: number, month: number, day: number) {
+  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function knitShade(seconds: number) {
+  if (seconds <= 0) return 0;
+  const hours = Math.min(6, Math.max(1, Math.ceil(seconds / 3600)));
+  return 0.16 + (hours - 1) * 0.14;
+}
+
+function formatKnit(seconds: number) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  if (hours && minutes) return `${hours}시간 ${minutes}분`;
+  if (hours) return `${hours}시간`;
+  return `${minutes}분`;
 }
 
 const STAMPS = [
@@ -34,14 +48,30 @@ export function MyScreen() {
   const minutes = Math.floor(data.projects.reduce((sum, project) => sum + project.elapsed, 0) / 60);
   const level = data.level ?? "입문자";
   const calendarMarks = data.calendarMarks ?? {};
+  const knitMinutes = data.knitMinutes ?? {};
+  const [cursor, setCursor] = useState(() => {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() };
+  });
   const [pickedDay, setPickedDay] = useState<number | null>(null);
+  const shiftMonth = (delta: number) => {
+    setCursor((current) => {
+      const next = new Date(current.year, current.month + delta, 1);
+      return { year: next.getFullYear(), month: next.getMonth() };
+    });
+    setPickedDay(null);
+  };
   const setCalendarMark = (day: number, emoji: string | null) => {
-    const key = calendarKey(day);
+    const key = calendarKey(cursor.year, cursor.month, day);
     const next = { ...calendarMarks };
     if (emoji) next[key] = emoji;
     else delete next[key];
     patch({ calendarMarks: next });
   };
+  const daysInMonth = new Date(cursor.year, cursor.month + 1, 0).getDate();
+  const firstWeekday = new Date(cursor.year, cursor.month, 1).getDay();
+  const pickedKey = pickedDay ? calendarKey(cursor.year, cursor.month, pickedDay) : "";
+  const pickedSeconds = pickedKey ? (knitMinutes[pickedKey] ?? 0) : 0;
 
   return (
     <div className="pb-8">
@@ -94,34 +124,45 @@ export function MyScreen() {
       </section>
 
       <section className="mx-4 mt-4 rounded-lg bg-[#ffe8ea] px-3 py-4">
-        <div className="mb-2 flex items-center justify-center gap-6 text-[14px] font-semibold">
-          <span className="text-[#e7a0ab]">‹</span>
-          <span>2025년 1월</span>
-          <span className="text-[#e7a0ab]">›</span>
+        <div className="mb-1 flex items-center justify-center gap-6 text-[14px] font-semibold">
+          <button type="button" aria-label="이전 달" onClick={() => shiftMonth(-1)} className="grid h-6 w-6 place-items-center text-[#e7a0ab]">
+            ‹
+          </button>
+          <span>
+            {cursor.year}년 {cursor.month + 1}월
+          </span>
+          <button type="button" aria-label="다음 달" onClick={() => shiftMonth(1)} className="grid h-6 w-6 place-items-center text-[#e7a0ab]">
+            ›
+          </button>
         </div>
+        <p className="mb-1 text-center text-[11px] text-[#c98490]">오래 뜰수록 칸이 진해져요</p>
         <div className="grid grid-cols-7 text-center text-[11px] text-[#c98490]">
           {DAYS.map((day) => (
             <span key={day} className="py-1">{day}</span>
           ))}
         </div>
-        <div className="grid grid-cols-7 text-center text-[12px]">
-          {Array.from({ length: 3 }, (_, index) => (
+        <div className="grid grid-cols-7 gap-0.5 text-center text-[12px]">
+          {Array.from({ length: firstWeekday }, (_, index) => (
             <span key={`pad-${index}`} />
           ))}
-          {Array.from({ length: 31 }, (_, index) => {
+          {Array.from({ length: daysInMonth }, (_, index) => {
             const day = index + 1;
-            const emoji = calendarMarks[calendarKey(day)];
+            const key = calendarKey(cursor.year, cursor.month, day);
+            const emoji = calendarMarks[key];
+            const seconds = knitMinutes[key] ?? 0;
+            const shade = knitShade(seconds);
             const selected = pickedDay === day;
             return (
               <button
                 key={day}
                 type="button"
-                aria-label={emoji ? `${day}일 ${emoji}` : `${day}일`}
+                aria-label={[`${day}일`, emoji, seconds ? formatKnit(seconds) : ""].filter(Boolean).join(" ")}
                 aria-pressed={selected}
                 onClick={() => setPickedDay(selected ? null : day)}
-                className="flex h-11 flex-col items-center pt-1 text-[#7a4d55]"
+                className="flex h-11 flex-col items-center rounded-md pt-1 text-[#7a4d55]"
+                style={shade ? { backgroundColor: `rgba(176, 48, 82, ${shade})` } : undefined}
               >
-                <span className={cx("grid h-5 w-5 place-items-center rounded-full leading-none", selected && "bg-white font-bold")}>{day}</span>
+                <span className={cx("grid h-5 w-5 place-items-center rounded-full leading-none", (selected || shade > 0) && "bg-white font-bold")}>{day}</span>
                 <span className="mt-0.5 h-4 text-[13px] leading-none">{emoji ?? ""}</span>
               </button>
             );
@@ -130,24 +171,25 @@ export function MyScreen() {
         {pickedDay ? (
           <div className="mt-3 rounded-lg bg-white/80 px-2 py-3">
             <p className="text-center text-[13px] font-semibold text-[#7a4d55]">{pickedDay}일에 이모티콘</p>
+            {pickedSeconds ? <p className="mt-0.5 text-center text-[12px] text-[#a56a76]">이 날 {formatKnit(pickedSeconds)}</p> : null}
             <div className="mt-2 grid grid-cols-8 gap-1">
               {CALENDAR_EMOJIS.map((emoji) => (
                 <button
                   key={emoji}
                   type="button"
                   aria-label={`${pickedDay}일에 ${emoji} 넣기`}
-                  aria-pressed={calendarMarks[calendarKey(pickedDay)] === emoji}
+                  aria-pressed={calendarMarks[pickedKey] === emoji}
                   onClick={() => setCalendarMark(pickedDay, emoji)}
                   className={cx(
                     "grid h-9 place-items-center rounded-full bg-white text-[18px]",
-                    calendarMarks[calendarKey(pickedDay)] === emoji && "ring-2 ring-blush",
+                    calendarMarks[pickedKey] === emoji && "ring-2 ring-blush",
                   )}
                 >
                   {emoji}
                 </button>
               ))}
             </div>
-            {calendarMarks[calendarKey(pickedDay)] ? (
+            {calendarMarks[pickedKey] ? (
               <button type="button" onClick={() => setCalendarMark(pickedDay, null)} className="mt-2 w-full text-[12px] text-[#999]">
                 이모티콘 지우기
               </button>

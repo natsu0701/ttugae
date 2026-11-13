@@ -218,6 +218,7 @@ export type Persisted = {
   counters: Counter[];
   likes: string[];
   calendarMarks: Record<string, string>;
+  knitMinutes: Record<string, number>;
   notifRead: boolean;
   naviDone: Record<string, string[]>;
   catalogVersion?: number;

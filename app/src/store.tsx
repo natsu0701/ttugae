@@ -32,6 +32,24 @@ const STORAGE_KEY = "ttg-app-state-v1";
 
 const TAB_ROUTES = new Set(["home", "bag", "lounge", "my"]);
 
+function dateKey(date: Date) {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+function seedKnitMinutes(now = new Date()): Record<string, number> {
+  const hoursByDay = [0, 1, 3, 0, 2, 5, 1, 0, 4, 2, 0, 6, 1, 3, 0, 2, 4, 1, 0, 5, 2, 0, 3, 1, 6, 2, 0, 4, 1, 3, 2];
+  const marks: Record<string, number> = {};
+  hoursByDay.forEach((hours, index) => {
+    const day = index + 1;
+    if (!hours || day > now.getDate()) return;
+    const date = new Date(now.getFullYear(), now.getMonth(), day);
+    marks[dateKey(date)] = hours * 3600;
+  });
+  return marks;
+}
+
 function freshPersisted(): Persisted {
   return {
     onboarded: false,
@@ -53,6 +71,7 @@ function freshPersisted(): Persisted {
       "2025-01-15": "⭐",
       "2025-01-18": "✅",
     },
+    knitMinutes: seedKnitMinutes(),
     notifRead: false,
     naviDone: {},
     catalogVersion: 2,
@@ -76,6 +95,7 @@ function loadPersisted(): Persisted {
       counters: parsed.counters?.length ? parsed.counters : base.counters,
       likes: parsed.likes ?? [],
       calendarMarks: parsed.calendarMarks ?? base.calendarMarks,
+      knitMinutes: parsed.knitMinutes ?? base.knitMinutes,
       naviDone: parsed.naviDone ?? {},
     };
   } catch {
@@ -326,12 +346,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!running) return;
     const id = window.setInterval(() => {
-      setData((current) => ({
-        ...current,
-        projects: current.projects.map((project) =>
-          project.running ? { ...project, elapsed: project.elapsed + 1 } : project,
-        ),
-      }));
+      setData((current) => {
+        const key = dateKey(new Date());
+        const knitMinutes = { ...(current.knitMinutes ?? {}) };
+        knitMinutes[key] = (knitMinutes[key] ?? 0) + 1;
+        return {
+          ...current,
+          knitMinutes,
+          projects: current.projects.map((project) =>
+            project.running ? { ...project, elapsed: project.elapsed + 1 } : project,
+          ),
+        };
+      });
     }, 1000);
     return () => window.clearInterval(id);
   }, [running]);
