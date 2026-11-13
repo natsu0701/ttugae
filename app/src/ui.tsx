@@ -428,16 +428,30 @@ function CameraSheet() {
 }
 
 export function ToastHost() {
-  const { toast, route } = useApp();
+  const { toast, toastAction, route, push, dismissToast } = useApp();
   if (!toast) return null;
   return (
     <div
       className={cx(
-        "pointer-events-none absolute left-4 right-4 z-50 rounded-lg bg-ink px-4 py-3 text-center text-[13px] text-white",
+        "pointer-events-none absolute left-4 right-4 z-50 flex items-center gap-3 rounded-lg bg-ink px-4 py-3 text-[13px] text-white",
+        toastAction ? "justify-between text-left" : "justify-center text-center",
         showsTabBar(route) ? "bottom-24" : "bottom-6",
       )}
     >
-      {toast}
+      <span className={toastAction ? "min-w-0 flex-1" : undefined}>{toast}</span>
+      {toastAction ? (
+        <button
+          type="button"
+          className="pointer-events-auto shrink-0 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-ink"
+          onClick={() => {
+            const next = toastAction.route;
+            dismissToast();
+            push(next);
+          }}
+        >
+          {toastAction.label}
+        </button>
+      ) : null}
     </div>
   );
 }

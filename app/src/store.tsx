@@ -159,6 +159,8 @@ type AppApi = {
   loungeTab: LoungeTab;
   sort: SortKey;
   toast: string | null;
+  toastAction: { label: string; route: Route } | null;
+  dismissToast: () => void;
   sheet: Sheet;
   calcSts: string;
   calcLen: string;
@@ -219,6 +221,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [loungeTab, setLoungeTab] = useState<LoungeTab>("works");
   const [sort, setSort] = useState<SortKey>({ field: "recent", dir: "desc" });
   const [toast, setToast] = useState<string | null>(null);
+  const [toastKey, setToastKey] = useState(0);
+  const [toastAction, setToastAction] = useState<{ label: string; route: Route } | null>(null);
+  const toastMs = useRef(2200);
   const [sheet, setSheet] = useState<Sheet>(null);
   const [calcSts, setCalcSts] = useState("20");
   const [calcLen, setCalcLen] = useState("60");
@@ -301,9 +306,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!toast) return;
-    const id = window.setTimeout(() => setToast(null), 2200);
+    const id = window.setTimeout(() => {
+      setToast(null);
+      setToastAction(null);
+    }, toastMs.current);
     return () => window.clearTimeout(id);
-  }, [toast]);
+  }, [toast, toastKey]);
 
   const running = data.projects.some((project) => project.running);
   useEffect(() => {
@@ -386,6 +394,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       loungeTab,
       sort,
       toast,
+      toastAction,
+      dismissToast: () => {
+        setToast(null);
+        setToastAction(null);
+      },
       sheet,
       calcSts,
       calcLen,
@@ -398,7 +411,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setBagTab,
       setLoungeTab,
       setSort,
-      notify: (message) => setToast(message),
+      notify: (message) => {
+        toastMs.current = 2200;
+        setToastAction(null);
+        setToastKey((key) => key + 1);
+        setToast(message);
+      },
       openSheet: (next) => setSheet(next),
       closeSheet: () => setSheet(null),
       patch,
@@ -583,6 +601,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
           ...project,
           diary: [{ title: "오늘의 뜨개", body, date }, ...project.diary],
         }));
+        toastMs.current = 5000;
+        setToastAction({ label: "바로가기", route: { name: "diary", id } });
+        setToastKey((key) => key + 1);
         setToast("뜨개일기를 저장했어요");
         back();
       },
@@ -599,10 +620,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
           ...project,
           diary: project.diary.filter((_, itemIndex) => itemIndex !== index),
         }));
+        toastMs.current = 2200;
+        setToastAction(null);
+        setToastKey((key) => key + 1);
         setToast("기록을 지웠어요");
       },
     };
-  }, [bagTab, calcLen, calcResult, calcSts, data, finishId, homeTab, loungeTab, route, sheet, sort, toast]);
+  }, [bagTab, calcLen, calcResult, calcSts, data, finishId, homeTab, loungeTab, route, sheet, sort, toast, toastAction]);
 
   return <AppContext.Provider value={api}>{children}</AppContext.Provider>;
 }
