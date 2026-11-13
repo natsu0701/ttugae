@@ -43,6 +43,7 @@ export type Route =
   | { name: "notifications" }
   | { name: "likes" }
   | { name: "product"; id: string }
+  | { name: "orders"; tab?: "sell" | "buy" }
   | { name: "short"; id: string }
   | { name: "question"; id: string };
 

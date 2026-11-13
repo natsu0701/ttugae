@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
-import { FAQ, KINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, formatClock } from "../data.ts";
+import { FAQ, KINGS, LISTINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, findProduct, formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
 import { BellIcon, ChevronDown, ChevronRight, CrownIcon, DragScroll, FigmaIcon, GearIcon, HeartIcon, Mascot, MinusIcon, NaviIcon, PauseIcon, PlayIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
 
@@ -566,23 +566,28 @@ export function PatternScreen({ id }: { id: string }) {
 
 export function ProductScreen({ id }: { id: string }) {
   const { notify } = useApp();
-  const product = PRODUCTS.find((item) => item.id === id) ?? PRODUCTS[0];
+  const product = findProduct(id);
+  const mine = LISTINGS.some((item) => item.id === product.id);
   return (
     <article className="pb-10">
       <img src={product.image} alt="" className="h-64 w-full object-cover" />
       <div className="px-5 pt-4">
         <p className="text-[12px] font-semibold text-blush">{product.kind}</p>
         <h2 className="text-[22px] font-bold">{product.title}</h2>
-        <p className="mt-1 text-[14px] text-[#888]">{product.seller}</p>
+        <p className="mt-1 text-[14px] text-[#888]">{mine ? "내가 판매 중" : product.seller}</p>
         <p className="mt-3 text-[20px] font-bold">{product.price}</p>
         <p className="mt-3 text-[14px] leading-relaxed text-[#555]">{product.blurb}</p>
-        <button
-          type="button"
-          onClick={() => notify("데모라 결제는 진행되지 않아요")}
-          className="mt-6 h-12 w-full rounded-full bg-ink font-semibold text-white"
-        >
-          구매하기
-        </button>
+        {mine ? (
+          <p className="mt-6 rounded-lg bg-[#f6f6f6] px-4 py-3 text-center text-[14px] text-[#666]">내가 판매 중인 물품이에요.</p>
+        ) : (
+          <button
+            type="button"
+            onClick={() => notify("데모라 결제는 진행되지 않아요")}
+            className="mt-6 h-12 w-full rounded-full bg-ink font-semibold text-white"
+          >
+            구매하기
+          </button>
+        )}
       </div>
     </article>
   );

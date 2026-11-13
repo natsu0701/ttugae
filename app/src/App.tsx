@@ -20,7 +20,7 @@ import {
   WorkScreen,
 } from "./screens/home.tsx";
 import { LoungeScreen, QuestionScreen, ShortScreen } from "./screens/lounge.tsx";
-import { MyScreen } from "./screens/my.tsx";
+import { MyScreen, OrdersScreen } from "./screens/my.tsx";
 import { CodexScreen } from "./screens/codex.tsx";
 import { CollectionScreen } from "./screens/collection.tsx";
 import { codexById } from "./codex.ts";
@@ -81,7 +81,9 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
     case "likes":
       return "좋아요";
     case "product":
-      return "뜨개마켓";
+      return route.id.startsWith("sale-") ? "판매 물품" : "뜨개마켓";
+    case "orders":
+      return "나의 거래";
     case "short":
       return "기와뜨기";
     case "question":
@@ -274,6 +276,8 @@ function renderRoute(route: Route): ReactNode {
       return <LikesScreen />;
     case "product":
       return <ProductScreen id={route.id} />;
+    case "orders":
+      return <OrdersScreen tab={route.tab} />;
     case "short":
       return <ShortScreen id={route.id} />;
     case "question":

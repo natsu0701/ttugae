@@ -455,44 +455,107 @@ export const NEWS: NewsItem[] = [
   },
 ];
 
-export const PRODUCTS: Product[] = [
+export const LISTINGS: Product[] = [
   {
-    id: "m1",
+    id: "sale-1",
     title: "원형뜨기 풀오버 도안",
-    seller: "김뜨개",
+    seller: "나",
     price: "12,000원",
     kind: "도안",
     image: sweater,
     blurb: "탑다운 요크, 미터법 치수표가 포함되어 있어요.",
   },
   {
-    id: "m2",
+    id: "sale-2",
     title: "낙양모사 시그니처 울",
-    seller: "바늘이야기",
+    seller: "나",
     price: "6,500원",
     kind: "실",
     image: yarnPink,
     blurb: "Lot 203 · wool 100% · 권장 바늘 4.0–5.0mm",
   },
   {
-    id: "m3",
+    id: "sale-3",
     title: "실버 일자 대바늘",
-    seller: "바늘이야기",
+    seller: "나",
     price: "18,000원",
     kind: "바늘",
     image: needles,
     blurb: "4.5mm 알루미늄 일자 바늘. 파스텔 실과 함께 찍은 사진이에요.",
   },
   {
-    id: "m4",
+    id: "sale-4",
     title: "게이지 읽는 저녁 클래스",
-    seller: "이현수",
+    seller: "나",
     price: "25,000원",
     kind: "클래스",
     image: cardigan,
     blurb: "세탁 전후 게이지를 재고 치수로 바꾸는 한 시간.",
   },
 ];
+
+export const PURCHASES: Product[] = [];
+
+export const PRODUCTS: Product[] = [
+  {
+    id: "mk1",
+    title: "코튼 머플러 도안",
+    seller: "김뜨개",
+    price: "8,000원",
+    kind: "도안",
+    image: media("media/pop-beanie.jpg"),
+    blurb: "초보용 코튼 머플러. 코 수와 단 수가 적혀 있어요.",
+  },
+  {
+    id: "mk2",
+    title: "모헤어 목도리실",
+    seller: "실꾸미기",
+    price: "7,200원",
+    kind: "실",
+    image: media("media/news-yarn.jpg"),
+    blurb: "가볍고 보풀이 있는 겨울 목도리실이에요.",
+  },
+  {
+    id: "mk3",
+    title: "대나무 코바늘 세트",
+    seller: "바늘이야기",
+    price: "22,000원",
+    kind: "바늘",
+    image: woodNeedle,
+    blurb: "2.5–6.0mm 대나무 코바늘 여섯 자루.",
+  },
+  {
+    id: "mk4",
+    title: "초보 대바늘 클래스",
+    seller: "이현수",
+    price: "30,000원",
+    kind: "클래스",
+    image: media("media/news-hands.jpg"),
+    blurb: "코 잡기부터 고무단까지 두 시간 수업이에요.",
+  },
+  {
+    id: "mk5",
+    title: "린넨 여름 탑 도안",
+    seller: "하늘바다",
+    price: "9,500원",
+    kind: "도안",
+    image: linen,
+    blurb: "얇은 린넨으로 뜨는 민소매 탑 치수표.",
+  },
+  {
+    id: "mk6",
+    title: "양말용 메리노",
+    seller: "모카모카",
+    price: "5,800원",
+    kind: "실",
+    image: woolSwatch,
+    blurb: "뒤꿈치가 잘 버티는 양말용 메리노 4합.",
+  },
+];
+
+export function findProduct(id: string) {
+  return LISTINGS.find((item) => item.id === id) ?? PURCHASES.find((item) => item.id === id) ?? PRODUCTS.find((item) => item.id === id) ?? PRODUCTS[0];
+}
 
 export const SHORTS: ShortClip[] = [
   { id: "s1", title: "컬러 장갑 코 잡는 법", author: "명훈명훈", length: "0:04", image: media("media/pop-mittens.jpg"), video: media("media/clips/mittens.mp4") },

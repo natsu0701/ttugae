@@ -130,6 +130,8 @@ function routeToHash(route: Route) {
       return route.id ? `#/codex/${route.id}` : "#/codex";
     case "collection":
       return route.id ? `#/collection/${route.id}` : "#/collection";
+    case "orders":
+      return route.tab === "buy" ? "#/orders/buy" : "#/orders";
     default:
       return `#/${route.name}`;
   }
@@ -153,6 +155,7 @@ function hashToRoute(hash: string): Route {
   if (name === "work" && id) return { name: "work", id };
   if (name === "news" && id) return { name: "news", id };
   if (name === "product" && id) return { name: "product", id };
+  if (name === "orders") return { name: "orders", tab: id === "buy" ? "buy" : "sell" };
   if (name === "short" && id) return { name: "short", id };
   if (name === "question" && id) return { name: "question", id };
   if (name === "project-form") return { name: "project-form", id };

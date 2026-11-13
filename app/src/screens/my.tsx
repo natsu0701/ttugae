@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from "react";
-import { PRODUCTS } from "../data.ts";
+import { useEffect, useState, type ReactNode } from "react";
+import { LISTINGS, PURCHASES } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { ToolKind, UnitSystem } from "../types.ts";
 import { BagFillIcon, BellFillIcon, BookmarkFillIcon, ChatFillIcon, ClockFillIcon, CommunityFillIcon, FileTextFillIcon, HeartFillIcon, PencilFillIcon } from "../icons/webFill.tsx";
@@ -227,13 +227,13 @@ export function MyScreen() {
 
       <section className="mt-5">
         <div className="flex items-center justify-between px-4">
-          <h2 className="text-[16px] font-bold">판매 물품 {PRODUCTS.length}</h2>
-          <button type="button" aria-label="마켓으로" onClick={() => goTab("home", "market")} className="grid h-6 w-6 place-items-center leading-none">
+          <h2 className="text-[16px] font-bold">판매 물품 {LISTINGS.length}</h2>
+          <button type="button" aria-label="판매와 구매 보기" onClick={() => push({ name: "orders" })} className="grid h-6 w-6 place-items-center leading-none">
             <ChevronRight />
           </button>
         </div>
         <DragScroll as="ul" className="mt-2 flex gap-2 overflow-x-auto px-4 pb-1">
-          {PRODUCTS.map((item) => (
+          {LISTINGS.map((item) => (
             <li key={item.id} className="w-28 shrink-0">
               <button type="button" onClick={() => push({ name: "product", id: item.id })} className="w-full text-left">
                 <img src={item.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
@@ -261,8 +261,8 @@ export function MyScreen() {
       </section>
 
       <Menu title="나의 거래">
-        <MenuRow icon={<FileTextFillIcon className="h-5 w-5" />} label="판매 관리" onClick={() => goTab("home", "market")} />
-        <MenuRow icon={<BagFillIcon className="h-5 w-5" />} label="구매 내역" onClick={() => goTab("home", "market")} />
+        <MenuRow icon={<FileTextFillIcon className="h-5 w-5" />} label="판매 관리" onClick={() => push({ name: "orders", tab: "sell" })} />
+        <MenuRow icon={<BagFillIcon className="h-5 w-5" />} label="구매 내역" onClick={() => push({ name: "orders", tab: "buy" })} />
       </Menu>
       <Menu title="나의 활동">
         <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="내 게시물" onClick={() => goTab("lounge", "works")} />
@@ -337,6 +337,62 @@ function Menu({ title, children }: { title: string; children: ReactNode }) {
       <h2 className="py-2 text-[16px] font-bold">{title}</h2>
       {children}
     </section>
+  );
+}
+
+export function OrdersScreen({ tab = "sell" }: { tab?: "sell" | "buy" }) {
+  const { push, goTab } = useApp();
+  useEffect(() => {
+    if (tab !== "buy") return;
+    document.getElementById("orders-buy")?.scrollIntoView({ block: "start" });
+  }, [tab]);
+  return (
+    <div className="pb-10">
+      <section className="px-4 pt-2">
+        <h2 className="text-[18px] font-bold">내가 판매하는 물품 {LISTINGS.length}</h2>
+        <ul className="mt-3 space-y-3">
+          {LISTINGS.map((item) => (
+            <li key={item.id}>
+              <button type="button" onClick={() => push({ name: "product", id: item.id })} className="flex w-full gap-3 rounded-lg border border-[#f0f0f0] p-3 text-left">
+                <img src={item.image} alt="" className="h-20 w-20 rounded-lg object-cover" />
+                <span className="min-w-0">
+                  <span className="text-[11px] font-semibold text-blush">판매 중 · {item.kind}</span>
+                  <span className="mt-0.5 block text-[15px] font-bold">{item.title}</span>
+                  <span className="mt-1 block text-[14px] font-semibold">{item.price}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section id="orders-buy" className="px-4 pt-8">
+        <h2 className="text-[18px] font-bold">내가 구매한 물품 {PURCHASES.length}</h2>
+        {PURCHASES.length === 0 ? (
+          <div className="mt-3 rounded-lg bg-[#f7f7f7] px-4 py-6 text-center">
+            <p className="text-[14px] text-[#777]">아직 구매한 물품이 없어요.</p>
+            <button type="button" onClick={() => goTab("home", "market")} className="mt-4 h-11 rounded-full bg-ink px-5 text-[14px] font-semibold text-white">
+              뜨개마켓 둘러보기
+            </button>
+          </div>
+        ) : (
+          <ul className="mt-3 space-y-3">
+            {PURCHASES.map((item) => (
+              <li key={item.id}>
+                <button type="button" onClick={() => push({ name: "product", id: item.id })} className="flex w-full gap-3 rounded-lg border border-[#f0f0f0] p-3 text-left">
+                  <img src={item.image} alt="" className="h-20 w-20 rounded-lg object-cover" />
+                  <span>
+                    <span className="text-[11px] font-semibold text-blush">구매함 · {item.kind}</span>
+                    <span className="mt-0.5 block text-[15px] font-bold">{item.title}</span>
+                    <span className="mt-1 block text-[12px] text-[#888]">{item.seller}</span>
+                    <span className="mt-1 block text-[14px] font-semibold">{item.price}</span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
   );
 }
 
