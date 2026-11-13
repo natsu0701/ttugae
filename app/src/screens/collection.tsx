@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { media } from "../data.ts";
+import { WORKS, media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import { ChevronRight, DragScroll, FilterIcon, PencilIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
 
@@ -214,7 +214,8 @@ export function CollectionScreen({ id }: { id?: string }) {
 }
 
 function CollectionBrowse() {
-  const { push } = useApp();
+  const { push, data } = useApp();
+  const liked = WORKS.filter((work) => data.likes.includes(work.id));
   const [query, setQuery] = useState("");
   const [fiber, setFiber] = useState<Fiber | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -277,6 +278,22 @@ function CollectionBrowse() {
           </div>
         ) : null}
       </div>
+
+      {liked.length > 0 ? (
+        <section className="px-4 pt-5">
+          <h2 className="text-[18px] font-bold">좋아요한 작품</h2>
+          <ul className="mt-3 grid grid-cols-3 gap-2">
+            {liked.map((work) => (
+              <li key={work.id}>
+                <button type="button" onClick={() => push({ name: "work", id: work.id })} className="w-full text-left">
+                  <img src={work.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
+                  <span className="mt-1 block truncate text-[13px] font-bold">{work.title}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="px-4 pt-5">
         <h2 className="text-[16px] font-bold">카테고리</h2>

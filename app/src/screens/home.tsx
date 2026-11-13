@@ -209,7 +209,7 @@ function HomePane() {
                 className="mt-1 flex items-center gap-1 text-[12px] text-black"
               >
                 <HeartIcon filled={data.likes.includes(work.id)} />
-                {work.likes}
+                {work.likes + (data.likes.includes(work.id) ? 1 : 0)}
               </button>
             </div>
           ))}

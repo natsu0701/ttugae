@@ -28,9 +28,10 @@ export function LoungeScreen() {
                 aria-label="좋아요"
                 aria-pressed={data.likes.includes(work.id)}
                 onClick={() => toggleLike(work.id)}
-                className="absolute bottom-1 right-1 grid h-7 w-7 place-items-center rounded-full bg-white"
+                className="absolute bottom-1 right-1 flex items-center gap-0.5 rounded-full bg-white px-1.5 py-1 text-[11px] text-black"
               >
-                <HeartIcon filled={data.likes.includes(work.id)} />
+                <HeartIcon filled={data.likes.includes(work.id)} className="h-4 w-4" />
+                {work.likes + (data.likes.includes(work.id) ? 1 : 0)}
               </button>
             </li>
           ))}
