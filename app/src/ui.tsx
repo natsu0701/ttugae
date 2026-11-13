@@ -608,8 +608,8 @@ export function ListIcon({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-export function ClockIcon() {
-  return <ClockFillIcon className="h-5 w-5" />;
+export function ClockIcon({ className = "h-5 w-5" }: { className?: string } = {}) {
+  return <ClockFillIcon className={className} />;
 }
 
 export function RowsIcon() {

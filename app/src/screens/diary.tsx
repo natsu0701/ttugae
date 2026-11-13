@@ -195,13 +195,15 @@ export function DiaryScreen({ id }: { id: string }) {
       <section className="px-4 pt-6">
         <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 오늘의 기록</h2>
         <div className="mt-3 grid grid-cols-2 gap-3">
-          <div className="rounded-lg bg-white px-4 py-5 text-center shadow-card">
-            <RowsIcon />
+          <div className="flex flex-col items-center rounded-lg bg-white px-4 py-5 text-center shadow-card">
+            <span className="grid h-7 w-7 place-items-center">
+              <RowsIcon />
+            </span>
             <p className="mt-2 text-[28px] font-bold">{rows}단</p>
             <p className="text-[13px] text-[#888]">작업량</p>
           </div>
-          <div className="rounded-lg bg-white px-4 py-5 text-center shadow-card">
-            <ClockIcon />
+          <div className="flex flex-col items-center rounded-lg bg-white px-4 py-5 text-center shadow-card">
+            <ClockIcon className="h-7 w-7" />
             <p className="mt-2 text-[28px] font-bold">{minutes}분</p>
             <p className="text-[13px] text-[#888]">소요 시간</p>
             <p className="mt-1 font-mono text-[12px] text-[#aaa]">{formatClock(project.elapsed)}</p>
