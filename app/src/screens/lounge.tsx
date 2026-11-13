@@ -26,8 +26,9 @@ export function LoungeScreen() {
               <button
                 type="button"
                 aria-label="좋아요"
+                aria-pressed={data.likes.includes(work.id)}
                 onClick={() => toggleLike(work.id)}
-                className="absolute bottom-1 right-1 grid h-7 w-7 place-items-center rounded-full bg-black/45 text-white"
+                className="absolute bottom-1 right-1 grid h-7 w-7 place-items-center rounded-full bg-white"
               >
                 <HeartIcon filled={data.likes.includes(work.id)} />
               </button>

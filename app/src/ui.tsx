@@ -449,7 +449,7 @@ export function ChevronRight() {
   return <ChevronRightFillIcon className="h-5 w-5" />;
 }
 export function HeartIcon({ filled, className = "h-5 w-5" }: { filled?: boolean; className?: string }) {
-  return <HeartFillIcon filled={filled} className={className} />;
+  return <HeartFillIcon filled={filled} className={cx("text-black", className)} />;
 }
 export function SearchIcon() {
   return <SearchFillIcon className="h-5 w-5" />;

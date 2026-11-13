@@ -49,7 +49,7 @@ function HomePane() {
           </button>
         </div>
         <div className="flex gap-1">
-          <button type="button" aria-label="뜨개컬렉션" onClick={() => push({ name: "collection" })} className="grid h-10 w-10 place-items-center">
+          <button type="button" aria-label="뜨개컬렉션" aria-pressed={data.likes.length > 0} onClick={() => push({ name: "collection" })} className="grid h-10 w-10 place-items-center text-black">
             <HeartIcon filled={data.likes.length > 0} />
           </button>
           <button type="button" aria-label="알림" onClick={() => push({ name: "notifications" })} className="relative grid h-10 w-10 place-items-center">
@@ -191,8 +191,9 @@ function HomePane() {
               <button
                 type="button"
                 aria-label="좋아요 토글"
+                aria-pressed={data.likes.includes(work.id)}
                 onClick={() => toggleLike(work.id)}
-                className="mt-1 flex items-center gap-1 text-[12px] text-blush"
+                className="mt-1 flex items-center gap-1 text-[12px] text-black"
               >
                 <HeartIcon filled={data.likes.includes(work.id)} />
                 {work.likes}
@@ -481,7 +482,7 @@ export function WorkScreen({ id }: { id: string }) {
       <div className="px-5 pt-4">
         <p className="text-[13px] text-[#999]">{work.author}</p>
         <h2 className="text-[22px] font-bold">{work.title}</h2>
-        <button type="button" onClick={() => toggleLike(work.id)} className="mt-3 flex items-center gap-1 text-[14px]">
+        <button type="button" aria-pressed={liked} onClick={() => toggleLike(work.id)} className="mt-3 flex items-center gap-1 text-[14px] text-black">
           <HeartIcon filled={liked} /> {work.likes + (liked ? 1 : 0)}
         </button>
         <p className="mt-3 text-[14px] leading-relaxed text-[#666]">라운지에 올라온 완성작이에요. 하트는 이 기기에만 남아요.</p>
