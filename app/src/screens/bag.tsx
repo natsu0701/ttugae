@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock } from "../data.ts";
+import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock, media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { BagTab, Needle, Project, Yarn } from "../types.ts";
 import type { SortDir, SortField } from "../types.ts";
@@ -43,6 +43,18 @@ export function BagScreen() {
   );
 }
 
+const CATEGORY_IMAGES: Record<string, string> = {
+  코튼: media("media/swatch-pink.jpg"),
+  린넨: media("media/swatch-linen.jpg"),
+  울: media("media/swatch-wool.jpg"),
+  폴리에스터: media("media/swatch-rose.jpg"),
+  나일론: media("media/proj-socks.jpg"),
+  대바늘: media("media/needles.jpg"),
+  코바늘: media("media/needle-eti.jpg"),
+  특수바늘: media("media/needle-wood.jpg"),
+  기타: media("media/news-hands.jpg"),
+};
+
 function CategoryRow({
   items,
   value,
@@ -52,18 +64,18 @@ function CategoryRow({
   value: string | null;
   onChange: (value: string | null) => void;
 }) {
-  const tones = ["#e7b15a", "#d9d9d9", "#3f6f74", "#e6d2b8", "#c5c7ce", "#9bb7c9"];
   return (
     <div className="px-4 pt-4">
       <p className="text-[14px] font-semibold">카테고리</p>
       <DragScroll className="mt-3 flex gap-3 overflow-x-auto pb-1">
-        {items.map((item, index) => {
+        {items.map((item) => {
           const active = value === item;
           return (
             <button key={item} type="button" onClick={() => onChange(active ? null : item)} className="w-16 shrink-0 text-center">
-              <span
-                className={cx("mx-auto block h-14 w-14 rounded-full border-2", active ? "border-ink" : "border-transparent")}
-                style={{ background: tones[index % tones.length] }}
+              <img
+                src={CATEGORY_IMAGES[item]}
+                alt=""
+                className={cx("mx-auto block h-14 w-14 rounded-full border-2 object-cover", active ? "border-ink" : "border-white")}
               />
               <span className="mt-1 block text-[12px]">{item}</span>
             </button>
