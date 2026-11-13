@@ -349,7 +349,7 @@ const QUIZ = [
 ];
 
 export function SkillScreen() {
-  const { finishOnboarding } = useApp();
+  const { finishOnboarding, back } = useApp();
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState<string | null>(null);
@@ -376,6 +376,9 @@ export function SkillScreen() {
         <BlackButton className="mt-8" onClick={() => finishOnboarding(done)}>
           홈으로
         </BlackButton>
+        <button type="button" onClick={back} className="mt-3 h-12 w-full rounded-full bg-[#f4f4f4] text-[15px] font-semibold">
+          취소
+        </button>
       </div>
     );
   }
@@ -398,6 +401,9 @@ export function SkillScreen() {
           </button>
         ))}
       </div>
+      <button type="button" onClick={back} className="mt-6 h-12 w-full rounded-full bg-[#f4f4f4] text-[15px] font-semibold">
+        취소
+      </button>
     </div>
   );
 }
