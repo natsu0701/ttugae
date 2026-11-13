@@ -7,7 +7,7 @@ const MATERIAL_KINDS = ["바늘", "실", "기타"] as const;
 type MaterialKind = (typeof MATERIAL_KINDS)[number];
 
 export function DiaryScreen({ id }: { id: string }) {
-  const { data, back, saveDiary, updateDiary, removeDiary } = useApp();
+  const { data, back, saveDiary, updateDiary, removeDiary, notify } = useApp();
   const project = data.projects.find((item) => item.id === id);
   const fileRef = useRef<HTMLInputElement>(null);
   const memoRef = useRef<HTMLTextAreaElement>(null);
@@ -388,6 +388,26 @@ export function DiaryScreen({ id }: { id: string }) {
       </section>
 
       <div className="px-4 pt-6">
+        {photos.length > 0 ? (
+          <ul className={photos.length === 1 ? "mb-3" : "mb-3 grid grid-cols-3 gap-2"}>
+            {photos.map((url) => (
+              <li key={url} className="relative">
+                <img src={url} alt="" className="aspect-square w-full rounded-lg object-cover" />
+                <button
+                  type="button"
+                  aria-label="이미지 빼기"
+                  onClick={() => {
+                    URL.revokeObjectURL(url);
+                    setPhotos((current) => current.filter((item) => item !== url));
+                  }}
+                  className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-white text-black shadow-sm"
+                >
+                  <CloseIcon size={12} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <button type="button" onClick={() => fileRef.current?.click()} className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f4f4f4] text-[15px] font-semibold">
           <ImagePlusIcon />
           이미지 추가
@@ -401,32 +421,13 @@ export function DiaryScreen({ id }: { id: string }) {
             const file = event.target.files?.[0];
             event.target.value = "";
             if (!file) return;
+            if (photos.length >= 9) {
+              notify("사진은 3줄, 9장까지 넣을 수 있어요");
+              return;
+            }
             setPhotos((current) => [...current, URL.createObjectURL(file)]);
           }}
         />
-        {photos.length > 0 ? (
-          <ul className="mt-3 space-y-3">
-            {photos.map((url) => (
-              <li key={url} className="overflow-hidden rounded-lg bg-white shadow-card">
-                <img src={url} alt="" className="block h-auto w-full bg-[#f7f7f7]" />
-                <div className="flex items-center justify-between px-4 py-3">
-                  <span>
-                    <span className="block text-[15px] font-bold">{project.title}</span>
-                    <span className="text-[12px] text-[#888]">리뷰 이미지</span>
-                  </span>
-                  <button
-                    type="button"
-                    aria-label="이미지 빼기"
-                    onClick={() => setPhotos((current) => current.filter((item) => item !== url))}
-                    className="grid h-8 w-8 place-items-center"
-                  >
-                    <CloseIcon />
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : null}
       </div>
     </div>
   );
