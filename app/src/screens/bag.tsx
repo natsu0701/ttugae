@@ -553,8 +553,8 @@ export function ProjectScreen({ id }: { id: string }) {
       {tab === "diary" ? (
         <ul className="mt-2 divide-y divide-[#f2f2f2] px-4">
           {project.diary.length === 0 ? <li className="py-8 text-center text-[13px] text-[#999]">아직 일기가 없어요.</li> : null}
-          {project.diary.map((entry) => (
-            <li key={entry.title} className="flex justify-between gap-3 py-4">
+          {project.diary.map((entry, index) => (
+            <li key={`${entry.date}-${index}`} className="flex justify-between gap-3 py-4">
               <span>
                 <span className="block font-bold">{entry.title}</span>
                 <span className="text-[13px] text-[#777]">{entry.body}</span>

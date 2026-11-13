@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon, Mascot, PlusIcon, RowsIcon, SearchIcon, SparkIcon, cx } from "../ui.tsx";
+import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon, Mascot, PencilIcon, PlusIcon, RowsIcon, SearchIcon, SparkIcon, TrashIcon, cx } from "../ui.tsx";
 
 const MATERIAL_KINDS = ["바늘", "실", "기타"] as const;
 type MaterialKind = (typeof MATERIAL_KINDS)[number];
 
 export function DiaryScreen({ id }: { id: string }) {
-  const { data, back, saveDiary } = useApp();
+  const { data, back, saveDiary, updateDiary, removeDiary } = useApp();
   const project = data.projects.find((item) => item.id === id);
   const fileRef = useRef<HTMLInputElement>(null);
   const memoRef = useRef<HTMLTextAreaElement>(null);
@@ -29,6 +29,7 @@ export function DiaryScreen({ id }: { id: string }) {
   const [addingYarn, setAddingYarn] = useState(false);
   const [newYarn, setNewYarn] = useState("");
   const [customYarns, setCustomYarns] = useState<{ id: string; label: string }[]>([]);
+  const [editing, setEditing] = useState<number | null>(null);
   const catalog = useMemo(
     () => [
       ...data.yarns.map((yarn) => ({
@@ -333,9 +334,53 @@ export function DiaryScreen({ id }: { id: string }) {
           <ul className="mt-3 space-y-2">
             {project.diary.map((entry, index) => (
               <li key={`${entry.date}-${index}`} className="rounded-lg bg-[#fafafa] px-3 py-2 text-[13px]">
-                <span className="font-semibold">{entry.title}</span>
-                <span className="mt-0.5 block whitespace-pre-line text-[#666]">{entry.body}</span>
-                <span className="mt-1 block text-[12px] text-[#999]">{entry.date}</span>
+                {editing === index ? (
+                  <>
+                    <input
+                      value={entry.title}
+                      aria-label="기록 제목"
+                      autoFocus
+                      onChange={(event) => updateDiary(project.id, index, { title: event.target.value, body: entry.body })}
+                      className="w-full bg-transparent font-semibold outline-none"
+                    />
+                    <textarea
+                      value={entry.body}
+                      aria-label="기록 내용"
+                      rows={Math.min(6, Math.max(2, entry.body.split("\n").length))}
+                      onChange={(event) => updateDiary(project.id, index, { title: entry.title, body: event.target.value })}
+                      className="mt-1 w-full resize-none bg-transparent leading-relaxed text-[#666] outline-none"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <span className="block font-semibold">{entry.title}</span>
+                    <span className="mt-0.5 block whitespace-pre-line text-[#666]">{entry.body}</span>
+                  </>
+                )}
+                <span className="mt-1 flex items-center justify-between gap-2">
+                  <span className="text-[12px] text-[#999]">{entry.date}</span>
+                  <span className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      aria-label={editing === index ? "수정 완료" : "기록 수정"}
+                      onClick={() => setEditing(editing === index ? null : index)}
+                      className="grid h-8 w-8 place-items-center"
+                    >
+                      {editing === index ? <CheckIcon /> : <PencilIcon />}
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="기록 삭제"
+                      onClick={() => {
+                        if (editing === index) setEditing(null);
+                        removeDiary(project.id, index);
+                      }}
+                      className="grid h-8 w-8 place-items-center"
+                    >
+                      <TrashIcon />
+                    </button>
+                  </span>
+                </span>
               </li>
             ))}
           </ul>

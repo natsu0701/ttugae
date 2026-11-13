@@ -199,6 +199,8 @@ type AppApi = {
   dismissFinish: () => void;
   openDiary: () => void;
   saveDiary: (id: string, body: string) => void;
+  updateDiary: (id: string, index: number, entry: { title: string; body: string }) => void;
+  removeDiary: (id: string, index: number) => void;
 };
 
 const AppContext = createContext<AppApi | null>(null);
@@ -583,6 +585,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }));
         setToast("뜨개일기를 저장했어요");
         back();
+      },
+      updateDiary: (id, index, entry) => {
+        updateProject(id, (project) => ({
+          ...project,
+          diary: project.diary.map((item, itemIndex) =>
+            itemIndex === index ? { ...item, title: entry.title, body: entry.body } : item,
+          ),
+        }));
+      },
+      removeDiary: (id, index) => {
+        updateProject(id, (project) => ({
+          ...project,
+          diary: project.diary.filter((_, itemIndex) => itemIndex !== index),
+        }));
+        setToast("기록을 지웠어요");
       },
     };
   }, [bagTab, calcLen, calcResult, calcSts, data, finishId, homeTab, loungeTab, route, sheet, sort, toast]);
