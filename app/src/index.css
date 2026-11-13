@@ -147,6 +147,10 @@ button {
   }
 }
 
+.tteuni-outline {
+  filter: url("#tteuni-white");
+}
+
 .memo-lines {
   background-image: repeating-linear-gradient(
     to bottom,
