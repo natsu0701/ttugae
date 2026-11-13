@@ -114,13 +114,6 @@ export function MyScreen() {
         <button type="button" onClick={() => push({ name: "skill" })} className="mt-3 h-11 w-full rounded-full bg-ink text-[14px] font-semibold text-white">
           지금 확인하러 가기
         </button>
-        <div className="mt-3 flex flex-wrap justify-center gap-2">
-          {["입문뜨개러", "뜨개 중수", "뜨개 고수"].map((tag) => (
-            <button key={tag} type="button" onClick={() => patch({ level: tag })} className="rounded-full bg-[#f4f4f4] px-3 py-1 text-[12px] text-[#666]">
-              #{tag}
-            </button>
-          ))}
-        </div>
       </section>
 
       <section className="mx-4 mt-4 rounded-lg bg-[#ffe8ea] px-3 py-4">
