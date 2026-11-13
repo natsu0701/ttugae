@@ -86,7 +86,7 @@ export function DiaryScreen({ id }: { id: string }) {
       </div>
 
       <section className="px-4 pt-6">
-        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon filled /> 진행 중인 프로젝트</h2>
+        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 진행 중인 프로젝트</h2>
         <article className="mt-3 overflow-hidden rounded-lg bg-white shadow-card">
           <div className="flex gap-3 p-3">
             <img src={project.image} alt="" className="h-28 w-24 rounded-lg object-cover" />
@@ -119,7 +119,7 @@ export function DiaryScreen({ id }: { id: string }) {
       </section>
 
       <section className="px-4 pt-6">
-        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon filled /> 오늘의 기록</h2>
+        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 오늘의 기록</h2>
         <div className="mt-3 grid grid-cols-2 gap-3">
           <div className="rounded-lg bg-white px-4 py-5 text-center shadow-card">
             <RowsIcon />
@@ -136,7 +136,7 @@ export function DiaryScreen({ id }: { id: string }) {
       </section>
 
       <section className="px-4 pt-6">
-        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon filled /> 사용한 재료</h2>
+        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 사용한 재료</h2>
         <div className="mt-3 flex flex-wrap gap-2">
           {chips.map((chip) => (
             <span key={chip} className="inline-flex h-9 items-center gap-1 rounded-full border border-[#eee] bg-white px-3 text-[13px]">
@@ -174,7 +174,7 @@ export function DiaryScreen({ id }: { id: string }) {
 
       <section className="px-4 pt-6">
         <div className="flex items-center justify-between">
-          <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon filled /> 나의 메모</h2>
+          <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 나의 메모</h2>
           <button type="button" onClick={fillMemo} className="inline-flex h-8 items-center gap-1 rounded-full bg-ink px-3 text-[12px] font-semibold text-white">
             <SparkIcon />
             AI 채우기
