@@ -3,7 +3,7 @@ import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock }
 import { useApp } from "../store.tsx";
 import type { BagTab, Needle, Project, Yarn } from "../types.ts";
 import type { SortDir, SortField } from "../types.ts";
-import { CheckIcon, ChevronDown, DoneMark, DragScroll, Fab, FilterIcon, GearIcon, GridIcon, InfoButton, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
+import { CheckIcon, ChevronDown, DoneMark, DragScroll, Fab, FilterIcon, GearIcon, GridIcon, InfoButton, ListIcon, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
 
 const TABS: { id: BagTab; label: string }[] = [
   { id: "projects", label: "프로젝트" },
@@ -117,12 +117,12 @@ function ProjectCatalog({ projects }: { projects: Project[] }) {
     <section>
       <div className="flex items-center justify-between px-4 pt-6">
         <h2 className="text-[16px] font-bold">전체 프로젝트</h2>
-        <div className="flex rounded-full bg-[#f4f4f4] p-1 text-[12px] font-semibold">
-          <button type="button" onClick={() => setMode("card")} className={cx("h-8 rounded-full px-3", mode === "card" ? "bg-white shadow-card" : "text-[#888]")}>
-            카드
+        <div className="flex items-center gap-1">
+          <button type="button" aria-label="카드" onClick={() => setMode("card")} className={cx("grid h-9 w-9 place-items-center", mode === "card" ? "text-ink" : "text-[#c4c4c4]")}>
+            <GridIcon />
           </button>
-          <button type="button" onClick={() => setMode("list")} className={cx("h-8 rounded-full px-3", mode === "list" ? "bg-white shadow-card" : "text-[#888]")}>
-            목록
+          <button type="button" aria-label="목록" onClick={() => setMode("list")} className={cx("grid h-9 w-9 place-items-center", mode === "list" ? "text-ink" : "text-[#c4c4c4]")}>
+            <ListIcon className="h-4 w-4" />
           </button>
         </div>
       </div>

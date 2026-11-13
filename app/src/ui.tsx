@@ -597,6 +597,17 @@ export function GridIcon() {
   return <FigmaIcon name="category" className="h-4 w-4" />;
 }
 
+export function ListIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M4 5.4h2.4v2.4H4V5.4zm4.2 0H20v2.4H8.2V5.4zM4 10.8h2.4v2.4H4v-2.4zm4.2 0H20v2.4H8.2v-2.4zM4 16.2h2.4V18.6H4v-2.4zm4.2 0H20v2.4H8.2v-2.4z"
+      />
+    </svg>
+  );
+}
+
 export function ClockIcon() {
   return <ClockFillIcon className="h-5 w-5" />;
 }
