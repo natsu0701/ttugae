@@ -325,7 +325,7 @@ export function MyScreen() {
 function Shortcut({ icon, label, onClick }: { icon: ReactNode; label: string; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} className="text-[12px]">
-      <span className="mx-auto grid h-14 w-14 place-items-center rounded-lg border border-[#ececec]">{icon}</span>
+      <span className="mx-auto grid h-14 w-14 place-items-center">{icon}</span>
       <span className="mt-1 block">{label}</span>
     </button>
   );
