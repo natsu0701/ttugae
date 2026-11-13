@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
 import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon, Mascot, PlusIcon, RowsIcon, SearchIcon, SparkIcon, cx } from "../ui.tsx";
@@ -10,6 +10,10 @@ export function DiaryScreen({ id }: { id: string }) {
   const { data, back, saveDiary } = useApp();
   const project = data.projects.find((item) => item.id === id);
   const fileRef = useRef<HTMLInputElement>(null);
+  const memoRef = useRef<HTMLTextAreaElement>(null);
+  const typingRef = useRef<number | null>(null);
+  const writingRef = useRef(false);
+  const targetRef = useRef("");
   const [memo, setMemo] = useState("");
   const [photos, setPhotos] = useState<string[]>([]);
   const materials = useMemo(() => {
@@ -53,6 +57,25 @@ export function DiaryScreen({ id }: { id: string }) {
     return catalog.filter((item) => item.kind === kind && (!text || item.label.includes(text)));
   }, [catalog, kind, query]);
 
+  const stopTyping = () => {
+    writingRef.current = false;
+    if (typingRef.current !== null) {
+      window.clearTimeout(typingRef.current);
+      typingRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    const field = memoRef.current;
+    if (!field || !writingRef.current) return;
+    const end = field.value.length;
+    field.setSelectionRange(end, end);
+    field.scrollTop = field.scrollHeight;
+    if (field.value === targetRef.current) writingRef.current = false;
+  }, [memo]);
+
+  useEffect(() => stopTyping, []);
+
   if (!project) return <p className="px-6 py-16 text-center text-[14px]">프로젝트를 찾지 못했어요.</p>;
 
   const active = project.parts.find((part) => !part.done) ?? project.parts[0];
@@ -63,9 +86,30 @@ export function DiaryScreen({ id }: { id: string }) {
   const minutes = Math.max(0, Math.round(project.elapsed / 60));
 
   const fillMemo = () => {
+    stopTyping();
     const materialLine = chips.length ? `재료는 ${chips.join(", ")}를 썼어요.` : "";
     const text = `${project.title}을 이어서 기록해요. ${statusLine}. 오늘까지 ${formatClock(project.elapsed)}을 들였어요. ${materialLine}`.trim();
-    setMemo(text);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setMemo(text);
+      return;
+    }
+    writingRef.current = true;
+    targetRef.current = text;
+    memoRef.current?.focus();
+    setMemo("");
+    let index = 0;
+    const step = () => {
+      index += 1;
+      setMemo(text.slice(0, index));
+      if (index >= text.length) {
+        typingRef.current = null;
+        return;
+      }
+      const previous = text[index - 1];
+      const delay = previous === "." || previous === "!" || previous === "?" ? 220 : 34;
+      typingRef.current = window.setTimeout(step, delay);
+    };
+    typingRef.current = window.setTimeout(step, 34);
   };
 
   const toggleChip = (label: string) => {
@@ -275,8 +319,12 @@ export function DiaryScreen({ id }: { id: string }) {
           </button>
         </div>
         <textarea
+          ref={memoRef}
           value={memo}
-          onChange={(event) => setMemo(event.target.value)}
+          onChange={(event) => {
+            stopTyping();
+            setMemo(event.target.value);
+          }}
           placeholder="오늘의 뜨개 느낌이나 팁을 적어보세요."
           aria-label="나의 메모"
           className="memo-lines mt-3 h-40 w-full resize-none rounded-lg border border-[#f0e4d8] bg-[#fffdf8] px-4 py-3 text-[14px] leading-[28px] outline-none"
