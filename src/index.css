@@ -286,6 +286,8 @@ body {
   }
 
   .tteuni-white-stroke {
+    transform: translateZ(0);
+    backface-visibility: hidden;
     filter:
       drop-shadow(3px 0 0 #fff)
       drop-shadow(-3px 0 0 #fff)
@@ -368,7 +370,6 @@ body.yarn-trail-active {
 .yarn-trail-svg {
   overflow: visible;
   mix-blend-mode: normal;
-  filter: blur(0.9px);
 }
 
 @keyframes tteuni-float {
@@ -542,6 +543,8 @@ body.yarn-trail-active {
 .yarn-cursor {
   will-change: transform;
   mix-blend-mode: normal;
+  contain: layout style;
+  isolation: isolate;
 }
 
 /* 로고·타이틀 점선 테두리가 실처럼 흐르는 자수 모션 */
