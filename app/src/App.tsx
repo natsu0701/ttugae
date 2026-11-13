@@ -91,6 +91,15 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
   }
 }
 
+const TAB_ORDER = ["home", "bag", "lounge", "my"] as const;
+
+function tabSlide(from: string, to: string) {
+  const previous = TAB_ORDER.indexOf(from as (typeof TAB_ORDER)[number]);
+  const next = TAB_ORDER.indexOf(to as (typeof TAB_ORDER)[number]);
+  if (previous < 0 || next < 0 || previous === next) return "";
+  return next > previous ? "left" : "right";
+}
+
 const OWN_CHROME = new Set([
   "splash",
   "login",
@@ -111,6 +120,11 @@ function Shell() {
   const screen = renderRoute(route);
   const showBack = !OWN_CHROME.has(route.name);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const motion = useRef({ route: route.name, slide: "" });
+  if (motion.current.route !== route.name) {
+    motion.current = { route: route.name, slide: tabSlide(motion.current.route, route.name) };
+  }
+  const slide = motion.current.slide;
   const routeKey = `${route.name}${"id" in route ? route.id : ""}${"tab" in route ? route.tab : ""}`;
   useEffect(() => {
     scrollRef.current?.scrollTo(0, 0);
@@ -150,7 +164,9 @@ function Shell() {
           </div>
         ) : null}
         <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : scrolling ? "scroll" : "flex min-h-0 flex-1 flex-col"}>
-          {screen}
+          <div key={route.name} data-tab-motion={slide || undefined} className={slide ? `tab-enter-${slide}` : undefined}>
+            {screen}
+          </div>
         </div>
         {showsTabBar(route) ? <TabBar /> : null}
         <FinishPrompt />

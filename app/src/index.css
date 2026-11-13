@@ -103,6 +103,50 @@ button {
   height: 0;
 }
 
+@keyframes tab-enter-left {
+  from {
+    transform: translate3d(22%, 0, 0);
+    opacity: 0.25;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes tab-enter-right {
+  from {
+    transform: translate3d(-22%, 0, 0);
+    opacity: 0.25;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+.tab-enter-left,
+.tab-enter-right {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+.tab-enter-left {
+  animation-name: tab-enter-left;
+}
+
+.tab-enter-right {
+  animation-name: tab-enter-right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-enter-left,
+  .tab-enter-right {
+    animation: none;
+  }
+}
+
 .memo-lines {
   background-image: repeating-linear-gradient(
     to bottom,
