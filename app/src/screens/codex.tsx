@@ -339,16 +339,6 @@ function CodexDiscover() {
           </section>
 
           <section className="px-4 pt-7">
-            <h2 className="text-[16px] font-bold">오늘의 도감 트렌드</h2>
-            <p className="mt-1 text-[12px] text-[#999]">뜨개가 가장 많이 저장한 실</p>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              <Trend label="저장된 수" value="12,480" delta="+8.3%" />
-              <Trend label="재질 TOP" value="면/면방" delta="+5.1%" />
-              <Trend label="난이도" value="초보" delta="+3.7%" />
-            </div>
-          </section>
-
-          <section className="px-4 pt-7">
             <h2 className="text-[16px] font-bold">도감 한눈에 보기</h2>
             <ul className="mt-2">
               <GuideRow
@@ -405,16 +395,6 @@ function PopularCard({ yarn, onOpen }: { yarn: PopularYarn; onOpen: () => void }
         ))}
       </button>
     </li>
-  );
-}
-
-function Trend({ label, value, delta }: { label: string; value: string; delta: string }) {
-  return (
-    <div className="rounded-lg border border-[#f2f2f2] bg-white px-2 py-3 text-center shadow-card">
-      <p className="text-[11px] text-[#999]">{label}</p>
-      <p className="mt-1 text-[16px] font-bold leading-tight">{value}</p>
-      <p className="mt-1 text-[12px] font-semibold text-blush">{delta}</p>
-    </div>
   );
 }
 
