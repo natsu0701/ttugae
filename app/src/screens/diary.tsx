@@ -7,16 +7,63 @@ const MATERIAL_KINDS = ["바늘", "실", "기타"] as const;
 type MaterialKind = (typeof MATERIAL_KINDS)[number];
 
 export function DiaryEntryScreen({ id, index }: { id: string; index: number }) {
-  const { data } = useApp();
+  const { data, back, updateDiary, removeDiary } = useApp();
+  const [editing, setEditing] = useState(false);
   const project = data.projects.find((item) => item.id === id);
   const entry = project?.diary[index];
   if (!project || !entry) return <p className="px-6 py-16 text-center text-[14px]">일기를 찾지 못했어요.</p>;
+  const save = (next: { title?: string; body?: string }) => {
+    updateDiary(project.id, index, { title: next.title ?? entry.title, body: next.body ?? entry.body });
+  };
   return (
     <article className="px-5 pb-12 pt-5">
-      <p className="text-[13px] text-[#999]">{entry.date}</p>
-      <h2 className="mt-2 text-[22px] font-bold leading-snug">{entry.title}</h2>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[13px] text-[#999]">{entry.date}</p>
+        <span className="flex items-center">
+          <button
+            type="button"
+            aria-label={editing ? "수정 완료" : "일기 수정"}
+            onClick={() => setEditing((value) => !value)}
+            className="grid h-10 w-10 place-items-center"
+          >
+            {editing ? <CheckIcon /> : <PencilIcon />}
+          </button>
+          <button
+            type="button"
+            aria-label="일기 삭제"
+            onClick={() => {
+              removeDiary(project.id, index);
+              back();
+            }}
+            className="grid h-10 w-10 place-items-center"
+          >
+            <TrashIcon />
+          </button>
+        </span>
+      </div>
+      {editing ? (
+        <input
+          value={entry.title}
+          aria-label="일기 제목"
+          autoFocus
+          onChange={(event) => save({ title: event.target.value })}
+          className="mt-2 w-full bg-transparent text-[22px] font-bold leading-snug outline-none"
+        />
+      ) : (
+        <h2 className="mt-2 text-[22px] font-bold leading-snug">{entry.title}</h2>
+      )}
       <p className="mt-1 text-[13px] text-[#888]">{project.title}</p>
-      <p className="mt-6 whitespace-pre-line text-[15px] leading-relaxed">{entry.body}</p>
+      {editing ? (
+        <textarea
+          value={entry.body}
+          aria-label="일기 내용"
+          rows={Math.min(12, Math.max(4, entry.body.split("\n").length + 1))}
+          onChange={(event) => save({ body: event.target.value })}
+          className="mt-6 w-full resize-none bg-transparent text-[15px] leading-relaxed outline-none"
+        />
+      ) : (
+        <p className="mt-6 whitespace-pre-line text-[15px] leading-relaxed">{entry.body}</p>
+      )}
     </article>
   );
 }
