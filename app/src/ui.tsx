@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type InputHTMLAttributes, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type InputHTMLAttributes, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { figmaIcons, type FigmaIconName } from "./icons/figmaIcons.ts";
 import {
@@ -283,15 +283,25 @@ export function TabBar() {
 }
 
 export function Fab({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
+  const { route } = useApp();
+  const [host, setHost] = useState<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    setHost(document.querySelector(".phone") as HTMLElement | null);
+  }, []);
+  if (!host) return null;
+  return createPortal(
     <button
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="absolute bottom-24 right-4 z-30 grid h-14 w-14 place-items-center rounded-full bg-blush text-white shadow-card"
+      className={cx(
+        "absolute right-4 z-30 grid h-14 w-14 place-items-center rounded-full bg-blush text-white shadow-card",
+        showsTabBar(route) ? "bottom-24" : "bottom-6",
+      )}
     >
       <PlusFillIcon className="h-6 w-6" />
-    </button>
+    </button>,
+    host,
   );
 }
 

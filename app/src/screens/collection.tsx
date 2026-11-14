@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { WORKS, media } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { ChevronRight, DragScroll, FilterIcon, PencilIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
+import { ChevronRight, DragScroll, Fab, FilterIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
 
 type Fiber = "코튼" | "린넨" | "울" | "폴리에스터" | "나일론";
 
@@ -234,7 +234,7 @@ function CollectionBrowse() {
   const popular = items.filter((item) => item.popular);
 
   return (
-    <div className="relative pb-16">
+    <div className="pb-28">
       <div className="relative px-4 pt-2">
         <div className="flex items-center gap-2">
           <label className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-full border border-[#ececec] bg-white px-4">
@@ -323,7 +323,7 @@ function CollectionBrowse() {
         </section>
       ) : null}
 
-      <section className="relative px-4 pt-6">
+      <section className="px-4 pt-6">
         <div className="flex items-center justify-between">
           <h2 className="text-[18px] font-bold">모든 도안</h2>
           <button type="button" onClick={() => setFiber(null)} className="text-[13px] text-[#999]">
@@ -345,15 +345,8 @@ function CollectionBrowse() {
             ))}
           </ul>
         )}
-        <button
-          type="button"
-          aria-label="이 도안으로 프로젝트 만들기"
-          onClick={() => push({ name: "project-form" })}
-          className="absolute right-3 top-24 grid h-12 w-12 place-items-center rounded-full bg-blush text-white shadow-card"
-        >
-          <PencilIcon />
-        </button>
       </section>
+      <Fab label="이 도안으로 프로젝트 만들기" onClick={() => push({ name: "project-form" })} />
 
       {popular.length > 0 ? (
         <section className="pt-7">
