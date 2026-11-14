@@ -73,7 +73,7 @@ export function seedProjects(): Project[] {
     {
       id: "p1",
       title: "벤쿠버 가디건",
-      progress: 23,
+      progress: 12,
       started: "2026.01.01",
       elapsed: 0,
       running: false,
@@ -83,7 +83,7 @@ export function seedProjects(): Project[] {
       patternId: "pt1",
       parts: [
         { id: "sleeve", name: "왼쪽 팔", count: 23, done: false, ago: "10시간 전" },
-        { id: "body", name: "몸통", count: null, done: true, ago: "10시간 전" },
+        { id: "body", name: "몸통", count: 0, done: false, ago: "10시간 전" },
       ],
       diary,
     },

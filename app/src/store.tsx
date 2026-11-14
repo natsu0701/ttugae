@@ -78,6 +78,15 @@ function freshPersisted(): Persisted {
   };
 }
 
+function correctCardigan(project: Project): Project {
+  if (project.id !== "p1") return project;
+  const body = project.parts.find((part) => part.name === "몸통");
+  if (!body || body.count != null || !body.done) return project;
+  const parts = project.parts.map((part) => (part.name === "몸통" ? { ...part, count: 0, done: false } : part));
+  const progress = Math.round(parts.reduce((sum, part) => sum + (part.done ? 100 : (part.count ?? 0)), 0) / parts.length);
+  return { ...project, parts, progress };
+}
+
 function loadPersisted(): Persisted {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -87,7 +96,7 @@ function loadPersisted(): Persisted {
     return {
       ...base,
       ...parsed,
-      projects: parsed.projects?.length ? parsed.projects.map((p) => ({ ...p, running: false })) : base.projects,
+      projects: (parsed.projects?.length ? parsed.projects : base.projects).map((project) => correctCardigan({ ...project, running: false })),
       yarns: parsed.catalogVersion === 2 && parsed.yarns?.length ? parsed.yarns : base.yarns,
       needles: parsed.catalogVersion === 2 && parsed.needles?.length ? parsed.needles : base.needles,
       catalogVersion: 2,
