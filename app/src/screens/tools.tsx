@@ -322,16 +322,13 @@ function GaugeRuler({ onClose }: { onClose: () => void }) {
           );
         })}
         <div
-          className="pointer-events-none absolute left-[8.4rem]"
-          style={{ bottom: "calc(52px + (100% - 96px) * 10 / 15)", height: "calc((100% - 96px) * 4.2 / 15)" }}
+          className="pointer-events-none absolute right-1"
+          style={{ left: "7.75rem", bottom: "calc(48px + (100% - 96px) * 10 / 15)" }}
         >
-          <p
-            className="relative h-full w-max rounded-2xl bg-white px-3 py-2 text-[13px] text-[#8a8a8a] shadow-card"
-            style={{ writingMode: "vertical-rl", textOrientation: "mixed", lineHeight: 1.25 }}
-          >
+          <p className="relative rounded-2xl bg-white px-3 py-2 text-[13px] leading-snug text-[#8a8a8a] shadow-card">
             <span className="font-bold text-blush">10cm</span>
             에 총 몇 코가 들어가는지 세어보세요!
-            <span aria-hidden className="absolute -bottom-1.5 left-4 h-3 w-3 rotate-45 bg-white" />
+            <span aria-hidden className="absolute -bottom-1.5 left-5 h-3 w-3 rotate-45 bg-white" />
           </p>
         </div>
       </div>
