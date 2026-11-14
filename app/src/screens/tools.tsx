@@ -48,12 +48,12 @@ function GaugeTutorial() {
   return (
     <div className="mt-6 space-y-8">
       <section>
-        <h2 className="text-[18px] font-bold"><span className="text-blush">1</span> 스와치 뜨기</h2>
+        <h2 className="flex items-baseline gap-2 text-[18px] font-bold"><span className="text-[32px] font-black leading-none text-blush">1</span> 스와치 뜨기</h2>
         <p className="mt-1 text-[14px]">15×15cm 정도의 편물(스와치)을 떠보세요!</p>
         <div className="relative mt-3 overflow-hidden rounded-lg">
           <img src={media("media/swatch-linen.jpg")} alt="" className="h-48 w-full object-cover" />
-          <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-0.5 text-[12px] font-semibold">2코</span>
-          <span className="absolute right-3 top-8 rounded-full bg-white/90 px-2 py-0.5 text-[12px] font-semibold">3코</span>
+          <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[18px] font-bold">2코</span>
+          <span className="absolute right-3 top-8 rounded-full bg-white/90 px-3 py-1 text-[18px] font-bold">3코</span>
           <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-[12px] font-semibold">릴랙스드 뜨기</span>
         </div>
         <div className="mt-2 flex justify-between px-2 text-[12px] text-[#777]">
@@ -64,14 +64,14 @@ function GaugeTutorial() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold"><span className="text-blush">2</span> 코 세기</h2>
+        <h2 className="flex items-baseline gap-2 text-[18px] font-bold"><span className="text-[32px] font-black leading-none text-blush">2</span> 코 세기</h2>
         <p className="mt-1 text-[14px] font-semibold">10cm 안에 몇 코가 있나요?</p>
         <p className="mt-1 text-[13px] leading-relaxed text-[#666]">게이지 계산기에 숫자를 알려주세요. 나머지 계산은 뜨니가 할게요!</p>
         <div className="relative mt-3 overflow-hidden rounded-lg">
           <img src={media("media/swatch-gray.jpg")} alt="" className="h-40 w-full object-cover" />
           <div className="absolute left-4 right-24 top-1/2">
             <span className="block border-t-2 border-ink" />
-            <span className="mx-auto mt-1 block w-fit rounded-full bg-white/90 px-2 text-[12px] font-bold">10cm</span>
+            <span className="mx-auto mt-1 block w-fit rounded-full bg-white/90 px-3 py-1 text-[18px] font-bold">10cm</span>
           </div>
           <div className="absolute bottom-2 right-2 flex items-end gap-1">
             <span className="mb-3 max-w-[9rem] rounded-lg bg-white px-2 py-1 text-[11px] leading-snug shadow-card">10cm 안에 몇 코가 있나요?</span>
@@ -81,8 +81,8 @@ function GaugeTutorial() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold"><span className="text-blush">3</span> 결과 확인</h2>
-        <p className="mt-1 text-[14px] leading-relaxed">짠! 이번 프로젝트는 예) 20코로 시작하면 완벽해요!</p>
+        <h2 className="flex items-baseline gap-2 text-[18px] font-bold"><span className="text-[32px] font-black leading-none text-blush">3</span> 결과 확인</h2>
+        <p className="mt-1 text-[14px] leading-relaxed">짠! 이번 프로젝트는 예) <span className="text-[28px] font-black leading-none">20코</span>로 시작하면 완벽해요!</p>
         <div className="mt-3 flex items-end justify-end gap-2">
           <span className="max-w-[12rem] rounded-lg bg-[#f6f6f6] px-3 py-2 text-[12px] leading-snug">세탁 전후 게이지를 입력하면 더 정확하게 관리할 수 있어요!</span>
           <Mascot mood="knit" className="h-20 w-20" />
@@ -102,10 +102,10 @@ function GaugeTutorial() {
           <p className="text-[13px] font-semibold">10cm 안에 코가 몇 개 들어가는지만 알려주면 끝!</p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[12px]">
             <span>게이지(10cm 코수)</span>
-            <span className="grid h-8 min-w-8 place-items-center rounded-lg bg-white px-2 text-[16px] font-bold">10</span>
-            <span className="text-[18px]">×</span>
+            <span className="grid h-14 min-w-14 place-items-center rounded-2xl bg-white px-3 text-[32px] font-black">10</span>
+            <span className="text-[28px] font-bold">×</span>
             <span>목표 길이(cm)</span>
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-[16px] font-bold text-white">11</span>
+            <span className="grid h-14 w-14 place-items-center rounded-full bg-ink text-[32px] font-black text-white">11</span>
           </div>
           <p className="mt-3 text-[14px] font-bold">필요 코수</p>
           <p className="mt-2 text-[11px] leading-relaxed text-[#999]">아까 센 코 수와 목표 길이를 곱하면 결과가 나와요.</p>
@@ -125,7 +125,7 @@ function NaviHelp() {
     <div className="mt-6 space-y-5">
       {steps.map((step) => (
         <section key={step.n}>
-          <h2 className="text-[18px] font-bold"><span className="text-blush">{step.n}</span> {step.title}</h2>
+          <h2 className="flex items-baseline gap-2 text-[18px] font-bold"><span className="text-[32px] font-black leading-none text-blush">{step.n}</span> {step.title}</h2>
           <p className="mt-1 text-[14px] leading-relaxed text-[#555]">{step.body}</p>
         </section>
       ))}
