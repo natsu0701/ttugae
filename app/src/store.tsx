@@ -224,6 +224,7 @@ type AppApi = {
   setCounterProject: (id: string, projectId: string | null) => void;
   bumpCounter: (counterId: string, rowId: string, delta: number) => void;
   resetCounterRow: (counterId: string, rowId: string) => void;
+  removeCounterRow: (counterId: string, rowId: string) => void;
   addCounterRow: (counterId: string) => void;
   toggleLike: (workId: string) => void;
   toggleNavi: (projectId: string, step: string) => void;
@@ -566,6 +567,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
           counters: current.counters.map((counter) =>
             counter.id === counterId
               ? { ...counter, rows: counter.rows.map((row) => (row.id === rowId ? { ...row, value: 0 } : row)) }
+              : counter,
+          ),
+        })),
+      removeCounterRow: (counterId, rowId) =>
+        setData((current) => ({
+          ...current,
+          counters: current.counters.map((counter) =>
+            counter.id === counterId
+              ? { ...counter, rows: counter.rows.filter((row) => row.id !== rowId) }
               : counter,
           ),
         })),

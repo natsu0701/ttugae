@@ -517,7 +517,7 @@ export function CounterListScreen() {
 }
 
 export function CounterScreen({ id }: { id: string }) {
-  const { data, setCounterProject, bumpCounter, resetCounterRow, addCounterRow, renameCounter } = useApp();
+  const { data, setCounterProject, bumpCounter, removeCounterRow, addCounterRow, renameCounter } = useApp();
   const counter = data.counters.find((item) => item.id === id);
   const [openProjects, setOpenProjects] = useState(false);
   if (!counter) return <p className="px-6 py-16 text-center">카운터를 찾지 못했어요.</p>;
@@ -586,7 +586,12 @@ export function CounterScreen({ id }: { id: string }) {
         <section key={row.id} className="overflow-hidden rounded-lg border border-[#eee]">
           <div className="flex items-center justify-between bg-ink px-4 py-2 text-white">
             <span className="text-[14px] font-semibold">{row.label}</span>
-            <button type="button" aria-label={`${row.label} 초기화`} onClick={() => resetCounterRow(counter.id, row.id)}>
+            <button
+              type="button"
+              aria-label={`${row.label} 삭제`}
+              onClick={() => removeCounterRow(counter.id, row.id)}
+              className="grid h-8 w-8 place-items-center"
+            >
               <CloseIcon size={16} />
             </button>
           </div>
