@@ -260,9 +260,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [toastAction, setToastAction] = useState<{ label: string; route: Route } | null>(null);
   const toastMs = useRef(2200);
   const [sheet, setSheet] = useState<Sheet>(null);
-  const [calcSts, setCalcSts] = useState("20");
-  const [calcLen, setCalcLen] = useState("60");
-  const [calcResult, setCalcResult] = useState<number | null>(120);
+  const [calcSts, setCalcSts] = useState("");
+  const [calcLen, setCalcLen] = useState("");
+  const [calcResult, setCalcResult] = useState<number | null>(null);
   const [finishId, setFinishId] = useState<string | null>(null);
 
   const route = stack[stack.length - 1] ?? { name: "splash" as const };
@@ -301,9 +301,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setBagTab("projects");
         setLoungeTab("works");
         setSort({ field: "recent", dir: "desc" });
-        setCalcSts("20");
-        setCalcLen("60");
-        setCalcResult(120);
+        setCalcSts("");
+        setCalcLen("");
+        setCalcResult(null);
         const login = { name: "login" as const };
         setStack([login]);
         window.history.replaceState({ ttg: 1 }, "", routeToHash(login));
@@ -321,11 +321,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (route.name === "gauge" || route.name === "gauge-form" || route.name === "gauge-help") return;
-    setCalcSts("20");
-    setCalcLen("60");
-    setCalcResult(120);
-  }, [route.name]);
+    if (route.name === "gauge" && route.tab === "calc") return;
+    setCalcSts("");
+    setCalcLen("");
+    setCalcResult(null);
+  }, [route]);
 
   useEffect(() => {
     if (route.name !== "login" && route.name !== "splash") return;
