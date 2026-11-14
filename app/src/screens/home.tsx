@@ -116,9 +116,9 @@ function HomePane() {
                 aria-label={expanded ? "진행도 접기" : "진행도 펼치기"}
                 aria-expanded={expanded}
                 onClick={() => setExpanded((value) => !value)}
-                className="mx-auto mt-2 grid h-8 w-8 place-items-center text-[#bbb]"
+                className="mx-auto mt-2 grid h-8 w-8 place-items-center text-black"
               >
-                <ChevronDown up={expanded} />
+                <ChevronDown up={expanded} className="h-5 w-5" />
               </button>
             </div>
           </article>
