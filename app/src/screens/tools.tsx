@@ -6,13 +6,10 @@ import type { GaugeRecord, GaugeTab } from "../types.ts";
 import { BlackButton, CameraIcon, ChevronDown, CloseIcon, DoneMark, Fab, InfoButton, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
 
 export function GaugeScreen({ tab }: { tab: GaugeTab }) {
-  const { replace, push } = useApp();
+  const { replace } = useApp();
   return (
     <div className="relative min-h-full pb-24">
-      <div className="flex items-center justify-end pr-1">
-        <InfoButton label="게이지 도움말" onClick={() => push({ name: "gauge-help" })} />
-      </div>
-      <div className="px-4">
+      <div className="px-4 pt-3">
         <Segment
           value={tab}
           onChange={(next) => replace({ name: "gauge", tab: next })}

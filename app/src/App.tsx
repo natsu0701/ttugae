@@ -36,7 +36,7 @@ import {
 } from "./screens/tools.tsx";
 import { CameraScreen } from "./screens/camera.tsx";
 import { DiaryScreen } from "./screens/diary.tsx";
-import { ChevronLeft, FolderIcon, PlayBadge, SheetHost, TabBar, ToastHost } from "./ui.tsx";
+import { ChevronLeft, FolderIcon, InfoButton, PlayBadge, SheetHost, TabBar, ToastHost } from "./ui.tsx";
 
 function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
   if (route.name === "project" || route.name === "finished" || route.name === "navi") {
@@ -118,7 +118,7 @@ const OWN_CHROME = new Set([
 ]);
 
 function Shell() {
-  const { route, back, data, openSheet } = useApp();
+  const { route, back, data, openSheet, push } = useApp();
   const screen = renderRoute(route);
   const showBack = !OWN_CHROME.has(route.name);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -141,7 +141,7 @@ function Shell() {
             <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
               <ChevronLeft />
             </button>
-            <h1 className="flex min-w-0 flex-1 items-center justify-center gap-1 pr-10 text-[17px] font-bold">
+            <h1 className={`flex min-w-0 flex-1 items-center justify-center gap-1 text-[17px] font-bold ${route.name === "gauge" ? "" : "pr-10"}`}>
               <span className="truncate">{titleFor(route, data)}</span>
               {route.name === "collection" ? (
                 <button
@@ -164,6 +164,7 @@ function Shell() {
                 </button>
               ) : null}
             </h1>
+            {route.name === "gauge" ? <InfoButton label="게이지 도움말" onClick={() => push({ name: "gauge-help" })} /> : null}
           </div>
         ) : null}
         <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : scrolling ? (fillScreen ? "scroll flex flex-col" : "scroll") : "flex min-h-0 flex-1 flex-col"}>
