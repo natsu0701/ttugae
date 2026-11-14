@@ -143,7 +143,7 @@ function HomePane() {
         </div>
       </section>
 
-      <section className="mt-8 bg-[#f7b7b6] px-4 py-3 text-ink">
+      <section className="mt-8 bg-[#f7b7b6] px-4 py-6 text-ink">
         <svg width="0" height="0" className="absolute" aria-hidden>
           <filter id="tteuni-white" x="-15%" y="-15%" width="130%" height="130%" colorInterpolationFilters="sRGB">
             <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="dilated" />
