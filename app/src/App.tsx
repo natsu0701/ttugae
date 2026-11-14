@@ -35,7 +35,7 @@ import {
   GaugeScreen,
 } from "./screens/tools.tsx";
 import { CameraScreen } from "./screens/camera.tsx";
-import { DiaryScreen } from "./screens/diary.tsx";
+import { DiaryEntryScreen, DiaryScreen } from "./screens/diary.tsx";
 import { ChevronLeft, FolderIcon, InfoButton, PlayBadge, SheetHost, TabBar, ToastHost } from "./ui.tsx";
 
 function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
@@ -88,6 +88,8 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
       return "기와뜨기";
     case "question":
       return "질문";
+    case "diary-entry":
+      return "뜨개일기";
     default:
       return data.nickname;
   }
@@ -251,6 +253,8 @@ function renderRoute(route: Route): ReactNode {
       return <CameraScreen id={route.id} />;
     case "diary":
       return <DiaryScreen id={route.id} />;
+    case "diary-entry":
+      return <DiaryEntryScreen id={route.id} index={route.index} />;
     case "yarn":
       return <YarnScreen id={route.id} />;
     case "needle":

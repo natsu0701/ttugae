@@ -107,6 +107,8 @@ function routeToHash(route: Route) {
   switch (route.name) {
     case "splash":
       return "#/";
+    case "diary-entry":
+      return `#/diary-entry/${route.id}/${route.index}`;
     case "project":
     case "navi":
     case "camera":
@@ -145,6 +147,10 @@ function hashToRoute(hash: string): Route {
   if (name === "navi" && id) return { name: "navi", id };
   if (name === "camera" && id) return { name: "camera", id };
   if (name === "diary" && id) return { name: "diary", id };
+  if (name === "diary-entry" && id && parts[2] !== undefined) {
+    const index = Number(parts[2]);
+    if (Number.isInteger(index) && index >= 0) return { name: "diary-entry", id, index };
+  }
   if (name === "yarn" && id) return { name: "yarn", id };
   if (name === "needle" && id) return { name: "needle", id };
   if (name === "finished" && id) return { name: "finished", id };

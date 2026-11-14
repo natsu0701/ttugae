@@ -3,7 +3,7 @@ import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock, 
 import { useApp } from "../store.tsx";
 import type { BagTab, Needle, Project, Yarn } from "../types.ts";
 import type { SortDir, SortField } from "../types.ts";
-import { CheckIcon, ChevronDown, DoneMark, DragScroll, Fab, FilterIcon, GearIcon, GridIcon, InfoButton, ListIcon, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
+import { CheckIcon, ChevronDown, ChevronRight, DoneMark, DragScroll, Fab, FilterIcon, GearIcon, GridIcon, InfoButton, ListIcon, NaviIcon, PauseIcon, PencilIcon, PlayIcon, ProgressRing, SearchIcon, TrashIcon, UnderlineTabs, cx } from "../ui.tsx";
 
 const TABS: { id: BagTab; label: string }[] = [
   { id: "projects", label: "프로젝트" },
@@ -554,12 +554,21 @@ export function ProjectScreen({ id }: { id: string }) {
         <ul className="mt-2 divide-y divide-[#f2f2f2] px-4">
           {project.diary.length === 0 ? <li className="py-8 text-center text-[13px] text-[#999]">아직 일기가 없어요.</li> : null}
           {project.diary.map((entry, index) => (
-            <li key={`${entry.date}-${index}`} className="flex justify-between gap-3 py-4">
-              <span>
-                <span className="block font-bold">{entry.title}</span>
-                <span className="text-[13px] text-[#777]">{entry.body}</span>
-              </span>
-              <span className="shrink-0 text-[12px] text-[#999]">{entry.date}</span>
+            <li key={`${entry.date}-${index}`}>
+              <button
+                type="button"
+                onClick={() => push({ name: "diary-entry", id: project.id, index })}
+                className="flex w-full items-center justify-between gap-3 py-4 text-left"
+              >
+                <span className="min-w-0">
+                  <span className="block font-bold">{entry.title}</span>
+                  <span className="line-clamp-2 whitespace-pre-line text-[13px] text-[#777]">{entry.body}</span>
+                </span>
+                <span className="flex shrink-0 items-center gap-1 text-[12px] text-[#999]">
+                  {entry.date}
+                  <ChevronRight />
+                </span>
+              </button>
             </li>
           ))}
         </ul>

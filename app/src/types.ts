@@ -24,6 +24,7 @@ export type Route =
   | { name: "navi"; id: string }
   | { name: "camera"; id: string }
   | { name: "diary"; id: string }
+  | { name: "diary-entry"; id: string; index: number }
   | { name: "yarn"; id: string }
   | { name: "needle"; id: string }
   | { name: "finished"; id: string }

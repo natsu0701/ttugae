@@ -6,6 +6,21 @@ import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon,
 const MATERIAL_KINDS = ["바늘", "실", "기타"] as const;
 type MaterialKind = (typeof MATERIAL_KINDS)[number];
 
+export function DiaryEntryScreen({ id, index }: { id: string; index: number }) {
+  const { data } = useApp();
+  const project = data.projects.find((item) => item.id === id);
+  const entry = project?.diary[index];
+  if (!project || !entry) return <p className="px-6 py-16 text-center text-[14px]">일기를 찾지 못했어요.</p>;
+  return (
+    <article className="px-5 pb-12 pt-5">
+      <p className="text-[13px] text-[#999]">{entry.date}</p>
+      <h2 className="mt-2 text-[22px] font-bold leading-snug">{entry.title}</h2>
+      <p className="mt-1 text-[13px] text-[#888]">{project.title}</p>
+      <p className="mt-6 whitespace-pre-line text-[15px] leading-relaxed">{entry.body}</p>
+    </article>
+  );
+}
+
 export function DiaryScreen({ id }: { id: string }) {
   const { data, back, saveDiary, updateDiary, removeDiary, notify } = useApp();
   const project = data.projects.find((item) => item.id === id);
