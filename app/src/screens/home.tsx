@@ -110,6 +110,7 @@ function HomePane() {
                 <NaviIcon />
                 뜨개내비
               </button>
+              {expanded ? <RowProgress value={project.progress} /> : null}
               <button
                 type="button"
                 aria-label={expanded ? "진행도 접기" : "진행도 펼치기"}
@@ -119,7 +120,6 @@ function HomePane() {
               >
                 <ChevronDown up={expanded} />
               </button>
-              {expanded ? <RowProgress value={project.progress} /> : null}
             </div>
           </article>
         ) : null}
