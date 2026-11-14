@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #171717;
+  background: #d7d1cc;
+  color-scheme: light;
+  font-family: Pretendard, "Noto Sans KR", system-ui, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  word-break: keep-all;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.stage {
+  height: 100%;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  padding: 0;
+}
+
+.phone {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  height: 100dvh;
+  background: #fff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+@media (min-width: 900px) and (not (pointer: coarse)) {
+  .stage {
+    align-items: center;
+    padding: 28px 16px;
+  }
+
+  .phone {
+    width: min(420px, 100%);
+    height: min(920px, calc(100dvh - 56px));
+    border-radius: 36px;
+    border: 10px solid #1c1c1c;
+    padding: 0;
+  }
+}
+
+@media (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+.scroll {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+@keyframes tab-enter-left {
+  from {
+    transform: translate3d(22%, 0, 0);
+    opacity: 0.25;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes tab-enter-right {
+  from {
+    transform: translate3d(-22%, 0, 0);
+    opacity: 0.25;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+.tab-enter-left,
+.tab-enter-right {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+.tab-enter-left {
+  animation-name: tab-enter-left;
+}
+
+.tab-enter-right {
+  animation-name: tab-enter-right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-enter-left,
+  .tab-enter-right {
+    animation: none;
+  }
+}
+
+.tteuni-outline {
+  filter: url("#tteuni-white");
+}
+
+.memo-lines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 27px,
+    #f0f0f0 28px
+  );
+}
+
+.no-tap {
+  -webkit-tap-highlight-color: transparent;
+}
