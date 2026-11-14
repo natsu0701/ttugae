@@ -387,9 +387,25 @@ function SectionTitle({
 }
 
 function ToolButton({ label, onClick, children }: { label: string; onClick: () => void; children: ReactNode }) {
+  const [pressed, setPressed] = useState(false);
   return (
-    <button type="button" onClick={onClick} className="flex flex-col items-center gap-2">
-      <span className="grid h-16 w-16 place-items-center rounded-full border border-[#e8e8e8]">{children}</span>
+    <button
+      type="button"
+      onClick={() => {
+        if (pressed) return;
+        setPressed(true);
+        window.setTimeout(onClick, 220);
+      }}
+      className="flex flex-col items-center gap-2"
+    >
+      <span
+        className={cx(
+          "grid h-16 w-16 place-items-center rounded-full border",
+          pressed ? "border-blush bg-blush text-white [&_img]:brightness-0 [&_img]:invert" : "border-[#e8e8e8] text-ink",
+        )}
+      >
+        {children}
+      </span>
       <span className="leading-tight">{label}</span>
     </button>
   );
