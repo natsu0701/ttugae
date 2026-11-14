@@ -49,8 +49,8 @@ function HomePane() {
           </button>
         </div>
         <div className="flex gap-1">
-          <button type="button" aria-label="뜨개컬렉션" aria-pressed={data.likes.length > 0} onClick={() => push({ name: "collection" })} className="grid h-10 w-10 place-items-center text-black">
-            <HeartIcon filled={data.likes.length > 0} />
+          <button type="button" aria-label="뜨개컬렉션" onClick={() => push({ name: "collection" })} className="grid h-10 w-10 place-items-center text-black">
+            <HeartIcon />
           </button>
           <button type="button" aria-label="알림" onClick={() => push({ name: "notifications" })} className="relative grid h-10 w-10 place-items-center">
             <Bell />
