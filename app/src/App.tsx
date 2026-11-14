@@ -132,6 +132,7 @@ function Shell() {
     scrollRef.current?.scrollTo(0, 0);
   }, [routeKey]);
   const scrolling = route.name !== "chat";
+  const fillScreen = route.name === "login";
   return (
     <div className="stage">
       <div className="phone">
@@ -165,8 +166,12 @@ function Shell() {
             </h1>
           </div>
         ) : null}
-        <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : scrolling ? "scroll" : "flex min-h-0 flex-1 flex-col"}>
-          <div key={route.name} data-tab-motion={slide || undefined} className={slide ? `tab-enter-${slide}` : undefined}>
+        <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : scrolling ? (fillScreen ? "scroll flex flex-col" : "scroll") : "flex min-h-0 flex-1 flex-col"}>
+          <div
+            key={route.name}
+            data-tab-motion={slide || undefined}
+            className={[slide ? `tab-enter-${slide}` : "", fillScreen ? "flex min-h-full w-full flex-1 flex-col" : ""].filter(Boolean).join(" ") || undefined}
+          >
             {screen}
           </div>
         </div>

@@ -46,7 +46,7 @@ export function LoginScreen() {
   const enterSocial = () => setSuccess(true);
 
   return (
-    <div className="relative min-h-full bg-blush-wash px-6 pb-10 pt-8">
+    <div className="relative flex min-h-full w-full flex-1 flex-col bg-blush-wash px-6 pt-8">
       <Flower className="left-4 top-2" />
       <Flower className="right-6 top-16 scale-75" />
       <div className="mx-auto mt-10 w-[16.5rem] max-w-full">
