@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
-import { BlackButton, CameraIcon, ChevronDown, DoneMark, Fab, InfoButton, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
+import { BlackButton, CameraIcon, ChevronDown, DoneMark, Fab, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
 
 export function GaugeScreen({ tab }: { tab: GaugeTab }) {
   const { replace } = useApp();
@@ -504,10 +504,7 @@ export function CounterListScreen() {
   const { data, push, addCounter, removeCounter, renameCounter } = useApp();
   return (
     <div className="relative min-h-full pb-24">
-      <div className="flex justify-end px-4">
-        <InfoButton title="행/코 카운터" body="단과 코를 따로 세고, 프로젝트에 연결해 두면 다음에 이어서 뜰 위치를 잊지 않아요. 이름을 누르면 바로 바꿀 수 있고, 오른쪽 휴지통으로 카운터 전체를 지울 수 있어요." />
-      </div>
-      <ul className="space-y-3 px-4 pt-2">
+      <ul className="space-y-3 px-4 pt-3">
         {data.counters.map((counter) => (
           <li key={counter.id} className="flex items-center rounded-lg border border-[#f3f3f3] shadow-card">
             <div className="min-w-0 flex-1 px-4 py-4">

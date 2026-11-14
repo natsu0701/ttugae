@@ -141,7 +141,7 @@ function Shell() {
             <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
               <ChevronLeft />
             </button>
-            <h1 className={`flex min-w-0 flex-1 items-center justify-center gap-1 text-[17px] font-bold ${route.name === "gauge" ? "" : "pr-10"}`}>
+            <h1 className={`flex min-w-0 flex-1 items-center justify-center gap-1 text-[17px] font-bold ${route.name === "gauge" || route.name === "counters" ? "" : "pr-10"}`}>
               <span className="truncate">{titleFor(route, data)}</span>
               {route.name === "collection" ? (
                 <button
@@ -165,6 +165,13 @@ function Shell() {
               ) : null}
             </h1>
             {route.name === "gauge" ? <InfoButton label="게이지 도움말" onClick={() => push({ name: "gauge-help" })} /> : null}
+            {route.name === "counters" ? (
+              <InfoButton
+                label="행/코 카운터 도움말"
+                title="행/코 카운터"
+                body="단과 코를 따로 세고, 프로젝트에 연결해 두면 다음에 이어서 뜰 위치를 잊지 않아요. 이름을 누르면 바로 바꿀 수 있고, 오른쪽 휴지통으로 카운터 전체를 지울 수 있어요."
+              />
+            ) : null}
           </div>
         ) : null}
         <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : scrolling ? (fillScreen ? "scroll flex flex-col" : "scroll") : "flex min-h-0 flex-1 flex-col"}>
