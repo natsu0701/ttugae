@@ -220,6 +220,7 @@ type AppApi = {
   saveGauge: (gauge: GaugeRecord) => void;
   removeGauge: (id: string) => void;
   addCounter: () => void;
+  removeCounter: (id: string) => void;
   renameCounter: (id: string, name: string) => void;
   renameCounterRow: (counterId: string, rowId: string, label: string) => void;
   setCounterProject: (id: string, projectId: string | null) => void;
@@ -536,6 +537,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setData((current) => ({ ...current, counters: [created, ...current.counters] }));
         push({ name: "counter", id: created.id });
       },
+      removeCounter: (id) =>
+        setData((current) => ({ ...current, counters: current.counters.filter((counter) => counter.id !== id) })),
       renameCounter: (id, name) =>
         setData((current) => ({
           ...current,

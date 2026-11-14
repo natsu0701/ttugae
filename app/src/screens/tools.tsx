@@ -492,11 +492,11 @@ function Pair({
 }
 
 export function CounterListScreen() {
-  const { data, push, addCounter, renameCounter } = useApp();
+  const { data, push, addCounter, removeCounter, renameCounter } = useApp();
   return (
     <div className="relative min-h-full pb-24">
       <div className="flex justify-end px-4">
-        <InfoButton title="행/코 카운터" body="단과 코를 따로 세고, 프로젝트에 연결해 두면 다음에 이어서 뜰 위치를 잊지 않아요. 이름을 누르면 바로 바꿀 수 있어요." />
+        <InfoButton title="행/코 카운터" body="단과 코를 따로 세고, 프로젝트에 연결해 두면 다음에 이어서 뜰 위치를 잊지 않아요. 이름을 누르면 바로 바꿀 수 있고, 오른쪽 엑스로 카운터 전체를 지울 수 있어요." />
       </div>
       <ul className="space-y-3 px-4 pt-2">
         {data.counters.map((counter) => (
@@ -507,7 +507,10 @@ export function CounterListScreen() {
                 카운터 {counter.rows.length}개
               </button>
             </div>
-            <button type="button" aria-label={`${counter.name} 열기`} onClick={() => push({ name: "counter", id: counter.id })} className="grid h-14 w-12 shrink-0 place-items-center text-[20px] text-[#bbb]">
+            <button type="button" aria-label={`${counter.name} 삭제`} onClick={() => removeCounter(counter.id)} className="grid h-10 w-10 shrink-0 place-items-center text-[#bbb]">
+              <CloseIcon size={16} />
+            </button>
+            <button type="button" aria-label={`${counter.name} 열기`} onClick={() => push({ name: "counter", id: counter.id })} className="grid h-14 w-10 shrink-0 place-items-center text-[20px] text-[#bbb]">
               ›
             </button>
           </li>
@@ -519,7 +522,7 @@ export function CounterListScreen() {
 }
 
 export function CounterScreen({ id }: { id: string }) {
-  const { data, setCounterProject, bumpCounter, removeCounterRow, addCounterRow, renameCounter, renameCounterRow } = useApp();
+  const { data, back, setCounterProject, bumpCounter, removeCounter, removeCounterRow, addCounterRow, renameCounter, renameCounterRow } = useApp();
   const counter = data.counters.find((item) => item.id === id);
   const [openProjects, setOpenProjects] = useState(false);
   if (!counter) return <p className="px-6 py-16 text-center">카운터를 찾지 못했어요.</p>;
@@ -617,6 +620,16 @@ export function CounterScreen({ id }: { id: string }) {
       ))}
       <button type="button" onClick={() => addCounterRow(counter.id)} className="flex h-16 w-full items-center justify-center gap-2 rounded-[20px] bg-[#f6f6f6] font-semibold">
         <PlusIcon className="h-4 w-4" /> 카운터 추가
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          removeCounter(counter.id);
+          back();
+        }}
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-full text-[14px] font-semibold text-[#888]"
+      >
+        <TrashIcon /> 이 카운터 삭제
       </button>
     </div>
   );
