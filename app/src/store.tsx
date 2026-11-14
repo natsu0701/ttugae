@@ -221,6 +221,7 @@ type AppApi = {
   removeGauge: (id: string) => void;
   addCounter: () => void;
   renameCounter: (id: string, name: string) => void;
+  renameCounterRow: (counterId: string, rowId: string, label: string) => void;
   setCounterProject: (id: string, projectId: string | null) => void;
   bumpCounter: (counterId: string, rowId: string, delta: number) => void;
   resetCounterRow: (counterId: string, rowId: string) => void;
@@ -539,6 +540,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setData((current) => ({
           ...current,
           counters: current.counters.map((counter) => (counter.id === id ? { ...counter, name } : counter)),
+        })),
+      renameCounterRow: (counterId, rowId, label) =>
+        setData((current) => ({
+          ...current,
+          counters: current.counters.map((counter) =>
+            counter.id === counterId
+              ? {
+                  ...counter,
+                  rows: counter.rows.map((row) => (row.id === rowId ? { ...row, label } : row)),
+                }
+              : counter,
+          ),
         })),
       setCounterProject: (id, projectId) =>
         setData((current) => ({

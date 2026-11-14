@@ -492,21 +492,23 @@ function Pair({
 }
 
 export function CounterListScreen() {
-  const { data, push, addCounter } = useApp();
+  const { data, push, addCounter, renameCounter } = useApp();
   return (
     <div className="relative min-h-full pb-24">
       <div className="flex justify-end px-4">
-        <InfoButton title="행/코 카운터" body="단과 코를 따로 세고, 프로젝트에 연결해 두면 다음에 이어서 뜰 위치를 잊지 않아요." />
+        <InfoButton title="행/코 카운터" body="단과 코를 따로 세고, 프로젝트에 연결해 두면 다음에 이어서 뜰 위치를 잊지 않아요. 이름을 누르면 바로 바꿀 수 있어요." />
       </div>
       <ul className="space-y-3 px-4 pt-2">
         {data.counters.map((counter) => (
-          <li key={counter.id}>
-            <button type="button" onClick={() => push({ name: "counter", id: counter.id })} className="flex w-full items-center justify-between rounded-lg border border-[#f3f3f3] px-4 py-4 text-left shadow-card">
-              <span>
-                <span className="block text-[18px] font-bold">{counter.name}</span>
-                <span className="text-[13px] text-[#999]">카운터 {counter.rows.length}개</span>
-              </span>
-              <span aria-hidden>›</span>
+          <li key={counter.id} className="flex items-center rounded-lg border border-[#f3f3f3] shadow-card">
+            <div className="min-w-0 flex-1 px-4 py-4">
+              <NameField value={counter.name} onCommit={(next) => renameCounter(counter.id, next)} className="text-[18px]" />
+              <button type="button" onClick={() => push({ name: "counter", id: counter.id })} className="mt-0.5 text-[13px] text-[#999]">
+                카운터 {counter.rows.length}개
+              </button>
+            </div>
+            <button type="button" aria-label={`${counter.name} 열기`} onClick={() => push({ name: "counter", id: counter.id })} className="grid h-14 w-12 shrink-0 place-items-center text-[20px] text-[#bbb]">
+              ›
             </button>
           </li>
         ))}
@@ -517,7 +519,7 @@ export function CounterListScreen() {
 }
 
 export function CounterScreen({ id }: { id: string }) {
-  const { data, setCounterProject, bumpCounter, removeCounterRow, addCounterRow, renameCounter } = useApp();
+  const { data, setCounterProject, bumpCounter, removeCounterRow, addCounterRow, renameCounter, renameCounterRow } = useApp();
   const counter = data.counters.find((item) => item.id === id);
   const [openProjects, setOpenProjects] = useState(false);
   if (!counter) return <p className="px-6 py-16 text-center">카운터를 찾지 못했어요.</p>;
@@ -584,8 +586,15 @@ export function CounterScreen({ id }: { id: string }) {
       </div>
       {counter.rows.map((row) => (
         <section key={row.id} className="overflow-hidden rounded-lg border border-[#eee]">
-          <div className="flex items-center justify-between bg-ink px-4 py-2 text-white">
-            <span className="text-[14px] font-semibold">{row.label}</span>
+          <div className="flex items-center justify-between gap-2 bg-ink px-4 py-2 text-white">
+            <div className="min-w-0 flex-1">
+              <NameField
+                value={row.label}
+                onCommit={(next) => renameCounterRow(counter.id, row.id, next)}
+                className="text-[14px] text-white caret-white"
+                dark
+              />
+            </div>
             <button
               type="button"
               aria-label={`${row.label} 삭제`}
@@ -610,6 +619,49 @@ export function CounterScreen({ id }: { id: string }) {
         <PlusIcon className="h-4 w-4" /> 카운터 추가
       </button>
     </div>
+  );
+}
+
+function NameField({
+  value,
+  onCommit,
+  className,
+  dark,
+}: {
+  value: string;
+  onCommit: (next: string) => void;
+  className?: string;
+  dark?: boolean;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+  if (!editing) {
+    return (
+      <button type="button" onClick={() => { setDraft(value); setEditing(true); }} className={cx("block w-full truncate text-left font-semibold", className)}>
+        {value}
+      </button>
+    );
+  }
+  return (
+    <input
+      autoFocus
+      aria-label="카운터 이름"
+      value={draft}
+      onChange={(event) => setDraft(event.target.value)}
+      onBlur={() => {
+        const next = draft.trim();
+        if (next) onCommit(next);
+        setEditing(false);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") event.currentTarget.blur();
+      }}
+      className={cx(
+        "h-8 w-full bg-transparent font-semibold outline-none",
+        dark ? "placeholder:text-white/60" : "placeholder:text-[#bbb]",
+        className,
+      )}
+    />
   );
 }
 
