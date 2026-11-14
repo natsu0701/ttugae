@@ -280,6 +280,7 @@ function GaugeRuler({ onClose }: { onClose: () => void }) {
 
   if (!host) return null;
   const marks = Array.from({ length: 16 }, (_, cm) => cm);
+  const millimeters = Array.from({ length: 150 }, (_, mm) => mm + 1).filter((mm) => mm % 10 !== 0);
 
   return createPortal(
     <div
@@ -299,6 +300,13 @@ function GaugeRuler({ onClose }: { onClose: () => void }) {
         <svg className="pointer-events-none absolute left-[4.25rem] w-16" style={{ bottom: 28, top: 44 }} viewBox="0 0 64 1000" preserveAspectRatio="none" aria-hidden>
           <path d={SWATCH_EDGE} fill="#f6aeb6" />
         </svg>
+        {millimeters.map((mm) => (
+          <span
+            key={mm}
+            className="pointer-events-none absolute right-1 bg-[#d5d5d5]"
+            style={{ bottom: `calc(40px + (100% - 96px) * ${mm / 150})`, width: mm % 5 === 0 ? 16 : 8, height: 1 }}
+          />
+        ))}
         {marks.map((cm) => {
           const major = cm % 5 === 0;
           const decade = cm % 10 === 0;
@@ -318,12 +326,15 @@ function GaugeRuler({ onClose }: { onClose: () => void }) {
                   background: major ? "#171717" : "#d9d9d9",
                 }}
               />
+              <span className="absolute left-[7.7rem] top-0 -translate-y-1/2 bg-white pr-1 text-[11px] font-medium leading-none text-[#9a9a9a]">
+                {cm * 10}mm
+              </span>
             </div>
           );
         })}
         <div
           className="pointer-events-none absolute right-1"
-          style={{ left: "7.75rem", bottom: "calc(48px + (100% - 96px) * 10 / 15)" }}
+          style={{ left: "11.25rem", bottom: "calc(48px + (100% - 96px) * 10 / 15)" }}
         >
           <p className="relative rounded-2xl bg-white px-3 py-2 text-[13px] leading-snug text-[#8a8a8a] shadow-card">
             <span className="font-bold text-blush">10cm</span>
