@@ -29,7 +29,11 @@ export function GaugeHelpScreen() {
   return (
     <div className="px-4 pb-12">
       <p className="rounded-lg bg-[#f4f4f4] px-4 py-3 text-[13px] leading-relaxed">
-        도안과 사이즈가 달라 속상했던 적 있나요? 사람마다 손힘(또는 뜨는 힘)이 달라서 그래요! 게이지 확인으로 사이즈 오차를 막을 수 있어요.
+        도안과 사이즈가 달라 속상했던 적 있나요?
+        <br />
+        사람마다 뜨는 힘이 달라서 그래요!
+        <br />
+        게이지 확인으로 사이즈 오차를 막을 수 있어요.
       </p>
       <div className="mt-4 flex gap-2">
         <button type="button" onClick={() => setTab("tutorial")} className={cx("h-11 flex-1 rounded-full text-[14px] font-semibold", tab === "tutorial" ? "bg-ink text-white" : "border border-[#e4e4e4] bg-white")}>
