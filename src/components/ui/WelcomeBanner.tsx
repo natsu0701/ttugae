@@ -1,13 +1,12 @@
 /**
  * 니팅힙 감성 미니멀 웰컴 배너
  * - 테두리 없는 오트밀 크림 면(Fill) 카드 + 파스텔 번짐 섀도우
- * - 좌측: 카테고리 칩 → 타이틀(문경감홍사과체) → 서브타이틀 계층
+ * - 좌측: 타이틀(문경감홍사과체) → 서브타이틀 계층
  * - 우측: 몽글몽글 부유하는 뜨니 페르소나
  */
 import { memo } from "react";
 
 type WelcomeBannerProps = {
-  chip?: string;
   title: string;
   subtitle: string;
   /** 뜨니 이미지 경로 (TTEUNI_IMAGES.*) */
@@ -15,7 +14,6 @@ type WelcomeBannerProps = {
 };
 
 function WelcomeBanner({
-  chip,
   title,
   subtitle,
   image,
@@ -23,11 +21,6 @@ function WelcomeBanner({
   return (
     <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-xl bg-[#FFFBF7] p-8 shadow-sm sm:p-10 md:flex-row">
       <div className="w-full min-w-0 md:flex-1">
-        {chip ? (
-          <span className="mb-3 block font-sans text-sm font-bold uppercase tracking-widest text-[#FC5F53]">
-            {chip}
-          </span>
-        ) : null}
         <h1
           className="text-display break-keep font-gamhong font-normal tracking-tight text-stone-900"
           style={{

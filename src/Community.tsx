@@ -264,7 +264,6 @@ export default function Community({
       <section className="pt-8">
         <div className="page-shell">
           <WelcomeBanner
-            chip={t("community.loungeChip")}
             title={t("community.heroTitle")}
             subtitle={t("community.heroSubtitle")}
             image={TTEUNI_IMAGES.community}

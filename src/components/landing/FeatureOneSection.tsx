@@ -2,7 +2,6 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.tsx";
 import EditorMockup from "./EditorMockup.tsx";
-import FeatureBadge from "./FeatureBadge.tsx";
 import { landingHeading, landingSection } from "./landingStyles.ts";
 import Reveal from "./Reveal.tsx";
 
@@ -16,7 +15,6 @@ function FeatureOneSection({ onOpenEditor }: FeatureOneSectionProps) {
     <section id="features" className={landingSection.white}>
       <div className="page-shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
-          <FeatureBadge>Feature 01</FeatureBadge>
           <h2 className={landingHeading.h2}>
             <span>{t("landing.feature1Line1")}</span>
             <span>{t("landing.feature1Line2")}</span>

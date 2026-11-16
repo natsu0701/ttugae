@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import FeatureBadge from "./FeatureBadge.tsx";
 import FeatureInteractiveTabs from "./FeatureInteractiveTabs.tsx";
 import { landingHeading } from "./landingStyles.ts";
 import Reveal from "./Reveal.tsx";
@@ -11,7 +10,6 @@ function FeatureTwoSection() {
     <section className="relative z-10 w-full border-t border-stone-200/40 bg-stone-50 px-6 py-24 md:px-12 lg:px-20">
       <div className="page-shell">
         <Reveal className="mb-16 text-center md:text-left">
-          <FeatureBadge>Feature 02</FeatureBadge>
           <h2 className={`${landingHeading.h2Center} break-keep`}>
             {t("landing.feature2Title")}
           </h2>
