@@ -65,6 +65,7 @@ function LandingFooter() {
         { href: appPath("/about"), label: t("nav.about") },
         { href: appPath("/community"), label: t("nav.community") },
         { href: appPath("/editor"), label: t("nav.startEditor") },
+        { href: appPath("/ar"), label: t("landing.footerApp") },
       ],
     },
     {
