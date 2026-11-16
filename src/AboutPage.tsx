@@ -34,23 +34,21 @@ export default function AboutPage() {
       </section>
 
       <section className="pt-10 md:pt-14">
-        <div className="page-shell">
-          <div className="overflow-hidden rounded-xl bg-white shadow-sm">
-            {STORY_IMAGES.map((item) => (
-              <img
-                key={item.src}
-                src={item.src}
-                alt={t(item.altKey)}
-                className="block h-auto w-full"
-              />
-            ))}
-          </div>
+        <div className="overflow-hidden bg-white">
+          {STORY_IMAGES.map((item) => (
+            <img
+              key={item.src}
+              src={item.src}
+              alt={t(item.altKey)}
+              className="block h-auto w-full"
+            />
+          ))}
         </div>
       </section>
 
       <section className="pt-24 md:pt-32">
         <div className="page-shell">
-          <div className="max-w-3xl">
+          <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-title font-sans font-bold text-gray-900">{t("about.bodyTitle")}</h2>
             <p className="mt-3 break-keep font-seoyun text-lg font-normal leading-relaxed text-stone-500">
               {t("about.body")}
