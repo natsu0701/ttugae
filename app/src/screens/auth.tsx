@@ -296,13 +296,21 @@ export function OnboardingScreen() {
 }
 
 function UnitStep({ unit, onChange }: { unit: UnitSystem; onChange: (unit: UnitSystem) => void }) {
+  const units: { id: UnitSystem; title: string; detail: string }[] = [
+    { id: "metric", title: "미터법", detail: "m, cm, mm" },
+    { id: "imperial", title: "영미식", detail: "in, yd, US size" },
+  ];
   return (
     <div className="flex-1 pt-10">
       <h1 className="whitespace-pre-wrap text-[26px] font-bold leading-snug">{"단위를 어떻게\n표시할까요?"}</h1>
       <p className="mt-2 text-[13px] text-[#999]">나중에 설정에서 변경할 수 있어요.</p>
-      <div className="mt-6 grid gap-3">
-        <Choice active={unit === "metric"} onClick={() => onChange("metric")} title="미터법 (m, cm, mm)" />
-        <Choice active={unit === "imperial"} onClick={() => onChange("imperial")} title="영미식 (in, yd, US size)" />
+      <div className="mt-6 grid grid-cols-2 gap-2">
+        {units.map((item) => (
+          <SelectCard key={item.id} active={unit === item.id} onClick={() => onChange(item.id)}>
+            <span>{item.title}</span>
+            <span className="mt-1 block text-[12px] font-medium text-[#888]">{item.detail}</span>
+          </SelectCard>
+        ))}
       </div>
     </div>
   );
@@ -315,31 +323,26 @@ function ToolStep({ tool, onChange }: { tool: ToolKind | null; onChange: (tool: 
       <h1 className="text-[26px] font-bold">주로 쓰는 도구는?</h1>
       <div className="mt-6 grid grid-cols-3 gap-2">
         {tools.map((item) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => onChange(item)}
-            className={cx(
-              "h-24 rounded-lg border text-[14px] font-semibold",
-              tool === item ? "border-blush bg-blush-soft" : "border-[#eee]",
-            )}
-          >
+          <SelectCard key={item} active={tool === item} onClick={() => onChange(item)}>
             {item}
-          </button>
+          </SelectCard>
         ))}
       </div>
     </div>
   );
 }
 
-function Choice({ title, active, onClick }: { title: string; active: boolean; onClick: () => void }) {
+function SelectCard({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={cx("h-14 rounded-lg border px-4 text-left text-[15px] font-semibold", active ? "border-blush bg-blush-soft" : "border-[#eee]")}
+      className={cx(
+        "flex h-24 flex-col items-center justify-center rounded-lg border px-2 text-center text-[14px] font-semibold leading-tight",
+        active ? "border-blush bg-blush-soft" : "border-[#eee]",
+      )}
     >
-      {title}
+      {children}
     </button>
   );
 }
