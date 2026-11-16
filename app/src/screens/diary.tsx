@@ -6,6 +6,66 @@ import { CheckIcon, ChevronLeft, ClockIcon, CloseIcon, HeartIcon, ImagePlusIcon,
 const MATERIAL_KINDS = ["바늘", "실", "기타"] as const;
 type MaterialKind = (typeof MATERIAL_KINDS)[number];
 
+function josa(word: string, noBatchim: string, batchim: string) {
+  const last = [...word.trim()].at(-1) ?? "";
+  const code = last.codePointAt(0) ?? 0;
+  const hasBatchim = code >= 0xac00 && code <= 0xd7a3 && (code - 0xac00) % 28 !== 0;
+  return hasBatchim ? batchim : noBatchim;
+}
+
+function yarnDifficulty(material: string) {
+  const text = material.toLowerCase();
+  if (text.includes("linen") || text.includes("린넨")) return "린넨의 까슬한 슬럽";
+  if (text.includes("cotton") || text.includes("코튼")) return "코튼의 적은 탄력";
+  if (text.includes("wool") || text.includes("울")) return "울이 늘어나고 털이 빠지는 점";
+  if (text.includes("alpaca") || text.includes("알파카")) return "알파카 보풀이 쉽게 이는 점";
+  if (text.includes("cashmere") || text.includes("캐시미어")) return "캐시미어의 섬세한 보풀";
+  if (text.includes("silk") || text.includes("실크")) return "실크가 미끄러운 점";
+  if (text.includes("acrylic") || text.includes("poly") || text.includes("폴리")) return "실이 미끄러워 코가 풀리는 점";
+  return "익숙하지 않은 감촉";
+}
+
+function diaryMemoText(
+  project: { id: string; title: string; elapsed: number; progress: number; category?: string; parts: { name: string; count: number | null; done: boolean }[]; yarnIds?: string[]; needleIds?: string[] },
+  yarns: { id: string; name: string; material: string; needle: string; linkedProject?: string }[],
+  needles: { id: string; name: string; size: string }[],
+  counters: { projectId: string | null; rows: { label: string; value: number }[] }[],
+  chips: string[],
+) {
+  const linkedYarns = yarns.filter((yarn) => yarn.linkedProject === project.title || project.yarnIds?.includes(yarn.id));
+  const chosenYarns = yarns.filter((yarn) => chips.some((chip) => chip.startsWith(yarn.name)));
+  const usedYarns = chosenYarns.length ? chosenYarns : linkedYarns;
+  const yarnLabel = usedYarns.length
+    ? usedYarns.map((yarn) => yarn.name).join(", ")
+    : chips.find((chip) => !needles.some((needle) => chip.startsWith(needle.name))) || project.category || "준비한 실";
+  const chosenNeedles = needles.filter((needle) => project.needleIds?.includes(needle.id) || chips.some((chip) => chip.startsWith(needle.name)));
+  const needleLabel = chosenNeedles.length
+    ? chosenNeedles.map((needle) => `${needle.name} ${needle.size}`).join(", ")
+    : usedYarns[0]?.needle
+      ? `${usedYarns[0].needle} 바늘`
+      : "준비한 바늘";
+  const counted = counters
+    .filter((counter) => counter.projectId === project.id)
+    .flatMap((counter) => counter.rows)
+    .filter((row) => row.value > 0)
+    .map((row) => (row.label.includes("코") ? `${row.value}코` : row.label.includes("단") ? `${row.value}단` : `${row.label} ${row.value}`));
+  const partLine = project.parts
+    .filter((part) => part.done || (part.count ?? 0) > 0)
+    .map((part) => (part.done ? `${part.name} 완료` : `${part.name} ${part.count}단`));
+  const progress = counted.length ? counted.join(", ") : partLine.length ? partLine.join(", ") : "오늘 작업";
+  const difficulty = usedYarns.length ? usedYarns.map((yarn) => yarnDifficulty(yarn.material)).join("과 ") : yarnDifficulty(project.category || "");
+  const undone = project.parts.filter((part) => !part.done).map((part) => part.name);
+  const left = Math.max(0, 100 - project.progress);
+  const remain = left === 0 ? "마무리" : undone.length ? `${undone.join(", ")} ${left}%` : `남은 ${left}%`;
+  return [
+    `${project.title}${josa(project.title, "를", "을")} ${progress} 진행했어요.`,
+    `오늘까지 ${formatClock(project.elapsed)} 동안 ${yarnLabel}${josa(yarnLabel, "와", "과")} ${needleLabel}${josa(needleLabel, "를", "을")} 사용하여 작업했어요.`,
+    "",
+    `${difficulty}${josa(difficulty, "가", "이")} 있었지만, 무사히 작업을 끝냈어요.`,
+    `${remain}도 파이팅해서 진행해봐요!`,
+  ].join("\n");
+}
+
 export function DiaryEntryScreen({ id, index }: { id: string; index: number }) {
   const { data, back, updateDiary, removeDiary } = useApp();
   const [editing, setEditing] = useState(false);
@@ -78,6 +138,7 @@ export function DiaryScreen({ id }: { id: string }) {
   const targetRef = useRef("");
   const [memo, setMemo] = useState("");
   const [photos, setPhotos] = useState<string[]>([]);
+  const seededFor = useRef<string | null>(null);
   const materials = useMemo(() => {
     if (!project) return [];
     return data.yarns
@@ -139,6 +200,13 @@ export function DiaryScreen({ id }: { id: string }) {
 
   useEffect(() => stopTyping, []);
 
+  useEffect(() => {
+    if (!project || seededFor.current === project.id) return;
+    seededFor.current = project.id;
+    const linked = data.yarns.filter((yarn) => yarn.linkedProject === project.title).map((yarn) => `${yarn.name} ${yarn.balls}볼`);
+    setMemo(diaryMemoText(project, data.yarns, data.needles, data.counters, linked));
+  }, [data.counters, data.needles, data.yarns, project]);
+
   if (!project) return <p className="px-6 py-16 text-center text-[14px]">프로젝트를 찾지 못했어요.</p>;
 
   const active = project.parts.find((part) => !part.done) ?? project.parts[0];
@@ -150,8 +218,7 @@ export function DiaryScreen({ id }: { id: string }) {
 
   const fillMemo = () => {
     stopTyping();
-    const materialLine = chips.length ? `재료는 ${chips.join(", ")}를 썼어요.` : "";
-    const text = `${project.title}을 이어서 기록해요. ${statusLine}. 오늘까지 ${formatClock(project.elapsed)}을 들였어요. ${materialLine}`.trim();
+    const text = diaryMemoText(project, data.yarns, data.needles, data.counters, chips);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setMemo(text);
       return;
@@ -392,7 +459,7 @@ export function DiaryScreen({ id }: { id: string }) {
           }}
           placeholder="오늘의 뜨개 느낌이나 팁을 적어보세요."
           aria-label="나의 메모"
-          className="memo-lines mt-3 h-40 w-full resize-none rounded-lg border border-[#f0e4d8] bg-[#fffdf8] px-4 py-3 text-[14px] leading-[28px] outline-none"
+          className="memo-lines mt-3 h-56 w-full resize-none rounded-lg border border-[#f0e4d8] bg-[#fffdf8] px-4 py-3 text-[14px] leading-[28px] outline-none"
         />
         {project.diary.length > 0 ? (
           <ul className="mt-3 space-y-2">
