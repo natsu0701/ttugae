@@ -268,6 +268,8 @@
       "period": "Period: last {{days}} days",
       "score": "Level score: {{score}}",
       "next": "{{remaining}} points to next level",
+      "nextCheer": "{{remaining}} points to the next level!",
+      "criteriaPeriod": "Criteria: stitches + finished works + meetup attendance over the last {{days}} days",
       "max": "Highest level reached."
     },
     "follow": {

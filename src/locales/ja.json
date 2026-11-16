@@ -268,6 +268,8 @@
       "period": "算定期間: 直近{{days}}日",
       "score": "ランク点数: {{score}}",
       "next": "次のレベルまで {{remaining}}点",
+      "nextCheer": "次のレベルまで {{remaining}}点です！",
+      "criteriaPeriod": "算定基準: 直近{{days}}日の完成目数 + 作品数 + 모임出席",
       "max": "最高レベルです。"
     },
     "follow": {

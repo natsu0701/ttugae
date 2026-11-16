@@ -289,6 +289,21 @@ function ProfileInfoPanel({
             following={following.length}
             onFollowersClick={() => setFollowOpen("followers")}
             onFollowingClick={() => setFollowOpen("following")}
+            extra={
+              <div className="text-left">
+                <p className="font-sans text-sm font-bold leading-5 text-stone-800">
+                  {level.nextScore
+                    ? t("mypage.level.nextCheer", { remaining: level.remaining.toLocaleString() })
+                    : t("mypage.level.max")}
+                </p>
+                <p className="mt-1.5 font-sans text-sm leading-5 text-stone-500">
+                  {t("mypage.level.criteriaPeriod", { days: LEVEL_PERIOD_DAYS })}
+                </p>
+                <p className="mt-0.5 font-sans text-sm leading-5 text-stone-500">
+                  {t("mypage.level.score", { score: level.score.toLocaleString() })}
+                </p>
+              </div>
+            }
           />
           <div className="mt-5 flex flex-wrap items-center gap-2">
             <span className="font-sans text-lg font-bold leading-7 text-stone-900">{nickname}</span>
@@ -306,19 +321,6 @@ function ProfileInfoPanel({
           </div>
           <p className="mt-1.5 font-sans text-base leading-5 text-stone-500">@{handle}</p>
           <p className="mt-1 font-sans text-sm leading-5 text-stone-400">{level.title}</p>
-          <div className="mt-4 w-full rounded-lg bg-stone-50 p-4 text-left">
-            <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
-            <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
-              <li>{t("mypage.level.criteria")}</li>
-              <li>{t("mypage.level.period", { days: LEVEL_PERIOD_DAYS })}</li>
-              <li>{t("mypage.level.score", { score: level.score.toLocaleString() })}</li>
-              <li>
-                {level.nextScore
-                  ? t("mypage.level.next", { remaining: level.remaining.toLocaleString() })
-                  : t("mypage.level.max")}
-              </li>
-            </ul>
-          </div>
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2">

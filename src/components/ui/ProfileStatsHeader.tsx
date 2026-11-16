@@ -6,6 +6,7 @@ type ProfileStatsHeaderProps = {
   posts: number;
   followers: number;
   following: number;
+  extra?: ReactNode;
   onFollowersClick?: () => void;
   onFollowingClick?: () => void;
 };
@@ -44,18 +45,22 @@ export default function ProfileStatsHeader({
   posts,
   followers,
   following,
+  extra,
   onFollowersClick,
   onFollowingClick,
 }: ProfileStatsHeaderProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center gap-8 sm:gap-12">
+    <div className={`flex gap-8 sm:gap-12 ${extra ? "items-start" : "items-center"}`}>
       <div className="shrink-0">{avatar}</div>
-      <div className="flex min-w-0 flex-1 justify-around">
-        <Stat value={posts} label={t("profileStats.posts")} />
-        <Stat value={followers} label={t("profileStats.followers")} onClick={onFollowersClick} />
-        <Stat value={following} label={t("profileStats.following")} onClick={onFollowingClick} />
+      <div className="min-w-0 flex-1">
+        <div className="flex justify-around">
+          <Stat value={posts} label={t("profileStats.posts")} />
+          <Stat value={followers} label={t("profileStats.followers")} onClick={onFollowersClick} />
+          <Stat value={following} label={t("profileStats.following")} onClick={onFollowingClick} />
+        </div>
+        {extra ? <div className="mt-4">{extra}</div> : null}
       </div>
     </div>
   );
