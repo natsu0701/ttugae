@@ -527,10 +527,158 @@ export function CounterListScreen() {
   );
 }
 
+type VoiceRecognition = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: { resultIndex: number; results: ArrayLike<{ isFinal: boolean; 0?: { transcript: string } }> }) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+};
+
+function voiceRecognition(): (new () => VoiceRecognition) | null {
+  const host = window as Window & { SpeechRecognition?: new () => VoiceRecognition; webkitSpeechRecognition?: new () => VoiceRecognition };
+  return host.SpeechRecognition ?? host.webkitSpeechRecognition ?? null;
+}
+
+function spokenAmount(text: string) {
+  const digit = text.match(/(\d+)/);
+  if (digit) {
+    const amount = Number(digit[1]);
+    if (amount > 0 && amount <= 99) return amount;
+  }
+  const words: [string, number][] = [
+    ["열", 10],
+    ["아홉", 9],
+    ["여덟", 8],
+    ["일곱", 7],
+    ["여섯", 6],
+    ["다섯", 5],
+    ["넷", 4],
+    ["셋", 3],
+    ["둘", 2],
+    ["두코", 2],
+    ["두단", 2],
+    ["하나", 1],
+  ];
+  for (const [word, amount] of words) {
+    if (text.includes(word)) return amount;
+  }
+  return 1;
+}
+
+function voiceCounterStep(transcript: string, rows: { id: string; label: string }[]) {
+  const text = transcript.replace(/\s+/g, "");
+  const rowAt = text.search(/단수|단/);
+  const stitchAt = text.search(/코수|코/);
+  if (rowAt < 0 && stitchAt < 0) return null;
+  const keyword = rowAt < 0 ? "코" : stitchAt < 0 || rowAt <= stitchAt ? "단" : "코";
+  const downAt = Math.max(text.lastIndexOf("빼"), text.lastIndexOf("감소"), text.lastIndexOf("내려"), text.lastIndexOf("줄여"));
+  const upAt = Math.max(text.lastIndexOf("추가"), text.lastIndexOf("올려"), text.lastIndexOf("증가"), text.lastIndexOf("더해"));
+  if (downAt < 0 && upAt < 0) return null;
+  const row = rows.find((item) => item.label.includes(keyword));
+  if (!row) return null;
+  const sign = downAt > upAt ? -1 : 1;
+  return { rowId: row.id, delta: sign * spokenAmount(text), label: row.label };
+}
+
+function MicIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+      <path fill="currentColor" d="M12 14.2a3.2 3.2 0 003.2-3.2V6.2a3.2 3.2 0 10-6.4 0v4.8a3.2 3.2 0 003.2 3.2z" />
+      <path fill="currentColor" d="M6.2 11.2a.9.9 0 011.8 0 4 4 0 008 0 .9.9 0 011.8 0 5.8 5.8 0 01-4.9 5.73V19h2.2a.9.9 0 010 1.8H8.9a.9.9 0 010-1.8h2.2v-2.07A5.8 5.8 0 016.2 11.2z" />
+    </svg>
+  );
+}
+
 export function CounterScreen({ id }: { id: string }) {
-  const { data, back, setCounterProject, bumpCounter, removeCounter, removeCounterRow, addCounterRow, renameCounter, renameCounterRow } = useApp();
+  const { data, back, notify, setCounterProject, bumpCounter, removeCounter, removeCounterRow, addCounterRow, renameCounter, renameCounterRow } = useApp();
   const counter = data.counters.find((item) => item.id === id);
   const [openProjects, setOpenProjects] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [heard, setHeard] = useState("");
+  const listeningRef = useRef(false);
+  const recognitionRef = useRef<VoiceRecognition | null>(null);
+  const rowsRef = useRef(counter?.rows ?? []);
+  const bumpRef = useRef(bumpCounter);
+  const notifyRef = useRef(notify);
+  const heardAt = useRef({ text: "", at: 0 });
+  rowsRef.current = counter?.rows ?? [];
+  bumpRef.current = bumpCounter;
+  notifyRef.current = notify;
+
+  useEffect(() => {
+    return () => {
+      listeningRef.current = false;
+      recognitionRef.current?.abort();
+    };
+  }, []);
+
+  const stopListening = () => {
+    listeningRef.current = false;
+    setListening(false);
+    recognitionRef.current?.stop();
+  };
+
+  const startListening = () => {
+    const Recognition = voiceRecognition();
+    if (!Recognition) {
+      notify("이 브라우저에서는 음성 인식을 쓸 수 없어요");
+      return;
+    }
+    const recognition = recognitionRef.current ?? new Recognition();
+    recognition.lang = "ko-KR";
+    recognition.continuous = true;
+    recognition.interimResults = false;
+    recognition.onresult = (event) => {
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        const transcript = result?.isFinal ? result[0]?.transcript ?? "" : "";
+        if (!transcript) continue;
+        const now = Date.now();
+        if (transcript === heardAt.current.text && now - heardAt.current.at < 900) continue;
+        heardAt.current = { text: transcript, at: now };
+        setHeard(transcript);
+        const step = voiceCounterStep(transcript, rowsRef.current);
+        if (!step) {
+          notifyRef.current("단수 추가, 코수 추가처럼 말해 주세요");
+          continue;
+        }
+        bumpRef.current(id, step.rowId, step.delta);
+      }
+    };
+    recognition.onerror = (event) => {
+      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        listeningRef.current = false;
+        setListening(false);
+        notifyRef.current("마이크 권한을 허용해 주세요");
+      }
+    };
+    recognition.onend = () => {
+      if (!listeningRef.current) return;
+      try {
+        recognition.start();
+      } catch {
+        listeningRef.current = false;
+        setListening(false);
+      }
+    };
+    recognitionRef.current = recognition;
+    listeningRef.current = true;
+    setListening(true);
+    setHeard("");
+    try {
+      recognition.start();
+    } catch {
+      listeningRef.current = false;
+      setListening(false);
+      notify("음성 인식을 시작하지 못했어요");
+    }
+  };
+
   if (!counter) return <p className="px-6 py-16 text-center">카운터를 찾지 못했어요.</p>;
   const linked = data.projects.find((project) => project.id === counter.projectId);
   return (
@@ -592,6 +740,23 @@ export function CounterScreen({ id }: { id: string }) {
             })}
           </ul>
         ) : null}
+      </div>
+      <div>
+        <button
+          type="button"
+          aria-pressed={listening}
+          onClick={() => (listening ? stopListening() : startListening())}
+          className={cx(
+            "flex h-12 w-full items-center justify-center gap-2 rounded-full font-semibold",
+            listening ? "bg-blush text-white" : "bg-[#f6f6f6]",
+          )}
+        >
+          <MicIcon />
+          {listening ? "듣는 중 · 누르면 멈춰요" : "음성으로 세기"}
+        </button>
+        <p className="mt-2 text-center text-[12px] text-[#999]" aria-live="polite">
+          {heard ? `“${heard}”` : "단수 추가, 코수 추가, 단수 빼, 코수 빼"}
+        </p>
       </div>
       {counter.rows.map((row) => (
         <section key={row.id} className="overflow-hidden rounded-lg border border-[#eee]">
