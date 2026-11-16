@@ -31,6 +31,7 @@ import {
   CounterListScreen,
   CounterRunScreen,
   CounterScreen,
+  GaugeDetailScreen,
   GaugeFormScreen,
   GaugeHelpScreen,
   GaugeScreen,
@@ -56,6 +57,8 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
     case "gauge":
     case "gauge-form":
       return route.name === "gauge-form" ? "게이지 등록" : "게이지";
+    case "gauge-detail":
+      return "게이지 정보";
     case "gauge-help":
       return "도움말";
     case "counters":
@@ -288,6 +291,8 @@ function renderRoute(route: Route): ReactNode {
       return <FinishedScreen id={route.id} />;
     case "gauge":
       return <GaugeScreen tab={route.tab} />;
+    case "gauge-detail":
+      return <GaugeDetailScreen id={route.id} />;
     case "gauge-form":
       return <GaugeFormScreen />;
     case "gauge-help":

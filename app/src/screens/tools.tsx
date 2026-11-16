@@ -367,26 +367,77 @@ function GaugeList() {
     <div>
       <ul className="space-y-3 px-4 pt-5">
         {data.gauges.map((gauge) => (
-          <li key={gauge.id} className="flex gap-3 rounded-lg border border-[#f0f0f0] p-3">
-            <div className="flex-1">
-              <p className="font-bold">{gauge.name}</p>
-              <p className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><PencilIcon /> {gauge.thickness}</p>
-              <p className="flex items-center gap-1 text-[12px] text-[#777]"><YarnBallIcon /> {gauge.yarnName}</p>
-              <p className="mt-2 text-[12px] text-[#999]">세탁 전</p>
-              <p className="text-[13px] font-semibold">{gauge.before}</p>
-              <p className="mt-1 text-[12px] text-[#999]">세탁 후</p>
-              <p className="text-[13px] font-semibold">{gauge.after}</p>
-            </div>
-            <div className="flex flex-col items-end">
-              <button type="button" aria-label="게이지 삭제" onClick={() => removeGauge(gauge.id)} className="grid h-8 w-8 place-items-center text-[#bbb]">
-                <TrashIcon />
-              </button>
-              <img src={gauge.image} alt="" className="mt-2 h-16 w-16 rounded-lg object-cover" />
-            </div>
+          <li key={gauge.id} className="relative flex gap-3 rounded-lg border border-[#f0f0f0] p-3">
+            <button
+              type="button"
+              aria-label={`${gauge.name} 정보`}
+              onClick={() => push({ name: "gauge-detail", id: gauge.id })}
+              className="flex min-w-0 flex-1 gap-3 text-left"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block font-bold">{gauge.name}</span>
+                <span className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><PencilIcon /> {gauge.thickness}</span>
+                <span className="flex items-center gap-1 text-[12px] text-[#777]"><YarnBallIcon /> {gauge.yarnName}</span>
+                <span className="mt-2 block text-[12px] text-[#999]">세탁 전</span>
+                <span className="block text-[13px] font-semibold">{gauge.before}</span>
+                <span className="mt-1 block text-[12px] text-[#999]">세탁 후</span>
+                <span className="block text-[13px] font-semibold">{gauge.after}</span>
+              </span>
+              <img src={gauge.image} alt="" className="mt-8 h-16 w-16 shrink-0 rounded-lg object-cover" />
+            </button>
+            <button type="button" aria-label={`${gauge.name} 삭제`} onClick={() => removeGauge(gauge.id)} className="absolute right-2 top-2 grid h-8 w-8 place-items-center text-[#bbb]">
+              <TrashIcon />
+            </button>
           </li>
         ))}
       </ul>
       <Fab label="게이지 등록" onClick={() => push({ name: "gauge-form" })} />
+    </div>
+  );
+}
+
+export function GaugeDetailScreen({ id }: { id: string }) {
+  const { data, push } = useApp();
+  const gauge = data.gauges.find((item) => item.id === id);
+  if (!gauge) return <p className="px-6 py-16 text-center text-[14px]">게이지를 찾지 못했어요.</p>;
+  const project = data.projects.find((item) => item.id === gauge.projectId);
+  return (
+    <div className="px-4 pb-12">
+      {gauge.image ? <img src={gauge.image} alt="" className="mx-auto mt-2 h-48 w-48 rounded-lg object-cover" /> : null}
+      <h2 className="mt-4 text-center text-[20px] font-bold">{gauge.name}</h2>
+      <p className="text-center text-[13px] text-[#888]">{gauge.thickness}</p>
+      <div className="mt-5 space-y-3">
+        <InfoRow label="실" value={gauge.yarnName} />
+        <InfoRow label="바늘" value={gauge.needle || "기록 없음"} />
+        <InfoRow label="도안" value={gauge.pattern || "기록 없음"} />
+        <div className="rounded-lg border border-[#f0f0f0] px-4 py-3">
+          <p className="text-[12px] text-[#999]">연결된 프로젝트</p>
+          <div className="mt-1">
+            {project ? (
+              <button type="button" onClick={() => push({ name: "project", id: project.id })} className="text-left text-[15px] font-bold text-blush">
+                {project.title}
+              </button>
+            ) : (
+              <p className="text-[15px] font-bold">연결된 프로젝트 없음</p>
+            )}
+          </div>
+        </div>
+        <InfoRow label="세탁 전" value={gauge.before} />
+        <InfoRow label="세탁 후" value={gauge.after} />
+        <div className="memo-lines rounded-lg border border-[#f0f0f0] border-l-4 border-l-blush px-4 py-3">
+          <p className="text-[12px] text-[#999]">메모</p>
+          <p className="mt-1 whitespace-pre-wrap text-[14px] leading-7">{gauge.memo?.trim() || "적어 둔 메모가 없어요."}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-[#f0f0f0] px-4 py-3">
+      <p className="text-[12px] text-[#999]">{label}</p>
+      <p className="mt-1 text-[15px] font-bold">{value}</p>
     </div>
   );
 }

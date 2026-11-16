@@ -29,6 +29,7 @@ export type Route =
   | { name: "needle"; id: string }
   | { name: "finished"; id: string }
   | { name: "gauge"; tab: GaugeTab }
+  | { name: "gauge-detail"; id: string }
   | { name: "gauge-form" }
   | { name: "gauge-help" }
   | { name: "counters" }

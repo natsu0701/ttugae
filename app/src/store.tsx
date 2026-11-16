@@ -139,6 +139,8 @@ function routeToHash(route: Route) {
       return route.id ? `#/project-form/${route.id}` : "#/project-form";
     case "gauge":
       return `#/gauge/${route.tab}`;
+    case "gauge-detail":
+      return `#/gauge-detail/${route.id}`;
     case "codex":
       return route.id ? `#/codex/${route.id}` : "#/codex";
     case "collection":
@@ -178,6 +180,7 @@ function hashToRoute(hash: string): Route {
   if (name === "question" && id) return { name: "question", id };
   if (name === "project-form") return { name: "project-form", id };
   if (name === "gauge") return { name: "gauge", tab: id === "calc" ? "calc" : "manage" };
+  if (name === "gauge-detail" && id) return { name: "gauge-detail", id };
   const known: Route["name"][] = [
     "login",
     "signup",
