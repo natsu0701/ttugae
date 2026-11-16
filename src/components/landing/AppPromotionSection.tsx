@@ -1,7 +1,7 @@
-import { memo, useRef } from "react";
+import { memo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, EffectCreative } from "swiper/modules";
+import { Autoplay, EffectCreative } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper";
 import { ChevronLeftFillIcon, ChevronRightFillIcon } from "../icons/FillIcons.tsx";
 import Reveal from "./Reveal.tsx";
@@ -11,7 +11,6 @@ import { landingHeading } from "./landingStyles.ts";
 
 import "swiper/css";
 import "swiper/css/effect-creative";
-import "swiper/css/pagination";
 import "swiper/css/autoplay";
 
 const SLIDE_SRCS = [
@@ -19,6 +18,10 @@ const SLIDE_SRCS = [
   assetUrl("/images/App_mockup_2.png"),
   assetUrl("/images/App_mockup_3.png"),
 ] as const;
+
+const LAST_INDEX = SLIDE_SRCS.length - 1;
+const LOOP_INDEX = SLIDE_SRCS.length;
+const SLIDE_LOOP_SRCS = [...SLIDE_SRCS, SLIDE_SRCS[0]];
 
 const css = `
   .app-promo-swiper .swiper,
@@ -41,6 +44,7 @@ const css = `
     border: none;
     cursor: pointer;
     margin: 0 4px !important;
+    padding: 0;
   }
   .app-promo-pagination .swiper-pagination-bullet-active {
     width: 28px;
@@ -51,15 +55,38 @@ const css = `
 const ARROW_BTN =
   "pointer-events-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-stone-200 bg-white/90 text-stone-600 shadow-sm backdrop-blur-sm transition-colors duration-200 hover:border-stone-300 hover:text-coral";
 
+function realSlideIndex(index: number) {
+  return index % SLIDE_SRCS.length;
+}
+
 function AppPromotionSection() {
   const { t } = useTranslation();
   const swiperRef = useRef<SwiperClass | null>(null);
+  const [realIndex, setRealIndex] = useState(0);
+
+  const snapLoopClone = (swiper: SwiperClass) => {
+    if (swiper.activeIndex >= LOOP_INDEX) {
+      swiper.slideTo(0, 0);
+    }
+  };
 
   const slideBy = (direction: 1 | -1) => {
     const swiper = swiperRef.current;
     if (!swiper) return;
     if (direction > 0) swiper.slideNext();
     else swiper.slidePrev();
+  };
+
+  const goTo = (target: number) => {
+    const swiper = swiperRef.current;
+    if (!swiper) return;
+    const current = realSlideIndex(swiper.activeIndex);
+    if (target === current) return;
+    if (target === 0 && current === LAST_INDEX) {
+      swiper.slideTo(LOOP_INDEX);
+      return;
+    }
+    swiper.slideTo(target);
   };
 
   return (
@@ -81,10 +108,9 @@ function AppPromotionSection() {
             </button>
 
             <Swiper
-              modules={[Autoplay, Pagination, EffectCreative]}
+              modules={[Autoplay, EffectCreative]}
               effect="creative"
               grabCursor={true}
-              rewind={true}
               speed={500}
               observer={true}
               observeParents={true}
@@ -103,20 +129,20 @@ function AppPromotionSection() {
                   translate: ["100%", 0, 0],
                 },
               }}
-              pagination={{
-                el: ".app-promo-pagination",
-                clickable: true,
-              }}
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;
               }}
+              onSlideChange={(swiper) => {
+                setRealIndex(realSlideIndex(swiper.activeIndex));
+              }}
+              onSlideChangeTransitionEnd={snapLoopClone}
               className="w-full"
             >
-              {SLIDE_SRCS.map((src, index) => (
-                <SwiperSlide key={src}>
+              {SLIDE_LOOP_SRCS.map((src, index) => (
+                <SwiperSlide key={`${src}-${index}`}>
                   <img
                     src={src}
-                    alt={t("landing.promoAlt", { n: index + 1 })}
+                    alt={t("landing.promoAlt", { n: realSlideIndex(index) + 1 })}
                     className="pointer-events-none select-none"
                   />
                 </SwiperSlide>
@@ -133,7 +159,20 @@ function AppPromotionSection() {
             </button>
           </div>
 
-          <div className="app-promo-pagination mt-5 flex justify-center gap-1.5 py-1.5" />
+          <div className="app-promo-pagination mt-5 flex justify-center gap-1.5 py-1.5">
+            {SLIDE_SRCS.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                aria-label={t("landing.promoAlt", { n: index + 1 })}
+                aria-current={index === realIndex ? "true" : undefined}
+                className={`swiper-pagination-bullet${
+                  index === realIndex ? " swiper-pagination-bullet-active" : ""
+                }`}
+                onClick={() => goTo(index)}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="page-shell mt-20 text-center md:mt-28">
