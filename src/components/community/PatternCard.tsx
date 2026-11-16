@@ -139,7 +139,7 @@ function PatternCard({
               {t("community.rank", { rank })}
             </span>
           ) : (
-            <span className="pointer-events-none absolute left-3.5 top-3.5 z-[2] rounded-lg bg-stone-950/80 px-2.5 py-1 font-sans text-sm font-bold tracking-wider text-white backdrop-blur-sm">
+            <span className="pointer-events-none absolute left-3 top-3 z-[2] rounded-md bg-black/30 px-1.5 py-0.5 font-sans text-2xs font-medium tracking-wide text-white/80 backdrop-blur-[2px]">
               {sizeLabel}
             </span>
           )}
