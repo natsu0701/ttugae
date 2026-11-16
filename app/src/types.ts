@@ -20,6 +20,7 @@ export type Route =
   | { name: "lounge" }
   | { name: "my" }
   | { name: "profile"; section?: "settings" }
+  | { name: "cart" }
   | { name: "project"; id: string }
   | { name: "project-form"; id?: string }
   | { name: "navi"; id: string }
@@ -223,6 +224,7 @@ export type Persisted = {
   gauges: GaugeRecord[];
   counters: Counter[];
   likes: string[];
+  cart: string[];
   calendarMarks: Record<string, string>;
   knitMinutes: Record<string, number>;
   notifRead: boolean;

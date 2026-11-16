@@ -63,6 +63,7 @@ function freshPersisted(): Persisted {
     gauges: seedGauges(),
     counters: seedCounters(),
     likes: [],
+    cart: [],
     calendarMarks: {
       "2025-01-02": "❤️",
       "2025-01-04": "⭐",
@@ -103,6 +104,7 @@ function loadPersisted(): Persisted {
       gauges: parsed.gauges ?? base.gauges,
       counters: parsed.counters?.length ? parsed.counters : base.counters,
       likes: parsed.likes ?? [],
+      cart: parsed.cart ?? [],
       calendarMarks: parsed.calendarMarks ?? base.calendarMarks,
       knitMinutes: parsed.knitMinutes ?? base.knitMinutes,
       naviDone: parsed.naviDone ?? {},
@@ -202,6 +204,7 @@ function hashToRoute(hash: string): Route {
     "ranking",
     "notifications",
     "likes",
+    "cart",
   ];
   if (known.includes(name as Route["name"])) return { name: name as Route["name"] } as Route;
   return { name: "splash" };

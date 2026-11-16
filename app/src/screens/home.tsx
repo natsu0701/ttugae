@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { FAQ, KINGS, LISTINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, findProduct, formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { BellIcon, ChevronDown, ChevronRight, CrownIcon, DragScroll, FigmaIcon, GearIcon, HeartIcon, Mascot, MinusIcon, NaviIcon, PauseIcon, PlayIcon, PlusIcon, SearchIcon, cx } from "../ui.tsx";
+import { BagFillIcon } from "../icons/webFill.tsx";
+import { BellIcon, ChevronDown, ChevronRight, CrownIcon, DragScroll, FigmaIcon, GearIcon, HeartIcon, Mascot, MinusIcon, NaviIcon, PauseIcon, PlayIcon, PlusIcon, SearchIcon, TrashIcon, cx } from "../ui.tsx";
 
 export function HomeScreen() {
   const { homeTab } = useApp();
@@ -281,7 +282,8 @@ function HomePane() {
 const MARKET_FILTERS = ["초보용", "여름", "겨울", "1만원 미만"];
 
 function MarketPane() {
-  const { push, setHomeTab } = useApp();
+  const { data, push, setHomeTab } = useApp();
+  const cartCount = data.cart?.length ?? 0;
   const [kind, setKind] = useState("전체");
   const [picked, setPicked] = useState<string[]>([]);
   const [query, setQuery] = useState("");
@@ -300,12 +302,22 @@ function MarketPane() {
 
   return (
     <div className="pb-8">
-      <header className="sticky top-0 z-20 flex items-end gap-4 bg-white px-4 pb-2 text-[18px]">
-        <button type="button" className="pb-1 text-[#b5b5b5]" onClick={() => setHomeTab("home")}>
-          홈
-        </button>
-        <button type="button" className="border-b-2 border-blush pb-1 font-bold" onClick={() => setHomeTab("market")}>
-          뜨개마켓
+      <header className="sticky top-0 z-20 flex items-end justify-between bg-white px-4 pb-2">
+        <div className="flex items-end gap-4 text-[18px]">
+          <button type="button" className="pb-1 text-[#b5b5b5]" onClick={() => setHomeTab("home")}>
+            홈
+          </button>
+          <button type="button" className="border-b-2 border-blush pb-1 font-bold" onClick={() => setHomeTab("market")}>
+            뜨개마켓
+          </button>
+        </div>
+        <button type="button" aria-label="장바구니" onClick={() => push({ name: "cart" })} className="relative grid h-9 w-9 place-items-center">
+          <BagFillIcon className="h-6 w-6" />
+          {cartCount > 0 ? (
+            <span className="absolute right-0 top-0 grid h-4 min-w-4 place-items-center rounded-full bg-blush px-1 text-[10px] font-bold leading-none text-white">
+              {cartCount}
+            </span>
+          ) : null}
         </button>
       </header>
       <div className="px-4 pt-3">
@@ -594,10 +606,23 @@ export function PatternScreen({ id }: { id: string }) {
   );
 }
 
+function won(price: string) {
+  return Number(price.replace(/[^\d]/g, "")) || 0;
+}
+
 export function ProductScreen({ id }: { id: string }) {
-  const { notify } = useApp();
+  const { data, notify, patch, push } = useApp();
   const product = findProduct(id);
   const mine = LISTINGS.some((item) => item.id === product.id);
+  const inCart = data.cart?.includes(product.id) ?? false;
+  const addToCart = () => {
+    if (inCart) {
+      push({ name: "cart" });
+      return;
+    }
+    patch({ cart: [...(data.cart ?? []), product.id] });
+    notify("장바구니에 담았어요");
+  };
   return (
     <article className="pb-10">
       <img src={product.image} alt="" className="h-64 w-full object-cover" />
@@ -610,15 +635,69 @@ export function ProductScreen({ id }: { id: string }) {
         {mine ? (
           <p className="mt-6 rounded-lg bg-[#f6f6f6] px-4 py-3 text-center text-[14px] text-[#666]">내가 판매 중인 물품이에요.</p>
         ) : (
-          <button
-            type="button"
-            onClick={() => notify("데모라 결제는 진행되지 않아요")}
-            className="mt-6 h-12 w-full rounded-full bg-ink font-semibold text-white"
-          >
-            구매하기
-          </button>
+          <div className="mt-6 flex gap-2">
+            <button type="button" onClick={addToCart} className="h-12 flex-1 rounded-full border border-ink font-semibold">
+              {inCart ? "장바구니 보기" : "장바구니"}
+            </button>
+            <button
+              type="button"
+              onClick={() => notify("데모라 결제는 진행되지 않아요")}
+              className="h-12 flex-1 rounded-full bg-ink font-semibold text-white"
+            >
+              구매하기
+            </button>
+          </div>
         )}
       </div>
     </article>
+  );
+}
+
+export function CartScreen() {
+  const { data, goTab, notify, patch, push } = useApp();
+  const items = (data.cart ?? []).map((id) => PRODUCTS.find((item) => item.id === id)).filter((item): item is (typeof PRODUCTS)[number] => Boolean(item));
+  const total = items.reduce((sum, item) => sum + won(item.price), 0);
+  const remove = (id: string) => patch({ cart: (data.cart ?? []).filter((item) => item !== id) });
+  if (items.length === 0) {
+    return (
+      <div className="px-6 py-16 text-center">
+        <BagFillIcon className="mx-auto h-12 w-12 text-[#ccc]" />
+        <p className="mt-4 text-[16px] font-bold">장바구니가 비어 있어요</p>
+        <p className="mt-1 text-[13px] text-[#888]">뜨개마켓에서 도안, 실, 바늘을 담아 보세요.</p>
+        <button type="button" onClick={() => goTab("home", "market")} className="mt-6 h-11 rounded-full bg-ink px-5 text-[14px] font-semibold text-white">
+          뜨개마켓 보러가기
+        </button>
+      </div>
+    );
+  }
+  return (
+    <div className="pb-8">
+      <ul className="space-y-3 px-4 pt-3">
+        {items.map((item) => (
+          <li key={item.id} className="flex items-center gap-3 rounded-lg border border-[#f0f0f0] p-3">
+            <button type="button" onClick={() => push({ name: "product", id: item.id })} className="flex min-w-0 flex-1 gap-3 text-left">
+              <img src={item.image} alt="" className="h-16 w-16 shrink-0 rounded-lg object-cover" />
+              <span className="min-w-0">
+                <span className="text-[11px] text-blush">{item.kind}</span>
+                <span className="mt-0.5 block truncate text-[15px] font-bold">{item.title}</span>
+                <span className="mt-1 block text-[14px] font-semibold">{item.price}</span>
+              </span>
+            </button>
+            <button type="button" aria-label={`${item.title} 빼기`} onClick={() => remove(item.id)} className="grid h-9 w-9 shrink-0 place-items-center text-[#888]">
+              <TrashIcon />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="mx-4 mt-4 rounded-lg bg-[#f7f7f7] px-4 py-4">
+        <div className="flex items-center justify-between text-[15px]">
+          <span className="text-[#666]">합계</span>
+          <span className="text-[18px] font-bold">{total.toLocaleString("ko-KR")}원</span>
+        </div>
+        <button type="button" onClick={() => notify("데모라 결제는 진행되지 않아요")} className="mt-4 h-12 w-full rounded-full bg-ink font-semibold text-white">
+          구매하기
+        </button>
+      </div>
+    </div>
   );
 }

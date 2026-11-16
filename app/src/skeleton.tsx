@@ -420,6 +420,8 @@ function bodyFor(route: Route) {
       return <ListSkeleton />;
     case "orders":
       return <ListSkeleton thumb rows={4} />;
+    case "cart":
+      return <ListSkeleton thumb rows={3} />;
     case "likes":
       return <GridSkeleton />;
     case "codex":

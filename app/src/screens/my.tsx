@@ -72,7 +72,7 @@ export function MyScreen() {
       </button>
 
       <div className="grid grid-cols-4 gap-2 px-4 py-4 text-center">
-        <Shortcut icon={<BagFillIcon className="h-6 w-6" />} label="장바구니" onClick={() => goTab("home", "market")} />
+        <Shortcut icon={<BagFillIcon className="h-6 w-6" />} label="장바구니" onClick={() => push({ name: "cart" })} />
         <Shortcut icon={<HeartFillIcon className="h-6 w-6" />} label="관심 목록" onClick={() => push({ name: "likes" })} />
         <Shortcut icon={<ClockFillIcon className="h-6 w-6" />} label="최근 본 글" onClick={() => goTab("lounge", "works")} />
         <Shortcut icon={<ChatFillIcon className="h-6 w-6" />} label="내 댓글" onClick={() => goTab("lounge", "qa")} />

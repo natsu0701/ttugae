@@ -16,6 +16,7 @@ import {
   NewsScreen,
   NotificationsScreen,
   PatternScreen,
+  CartScreen,
   ProductScreen,
   RankingScreen,
   WorkScreen,
@@ -82,6 +83,8 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
       return "알림";
     case "likes":
       return "좋아요";
+    case "cart":
+      return "장바구니";
     case "product":
       return route.id.startsWith("sale-") ? "판매 물품" : "뜨개마켓";
     case "orders":
@@ -327,6 +330,8 @@ function renderRoute(route: Route): ReactNode {
       return <LikesScreen />;
     case "product":
       return <ProductScreen id={route.id} />;
+    case "cart":
+      return <CartScreen />;
     case "orders":
       return <OrdersScreen tab={route.tab} />;
     case "short":
