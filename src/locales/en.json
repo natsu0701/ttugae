@@ -867,6 +867,7 @@
     "zoomOut": "Zoom out",
     "compass": "Show whole area",
     "mapHint": "Drag and zoom the map to find pop-ups",
+    "mapCredit": "© OpenStreetMap",
     "detailLabel": "Event details",
     "dateLabel": "Dates",
     "placeLabel": "Place",

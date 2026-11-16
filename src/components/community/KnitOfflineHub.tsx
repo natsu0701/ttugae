@@ -1,5 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import {
   CalendarFillIcon,
   ChatFillIcon,
@@ -10,7 +12,6 @@ import {
   HeartFillIcon,
   PinFillIcon,
   QrFillIcon,
-  SpinnerFillIcon,
 } from "../icons/FillIcons.tsx";
 import {
   issueTicket,
@@ -63,50 +64,8 @@ type OfflineReview = {
   attachedPatternData?: HubPatternPayload;
 };
 
-type LeafletMarker = {
-  on: (event: string, handler: () => void) => void;
-};
-
-type LeafletMap = {
-  setView: (latLng: [number, number], zoom?: number) => LeafletMap;
-  flyTo: (
-    latLng: [number, number],
-    zoom?: number,
-    options?: { animate?: boolean; duration?: number },
-  ) => LeafletMap;
-  zoomIn: () => void;
-  zoomOut: () => void;
-  remove: () => void;
-  invalidateSize: () => void;
-};
-
-type LeafletNS = {
-  map: (
-    el: HTMLElement,
-    options: { zoomControl: boolean; attributionControl: boolean },
-  ) => LeafletMap;
-  tileLayer: (url: string, options: { maxZoom: number }) => { addTo: (map: LeafletMap) => void };
-  divIcon: (options: {
-    html: string;
-    className: string;
-    iconSize: [number, number];
-    iconAnchor: [number, number];
-  }) => unknown;
-  marker: (
-    latLng: [number, number],
-    options: { icon: unknown },
-  ) => LeafletMarker & { addTo: (map: LeafletMap) => LeafletMarker };
-};
-
-declare global {
-  interface Window {
-    L?: LeafletNS;
-  }
-}
-
-const LEAFLET_CSS = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-const LEAFLET_JS = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
 const SEOUL_CENTER: [number, number] = [37.538, 126.96];
+const OSM_TILES = "https://tile.openstreetmap.de/{z}/{x}/{y}.png";
 
 const CORAL_PIN_HTML = `
   <div style="position:relative;display:flex;align-items:center;justify-content:center;width:40px;height:40px">
@@ -248,50 +207,6 @@ function localizedReview(t: TFunction, rev: OfflineReview): OfflineReview {
   };
 }
 
-function loadLeafletFromCdn(): Promise<LeafletNS> {
-  if (window.L) return Promise.resolve(window.L);
-
-  return new Promise((resolve, reject) => {
-    const cssId = "leaflet-css-cdn";
-    if (!document.getElementById(cssId)) {
-      const link = document.createElement("link");
-      link.id = cssId;
-      link.rel = "stylesheet";
-      link.href = LEAFLET_CSS;
-      document.head.appendChild(link);
-    }
-
-    const scriptId = "leaflet-js-cdn";
-    const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
-    const onReady = () => {
-      if (window.L) resolve(window.L);
-      else reject(new Error("Leaflet failed to load"));
-    };
-
-    if (existing) {
-      if (window.L) {
-        onReady();
-        return;
-      }
-      existing.addEventListener("load", onReady, { once: true });
-      existing.addEventListener("error", () => reject(new Error("Leaflet script error")), {
-        once: true,
-      });
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.id = scriptId;
-    script.src = LEAFLET_JS;
-    script.async = true;
-    script.addEventListener("load", onReady, { once: true });
-    script.addEventListener("error", () => reject(new Error("Leaflet script error")), {
-      once: true,
-    });
-    document.head.appendChild(script);
-  });
-}
-
 type KnitOfflineHubProps = {
   onGoEditor?: () => void;
 };
@@ -304,40 +219,24 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
   const [activeModalTicket, setActiveModalTicket] = useState<OfflineEvent | null>(null);
   const [issuedTicket, setIssuedTicket] = useState<OfflineTicket | null>(null);
   const [clonedSuccessMsg, setClonedSuccessName] = useState<string | null>(null);
-  const [leafletLoaded, setLeafletLoaded] = useState(() => Boolean(window.L));
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<LeafletMap | null>(null);
-  const markersRef = useRef<Record<string, LeafletMarker>>({});
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<Record<string, L.Marker>>({});
 
   useEffect(() => {
     setMeetups(withReservationState(HUB_MEETUPS));
   }, []);
 
   useEffect(() => {
-    if (activeTab !== "map") return;
-    let cancelled = false;
-    loadLeafletFromCdn()
-      .then(() => {
-        if (!cancelled) setLeafletLoaded(true);
-      })
-      .catch(() => {
-        if (!cancelled) setLeafletLoaded(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [activeTab]);
-
-  useEffect(() => {
-    if (!leafletLoaded || activeTab !== "map" || !mapContainerRef.current || !window.L) return;
-    const L = window.L;
+    if (activeTab !== "map" || !mapContainerRef.current) return;
     const map = L.map(mapContainerRef.current, {
       zoomControl: false,
       attributionControl: false,
     }).setView(SEOUL_CENTER, 12);
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    L.tileLayer(OSM_TILES, {
       maxZoom: 19,
+      attribution: "&copy; OpenStreetMap",
     }).addTo(map);
 
     mapInstanceRef.current = map;
@@ -365,7 +264,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
       mapInstanceRef.current = null;
       markersRef.current = {};
     };
-  }, [leafletLoaded, activeTab]);
+  }, [activeTab]);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -461,14 +360,6 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
               </span>
               <div className="relative min-h-[320px] flex-1 overflow-hidden rounded-xl bg-[#ECE6DC] shadow-inner">
                 <div ref={mapContainerRef} className="absolute inset-0 z-10 h-full w-full" />
-                {!leafletLoaded ? (
-                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center space-y-3 bg-stone-50">
-                    <SpinnerFillIcon className="h-8 w-8 animate-spin text-coral" />
-                    <span className="font-sans text-sm font-bold tracking-wide text-stone-400">
-                      {t("offline.mapLoading")}
-                    </span>
-                  </div>
-                ) : null}
                 <div className="absolute left-4 right-4 top-4 z-20">
                   <div className="flex items-center gap-3 rounded-2xl bg-white/95 px-4 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
                     <PinFillIcon className="h-4 w-4 text-coral" />
@@ -511,6 +402,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                 </div>
                 <div className="absolute bottom-3 left-4 z-20 rounded-lg bg-stone-900/60 px-2.5 py-1 font-sans text-sm tracking-tight text-stone-200">
                   {t("offline.mapHint")}
+                  <span className="ml-2 text-stone-300">{t("offline.mapCredit")}</span>
                 </div>
               </div>
             </div>
