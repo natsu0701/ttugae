@@ -383,7 +383,7 @@ function PopularCard({ yarn, onOpen }: { yarn: PopularYarn; onOpen: () => void }
     <li className="w-[168px] shrink-0">
       <button type="button" onClick={onOpen} className="w-full text-left">
         <span className="relative block">
-          <img src={yarn.image} alt="" className="aspect-[4/5] w-full rounded-lg object-cover" />
+          <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
           <span className={cx("absolute left-2 top-2 rounded-full px-2 py-0.5 text-[11px] font-semibold text-white", badge)}>{yarn.badge}</span>
         </span>
         <span className="mt-2 block text-[14px] font-bold leading-tight">{yarn.title}</span>
