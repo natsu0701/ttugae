@@ -4,6 +4,9 @@ export const BASE_URL = import.meta.env.BASE_URL;
 /** iPad Safari에서 카메라 오버레이를 여는 공개 주소. */
 export const PUBLIC_AR_URL = "https://natsu0701.github.io/ttugae/ar";
 
+/** 모바일 앱 프로토타입. 시작 화면은 로그인. */
+export const PUBLIC_APP_URL = "https://natsu0701.github.io/ttugae/app/#/login";
+
 function stripTrailingSlash(value: string): string {
   return value.endsWith("/") ? value.slice(0, -1) : value;
 }
