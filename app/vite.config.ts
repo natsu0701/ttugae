@@ -31,6 +31,7 @@ function overlayAssets(): Plugin {
     },
     async writeBundle(options) {
       if (!options.dir) return;
+      if (process.env.TTUGAE_APP_BASE) return;
       const dest = path.join(options.dir, "overlays");
       await mkdir(dest, { recursive: true });
       await cp(overlays, dest, { recursive: true });
@@ -39,6 +40,7 @@ function overlayAssets(): Plugin {
 }
 
 export default defineConfig({
+  base: process.env.TTUGAE_APP_BASE || "/",
   plugins: [react(), overlayAssets()],
   server: {
     host: true,

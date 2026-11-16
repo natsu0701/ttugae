@@ -117,7 +117,7 @@ function loadPersisted(): Persisted {
 function routeToHash(route: Route) {
   switch (route.name) {
     case "splash":
-      return "#/";
+      return "#/splash";
     case "diary-entry":
       return `#/diary-entry/${route.id}/${route.index}`;
     case "project":
@@ -159,7 +159,7 @@ function routeToHash(route: Route) {
 function hashToRoute(hash: string): Route {
   const parts = hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   const [name, id] = parts;
-  if (!name) return { name: "splash" };
+  if (!name) return { name: "login" };
   if (name === "project" && id) return { name: "project", id };
   if (name === "navi" && id) return { name: "navi", id };
   if (name === "camera" && id) return { name: "camera", id };
@@ -207,7 +207,8 @@ function hashToRoute(hash: string): Route {
     "cart",
   ];
   if (known.includes(name as Route["name"])) return { name: name as Route["name"] } as Route;
-  return { name: "splash" };
+  if (name === "splash") return { name: "splash" };
+  return { name: "login" };
 }
 
 type AppApi = {
@@ -294,7 +295,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [calcResult, setCalcResult] = useState<number | null>(null);
   const [finishId, setFinishId] = useState<string | null>(null);
 
-  const route = stack[stack.length - 1] ?? { name: "splash" as const };
+  const route = stack[stack.length - 1] ?? { name: "login" as const };
   const stackRef = useRef(stack);
   stackRef.current = stack;
 

@@ -26,7 +26,8 @@ const TRACKS: Track[] = [
 
 function asset(path: string) {
   const base = import.meta.env.BASE_URL || "/";
-  return `${base}${path}`.replace(/([^:]\/)\/+/g, "$1");
+  const root = path.startsWith("overlays/") ? base.replace(/app\/$/, "") : base;
+  return `${root}${path}`.replace(/([^:]\/)\/+/g, "$1");
 }
 
 function canPlayWebmVp9Alpha() {

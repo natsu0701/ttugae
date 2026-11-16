@@ -2,7 +2,7 @@ import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import BrandTextLogo from "../ui/BrandTextLogo.tsx";
 import { ChevronRightFillIcon, PlusFillIcon } from "../icons/FillIcons.tsx";
-import { appPath, PUBLIC_AR_URL } from "../../utils/appPath.ts";
+import { appPath, PUBLIC_APP_URL, PUBLIC_AR_URL } from "../../utils/appPath.ts";
 
 const PHONE = "010-6709-1423";
 const EMAIL = "dayoung030423@gmail.com";
@@ -65,7 +65,6 @@ function LandingFooter() {
         { href: appPath("/about"), label: t("nav.about") },
         { href: appPath("/community"), label: t("nav.community") },
         { href: appPath("/editor"), label: t("nav.startEditor") },
-        { href: appPath("/ar"), label: t("landing.footerApp") },
       ],
     },
     {
@@ -93,6 +92,7 @@ function LandingFooter() {
       title: t("landing.footerRelatedSites"),
       links: [
         { href: SITE_URL, label: t("nav.brand"), external: true },
+        { href: PUBLIC_APP_URL, label: t("landing.footerApp"), external: true },
         { href: PUBLIC_AR_URL, label: t("landing.footerArTitle"), external: true },
       ],
     },
