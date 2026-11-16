@@ -278,15 +278,24 @@ function HomePane() {
   );
 }
 
+const MARKET_FILTERS = ["초보용", "여름", "겨울", "1만원 미만"];
+
 function MarketPane() {
   const { push, setHomeTab } = useApp();
   const [kind, setKind] = useState("전체");
+  const [picked, setPicked] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const kinds = ["전체", "도안", "실", "바늘", "클래스"];
+  const toggleFilter = (flag: string) => setPicked((current) => (current.includes(flag) ? current.filter((item) => item !== flag) : [...current, flag]));
   const items = useMemo(
     () =>
-      PRODUCTS.filter((item) => (kind === "전체" || item.kind === kind) && `${item.title}${item.seller}`.includes(query.trim())),
-    [kind, query],
+      PRODUCTS.filter(
+        (item) =>
+          (kind === "전체" || item.kind === kind) &&
+          picked.every((flag) => item.filters?.includes(flag)) &&
+          `${item.title}${item.seller}`.includes(query.trim()),
+      ),
+    [kind, picked, query],
   );
 
   return (
@@ -322,7 +331,24 @@ function MarketPane() {
             </button>
           ))}
         </DragScroll>
+        <DragScroll className="mt-2 flex gap-2 overflow-x-auto" aria-label="마켓 필터">
+          {MARKET_FILTERS.map((flag) => {
+            const on = picked.includes(flag);
+            return (
+              <button
+                key={flag}
+                type="button"
+                aria-pressed={on}
+                onClick={() => toggleFilter(flag)}
+                className={cx("h-8 shrink-0 rounded-full border px-3 text-[13px]", on ? "border-blush bg-blush font-semibold text-white" : "border-[#ececec] bg-white text-[#666]")}
+              >
+                {flag}
+              </button>
+            );
+          })}
+        </DragScroll>
       </div>
+      {items.length === 0 ? <p className="px-4 py-10 text-center text-[14px] text-[#888]">이 조건에 맞는 상품이 없어요.</p> : null}
       <ul className="mt-4 space-y-3 px-4">
         {items.map((item) => (
           <li key={item.id}>

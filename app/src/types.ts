@@ -183,6 +183,7 @@ export type Product = {
   kind: string;
   image: string;
   blurb: string;
+  filters?: string[];
 };
 
 export type ShortClip = {

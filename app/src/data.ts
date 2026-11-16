@@ -505,6 +505,7 @@ export const PRODUCTS: Product[] = [
     kind: "도안",
     image: media("media/pop-beanie.jpg"),
     blurb: "초보용 코튼 머플러. 코 수와 단 수가 적혀 있어요.",
+    filters: ["초보용", "1만원 미만"],
   },
   {
     id: "mk2",
@@ -514,6 +515,7 @@ export const PRODUCTS: Product[] = [
     kind: "실",
     image: media("media/news-yarn.jpg"),
     blurb: "가볍고 보풀이 있는 겨울 목도리실이에요.",
+    filters: ["겨울", "1만원 미만"],
   },
   {
     id: "mk3",
@@ -532,6 +534,7 @@ export const PRODUCTS: Product[] = [
     kind: "클래스",
     image: media("media/news-hands.jpg"),
     blurb: "코 잡기부터 고무단까지 두 시간 수업이에요.",
+    filters: ["초보용"],
   },
   {
     id: "mk5",
@@ -541,6 +544,7 @@ export const PRODUCTS: Product[] = [
     kind: "도안",
     image: linen,
     blurb: "얇은 린넨으로 뜨는 민소매 탑 치수표.",
+    filters: ["여름", "1만원 미만"],
   },
   {
     id: "mk6",
@@ -550,6 +554,7 @@ export const PRODUCTS: Product[] = [
     kind: "실",
     image: woolSwatch,
     blurb: "뒤꿈치가 잘 버티는 양말용 메리노 4합.",
+    filters: ["1만원 미만"],
   },
 ];
 
