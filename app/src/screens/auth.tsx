@@ -47,7 +47,7 @@ export function LoginScreen() {
 
   return (
     <div className="relative flex min-h-full w-full flex-1 flex-col bg-blush-wash px-6 pt-8">
-      <Flower className="left-4 top-2" />
+      <Flower className="left-1 top-0" label="바로 들어가기" onClick={enterSocial} />
       <Flower className="right-6 top-16 scale-75" />
       <div className="mx-auto mt-10 w-[16.5rem] max-w-full">
         <Wordmark className="w-full" />
@@ -155,11 +155,18 @@ function AppleMark() {
   );
 }
 
-function Flower({ className }: { className?: string }) {
+function Flower({ className, label, onClick }: { className?: string; label?: string; onClick?: () => void }) {
+  if (!onClick) {
+    return (
+      <span className={cx("absolute", className)} aria-hidden>
+        <FlowerIcon />
+      </span>
+    );
+  }
   return (
-    <span className={cx("absolute", className)} aria-hidden>
+    <button type="button" aria-label={label} onClick={onClick} className={cx("absolute z-10 grid h-11 w-11 place-items-center", className)}>
       <FlowerIcon />
-    </span>
+    </button>
   );
 }
 
