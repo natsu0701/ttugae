@@ -106,7 +106,7 @@ function LandingFooter() {
   return (
     <div>
       <div className="bg-white">
-        <div className="page-shell py-10 text-center md:py-12">
+        <div className="page-shell pt-10 pb-20 text-center md:pt-12 md:pb-28">
           <p className="font-seoyun text-lg font-bold text-gray-900">{t("landing.footerTag")}</p>
         </div>
       </div>
