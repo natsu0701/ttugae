@@ -56,12 +56,10 @@ import {
   UserPlusFillIcon,
   LogoutFillIcon,
   WithdrawFillIcon,
-  PencilFillIcon,
   CompassFillIcon,
   BagFillIcon,
   FolderFillIcon,
 } from "./components/icons/FillIcons.tsx";
-import { iconTip } from "./utils/iconTip.ts";
 import {
   FOLLOW_CHANGED_EVENT,
   isFollowing,
@@ -273,21 +271,18 @@ function ProfileInfoPanel({
         <div>
           <ProfileStatsHeader
             avatar={
-              <div className="relative h-28 w-28">
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
+                aria-label={t("mypage.profile.changeAvatar")}
+                className="h-28 w-28 cursor-pointer overflow-hidden rounded-full hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
+              >
                 <img
                   src={avatarUrl || TTEUNI_IMAGES.chatProfile}
                   alt=""
                   className="h-full w-full rounded-full object-cover"
                 />
-                <button
-                  type="button"
-                  onClick={() => avatarInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-coral text-white shadow"
-                  {...iconTip(t("mypage.profile.changeAvatar"))}
-                >
-                  <PencilFillIcon className="h-4 w-4" />
-                </button>
-              </div>
+              </button>
             }
             posts={patterns.length}
             followers={followers.length}
