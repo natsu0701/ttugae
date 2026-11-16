@@ -36,7 +36,6 @@ export type Route =
   | { name: "counter-run"; id: string; row: string }
   | { name: "codex"; id?: string }
   | { name: "chat" }
-  | { name: "editor" }
   | { name: "collection"; id?: string }
   | { name: "pattern"; id: string }
   | { name: "work"; id: string }

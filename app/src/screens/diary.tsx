@@ -7,7 +7,8 @@ const MATERIAL_KINDS = ["바늘", "실", "기타"] as const;
 type MaterialKind = (typeof MATERIAL_KINDS)[number];
 
 function josa(word: string, noBatchim: string, batchim: string) {
-  const last = [...word.trim()].at(-1) ?? "";
+  const chars = [...word.trim()];
+  const last = chars[chars.length - 1] ?? "";
   const code = last.codePointAt(0) ?? 0;
   const hasBatchim = code >= 0xac00 && code <= 0xd7a3 && (code - 0xac00) % 28 !== 0;
   return hasBatchim ? batchim : noBatchim;

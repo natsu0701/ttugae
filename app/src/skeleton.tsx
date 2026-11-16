@@ -377,26 +377,6 @@ function ChatSkeleton() {
   );
 }
 
-function EditorSkeleton() {
-  return (
-    <div className="px-4 pt-3 pb-10">
-      <Bone className="h-3 w-full" />
-      <Bone className="mt-2 h-3 w-2/3" />
-      <div className="mt-4 flex gap-2">
-        {Array.from({ length: 6 }, (_, index) => (
-          <Bone key={index} className="h-8 w-8 rounded-full" />
-        ))}
-      </div>
-      <div className="mt-4 grid grid-cols-12 gap-0.5 rounded-lg bg-[#f6f6f6] p-2">
-        {Array.from({ length: 84 }, (_, index) => (
-          <Bone key={index} className="aspect-square rounded-[2px]" />
-        ))}
-      </div>
-      <Bone className="mt-4 h-11 rounded-full" />
-    </div>
-  );
-}
-
 function bodyFor(route: Route) {
   switch (route.name) {
     case "home":
@@ -428,8 +408,6 @@ function bodyFor(route: Route) {
       return <SearchSkeleton />;
     case "chat":
       return <ChatSkeleton />;
-    case "editor":
-      return <EditorSkeleton />;
     case "gauge":
       return <GaugeSkeleton />;
     case "gauge-form":

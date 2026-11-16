@@ -31,7 +31,6 @@ import {
   CounterListScreen,
   CounterRunScreen,
   CounterScreen,
-  EditorScreen,
   GaugeFormScreen,
   GaugeHelpScreen,
   GaugeScreen,
@@ -66,8 +65,6 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
       return route.id ? (codexById(route.id)?.name ?? "뜨개도감") : "뜨개도감";
     case "chat":
       return "뜨니챗";
-    case "editor":
-      return "뜨개에디터";
     case "collection":
       return "뜨개컬렉션";
     case "pattern":
@@ -307,8 +304,6 @@ function renderRoute(route: Route): ReactNode {
       return <CollectionScreen id={route.id} />;
     case "chat":
       return <ChatScreen />;
-    case "editor":
-      return <EditorScreen />;
     case "pattern":
       return <PatternScreen id={route.id} />;
     case "work":
