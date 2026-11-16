@@ -24,7 +24,7 @@ function WelcomeBanner({
     <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-xl bg-[#FFFBF7] p-8 shadow-sm sm:p-10 md:flex-row">
       <div className="w-full min-w-0 md:flex-1">
         {chip ? (
-          <span className="mb-3 block w-fit rounded-full bg-[#FC5F53]/10 px-3 py-1 font-sans text-sm font-bold uppercase tracking-widest text-[#FC5F53]">
+          <span className="mb-3 block font-sans text-sm font-bold uppercase tracking-widest text-[#FC5F53]">
             {chip}
           </span>
         ) : null}
