@@ -18,7 +18,7 @@ export default function MiniPatternCanvas({
   return (
     <div className={`rounded-2xl bg-gray-50 p-4 ${className}`}>
       {label && (
-        <p className="mb-3 font-sans text-base font-normal text-gray-500">{label}</p>
+        <p className="mb-2 font-sans text-2xs font-medium text-gray-400">{label}</p>
       )}
       <div className="overflow-hidden rounded-xl bg-gray-200 p-1">
         <PatternChartGrid cells={cells} colorMap={colorMap} fit="cells" />
