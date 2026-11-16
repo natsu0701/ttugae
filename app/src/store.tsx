@@ -133,6 +133,8 @@ function routeToHash(route: Route) {
     case "short":
     case "question":
       return `#/${route.name}/${route.id}`;
+    case "counter-run":
+      return `#/counter-run/${route.id}/${encodeURIComponent(route.row)}`;
     case "project-form":
       return route.id ? `#/project-form/${route.id}` : "#/project-form";
     case "gauge":
@@ -164,6 +166,7 @@ function hashToRoute(hash: string): Route {
   if (name === "needle" && id) return { name: "needle", id };
   if (name === "finished" && id) return { name: "finished", id };
   if (name === "counter" && id) return { name: "counter", id };
+  if (name === "counter-run" && id && parts[2]) return { name: "counter-run", id, row: decodeURIComponent(parts[2]) };
   if (name === "codex") return { name: "codex", id };
   if (name === "collection") return { name: "collection", id };
   if (name === "pattern" && id) return { name: "pattern", id };

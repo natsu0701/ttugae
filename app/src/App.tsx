@@ -29,6 +29,7 @@ import { NeedleScreen, YarnScreen } from "./screens/stash.tsx";
 import {
   ChatScreen,
   CounterListScreen,
+  CounterRunScreen,
   CounterScreen,
   EditorScreen,
   GaugeFormScreen,
@@ -105,7 +106,7 @@ function tabSlide(from: string, to: string) {
   return next > previous ? "left" : "right";
 }
 
-const NO_SKELETON = new Set<Route["name"]>(["splash", "login", "signup", "forgot", "onboarding", "camera"]);
+const NO_SKELETON = new Set<Route["name"]>(["splash", "login", "signup", "forgot", "onboarding", "camera", "counter-run"]);
 const SKELETON_MS = 480;
 
 function usePageReady(routeKey: string, hold: boolean) {
@@ -135,6 +136,7 @@ const OWN_CHROME = new Set([
   "my",
   "camera",
   "diary",
+  "counter-run",
 ]);
 
 function Shell() {
@@ -152,8 +154,9 @@ function Shell() {
   useEffect(() => {
     scrollRef.current?.scrollTo(0, 0);
   }, [routeKey]);
-  const scrolling = route.name !== "chat";
-  const fillScreen = route.name === "login" || route.name === "signup";
+  const counting = route.name === "counter-run";
+  const scrolling = route.name !== "chat" && !counting;
+  const fillScreen = route.name === "login" || route.name === "signup" || counting;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const ready = usePageReady(skeletonKey, !reduceMotion && !NO_SKELETON.has(route.name));
   return (
@@ -192,16 +195,16 @@ function Shell() {
               <InfoButton
                 label="행/코 카운터 도움말"
                 title="행/코 카운터"
-                body="단과 코를 따로 세고, 프로젝트에 연결해 두면 다음에 이어서 뜰 위치를 잊지 않아요. 휴지통 왼쪽 연필로 이름을 바꾸고, 휴지통으로 카운터 전체를 지울 수 있어요."
+                body="단과 코를 따로 세고, 프로젝트에 연결해 두면 다음에 이어서 뜰 위치를 잊지 않아요. 휴지통 왼쪽 연필로 이름을 바꾸고, 휴지통으로 카운터 전체를 지울 수 있어요. 단수·코수 숫자를 누르면 크게 세는 화면이 열리고, 거기서 마이크를 켜 다음·이전처럼 말할 수 있어요."
               />
             ) : null}
           </div>
         ) : null}
-        <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : scrolling ? (fillScreen ? "scroll flex flex-col" : "scroll") : "flex min-h-0 flex-1 flex-col"}>
+        <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : counting ? "flex min-h-0 flex-1 flex-col bg-[#f47c7b]" : scrolling ? (fillScreen ? "scroll flex flex-col" : "scroll") : "flex min-h-0 flex-1 flex-col"}>
           <div
             key={route.name}
             data-tab-motion={slide || undefined}
-            className={[slide ? `tab-enter-${slide}` : "", fillScreen ? "flex min-h-full w-full flex-1 flex-col" : ""].filter(Boolean).join(" ") || undefined}
+            className={[slide ? `tab-enter-${slide}` : "", fillScreen ? "flex min-h-0 w-full flex-1 flex-col" : ""].filter(Boolean).join(" ") || undefined}
           >
             {ready ? (
               <div className={fillScreen ? "page-in flex min-h-full w-full flex-1 flex-col" : "page-in"}>{screen}</div>
@@ -296,6 +299,8 @@ function renderRoute(route: Route): ReactNode {
       return <CounterListScreen />;
     case "counter":
       return <CounterScreen id={route.id} />;
+    case "counter-run":
+      return <CounterRunScreen id={route.id} row={route.row} />;
     case "codex":
       return <CodexScreen id={route.id} />;
     case "collection":

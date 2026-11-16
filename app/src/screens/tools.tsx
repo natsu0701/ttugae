@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { media } from "../data.ts";
+import { formatClock, media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
-import { BlackButton, CameraIcon, ChevronDown, DoneMark, Fab, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
+import { BlackButton, CameraIcon, ChevronDown, DoneMark, Fab, GearIcon, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
 
 export function GaugeScreen({ tab }: { tab: GaugeTab }) {
   const { replace } = useApp();
@@ -601,6 +601,100 @@ function voiceCounterStep(transcript: string, rows: { id: string; label: string 
   return { rowId: row.id, delta: sign * spokenAmount(text), label: row.label };
 }
 
+function voiceRunStep(transcript: string, rows: { id: string; label: string }[], currentId: string) {
+  const text = transcript.replace(/\s+/g, "");
+  const downWords = ["이전", "빼", "감소", "내려", "줄여"];
+  const upWords = ["다음", "추가", "올려", "증가", "더해"];
+  const downAt = downWords.reduce((at, word) => Math.max(at, text.lastIndexOf(word)), -1);
+  const upAt = upWords.reduce((at, word) => Math.max(at, text.lastIndexOf(word)), -1);
+  if (downAt < 0 && upAt < 0) return null;
+  const rowAt = text.search(/단수|단/);
+  const stitchAt = text.search(/코수|코/);
+  let row = rows.find((item) => item.id === currentId) ?? rows[0];
+  if (rowAt >= 0 || stitchAt >= 0) {
+    const keyword = rowAt < 0 ? "코" : stitchAt < 0 || rowAt <= stitchAt ? "단" : "코";
+    row = rows.find((item) => item.label.includes(keyword)) ?? row;
+  }
+  if (!row) return null;
+  return { rowId: row.id, delta: (downAt > upAt ? -1 : 1) * spokenAmount(text) };
+}
+
+function useCounterVoice(onPhrase: (transcript: string) => void) {
+  const { notify } = useApp();
+  const onPhraseRef = useRef(onPhrase);
+  const notifyRef = useRef(notify);
+  onPhraseRef.current = onPhrase;
+  notifyRef.current = notify;
+  const [listening, setListening] = useState(false);
+  const listeningRef = useRef(false);
+  const recognitionRef = useRef<VoiceRecognition | null>(null);
+  const heardAt = useRef({ text: "", at: 0 });
+
+  useEffect(() => {
+    return () => {
+      listeningRef.current = false;
+      recognitionRef.current?.abort();
+    };
+  }, []);
+
+  const stop = () => {
+    listeningRef.current = false;
+    setListening(false);
+    recognitionRef.current?.stop();
+  };
+
+  const start = () => {
+    const Recognition = voiceRecognition();
+    if (!Recognition) {
+      notifyRef.current("이 브라우저에서는 음성 인식을 쓸 수 없어요");
+      return;
+    }
+    const recognition = recognitionRef.current ?? new Recognition();
+    recognition.lang = "ko-KR";
+    recognition.continuous = true;
+    recognition.interimResults = false;
+    recognition.onresult = (event) => {
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        const transcript = result?.isFinal ? result[0]?.transcript ?? "" : "";
+        if (!transcript) continue;
+        const now = Date.now();
+        if (transcript === heardAt.current.text && now - heardAt.current.at < 900) continue;
+        heardAt.current = { text: transcript, at: now };
+        onPhraseRef.current(transcript);
+      }
+    };
+    recognition.onerror = (event) => {
+      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        listeningRef.current = false;
+        setListening(false);
+        notifyRef.current("마이크 권한을 허용해 주세요");
+      }
+    };
+    recognition.onend = () => {
+      if (!listeningRef.current) return;
+      try {
+        recognition.start();
+      } catch {
+        listeningRef.current = false;
+        setListening(false);
+      }
+    };
+    recognitionRef.current = recognition;
+    listeningRef.current = true;
+    setListening(true);
+    try {
+      recognition.start();
+    } catch {
+      listeningRef.current = false;
+      setListening(false);
+      notifyRef.current("음성 인식을 시작하지 못했어요");
+    }
+  };
+
+  return { listening, start, stop };
+}
+
 function MicIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
@@ -611,7 +705,7 @@ function MicIcon() {
 }
 
 export function CounterScreen({ id }: { id: string }) {
-  const { data, back, notify, setCounterProject, bumpCounter, removeCounter, removeCounterRow, addCounterRow, renameCounter, renameCounterRow } = useApp();
+  const { data, back, notify, push, setCounterProject, bumpCounter, removeCounter, removeCounterRow, addCounterRow, renameCounter, renameCounterRow } = useApp();
   const counter = data.counters.find((item) => item.id === id);
   const [openProjects, setOpenProjects] = useState(false);
   const [editingRow, setEditingRow] = useState<string | null>(null);
@@ -784,6 +878,7 @@ export function CounterScreen({ id }: { id: string }) {
                 editing={editingRow === row.id}
                 onClose={() => setEditingRow((current) => (current === row.id ? null : current))}
                 onCommit={(next) => renameCounterRow(counter.id, row.id, next)}
+                onOpen={() => push({ name: "counter-run", id: counter.id, row: row.id })}
                 label="칸 이름"
                 className="text-[14px] text-white caret-white"
                 dark
@@ -806,11 +901,18 @@ export function CounterScreen({ id }: { id: string }) {
               <TrashIcon />
             </button>
           </div>
-          <div className="flex items-center justify-between px-4 py-4">
+          <div className="flex items-center gap-2 px-4 py-4">
             <StepButton label="감소" disabled={row.value === 0} onClick={() => bumpCounter(counter.id, row.id, -1)}>
               <MinusIcon className="h-5 w-5" />
             </StepButton>
-            <span className="text-[40px] font-bold">{row.value}</span>
+            <button
+              type="button"
+              onClick={() => push({ name: "counter-run", id: counter.id, row: row.id })}
+              className="flex min-w-0 flex-1 items-center justify-center"
+              aria-label={`${row.label} 세기`}
+            >
+              <span className="text-[40px] font-bold">{row.value}</span>
+            </button>
             <StepButton label="증가" pink onClick={() => bumpCounter(counter.id, row.id, 1)}>
               <PlusIcon className="h-5 w-5" />
             </StepButton>
@@ -834,11 +936,179 @@ export function CounterScreen({ id }: { id: string }) {
   );
 }
 
+export function CounterRunScreen({ id, row }: { id: string; row: string }) {
+  const { data, back, notify, openSheet, bumpCounter, resetCounterRow } = useApp();
+  const counter = data.counters.find((item) => item.id === id);
+  const [rowId, setRowId] = useState(row);
+  const [seconds, setSeconds] = useState(0);
+  const [heard, setHeard] = useState("");
+  const rowsRef = useRef(counter?.rows ?? []);
+  const rowRef = useRef(rowId);
+  rowsRef.current = counter?.rows ?? [];
+  rowRef.current = rowId;
+  const { listening, start, stop } = useCounterVoice((transcript) => {
+    setHeard(transcript);
+    const step = voiceRunStep(transcript, rowsRef.current, rowRef.current);
+    if (!step) {
+      notify("다음, 이전, 단수 추가처럼 말해 주세요");
+      return;
+    }
+    setRowId(step.rowId);
+    bumpCounter(id, step.rowId, step.delta);
+  });
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setSeconds((value) => value + 1), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  if (!counter) return <p className="px-6 py-16 text-center text-white">카운터를 찾지 못했어요.</p>;
+  const active = counter.rows.find((item) => item.id === rowId) ?? counter.rows[0];
+  if (!active) return <p className="px-6 py-16 text-center text-white">셀 칸이 없어요.</p>;
+  const linked = data.projects.find((project) => project.id === counter.projectId);
+  const title = linked?.title ?? counter.name;
+
+  return (
+    <div className="flex min-h-full flex-1 flex-col bg-[#f47c7b] text-white">
+      <header className="grid h-12 grid-cols-[40px_1fr_40px] items-center px-2">
+        <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
+          <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
+            <path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <h1 className="flex min-w-0 items-center justify-center gap-1 text-[17px] font-bold">
+          <span className="truncate">{title}</span>
+          <button
+            type="button"
+            aria-label="세기 안내"
+            onClick={() =>
+              openSheet({
+                kind: "info",
+                title: "크게 세기",
+                body: "다음으로 하나 올리고, 이전으로 하나 내립니다. 마이크를 켠 뒤 다음, 이전, 단수 추가, 코수 빼처럼 말하면 그 칸이 바뀝니다.",
+              })
+            }
+            className="grid h-6 w-6 shrink-0 place-items-center"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+              <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.6" />
+              <path d="M12 10.6v5.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              <circle cx="12" cy="7.7" r="0.9" fill="currentColor" />
+            </svg>
+          </button>
+        </h1>
+        <span />
+      </header>
+
+      <div className="flex items-center justify-between px-5 pt-3">
+        <button
+          type="button"
+          aria-label="음성 인식 시작"
+          aria-pressed={listening}
+          onClick={start}
+          className={cx("grid h-10 w-10 place-items-center rounded-full", listening && "bg-white text-[#f47c7b]")}
+        >
+          <MicGlyph />
+        </button>
+        <button type="button" aria-label="음성 인식 끄기" onClick={stop} className="grid h-10 w-10 place-items-center">
+          <MicGlyph off />
+        </button>
+        <p className="font-mono text-[20px] font-semibold tracking-wide">{formatClock(seconds)}</p>
+        <button type="button" aria-label="시간 초기화" onClick={() => setSeconds(0)} className="grid h-10 w-10 place-items-center">
+          <RefreshGlyph />
+        </button>
+        <button
+          type="button"
+          aria-label="숫자 초기화"
+          onClick={() => {
+            resetCounterRow(counter.id, active.id);
+            notify("숫자를 0으로 돌렸어요");
+          }}
+          className="grid h-10 w-10 place-items-center"
+        >
+          <GearIcon />
+        </button>
+      </div>
+      <p className="sr-only" aria-live="polite">
+        {heard ? `${active.label} ${heard}` : ""}
+      </p>
+
+      <div className="flex flex-1 flex-col items-center justify-center px-6 pb-4">
+        <p className="text-[15px] font-semibold text-white/90">{active.label}</p>
+        <p className="mt-1 text-[104px] font-bold leading-none">{active.value}</p>
+        <button
+          type="button"
+          aria-label="다음"
+          onClick={() => bumpCounter(counter.id, active.id, 1)}
+          className="mt-6 grid h-64 w-64 place-items-center rounded-full bg-black"
+        >
+          <span className="flex flex-col items-center gap-1">
+            <CountChevron />
+            <span className="text-[40px] font-bold leading-none">다음</span>
+          </span>
+        </button>
+      </div>
+
+      <div className="px-6 pb-8">
+        <button
+          type="button"
+          aria-label="이전"
+          onClick={() => bumpCounter(counter.id, active.id, -1)}
+          className="grid h-[104px] w-[104px] place-items-center rounded-full bg-[#5c4c4a]"
+        >
+          <span className="flex flex-col items-center">
+            <span className="text-[18px] font-bold leading-none">이전</span>
+            <CountChevron down />
+          </span>
+        </button>
+        <button type="button" onClick={back} className="mt-5 h-12 w-full rounded-full bg-black text-[16px] font-semibold">
+          카운터 목록
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MicGlyph({ off = false }: { off?: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
+      <rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M6.5 11.2a5.5 5.5 0 0011 0M12 16.7V20M9 20h6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      {off ? <path d="M5 5.5 19 18.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /> : null}
+    </svg>
+  );
+}
+
+function RefreshGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
+      <path d="M19.5 12a7.5 7.5 0 11-2.1-5.2" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path d="M19.8 4.8V9h-4.2" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function CountChevron({ down = false }: { down?: boolean }) {
+  return (
+    <svg viewBox="0 0 48 28" className={down ? "h-6 w-10" : "h-9 w-14"} aria-hidden>
+      <path
+        d={down ? "M6 6 24 23 42 6" : "M6 22 24 5 42 22"}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function NameField({
   value,
   editing,
   onClose,
   onCommit,
+  onOpen,
   className,
   dark,
   label,
@@ -847,6 +1117,7 @@ function NameField({
   editing: boolean;
   onClose: () => void;
   onCommit: (next: string) => void;
+  onOpen?: () => void;
   className?: string;
   dark?: boolean;
   label: string;
@@ -857,6 +1128,13 @@ function NameField({
     if (editing) setDraft(value);
   }, [editing, value]);
   if (!editing) {
+    if (onOpen) {
+      return (
+        <button type="button" onClick={onOpen} className={cx("block w-full truncate text-left font-semibold", className)}>
+          {value}
+        </button>
+      );
+    }
     return <p className={cx("truncate font-semibold", className)}>{value}</p>;
   }
   return (

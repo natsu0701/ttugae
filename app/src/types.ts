@@ -33,6 +33,7 @@ export type Route =
   | { name: "gauge-help" }
   | { name: "counters" }
   | { name: "counter"; id: string }
+  | { name: "counter-run"; id: string; row: string }
   | { name: "codex"; id?: string }
   | { name: "chat" }
   | { name: "editor" }
