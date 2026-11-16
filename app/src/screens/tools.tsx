@@ -929,16 +929,49 @@ export function CounterScreen({ id }: { id: string }) {
   );
 }
 
+const COUNT_COLORS = ["#f47c7b", "#e56b8a", "#e8896a", "#8b73b5"];
+const COUNT_SIZES = [
+  { id: "sm", label: "작게", number: "text-[72px]", button: "h-48 w-48", word: "text-[32px]" },
+  { id: "md", label: "보통", number: "text-[104px]", button: "h-64 w-64", word: "text-[40px]" },
+  { id: "lg", label: "크게", number: "text-[128px]", button: "h-72 w-72", word: "text-[48px]" },
+] as const;
+
+function speakCount(word: string, enabled: boolean) {
+  if (!enabled || !window.speechSynthesis) return;
+  try {
+    const utter = new SpeechSynthesisUtterance(word);
+    utter.lang = "ko-KR";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+  } catch {
+    // 이 브라우저에서 소리 재생을 못해도 숫자는 그대로 올라간다.
+  }
+}
+
 export function CounterRunScreen({ id, row }: { id: string; row: string }) {
-  const { data, back, notify, openSheet, bumpCounter, resetCounterRow } = useApp();
+  const { data, back, notify, push, bumpCounter, setCounterRowValue, resetCounterRow, setProjectRunning } = useApp();
   const counter = data.counters.find((item) => item.id === id);
   const [rowId, setRowId] = useState(row);
   const [seconds, setSeconds] = useState(0);
   const [heard, setHeard] = useState("");
+  const [soundOn, setSoundOn] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [scale, setScale] = useState<(typeof COUNT_SIZES)[number]["id"]>("md");
+  const [color, setColor] = useState(COUNT_COLORS[0]);
+  const [draftValue, setDraftValue] = useState("");
   const rowsRef = useRef(counter?.rows ?? []);
   const rowRef = useRef(rowId);
+  const soundRef = useRef(soundOn);
+  const setRunningRef = useRef(setProjectRunning);
   rowsRef.current = counter?.rows ?? [];
   rowRef.current = rowId;
+  soundRef.current = soundOn;
+  setRunningRef.current = setProjectRunning;
+  const boot = useRef<{ projectId: string | null; running: boolean } | null>(null);
+  if (!boot.current) {
+    const project = data.projects.find((item) => item.id === counter?.projectId);
+    boot.current = { projectId: counter?.projectId ?? null, running: project?.running ?? false };
+  }
   const { listening, start, stop } = useCounterVoice((transcript) => {
     setHeard(transcript);
     const step = voiceRunStep(transcript, rowsRef.current, rowRef.current);
@@ -948,9 +981,17 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
     }
     setRowId(step.rowId);
     bumpCounter(id, step.rowId, step.delta);
+    if (step.delta !== 0) speakCount(step.delta > 0 ? "다음" : "이전", soundRef.current);
   });
 
   useEffect(() => {
+    const projectId = boot.current?.projectId;
+    if (projectId) {
+      if (!boot.current?.running) setRunningRef.current(projectId, true);
+      return () => {
+        if (!boot.current?.running && projectId) setRunningRef.current(projectId, false);
+      };
+    }
     const timer = window.setInterval(() => setSeconds((value) => value + 1), 1000);
     return () => window.clearInterval(timer);
   }, []);
@@ -960,56 +1001,56 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
   if (!active) return <p className="px-6 py-16 text-center text-white">셀 칸이 없어요.</p>;
   const linked = data.projects.find((project) => project.id === counter.projectId);
   const title = linked?.title ?? counter.name;
+  const clock = linked ? formatClock(linked.elapsed) : formatClock(seconds);
+  const size = COUNT_SIZES.find((item) => item.id === scale) ?? COUNT_SIZES[1];
+  const finishWork = () => {
+    if (!linked) {
+      notify("연결된 프로젝트가 없어 일기를 열 수 없어요");
+      return;
+    }
+    setProjectRunning(linked.id, false);
+    if (boot.current) boot.current.running = false;
+    push({ name: "diary", id: linked.id });
+  };
+  const openSettings = () => {
+    setDraftValue(String(active.value));
+    setSettingsOpen(true);
+  };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-[#f47c7b] text-white">
-      <header className="grid h-12 grid-cols-[40px_1fr_40px] items-center px-2">
+    <div className="relative flex min-h-full flex-1 flex-col text-white" style={{ backgroundColor: color }}>
+      <header className="grid h-12 grid-cols-[40px_1fr_auto] items-center px-2">
         <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
           <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
             <path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-        <h1 className="flex min-w-0 items-center justify-center gap-1 text-[17px] font-bold">
-          <span className="truncate">{title}</span>
-          <button
-            type="button"
-            aria-label="세기 안내"
-            onClick={() =>
-              openSheet({
-                kind: "info",
-                title: "크게 세기",
-                body: "다음으로 하나 올리고, 이전으로 하나 내립니다. 마이크를 켠 뒤 다음, 이전, 단수 추가, 코수 빼처럼 말하면 그 칸이 바뀝니다.",
-              })
-            }
-            className="grid h-6 w-6 shrink-0 place-items-center"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
-              <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.6" />
-              <path d="M12 10.6v5.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              <circle cx="12" cy="7.7" r="0.9" fill="currentColor" />
-            </svg>
-          </button>
-        </h1>
-        <span />
+        <h1 className="truncate text-center text-[17px] font-bold">{title}</h1>
+        <button type="button" onClick={finishWork} className="mr-1 h-8 rounded-full bg-black px-3 text-[13px] font-semibold">
+          완료
+        </button>
       </header>
 
-      <div className="flex items-center justify-between px-5 pt-3">
+      <div className="flex items-center justify-between gap-1 px-4 pt-3">
         <button
           type="button"
-          aria-label="음성 인식 시작"
+          aria-label={listening ? "음성 인식 끄기" : "음성 인식 켜기"}
           aria-pressed={listening}
-          onClick={start}
-          className={cx("grid h-10 w-10 place-items-center rounded-full", listening && "bg-white text-[#f47c7b]")}
+          onClick={() => (listening ? stop() : start())}
+          className={cx("grid h-10 w-10 shrink-0 place-items-center rounded-full", listening && "bg-white text-[#f47c7b]")}
         >
-          <MicGlyph />
+          <MicGlyph off={!listening} />
         </button>
-        <button type="button" aria-label="음성 인식 끄기" onClick={stop} className="grid h-10 w-10 place-items-center">
-          <MicGlyph off />
+        <button
+          type="button"
+          aria-label={soundOn ? "소리 끄기" : "소리 켜기"}
+          aria-pressed={soundOn}
+          onClick={() => setSoundOn((value) => !value)}
+          className="grid h-10 w-10 shrink-0 place-items-center"
+        >
+          <SpeakerGlyph off={!soundOn} />
         </button>
-        <p className="font-mono text-[20px] font-semibold tracking-wide">{formatClock(seconds)}</p>
-        <button type="button" aria-label="시간 초기화" onClick={() => setSeconds(0)} className="grid h-10 w-10 place-items-center">
-          <RefreshGlyph />
-        </button>
+        <p className="min-w-0 flex-1 text-center font-mono text-[18px] font-semibold tracking-wide">{clock}</p>
         <button
           type="button"
           aria-label="숫자 초기화"
@@ -1017,8 +1058,11 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
             resetCounterRow(counter.id, active.id);
             notify("숫자를 0으로 돌렸어요");
           }}
-          className="grid h-10 w-10 place-items-center"
+          className="grid h-10 w-10 shrink-0 place-items-center"
         >
+          <RefreshGlyph />
+        </button>
+        <button type="button" aria-label="세기 설정" onClick={openSettings} className="grid h-10 w-10 shrink-0 place-items-center">
           <GearIcon />
         </button>
       </div>
@@ -1028,37 +1072,96 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
 
       <div className="flex flex-1 flex-col items-center justify-center px-6 pb-4">
         <p className="text-[15px] font-semibold text-white/90">{active.label}</p>
-        <p className="mt-1 text-[104px] font-bold leading-none">{active.value}</p>
+        <p className={cx("mt-1 font-bold leading-none", size.number)}>{active.value}</p>
         <button
           type="button"
           aria-label="다음"
-          onClick={() => bumpCounter(counter.id, active.id, 1)}
-          className="mt-6 grid h-64 w-64 place-items-center rounded-full bg-black"
+          onClick={() => {
+            bumpCounter(counter.id, active.id, 1);
+            speakCount("다음", soundOn);
+          }}
+          className={cx("mt-6 grid place-items-center rounded-full bg-black", size.button)}
         >
           <span className="flex flex-col items-center gap-1">
             <CountChevron />
-            <span className="text-[40px] font-bold leading-none">다음</span>
+            <span className={cx("font-bold leading-none", size.word)}>다음</span>
           </span>
         </button>
       </div>
 
       <div className="px-6 pb-8">
-        <button
-          type="button"
-          aria-label="이전"
-          onClick={() => bumpCounter(counter.id, active.id, -1)}
-          className="grid h-[104px] w-[104px] place-items-center rounded-full bg-[#5c4c4a]"
-        >
-          <span className="flex flex-col items-center">
-            <span className="text-[18px] font-bold leading-none">이전</span>
-            <CountChevron down />
-          </span>
-        </button>
-        <button type="button" onClick={back} className="mt-5 h-12 w-full rounded-full bg-black text-[16px] font-semibold">
+        <button type="button" onClick={back} className="h-12 w-full rounded-full bg-black text-[16px] font-semibold">
           카운터 목록
         </button>
       </div>
+
+      {settingsOpen ? (
+        <div className="absolute inset-0 z-20 flex items-end bg-black/35" onClick={() => setSettingsOpen(false)}>
+          <div className="w-full rounded-t-lg bg-white px-5 pb-8 pt-4 text-ink" onClick={(event) => event.stopPropagation()} role="dialog" aria-label="세기 설정">
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[#e6e6e6]" />
+            <h2 className="text-[17px] font-bold">세기 설정</h2>
+            <p className="mt-4 text-[13px] font-semibold text-[#888]">크기</p>
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              {COUNT_SIZES.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-pressed={scale === item.id}
+                  onClick={() => setScale(item.id)}
+                  className={cx("h-10 rounded-full text-[14px] font-semibold", scale === item.id ? "bg-ink text-white" : "bg-[#f6f6f6]")}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-4 text-[13px] font-semibold text-[#888]">색</p>
+            <div className="mt-2 flex gap-3">
+              {COUNT_COLORS.map((swatch) => (
+                <button
+                  key={swatch}
+                  type="button"
+                  aria-label={`색 ${swatch}`}
+                  aria-pressed={color === swatch}
+                  onClick={() => setColor(swatch)}
+                  className={cx("h-10 w-10 rounded-full", color === swatch && "ring-2 ring-ink ring-offset-2")}
+                  style={{ backgroundColor: swatch }}
+                />
+              ))}
+            </div>
+            <label className="mt-4 block text-[13px] font-semibold text-[#888]">
+              {active.label}
+              <input
+                inputMode="numeric"
+                aria-label={`${active.label} 숫자`}
+                value={draftValue}
+                onChange={(event) => {
+                  const next = event.target.value.replace(/[^\d]/g, "");
+                  setDraftValue(next);
+                  if (next !== "") setCounterRowValue(counter.id, active.id, Number(next));
+                }}
+                className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[18px] font-semibold text-ink outline-none"
+              />
+            </label>
+            <button type="button" onClick={() => setSettingsOpen(false)} className="mt-5 h-11 w-full rounded-full bg-[#f6f6f6] text-[14px] font-semibold">
+              닫기
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
+  );
+}
+
+function SpeakerGlyph({ off = false }: { off?: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
+      <path d="M4.5 10h2.8L11 7.2v9.6L7.3 14H4.5v-4z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      {off ? (
+        <path d="M15.5 10.2 19.5 14.2M19.5 10.2 15.5 14.2" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      ) : (
+        <path d="M15.2 9.2a3.8 3.8 0 010 5.6M17.4 7.2a6.4 6.4 0 010 9.6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      )}
+    </svg>
   );
 }
 

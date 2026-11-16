@@ -243,7 +243,9 @@ type AppApi = {
   renameCounterRow: (counterId: string, rowId: string, label: string) => void;
   setCounterProject: (id: string, projectId: string | null) => void;
   bumpCounter: (counterId: string, rowId: string, delta: number) => void;
+  setCounterRowValue: (counterId: string, rowId: string, value: number) => void;
   resetCounterRow: (counterId: string, rowId: string) => void;
+  setProjectRunning: (id: string, running: boolean) => void;
   removeCounterRow: (counterId: string, rowId: string) => void;
   addCounterRow: (counterId: string) => void;
   toggleLike: (workId: string) => void;
@@ -595,6 +597,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
               : counter,
           ),
         })),
+      setCounterRowValue: (counterId, rowId, value) =>
+        setData((current) => ({
+          ...current,
+          counters: current.counters.map((counter) =>
+            counter.id === counterId
+              ? {
+                  ...counter,
+                  rows: counter.rows.map((row) =>
+                    row.id === rowId ? { ...row, value: Math.max(0, Math.floor(value)) } : row,
+                  ),
+                }
+              : counter,
+          ),
+        })),
+      setProjectRunning: (id, running) => updateProject(id, (project) => ({ ...project, running })),
       resetCounterRow: (counterId, rowId) =>
         setData((current) => ({
           ...current,

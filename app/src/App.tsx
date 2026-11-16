@@ -200,7 +200,7 @@ function Shell() {
             ) : null}
           </div>
         ) : null}
-        <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : counting ? "flex min-h-0 flex-1 flex-col bg-[#f47c7b]" : scrolling ? (fillScreen ? "scroll flex flex-col" : "scroll") : "flex min-h-0 flex-1 flex-col"}>
+        <div ref={scrollRef} className={route.name === "camera" ? "scroll bg-black" : counting ? "flex min-h-0 flex-1 flex-col" : scrolling ? (fillScreen ? "scroll flex flex-col" : "scroll") : "flex min-h-0 flex-1 flex-col"}>
           <div
             key={route.name}
             data-tab-motion={slide || undefined}
