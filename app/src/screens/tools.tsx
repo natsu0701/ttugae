@@ -929,7 +929,13 @@ export function CounterScreen({ id }: { id: string }) {
   );
 }
 
-const COUNT_COLORS = ["#f47c7b", "#e56b8a", "#e8896a", "#8b73b5"];
+const COUNT_COLORS = [
+  { id: "pink", label: "분홍", value: "#f47c7b" },
+  { id: "blue", label: "파랑", value: "#4f8fe0" },
+  { id: "green", label: "초록", value: "#5aaa72" },
+  { id: "purple", label: "보라", value: "#9a7ed0" },
+  { id: "gray", label: "회색", value: "#8d9399" },
+] as const;
 const COUNT_SIZES = [
   { id: "sm", label: "작게", number: "text-[72px]", button: "h-48 w-48", word: "text-[32px]" },
   { id: "md", label: "보통", number: "text-[104px]", button: "h-64 w-64", word: "text-[40px]" },
@@ -957,7 +963,8 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
   const [soundOn, setSoundOn] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [scale, setScale] = useState<(typeof COUNT_SIZES)[number]["id"]>("md");
-  const [color, setColor] = useState(COUNT_COLORS[0]);
+  const [colorId, setColorId] = useState<(typeof COUNT_COLORS)[number]["id"] | "custom">("pink");
+  const [customColor, setCustomColor] = useState("#f47c7b");
   const [draftValue, setDraftValue] = useState("");
   const rowsRef = useRef(counter?.rows ?? []);
   const rowRef = useRef(rowId);
@@ -1001,6 +1008,7 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
   if (!active) return <p className="px-6 py-16 text-center text-white">셀 칸이 없어요.</p>;
   const linked = data.projects.find((project) => project.id === counter.projectId);
   const title = linked?.title ?? counter.name;
+  const color = colorId === "custom" ? customColor : (COUNT_COLORS.find((item) => item.id === colorId)?.value ?? COUNT_COLORS[0].value);
   const clock = linked ? formatClock(linked.elapsed) : formatClock(seconds);
   const size = COUNT_SIZES.find((item) => item.id === scale) ?? COUNT_SIZES[1];
   const finishWork = () => {
@@ -1115,18 +1123,35 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
               ))}
             </div>
             <p className="mt-4 text-[13px] font-semibold text-[#888]">색</p>
-            <div className="mt-2 flex gap-3">
+            <div className="mt-2 flex flex-wrap gap-3">
               {COUNT_COLORS.map((swatch) => (
                 <button
-                  key={swatch}
+                  key={swatch.id}
                   type="button"
-                  aria-label={`색 ${swatch}`}
-                  aria-pressed={color === swatch}
-                  onClick={() => setColor(swatch)}
-                  className={cx("h-10 w-10 rounded-full", color === swatch && "ring-2 ring-ink ring-offset-2")}
-                  style={{ backgroundColor: swatch }}
+                  aria-label={`${swatch.label} 계열`}
+                  aria-pressed={colorId === swatch.id}
+                  onClick={() => setColorId(swatch.id)}
+                  className={cx("h-10 w-10 rounded-full", colorId === swatch.id && "ring-2 ring-ink ring-offset-2")}
+                  style={{ backgroundColor: swatch.value }}
                 />
               ))}
+              <label className="relative h-10 w-10">
+                <span
+                  aria-hidden
+                  className={cx("block h-10 w-10 rounded-full", colorId === "custom" && "ring-2 ring-ink ring-offset-2")}
+                  style={{ background: "conic-gradient(#ff4d4d, #ffd24d, #5dce6a, #4db7ff, #7a6bff, #e85aad, #ff4d4d)" }}
+                />
+                <input
+                  type="color"
+                  aria-label="직접 고르기"
+                  value={customColor}
+                  onChange={(event) => {
+                    setCustomColor(event.target.value);
+                    setColorId("custom");
+                  }}
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                />
+              </label>
             </div>
             <label className="mt-4 block text-[13px] font-semibold text-[#888]">
               {active.label}
