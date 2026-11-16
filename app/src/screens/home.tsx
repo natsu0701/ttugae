@@ -30,7 +30,7 @@ function RowProgress({ value }: { value: number }) {
 }
 
 function HomePane() {
-  const { data, push, toggleTimer, toggleLike, setHomeTab } = useApp();
+  const { data, push, toggleTimer, toggleLike, setHomeTab, openSheet } = useApp();
   const project = data.projects[0];
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [query, setQuery] = useState("");
@@ -270,7 +270,7 @@ function HomePane() {
           })}
           {faqs.length === 0 ? <p className="py-6 text-[13px] text-[#999]">같은 질문을 찾지 못했어요.</p> : null}
         </div>
-        <button type="button" onClick={() => push({ name: "chat" })} className="mt-6 h-11 w-full rounded-full bg-ink text-[14px] font-semibold text-white">
+        <button type="button" onClick={() => openSheet({ kind: "support" })} className="mt-6 h-11 w-full rounded-full bg-ink text-[14px] font-semibold text-white">
           고객센터 문의
         </button>
       </section>

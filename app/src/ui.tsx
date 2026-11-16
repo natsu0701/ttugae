@@ -406,11 +406,55 @@ export function SheetHost() {
           </>
         ) : null}
         {sheet.kind === "camera" ? <CameraSheet /> : null}
+        {sheet.kind === "support" ? <SupportSheet /> : null}
         <button type="button" onClick={closeSheet} className="mt-4 h-11 w-full rounded-full bg-[#f6f6f6] text-[14px] font-semibold">
           닫기
         </button>
       </div>
     </div>
+  );
+}
+
+function SupportSheet() {
+  const { closeSheet, notify } = useApp();
+  const [topic, setTopic] = useState("사용 방법");
+  const [body, setBody] = useState("");
+  const topics = ["계정", "결제", "사용 방법", "기타"];
+  return (
+    <>
+      <h2 className="text-[17px] font-bold">고객센터 문의</h2>
+      <p className="mt-2 text-[14px] leading-relaxed text-[#666]">문의 내용을 남겨 주세요. 확인한 뒤 답변을 드려요.</p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {topics.map((item) => (
+          <button
+            key={item}
+            type="button"
+            onClick={() => setTopic(item)}
+            className={cx("h-9 rounded-full px-3 text-[13px] font-semibold", topic === item ? "bg-ink text-white" : "bg-[#f6f6f6]")}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+      <textarea
+        value={body}
+        onChange={(event) => setBody(event.target.value)}
+        placeholder="어떤 점이 궁금한지 적어 주세요."
+        aria-label="문의 내용"
+        className="mt-3 h-28 w-full resize-none rounded-lg bg-[#f6f6f6] px-4 py-3 text-[14px] outline-none"
+      />
+      <button
+        type="button"
+        disabled={!body.trim()}
+        className="mt-4 h-11 w-full rounded-full bg-ink text-[14px] font-semibold text-white disabled:opacity-40"
+        onClick={() => {
+          closeSheet();
+          notify("문의가 접수되었어요");
+        }}
+      >
+        문의 보내기
+      </button>
+    </>
   );
 }
 

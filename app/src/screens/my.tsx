@@ -274,7 +274,7 @@ export function MyScreen() {
       </Menu>
       <Menu title="고객 지원">
         <MenuRow icon={<BellFillIcon className="h-5 w-5" />} label="공지사항" onClick={() => push({ name: "notifications" })} />
-        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="고객센터" onClick={() => push({ name: "chat" })} />
+        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="고객센터" onClick={() => openSheet({ kind: "support" })} />
         <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="의견 남기기" onClick={() => push({ name: "chat" })} />
         <MenuRow
           icon={<FileTextFillIcon className="h-5 w-5" />}

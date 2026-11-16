@@ -206,6 +206,7 @@ export type Sheet =
   | { kind: "info"; title: string; body: string }
   | { kind: "filter"; scope: "yarn" | "needle" }
   | { kind: "camera" }
+  | { kind: "support" }
   | null;
 
 export type Persisted = {
