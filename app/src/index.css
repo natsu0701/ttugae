@@ -147,6 +147,48 @@ button {
   }
 }
 
+.skeleton {
+  display: block;
+  background-color: #f0f0f0;
+  background-image: linear-gradient(100deg, #f0f0f0 0%, #f0f0f0 36%, #fafafa 50%, #f0f0f0 64%, #f0f0f0 100%);
+  background-size: 220% 100%;
+  background-position: 100% 0;
+  animation: skeleton-shimmer 1.15s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page-in {
+  animation: page-in 180ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-image: none;
+  }
+
+  .page-in {
+    animation: none;
+  }
+}
+
 .tteuni-outline {
   filter: url("#tteuni-white");
 }

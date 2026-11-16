@@ -1,6 +1,7 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AppProvider, showsTabBar, useApp } from "./store.tsx";
 import type { Route } from "./types.ts";
+import { PageSkeleton } from "./skeleton.tsx";
 import { ForgotScreen, LoginScreen, OnboardingScreen, SignupScreen, SkillScreen, SplashScreen } from "./screens/auth.tsx";
 import {
   BagScreen,
@@ -104,6 +105,23 @@ function tabSlide(from: string, to: string) {
   return next > previous ? "left" : "right";
 }
 
+const NO_SKELETON = new Set<Route["name"]>(["splash", "login", "signup", "forgot", "onboarding", "camera"]);
+const SKELETON_MS = 480;
+
+function usePageReady(routeKey: string, hold: boolean) {
+  const [phase, setPhase] = useState({ key: routeKey, ready: !hold });
+  if (phase.key !== routeKey) {
+    setPhase({ key: routeKey, ready: !hold });
+  }
+  const ready = phase.key === routeKey && phase.ready;
+  useEffect(() => {
+    if (!hold || ready) return;
+    const timer = window.setTimeout(() => setPhase({ key: routeKey, ready: true }), SKELETON_MS);
+    return () => window.clearTimeout(timer);
+  }, [hold, ready, routeKey]);
+  return ready;
+}
+
 const OWN_CHROME = new Set([
   "splash",
   "login",
@@ -130,11 +148,14 @@ function Shell() {
   }
   const slide = motion.current.slide;
   const routeKey = `${route.name}${"id" in route ? route.id : ""}${"tab" in route ? route.tab : ""}`;
+  const skeletonKey = `${route.name}${"id" in route ? route.id : ""}${"index" in route ? route.index : ""}`;
   useEffect(() => {
     scrollRef.current?.scrollTo(0, 0);
   }, [routeKey]);
   const scrolling = route.name !== "chat";
   const fillScreen = route.name === "login" || route.name === "signup";
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ready = usePageReady(skeletonKey, !reduceMotion && !NO_SKELETON.has(route.name));
   return (
     <div className="stage">
       <div className="phone">
@@ -182,7 +203,11 @@ function Shell() {
             data-tab-motion={slide || undefined}
             className={[slide ? `tab-enter-${slide}` : "", fillScreen ? "flex min-h-full w-full flex-1 flex-col" : ""].filter(Boolean).join(" ") || undefined}
           >
-            {screen}
+            {ready ? (
+              <div className={fillScreen ? "page-in flex min-h-full w-full flex-1 flex-col" : "page-in"}>{screen}</div>
+            ) : (
+              <PageSkeleton route={route} />
+            )}
           </div>
         </div>
         {showsTabBar(route) ? <TabBar /> : null}
