@@ -3,9 +3,9 @@ export const YARN_TRAIL_EVENT = "yarnTrailChanged";
 
 export function loadYarnTrailEnabled(): boolean {
   try {
-    return localStorage.getItem(YARN_TRAIL_KEY) !== "false";
+    return localStorage.getItem(YARN_TRAIL_KEY) === "true";
   } catch {
-    return true;
+    return false;
   }
 }
 
