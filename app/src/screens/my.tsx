@@ -48,7 +48,7 @@ export function MyScreen() {
     <div className="pb-8">
       <div className="flex h-12 items-center px-2">
         <span className="w-10" />
-        <h1 className="flex-1 text-center text-[17px] font-bold">마이페이지</h1>
+        <h1 className="flex-1 text-center text-[17px] font-semibold">마이페이지</h1>
         <button
           type="button"
           aria-label="설정"
@@ -82,7 +82,7 @@ export function MyScreen() {
         <p className="text-[12px] text-[#999]">추천</p>
         <p className="mt-1 text-[16px] font-bold text-blush">나의 뜨개 레벨 확인하기</p>
         <p className="mt-1 text-[12px] text-[#888]">간단하게 나의 실력을 점검받아 보세요.</p>
-        <button type="button" onClick={() => push({ name: "skill" })} className="mt-3 h-11 w-full rounded-full bg-ink text-[14px] font-semibold text-white">
+        <button type="button" onClick={() => push({ name: "skill" })} className="mt-3 h-11 w-full rounded-full bg-ink text-[15px] font-semibold text-white">
           지금 확인하러 가기
         </button>
       </section>
@@ -108,7 +108,7 @@ export function MyScreen() {
         />
       </Menu>
 
-      <button type="button" onClick={() => replace({ name: "login" })} className="mx-4 mt-4 h-12 w-[calc(100%-2rem)] rounded-lg bg-[#f6f6f6] text-[14px] font-semibold">
+      <button type="button" onClick={() => replace({ name: "login" })} className="mx-4 mt-4 h-12 w-[calc(100%-2rem)] rounded-lg bg-[#f6f6f6] text-[15px] font-semibold">
         로그아웃
       </button>
     </div>
@@ -159,7 +159,7 @@ export function ProfileScreen({ section }: { section?: "settings" }) {
   return (
     <div className="pb-8">
       <section className="mx-4 mt-4 rounded-lg bg-[#ffe8ea] px-3 py-4">
-        <div className="mb-1 flex items-center justify-center gap-6 text-[14px] font-semibold">
+        <div className="mb-1 flex items-center justify-center gap-6 text-[15px] font-semibold">
           <button type="button" aria-label="이전 달" onClick={() => shiftMonth(-1)} className="grid h-6 w-6 place-items-center text-[#e7a0ab]">
             ‹
           </button>
@@ -216,7 +216,7 @@ export function ProfileScreen({ section }: { section?: "settings" }) {
                   aria-pressed={calendarMarks[pickedKey] === emoji}
                   onClick={() => setCalendarMark(pickedDay, emoji)}
                   className={cx(
-                    "grid h-9 place-items-center rounded-full bg-white text-[18px]",
+                    "grid h-9 place-items-center rounded-full bg-white text-[20px]",
                     calendarMarks[pickedKey] === emoji && "ring-2 ring-blush",
                   )}
                 >
@@ -237,7 +237,7 @@ export function ProfileScreen({ section }: { section?: "settings" }) {
         <Mascot className="h-14 w-14" mood="cheer" />
         <div>
           <p className="text-[12px] font-semibold text-blush">연속 뜨개 기록</p>
-          <p className="text-[18px] font-bold">32일 연속 달성!</p>
+          <p className="text-[20px] font-bold">32일 연속 달성!</p>
         </div>
       </section>
 
@@ -253,7 +253,7 @@ export function ProfileScreen({ section }: { section?: "settings" }) {
       </section>
 
       <section className="mx-4 mt-4">
-        <h2 className="text-[14px] font-bold">최근 7일 뜨개 기록</h2>
+        <h2 className="text-[15px] font-bold">최근 7일 뜨개 기록</h2>
         <svg viewBox="0 0 280 72" className="mt-2 h-16 w-full" aria-hidden>
           <polyline fill="none" stroke="#f3b6c4" strokeWidth="2" points="16,48 58,48 100,40 142,48 184,36 226,48 264,44" />
           {[16, 58, 100, 142, 184, 226, 264].map((x, index) => (
@@ -305,7 +305,7 @@ export function ProfileScreen({ section }: { section?: "settings" }) {
 
       <section id="my-settings" className="mx-4 mt-4 rounded-lg border border-[#f0f0f0] px-4 py-4">
         <h2 className="text-[16px] font-bold">뜨개 설정</h2>
-        <button type="button" onClick={() => push({ name: "skill" })} className="mt-3 flex h-11 w-full items-center justify-between text-left text-[14px] font-semibold">
+        <button type="button" onClick={() => push({ name: "skill" })} className="mt-3 flex h-11 w-full items-center justify-between text-left text-[15px] font-semibold">
           실력 다시 재기
           <ChevronRight />
         </button>
@@ -316,7 +316,7 @@ export function ProfileScreen({ section }: { section?: "settings" }) {
               key={unit.id}
               type="button"
               onClick={() => patch({ unit: unit.id })}
-              className={cx("h-11 rounded-lg border text-[14px]", data.unit === unit.id ? "border-blush bg-blush-soft font-semibold" : "border-[#eee]")}
+              className={cx("h-11 rounded-lg border text-[15px]", data.unit === unit.id ? "border-blush bg-blush-soft font-semibold" : "border-[#eee]")}
             >
               {unit.label}
             </button>
@@ -368,7 +368,7 @@ export function OrdersScreen({ tab = "sell" }: { tab?: "sell" | "buy" }) {
   return (
     <div className="pb-10">
       <section className="px-4 pt-2">
-        <h2 className="text-[18px] font-bold">내가 판매하는 물품 {LISTINGS.length}</h2>
+        <h2 className="text-[20px] font-bold">내가 판매하는 물품 {LISTINGS.length}</h2>
         <ul className="mt-3 space-y-3">
           {LISTINGS.map((item) => (
             <li key={item.id}>
@@ -377,7 +377,7 @@ export function OrdersScreen({ tab = "sell" }: { tab?: "sell" | "buy" }) {
                 <span className="min-w-0">
                   <span className="text-[11px] font-semibold text-blush">판매 중 · {item.kind}</span>
                   <span className="mt-0.5 block text-[15px] font-bold">{item.title}</span>
-                  <span className="mt-1 block text-[14px] font-semibold">{item.price}</span>
+                  <span className="mt-1 block text-[15px] font-semibold">{item.price}</span>
                 </span>
               </button>
             </li>
@@ -385,11 +385,11 @@ export function OrdersScreen({ tab = "sell" }: { tab?: "sell" | "buy" }) {
         </ul>
       </section>
       <section id="orders-buy" className="px-4 pt-8">
-        <h2 className="text-[18px] font-bold">내가 구매한 물품 {PURCHASES.length}</h2>
+        <h2 className="text-[20px] font-bold">내가 구매한 물품 {PURCHASES.length}</h2>
         {PURCHASES.length === 0 ? (
           <div className="mt-3 rounded-lg bg-[#f7f7f7] px-4 py-6 text-center">
-            <p className="text-[14px] text-[#777]">아직 구매한 물품이 없어요.</p>
-            <button type="button" onClick={() => goTab("home", "market")} className="mt-4 h-11 rounded-full bg-ink px-5 text-[14px] font-semibold text-white">
+            <p className="text-[15px] text-[#777]">아직 구매한 물품이 없어요.</p>
+            <button type="button" onClick={() => goTab("home", "market")} className="mt-4 h-11 rounded-full bg-ink px-5 text-[15px] font-semibold text-white">
               뜨개마켓 둘러보기
             </button>
           </div>
@@ -403,7 +403,7 @@ export function OrdersScreen({ tab = "sell" }: { tab?: "sell" | "buy" }) {
                     <span className="text-[11px] font-semibold text-blush">구매함 · {item.kind}</span>
                     <span className="mt-0.5 block text-[15px] font-bold">{item.title}</span>
                     <span className="mt-1 block text-[12px] text-[#888]">{item.seller}</span>
-                    <span className="mt-1 block text-[14px] font-semibold">{item.price}</span>
+                    <span className="mt-1 block text-[15px] font-semibold">{item.price}</span>
                   </span>
                 </button>
               </li>
@@ -417,7 +417,7 @@ export function OrdersScreen({ tab = "sell" }: { tab?: "sell" | "buy" }) {
 
 function MenuRow({ icon, label, onClick }: { icon: ReactNode; label: string; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="flex h-12 w-full items-center gap-3 border-t border-[#f6f6f6] text-left text-[14px]">
+    <button type="button" onClick={onClick} className="flex h-12 w-full items-center gap-3 border-t border-[#f6f6f6] text-left text-[15px]">
       <span className="grid h-5 w-5 shrink-0 place-items-center">{icon}</span>
       <span className="flex-1">{label}</span>
       <ChevronRight />

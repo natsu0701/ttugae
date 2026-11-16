@@ -65,7 +65,7 @@ export function LoungeScreen() {
                 className="aspect-[9/16] max-h-[70vh] w-full bg-black object-cover"
               />
               <button type="button" onClick={() => push({ name: "short", id: clip.id })} className="block w-full px-3 py-2 text-left">
-                <span className="block text-[14px] font-semibold">{clip.title}</span>
+                <span className="block text-[15px] font-semibold">{clip.title}</span>
                 <span className="text-[12px] text-white/70">
                   {clip.author} · {clip.length}
                 </span>
@@ -86,7 +86,7 @@ export function QuestionScreen({ id }: { id: string }) {
       <p className="text-[12px] text-[#999]">{question.author}</p>
       <h2 className="mt-1 text-[22px] font-bold">{question.title}</h2>
       <p className="mt-3 text-[15px] leading-relaxed">{question.body}</p>
-      <div className="mt-5 rounded-lg bg-[#f7f7f7] p-4 text-[14px] leading-relaxed">
+      <div className="mt-5 rounded-lg bg-[#f7f7f7] p-4 text-[17px] leading-[22px]">
         답변 {question.answers}개 중 첫 메모: 게이지를 세탁 후 기준으로 다시 재고, 바늘을 0.5mm만 바꿔 보세요.
       </div>
       <button type="button" onClick={() => notify("답변은 이 데모에 저장되지 않아요")} className="mt-4 h-12 w-full rounded-full bg-ink font-semibold text-white">
@@ -103,7 +103,7 @@ export function ShortScreen({ id }: { id: string }) {
       <div className="mx-4 mt-2 overflow-hidden rounded-lg bg-black">
         <video src={clip.video} poster={clip.image} controls playsInline autoPlay className="aspect-[9/16] max-h-[70vh] w-full object-cover" />
       </div>
-      <p className="px-5 pt-4 text-[14px] leading-relaxed text-[#666]">
+      <p className="px-5 pt-4 text-[17px] leading-[22px] text-[#666]">
         {clip.author} · {clip.length}. {clip.title}
       </p>
     </article>

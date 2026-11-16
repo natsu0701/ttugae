@@ -140,7 +140,7 @@ export function TopBar({
           </button>
         ) : null}
       </div>
-      <h1 className="flex-1 truncate text-center text-[17px] font-bold">{title}</h1>
+      <h1 className="flex-1 truncate text-center text-[17px] font-semibold">{title}</h1>
       <div className="flex w-14 justify-end">{right}</div>
     </div>
   );
@@ -156,7 +156,7 @@ export function PinkButton({
       type="button"
       {...props}
       className={cx(
-        "flex h-12 w-full items-center justify-center gap-2 rounded-full bg-blush text-[15px] font-semibold text-white disabled:opacity-40",
+        "flex h-12 w-full items-center justify-center gap-2 rounded-full bg-blush text-[17px] font-semibold leading-[22px] text-white disabled:opacity-40",
         className,
       )}
     >
@@ -175,7 +175,7 @@ export function BlackButton({
       type="button"
       {...props}
       className={cx(
-        "flex h-12 w-full items-center justify-center rounded-full bg-ink text-[15px] font-semibold text-white",
+        "flex h-12 w-full items-center justify-center rounded-full bg-ink text-[17px] font-semibold leading-[22px] text-white",
         className,
       )}
     >
@@ -192,7 +192,7 @@ export function TextField({
     <input
       {...props}
       className={cx(
-        "h-12 w-full rounded-lg border border-[#ececec] bg-white px-4 text-[15px] outline-none placeholder:text-[#b0b0b0]",
+        "h-12 w-full rounded-lg border border-[#ececec] bg-white px-4 text-[17px] leading-[22px] outline-none placeholder:text-[#b0b0b0]",
         className,
       )}
     />
@@ -346,7 +346,7 @@ export function Segment<T extends string>({
           type="button"
           onClick={() => onChange(option.id)}
           className={cx(
-            "h-10 rounded-full text-[14px] font-semibold",
+            "h-10 rounded-full text-[15px] font-semibold",
             value === option.id ? "bg-ink text-white" : "text-[#9a9a9a]",
           )}
         >
@@ -401,13 +401,13 @@ export function SheetHost() {
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[#e6e6e6]" />
         {sheet.kind === "info" ? (
           <>
-            <h2 className="text-[17px] font-bold">{sheet.title}</h2>
-            <p className="mt-2 whitespace-pre-wrap text-[14px] leading-relaxed text-[#666]">{sheet.body}</p>
+            <h2 className="text-[17px] font-semibold">{sheet.title}</h2>
+            <p className="mt-2 whitespace-pre-wrap text-[17px] leading-[22px] text-[#666]">{sheet.body}</p>
           </>
         ) : null}
         {sheet.kind === "camera" ? <CameraSheet /> : null}
         {sheet.kind === "support" ? <SupportSheet /> : null}
-        <button type="button" onClick={closeSheet} className="mt-4 h-11 w-full rounded-full bg-[#f6f6f6] text-[14px] font-semibold">
+        <button type="button" onClick={closeSheet} className="mt-4 h-11 w-full rounded-full bg-[#f6f6f6] text-[15px] font-semibold">
           닫기
         </button>
       </div>
@@ -422,8 +422,8 @@ function SupportSheet() {
   const topics = ["계정", "결제", "사용 방법", "기타"];
   return (
     <>
-      <h2 className="text-[17px] font-bold">고객센터 문의</h2>
-      <p className="mt-2 text-[14px] leading-relaxed text-[#666]">문의 내용을 남겨 주세요. 확인한 뒤 답변을 드려요.</p>
+      <h2 className="text-[17px] font-semibold">고객센터 문의</h2>
+      <p className="mt-2 text-[17px] leading-[22px] text-[#666]">문의 내용을 남겨 주세요. 확인한 뒤 답변을 드려요.</p>
       <div className="mt-4 flex flex-wrap gap-2">
         {topics.map((item) => (
           <button
@@ -441,12 +441,12 @@ function SupportSheet() {
         onChange={(event) => setBody(event.target.value)}
         placeholder="어떤 점이 궁금한지 적어 주세요."
         aria-label="문의 내용"
-        className="mt-3 h-28 w-full resize-none rounded-lg bg-[#f6f6f6] px-4 py-3 text-[14px] outline-none"
+        className="mt-3 h-28 w-full resize-none rounded-lg bg-[#f6f6f6] px-4 py-3 text-[15px] outline-none"
       />
       <button
         type="button"
         disabled={!body.trim()}
-        className="mt-4 h-11 w-full rounded-full bg-ink text-[14px] font-semibold text-white disabled:opacity-40"
+        className="mt-4 h-11 w-full rounded-full bg-ink text-[17px] font-semibold text-white disabled:opacity-40"
         onClick={() => {
           closeSheet();
           notify("문의가 접수되었어요");
@@ -462,13 +462,13 @@ function CameraSheet() {
   const { setCalc, closeSheet, notify } = useApp();
   return (
     <>
-      <h2 className="text-[17px] font-bold">스와치에서 코 읽기</h2>
-      <p className="mt-2 text-[14px] leading-relaxed text-[#666]">
+      <h2 className="text-[17px] font-semibold">스와치에서 코 읽기</h2>
+      <p className="mt-2 text-[17px] leading-[22px] text-[#666]">
         사진 속 10cm 눈금을 세는 자리예요. 프로토타입에서는 예시 스와치의 20코를 가져와요.
       </p>
       <button
         type="button"
-        className="mt-4 h-11 w-full rounded-full bg-ink text-[14px] font-semibold text-white"
+        className="mt-4 h-11 w-full rounded-full bg-ink text-[17px] font-semibold text-white"
         onClick={() => {
           setCalc({ sts: "20" });
           closeSheet();

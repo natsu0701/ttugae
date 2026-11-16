@@ -13,7 +13,20 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["Pretendard", '"Noto Sans KR"', "system-ui", "sans-serif"],
+        sans: ["Pretendard", "-apple-system", "BlinkMacSystemFont", '"Noto Sans KR"', "system-ui", "sans-serif"],
+      },
+      fontSize: {
+        "large-title": ["34px", { lineHeight: "41px" }],
+        title1: ["28px", { lineHeight: "34px" }],
+        title2: ["22px", { lineHeight: "28px" }],
+        title3: ["20px", { lineHeight: "25px" }],
+        headline: ["17px", { lineHeight: "22px" }],
+        body: ["17px", { lineHeight: "22px" }],
+        callout: ["16px", { lineHeight: "21px" }],
+        subhead: ["15px", { lineHeight: "20px" }],
+        footnote: ["13px", { lineHeight: "18px" }],
+        caption: ["12px", { lineHeight: "16px" }],
+        caption2: ["11px", { lineHeight: "13px" }],
       },
       boxShadow: {
         card: "0 8px 24px rgba(23, 23, 23, 0.06)",
