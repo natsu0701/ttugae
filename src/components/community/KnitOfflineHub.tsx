@@ -2,12 +2,8 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   CalendarFillIcon,
-  ChatFillIcon,
   CheckFillIcon,
-  ChevronRightFillIcon,
   CompassFillIcon,
-  FileTextFillIcon,
-  HeartFillIcon,
   PinFillIcon,
   QrFillIcon,
   SpinnerFillIcon,
@@ -17,7 +13,6 @@ import {
   toggleReservedMeetup,
   type OfflineTicket,
 } from "../../utils/offlineActivityStorage.ts";
-import { writeHubPatternPayload } from "../../utils/workspaceGridStorage.ts";
 import { iconTip } from "../../utils/iconTip.ts";
 import { qrModules } from "../../utils/qrPattern.ts";
 import { loc } from "../../utils/i18nContent.ts";
@@ -39,28 +34,6 @@ type OfflineEvent = {
   description: string;
   featuredYarn: string;
   featuredNeedle: string;
-};
-
-type HubPatternPayload = {
-  title: string;
-  needleType: string;
-  needleSize: string;
-  yarnName: string;
-  totalStitches: number;
-  totalRows: number;
-  gridCells: { x: number; y: number; hexColor: string; stitchSymbol: string }[];
-};
-
-type OfflineReview = {
-  id: string;
-  author: string;
-  rating: number;
-  eventTitle: string;
-  content: string;
-  hasPattern: boolean;
-  attachedPatternName: string;
-  attachedPatternDesc: string;
-  attachedPatternData?: HubPatternPayload;
 };
 
 type LeafletMarker = {
@@ -156,56 +129,6 @@ const OFFLINE_EVENTS_DATA: OfflineEvent[] = [
   },
 ];
 
-const OFFLINE_REVIEWS: OfflineReview[] = [
-  {
-    id: "review_1",
-    author: "김해피",
-    rating: 5,
-    eventTitle: "뜨개러투게더 캡스톤 부스 및 굿즈 팝업",
-    content:
-      "홍대 아틀리에 팝업에서 실물 가디건을 스캔해 보니 도안 기호로 바로 분석되고, 현장에서 산 낙양모사 울에 맞춘 변환 도안을 공유합니다.",
-    hasPattern: true,
-    attachedPatternName: "완성! 베이지 가디건",
-    attachedPatternDesc: "후기에 붙은 격자 도안을 에디터로 그대로 가져갈 수 있어요",
-    attachedPatternData: {
-      title: "완성! 베이지 가디건",
-      needleType: "knitting",
-      needleSize: "5.0mm",
-      yarnName: "낙양모사 시그니처 울",
-      totalStitches: 24,
-      totalRows: 20,
-      gridCells: [
-        { x: 0, y: 0, hexColor: "#E8DDD0", stitchSymbol: "겉" },
-        { x: 1, y: 0, hexColor: "#E8DDD0", stitchSymbol: "겉" },
-        { x: 2, y: 0, hexColor: "#FFFBF7", stitchSymbol: "안" },
-      ],
-    },
-  },
-  {
-    id: "review_2",
-    author: "김미래",
-    rating: 4,
-    eventTitle: "안개 구름 모헤어 콜라보 가을 기획전",
-    content:
-      "가로수길 가을 기획전에서 모헤어 패키지를 받고, 웹 에디터로 불러와 리믹스하기 좋은 레이스 숄 도안을 남깁니다.",
-    hasPattern: true,
-    attachedPatternName: "가을 스페셜 모헤어 숄",
-    attachedPatternDesc: "현장에서 한땀 한땀 뜬 기획전 특전 모헤어 도안을 에디터에 그대로 옮겨서 리믹스하세요",
-    attachedPatternData: {
-      title: "가을 스페셜 모헤어 숄",
-      needleType: "knitting",
-      needleSize: "3.5mm",
-      yarnName: "안개 구름 모헤어",
-      totalStitches: 32,
-      totalRows: 40,
-      gridCells: [
-        { x: 0, y: 0, hexColor: "#FF8A9B", stitchSymbol: "늘" },
-        { x: 1, y: 0, hexColor: "#FF8A9B", stitchSymbol: "줄" },
-      ],
-    },
-  },
-];
-
 function eventTypeKey(type: OfflineEvent["type"]) {
   if (type === "popup") return "offline.typePopup";
   if (type === "exhibition") return "offline.typeExhibition";
@@ -234,17 +157,6 @@ function localizedMeetup(t: TFunction, meet: HubMeetup): HubMeetup {
     date: loc(t, `${base}.date`, meet.date),
     requiredNeedle: loc(t, `${base}.needle`, meet.requiredNeedle),
     requiredYarn: loc(t, `${base}.yarn`, meet.requiredYarn),
-  };
-}
-
-function localizedReview(t: TFunction, rev: OfflineReview): OfflineReview {
-  const base = `content.reviews.${rev.id}`;
-  return {
-    ...rev,
-    eventTitle: loc(t, `${base}.eventTitle`, rev.eventTitle),
-    content: loc(t, `${base}.content`, rev.content),
-    attachedPatternName: loc(t, `${base}.patternName`, rev.attachedPatternName),
-    attachedPatternDesc: loc(t, `${base}.patternDesc`, rev.attachedPatternDesc),
   };
 }
 
@@ -292,18 +204,13 @@ function loadLeafletFromCdn(): Promise<LeafletNS> {
   });
 }
 
-type KnitOfflineHubProps = {
-  onGoEditor?: () => void;
-};
-
-function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
+function KnitOfflineHub() {
   const { t } = useTranslation();
   const [selectedEventId, setSelectedEventId] = useState("event_hongdae");
   const [meetups, setMeetups] = useState<HubMeetup[]>(() => withReservationState(HUB_MEETUPS));
-  const [activeTab, setActiveTab] = useState<"map" | "meetup" | "reviews">("map");
+  const [activeTab, setActiveTab] = useState<"map" | "meetup">("map");
   const [activeModalTicket, setActiveModalTicket] = useState<OfflineEvent | null>(null);
   const [issuedTicket, setIssuedTicket] = useState<OfflineTicket | null>(null);
-  const [clonedSuccessMsg, setClonedSuccessName] = useState<string | null>(null);
   const [leafletLoaded, setLeafletLoaded] = useState(() => Boolean(window.L));
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<LeafletMap | null>(null);
@@ -402,13 +309,6 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
     setMeetups(withReservationState(HUB_MEETUPS));
   };
 
-  const handleForkPattern = (review: OfflineReview) => {
-    if (!review.attachedPatternData) return;
-    writeHubPatternPayload(review.attachedPatternData);
-    setClonedSuccessName(review.attachedPatternName);
-    window.setTimeout(() => setClonedSuccessName(null), 4000);
-  };
-
   const handleIssueTicket = (event: OfflineEvent) => {
     setSelectedEventId(event.id);
     const ticket = issueTicket(event.id, [event.featuredYarn, event.featuredNeedle]);
@@ -435,7 +335,6 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
             [
               ["map", "offline.tabMap"],
               ["meetup", "offline.tabMeetup"],
-              ["reviews", "offline.tabReviews"],
             ] as const
           ).map(([id, labelKey]) => (
             <button
@@ -627,17 +526,7 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     </div>
                     <div className="mt-4 space-y-1.5 border-t border-stone-100 pt-3 font-sans text-sm text-stone-500">
                       <div className="flex justify-between gap-2">
-                        <span className="text-sm text-stone-400">{t("offline.needleNeeded")}</span>
-                        <span className="font-semibold text-stone-700">{meet.requiredNeedle}</span>
-                      </div>
-                      <div className="flex justify-between gap-2">
-                        <span className="text-sm text-stone-400">{t("offline.yarnRecommended")}</span>
-                        <span className="whitespace-normal break-keep text-right font-semibold leading-normal text-stone-700">
-                          {meet.requiredYarn}
-                        </span>
-                      </div>
-                      <div className="flex justify-between gap-2">
-                        <span className="text-sm text-stone-400">{t("offline.meetupCycle")}</span>
+                        <span className="text-sm text-stone-400">{t("offline.meetupTime")}</span>
                         <span className="font-semibold text-stone-700">{meet.date}</span>
                       </div>
                     </div>
@@ -685,111 +574,6 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                     </button>
                   </div>
                 );
-              })}
-            </div>
-          </div>
-        ) : null}
-
-        {activeTab === "reviews" ? (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <span className="font-sans text-sm font-bold uppercase tracking-wider text-stone-400">
-                {t("offline.reviewLabel")}
-              </span>
-              <span className="font-sans text-sm text-stone-400">
-                {t("offline.reviewCount", { count: OFFLINE_REVIEWS.length })}
-              </span>
-            </div>
-            {clonedSuccessMsg ? (
-                <div
-                  className="fade-in flex flex-col items-start justify-between gap-3 rounded-xl bg-stone-900 px-5 py-3 text-stone-100 shadow-lg sm:flex-row sm:items-center"
-                >
-                  <span className="whitespace-normal break-keep font-sans text-sm font-bold leading-normal">
-                    {t("offline.cloneDone", { name: clonedSuccessMsg })}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => onGoEditor?.()}
-                    className="flex shrink-0 items-center gap-1 rounded-lg bg-coral/10 px-3 py-1.5 font-sans text-sm font-black text-coral transition-colors hover:bg-coral/20"
-                  >
-                    <span>{t("offline.goNow")}</span>
-                    <ChevronRightFillIcon className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              ) : null}
-            <div className="mx-auto flex w-full flex-col gap-6">
-              {OFFLINE_REVIEWS.map((revRaw) => {
-                const rev = localizedReview(t, revRaw);
-                return (
-                <div
-                  key={rev.id}
-                  className="relative flex h-auto flex-col justify-between overflow-hidden rounded-xl bg-white p-6 transition-shadow hover:shadow-md md:p-8"
-                >
-                  <div className="space-y-5">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="space-y-1">
-                        <span className="inline-block whitespace-normal break-keep rounded bg-coral/5 px-2.5 py-0.5 font-sans text-sm font-bold leading-normal text-coral">
-                          {rev.eventTitle}
-                        </span>
-                        <h5 className="mt-1 font-sans text-sm font-bold text-stone-400">
-                          {t("offline.author", { name: rev.author })}
-                        </h5>
-                      </div>
-                      <div className="flex shrink-0 gap-0.5" aria-label={t("common.rating", { n: rev.rating })}>
-                        {Array.from({ length: 5 }, (_, index) => (
-                          <span
-                            key={index}
-                            className={`h-2 w-2 rounded-full ${
-                              index < rev.rating ? "bg-coral" : "bg-stone-200"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="whitespace-normal break-words font-seoyun text-base font-normal leading-relaxed text-stone-600">
-                      {rev.content}
-                    </p>
-                    {rev.hasPattern ? (
-                      <div className="flex w-full flex-col justify-between gap-5 rounded-2xl bg-stone-50 p-5 md:flex-row md:items-center">
-                        <div className="flex min-w-0 flex-1 items-start gap-4">
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-coral/10 text-coral">
-                            <FileTextFillIcon className="h-5 w-5" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <span className="block font-sans text-sm font-bold uppercase tracking-wide text-stone-400">
-                              {t("offline.patternAttach")}
-                            </span>
-                            <span className="mt-0.5 block whitespace-normal break-keep font-sans text-base font-black leading-snug text-stone-900">
-                              {rev.attachedPatternName}
-                            </span>
-                            <span className="mt-1 block whitespace-normal break-keep font-seoyun text-sm font-normal leading-normal text-stone-500">
-                              {rev.attachedPatternDesc}
-                            </span>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleForkPattern(rev)}
-                          className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-xl bg-stone-950 px-5 py-3 font-sans text-base font-bold text-stone-100 transition-all hover:bg-stone-800 md:w-auto"
-                        >
-                          <span>{t("offline.cloneEditor")}</span>
-                          <ChevronRightFillIcon className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className="mt-5 flex items-center gap-4 border-t border-stone-100 pt-4 font-sans text-sm text-stone-400">
-                    <span className="flex items-center gap-1">
-                      <HeartFillIcon className="h-4 w-4" />
-                      <span>4</span>
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <ChatFillIcon className="h-4 w-4" />
-                      <span>2</span>
-                    </span>
-                  </div>
-                </div>
-              );
               })}
             </div>
           </div>

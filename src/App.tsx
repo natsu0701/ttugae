@@ -554,11 +554,6 @@ function AppRoutes() {
           <Suspense fallback={<RouteFallback embedded />}>
             <Community
               onImportToEditor={importCommunityPattern}
-              onGoEditor={() => {
-                const data = readFreshWorkspaceGrid();
-                const share = data ? workspaceGridToStoredPattern(data) : null;
-                openEditor({ patternId: null, share });
-              }}
               onSharePattern={openCreatePostFromCommunity}
               onEditPost={(pattern) => {
                 if (pattern.author !== "나") return;

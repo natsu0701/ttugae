@@ -47,7 +47,6 @@ type CommunityProps = {
   onImportToEditor: (pattern: CommunityPattern) => void;
   onSharePattern: () => void;
   onEditPost: (pattern: CommunityPattern) => void;
-  onGoEditor: () => void;
 };
 
 function qaIdFromPath(pathname: string): string | null {
@@ -83,7 +82,6 @@ export default function Community({
   onImportToEditor,
   onSharePattern,
   onEditPost,
-  onGoEditor,
 }: CommunityProps) {
   const { t } = useTranslation();
   const initialPath = syncFromPath(window.location.pathname);
@@ -300,7 +298,7 @@ export default function Community({
           <QaList posts={QA_POSTS} onSelect={openQa} />
         ) : activeTab === "offline" ? (
           <Suspense fallback={<div className="min-h-[480px] rounded-xl bg-gray-50" aria-busy="true" />}>
-            <KnitOfflineHub onGoEditor={onGoEditor} />
+            <KnitOfflineHub />
           </Suspense>
         ) : (
           <>
