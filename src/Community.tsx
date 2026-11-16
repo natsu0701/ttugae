@@ -197,30 +197,23 @@ export default function Community({
 
   const filtered = useMemo(() => {
     if (activeTab === "qa" || activeTab === "offline") return [];
-    let ranked: CommunityPattern[];
-    if (activeTab === "best") {
-      ranked = [...allPatterns]
-        .filter((p) => p.category === "best")
-        .sort((a, b) => b.likes - a.likes);
-    } else {
-      const base =
-        activeTab === "all"
-          ? allPatterns
-          : allPatterns.filter((p) => p.category === activeTab);
-      if (activeTab !== "all") {
-        ranked = base;
-      } else {
-        const taste = loadTasteProfile();
-        ranked =
-          taste.styles.length === 0
-            ? base
-            : [...base].sort(
-                (a, b) =>
-                  patternTasteScore(b.title, b.finishedCaption, taste.styles) -
-                  patternTasteScore(a.title, a.finishedCaption, taste.styles),
-              );
-      }
-    }
+    const base =
+      activeTab === "all"
+        ? allPatterns
+        : allPatterns.filter((p) => p.category === activeTab);
+    const ranked =
+      activeTab !== "all"
+        ? base
+        : (() => {
+            const taste = loadTasteProfile();
+            return taste.styles.length === 0
+              ? base
+              : [...base].sort(
+                  (a, b) =>
+                    patternTasteScore(b.title, b.finishedCaption, taste.styles) -
+                    patternTasteScore(a.title, a.finishedCaption, taste.styles),
+                );
+          })();
 
     return applyLoungeFilters(ranked, loungeFilters);
   }, [activeTab, allPatterns, loungeFilters]);
@@ -332,12 +325,10 @@ export default function Community({
                   className={
                     activeTab === "showcase"
                       ? "mx-auto grid w-full grid-cols-1 md:grid-cols-2 md:gap-8"
-                      : activeTab === "best"
-                        ? "grid grid-cols-1 gap-4 md:grid-cols-3"
-                        : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+                      : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
                   }
                 >
-                    {filtered.map((pattern, index) =>
+                    {filtered.map((pattern) =>
                       activeTab === "showcase" ? (
                         <ShowcaseFeedCard
                           key={pattern.id}
@@ -350,7 +341,6 @@ export default function Community({
                         <PatternCard
                           key={pattern.id}
                           pattern={pattern}
-                          rank={activeTab === "best" ? index + 1 : undefined}
                           onImport={onImportToEditor}
                           onOpenFinished={openWork}
                           onOpenAuthor={openAuthor}
