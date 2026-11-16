@@ -14,6 +14,7 @@ export function useHeroParallax(rootRef: RefObject<HTMLElement | null>) {
     let currentX = 0;
     let currentY = 0;
     let frame = 0;
+    let rect = root.getBoundingClientRect();
 
     const tick = () => {
       currentX += (targetX - currentX) * 0.12;
@@ -23,23 +24,32 @@ export function useHeroParallax(rootRef: RefObject<HTMLElement | null>) {
         const dy = Number(node.dataset.parDy) || 0;
         node.style.transform = `translate3d(${(currentX * dx).toFixed(2)}px, ${(currentY * dy).toFixed(2)}px, 0)`;
       }
-      frame = requestAnimationFrame(tick);
+      if (Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002) {
+        frame = requestAnimationFrame(tick);
+      } else {
+        frame = 0;
+      }
     };
 
     const onMove = (event: PointerEvent) => {
       if (event.pointerType === "touch") return;
-      const rect = root.getBoundingClientRect();
       const width = rect.width || 1;
       const height = rect.height || 1;
       targetX = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / width - 0.5) * 2));
       targetY = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / height - 0.5) * 2));
+      if (!frame) frame = requestAnimationFrame(tick);
+    };
+
+    const onResize = () => {
+      rect = root.getBoundingClientRect();
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
-    frame = requestAnimationFrame(tick);
+    window.addEventListener("resize", onResize, { passive: true });
     return () => {
       window.removeEventListener("pointermove", onMove);
-      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", onResize);
+      if (frame) cancelAnimationFrame(frame);
     };
   }, []);
 }
