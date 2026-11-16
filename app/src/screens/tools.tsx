@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { formatClock, media } from "../data.ts";
+import { formatClock } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
 import { BlackButton, CameraIcon, ChevronDown, DoneMark, Fab, GearIcon, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
@@ -43,78 +43,11 @@ export function GaugeHelpScreen() {
           뜨개 내비
         </button>
       </div>
-      {tab === "tutorial" ? <GaugeTutorial /> : <NaviHelp />}
-    </div>
-  );
-}
-
-function GaugeTutorial() {
-  return (
-    <div className="mt-6 space-y-8">
-      <section>
-        <h2 className="flex items-baseline gap-2 text-[18px] font-bold"><span className="text-[32px] font-black leading-none text-blush">1</span> 스와치 뜨기</h2>
-        <p className="mt-1 text-[14px]">15×15cm 정도의 편물(스와치)을 떠보세요!</p>
-        <div className="relative mt-3 overflow-hidden rounded-lg">
-          <img src={media("media/swatch-linen.jpg")} alt="" className="h-48 w-full object-cover" />
-          <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[18px] font-bold">2코</span>
-          <span className="absolute right-3 top-8 rounded-full bg-white/90 px-3 py-1 text-[18px] font-bold">3코</span>
-          <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-[12px] font-semibold">릴랙스드 뜨기</span>
-        </div>
-        <div className="mt-2 flex justify-between px-2 text-[12px] text-[#777]">
-          <span>← 겉뜨기</span>
-          <span>안뜨기 →</span>
-        </div>
-        <p className="mt-2 text-[12px] leading-relaxed text-[#999]">겉뜨기는 오른쪽으로, 안뜨기는 왼쪽으로 떠요. 코의 크기가 일정하면 좋아요.</p>
-      </section>
-
-      <section>
-        <h2 className="flex items-baseline gap-2 text-[18px] font-bold"><span className="text-[32px] font-black leading-none text-blush">2</span> 코 세기</h2>
-        <p className="mt-1 text-[14px] font-semibold">10cm 안에 몇 코가 있나요?</p>
-        <p className="mt-1 text-[13px] leading-relaxed text-[#666]">게이지 계산기에 숫자를 알려주세요. 나머지 계산은 뜨니가 할게요!</p>
-        <div className="relative mt-3 overflow-hidden rounded-lg">
-          <img src={media("media/swatch-gray.jpg")} alt="" className="h-40 w-full object-cover" />
-          <div className="absolute left-4 right-24 top-1/2">
-            <span className="block border-t-2 border-ink" />
-            <span className="mx-auto mt-1 block w-fit rounded-full bg-white/90 px-3 py-1 text-[18px] font-bold">10cm</span>
-          </div>
-          <div className="absolute bottom-2 right-2 flex items-end gap-1">
-            <span className="mb-3 max-w-[9rem] rounded-lg bg-white px-2 py-1 text-[11px] leading-snug shadow-card">10cm 안에 몇 코가 있나요?</span>
-            <Mascot mood="cheer" className="h-16 w-16" />
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <h2 className="flex items-baseline gap-2 text-[18px] font-bold"><span className="text-[32px] font-black leading-none text-blush">3</span> 결과 확인</h2>
-        <p className="mt-1 text-[14px] leading-relaxed">짠! 이번 프로젝트는 예) <span className="text-[28px] font-black leading-none">20코</span>로 시작하면 완벽해요!</p>
-        <div className="mt-3 flex items-end justify-end gap-2">
-          <span className="max-w-[12rem] rounded-lg bg-[#f6f6f6] px-3 py-2 text-[12px] leading-snug">세탁 전후 게이지를 입력하면 더 정확하게 관리할 수 있어요!</span>
-          <Mascot mood="knit" className="h-20 w-20" />
-        </div>
-      </section>
-
-      <section>
-        <p className="text-[28px] font-black leading-none text-[#d0d0d0]">Q.</p>
-        <h2 className="mt-1 text-[18px] font-bold">게이지, 어떻게 계산할까요?</h2>
-        <div className="mt-3 flex items-start gap-3">
-          <Mascot mood="cheer" className="h-16 w-16 shrink-0" />
-          <p className="text-[13px] leading-relaxed text-[#555]">
-            뜨니가 처리하는 계산식은 다음과 같습니다. 사용하는 나의 게이지와 목표 길이를 입력하면 됩니다. 어려운 수학 계산은 뜨니한테 맡기세요!
-          </p>
-        </div>
-        <div className="mt-4 rounded-lg bg-[#fafafa] px-3 py-4 text-center">
-          <p className="text-[13px] font-semibold">10cm 안에 코가 몇 개 들어가는지만 알려주면 끝!</p>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[12px]">
-            <span>게이지(10cm 코수)</span>
-            <span className="grid h-14 min-w-14 place-items-center rounded-2xl bg-white px-3 text-[32px] font-black">10</span>
-            <span className="text-[28px] font-bold">×</span>
-            <span>목표 길이(cm)</span>
-            <span className="grid h-14 w-14 place-items-center rounded-full bg-ink text-[32px] font-black text-white">11</span>
-          </div>
-          <p className="mt-3 text-[14px] font-bold">필요 코수</p>
-          <p className="mt-2 text-[11px] leading-relaxed text-[#999]">아까 센 코 수와 목표 길이를 곱하면 결과가 나와요.</p>
-        </div>
-      </section>
+      {tab === "tutorial" ? (
+        <img src="/media/gauge-help-tutorial.png" alt="스와치를 뜨고 10cm 안의 코를 세면 필요한 코수를 계산할 수 있어요." className="mt-6 w-full" />
+      ) : (
+        <NaviHelp />
+      )}
     </div>
   );
 }
