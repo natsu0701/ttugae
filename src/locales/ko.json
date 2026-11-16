@@ -189,10 +189,10 @@
       "styleAmigurumi": "아미구루미",
       "styleSimple": "심플 데일리"
     },
-    "meetupsTitle": "뜨개 모임",
+    "meetupsTitle": "뜨개모임",
     "meetupsSubtitle": "뜨개라운지에서 참가한 소모임이 여기에 펼쳐집니다.",
     "meetupsEmptyTitle": "아직 예약한 모임이 없어요",
-    "meetupsEmptyDesc": "뜨개라운지의 오프라인 모임 및 행사 탭에서 참가 신청하기를 눌러 보세요.",
+    "meetupsEmptyDesc": "뜨개라운지의 뜨개모임 탭에서 참가 신청하기를 눌러 보세요.",
     "meetupsTickets": "현장 참여 증적",
     "meetupsTicketMeta": "QR 입장권 {{count}}장 · 진행 단 {{row}}단 세션 보존",
     "meetupsGoods": "굿즈 포트폴리오: {{list}}",
@@ -313,7 +313,7 @@
       "all": "전체",
       "qa": "Q&A",
       "showcase": "완성작 자랑",
-      "offline": "오프라인 모임 및 행사"
+      "offline": "뜨개모임"
     },
     "feedPattern": "도안 보기",
     "feedFinished": "완성작 보기",
@@ -857,7 +857,7 @@
     "packedChip": "도안 포장"
   },
   "offline": {
-    "title": "오프라인 소식 및 모임",
+    "title": "뜨개모임",
     "subtitle": "실시간 연동형 정밀 지도와 팝업 체크인으로 가로지르는 포근한 오프라인 연결 통로입니다.",
     "tabMap": "행사 지도",
     "tabMeetup": "동네 소모임",
