@@ -146,7 +146,7 @@ function ShowcaseFeedCard({
             <button
               type="button"
               onClick={() => onImport(pattern)}
-              className="rounded-2xl bg-stone-900 px-3 py-1.5 font-sans text-sm font-bold text-white hover:bg-coral"
+              className="font-sans text-sm font-bold text-stone-800 hover:text-coral"
             >
               {t("community.importToEditor")}
             </button>
