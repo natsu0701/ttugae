@@ -225,9 +225,6 @@ function KnitOfflineHub() {
           <h3 className="mt-2 text-title font-sans font-bold tracking-tight text-stone-900">
             {t("offline.title")}
           </h3>
-          <p className="mt-1 break-keep font-seoyun text-base font-normal text-stone-500">
-            {t("offline.subtitle")}
-          </p>
         </div>
         <div className="flex rounded-2xl bg-stone-100 p-1">
           {(
@@ -254,9 +251,6 @@ function KnitOfflineHub() {
         {activeTab === "map" ? (
           <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
             <div className="flex h-auto w-full flex-col space-y-4 lg:col-span-8 lg:h-[560px]">
-              <span className="block font-sans text-sm font-bold uppercase tracking-wider text-stone-400">
-                {t("offline.mapLabel")}
-              </span>
               <div className="relative min-h-[320px] flex-1 overflow-hidden rounded-xl bg-[#ECE6DC] shadow-inner">
                 <div ref={mapContainerRef} className="absolute inset-0 z-10 h-full w-full" />
                 <div className="absolute left-4 right-4 top-4 z-20">

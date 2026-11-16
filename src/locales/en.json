@@ -860,12 +860,10 @@
   },
   "offline": {
     "title": "Offline news and meetups",
-    "subtitle": "A cozy offline path with a live map and popup check-in.",
     "tabMap": "Event map",
     "tabMeetup": "Local meetups",
-    "mapLabel": "Live map (Mapo & Gangnam, Seoul)",
     "mapLoading": "Loading the live map…",
-    "mapSearchPh": "Searching Mapo / Gangnam knitting pop-ups…",
+    "mapSearchPh": "Search knitting pop-ups",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "compass": "Show whole area",
