@@ -133,7 +133,7 @@ function ProfileMenu({
             ? "border-coral"
             : "border-stone-200 hover:border-coral"
         }`}
-        {...iconTip(t("nav.profileMenu"), "below")}
+        {...iconTip(t("nav.profileMenu"), "left")}
         aria-expanded={menuOpen}
         aria-haspopup="menu"
       >
@@ -152,7 +152,7 @@ function ProfileMenu({
       {menuOpen ? (
         <div
           role="menu"
-          className="absolute right-full top-0 z-[60] mr-2 w-56 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-md"
+          className="absolute right-0 top-full z-[60] mt-2 w-56 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-md"
         >
           <button
             type="button"
