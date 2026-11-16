@@ -34,6 +34,16 @@ const SORT_OPTIONS: FilterOption[] = [
   { id: "newest", labelKey: "community.filterSortNewest" },
 ];
 
+const ITEM_TYPE_FILTERS: FilterOption[] = [
+  { id: "all", labelKey: "community.filterTypeAll" },
+  { id: "gloves", labelKey: "community.filterTypeGloves" },
+  { id: "hat", labelKey: "community.filterTypeHat" },
+  { id: "scarf", labelKey: "community.filterTypeScarf" },
+  { id: "sweater", labelKey: "community.filterTypeSweater" },
+  { id: "coaster", labelKey: "community.filterTypeCoaster" },
+  { id: "accessory", labelKey: "community.filterTypeAccessory" },
+];
+
 type CommunityFilterBarProps = {
   filters: LoungeFilters;
   resultCount: number;
@@ -90,7 +100,8 @@ function CommunityFilterBar({
 }: CommunityFilterBarProps) {
   const { t } = useTranslation();
   const [panelOpen, setPanelOpen] = useState(false);
-  const hasActive = filters.level !== "all" || filters.tool !== "all";
+  const hasActive =
+    filters.level !== "all" || filters.tool !== "all" || filters.itemType !== "all";
   const searching = filters.query.trim().length > 0;
 
   useEffect(() => {
@@ -190,7 +201,7 @@ function CommunityFilterBar({
               </button>
             ) : null}
           </div>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             <FilterColumn
               label={t("community.filterLevel")}
               options={LEVEL_FILTERS}
@@ -202,6 +213,12 @@ function CommunityFilterBar({
               options={TOOL_FILTERS}
               value={filters.tool}
               onSelect={(id) => patch({ tool: id as LoungeFilters["tool"] })}
+            />
+            <FilterColumn
+              label={t("community.filterType")}
+              options={ITEM_TYPE_FILTERS}
+              value={filters.itemType}
+              onSelect={(id) => patch({ itemType: id as LoungeFilters["itemType"] })}
             />
           </div>
         </div>
