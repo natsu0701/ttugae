@@ -356,8 +356,8 @@ export default function Community({
       </section>
 
       {activeTab !== "offline" ? (
-      <div className="fixed bottom-5 right-20 z-50 flex flex-col items-end gap-2">
-        <span className="rounded-xl bg-gray-100 px-3 py-1.5 font-sans text-sm font-normal text-gray-600">
+      <div className="share-fab fixed bottom-24 right-5 z-50 flex flex-col items-end gap-2 sm:bottom-5 sm:right-20">
+        <span className="share-fab-label hidden rounded-xl bg-gray-100 px-3 py-1.5 font-sans text-sm font-normal text-gray-600 sm:block">
           {t("community.shareFabLabel")}
         </span>
         <button

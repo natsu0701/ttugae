@@ -37,7 +37,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
       <HeroDecorations />
 
       {/* 텍스트 컨테이너 여백 (레이스 아래 안전지대 확보) */}
-      <div className="relative z-10 mx-auto w-full shrink-0 text-center pt-52 md:pt-64">
+      <div className="hero-copy relative z-10 mx-auto w-full shrink-0 text-center pt-52 md:pt-64">
         <div className="page-shell py-4">
           <Reveal delay={0.4}>
             <h1 className="break-keep">
@@ -47,7 +47,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
               </span>
 
               <span
-                className="mt-3 flex flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] text-white sm:text-5xl md:mt-4 md:gap-1 md:text-6xl lg:text-7xl xl:text-7xl 2xl:text-[clamp(3rem,4vw,4.5rem)]"
+                className="hero-slogan mt-3 flex flex-col items-center gap-0.5 overflow-visible break-keep font-gamhong text-4xl font-normal leading-none tracking-[-0.02em] text-white sm:text-5xl md:mt-4 md:gap-1 md:text-6xl lg:text-7xl xl:text-7xl 2xl:text-[clamp(3rem,4vw,4.5rem)]"
                 style={{ fontFamily: "Mungyeong-Gamhong-Apple, sans-serif" }}
               >
                 {HERO_SLOGAN_KEYS.map((key) => (
@@ -61,7 +61,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
         </div>
 
         {/* 시작 버튼 그룹 */}
-        <Reveal delay={0.9} className="relative z-10 mt-8 md:mt-10">
+        <Reveal delay={0.9} className="hero-cta relative z-10 mt-8 md:mt-10">
           <Button
             variant="primary"
             onClick={onOpenEditor}

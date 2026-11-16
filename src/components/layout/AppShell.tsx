@@ -256,7 +256,7 @@ export default function AppShell({
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 -top-16 z-0 h-[250px] w-full bg-no-repeat md:-top-24 md:h-[320px]"
+          className="nav-lace pointer-events-none absolute inset-x-0 -top-16 z-0 h-[250px] w-full bg-no-repeat md:-top-24 md:h-[320px]"
           style={{
             backgroundImage: `url(${assetUrl("/images/nav_lace.png")})`,
             backgroundSize: "auto 100%",
@@ -271,10 +271,10 @@ export default function AppShell({
             className="flex shrink-0 items-center rounded-lg transition-opacity duration-200 hover:opacity-80 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
             {...iconTip(t("nav.brand"), "below")}
           >
-            <BrandTextLogo className="h-7 w-auto object-contain md:h-8" />
+            <BrandTextLogo className="h-6 w-auto object-contain min-[400px]:h-7 md:h-8" />
           </button>
 
-          <nav className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:gap-x-5 md:gap-x-7 lg:gap-x-8">
+          <nav className="ml-auto flex min-w-0 flex-nowrap items-center justify-end gap-x-1.5 min-[400px]:flex-wrap min-[400px]:gap-x-3 sm:gap-x-5 md:gap-x-7 lg:gap-x-8">
             <NavTextItem
               label={t("nav.home")}
               active={currentPage === "landing"}

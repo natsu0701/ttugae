@@ -152,7 +152,7 @@ body {
     width: 100%;
     max-width: 100%;
     margin-inline: 0;
-    padding-inline: clamp(1.25rem, 4.5vw, 6rem);
+    padding-inline: clamp(0.75rem, 4.5vw, 6rem);
   }
 
   .nav-text-item {
@@ -166,7 +166,7 @@ body {
     box-shadow: none;
     outline: none;
     font-family: "Noto Sans KR", system-ui, sans-serif;
-    font-size: clamp(0.9375rem, 0.2vw + 0.88rem, 1.0625rem);
+    font-size: clamp(0.8125rem, 0.35vw + 0.78rem, 1.0625rem);
     font-weight: 400;
     line-height: 1.5;
     cursor: pointer;
@@ -808,4 +808,34 @@ body.yarn-trail-active {
   overflow-wrap: anywhere;
   white-space: normal;
   pointer-events: none;
+}
+
+/* 낮은 화면(가로 놓은 휴대폰 등)에서는 레이스를 낮추고 문구를 한 화면에 담는다. */
+@media (max-height: 760px) {
+  .nav-lace {
+    top: -1.25rem !important;
+    height: 9.25rem !important;
+  }
+
+  .hero-copy {
+    padding-top: 7.75rem !important;
+  }
+
+  .hero-copy .hero-slogan {
+    margin-top: 0.35rem;
+    font-size: clamp(1.7rem, 6.4vh, 2.4rem);
+  }
+
+  .hero-cta {
+    margin-top: 0.75rem !important;
+  }
+
+  .share-fab {
+    right: 1.25rem !important;
+    bottom: 4.75rem !important;
+  }
+
+  .share-fab-label {
+    display: none !important;
+  }
 }

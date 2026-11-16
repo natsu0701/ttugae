@@ -37,14 +37,14 @@ function InfoRow({
   note: string;
 }) {
   return (
-    <li className="flex flex-wrap items-baseline gap-x-2 font-sans text-sm leading-relaxed text-[#1d1d1d]">
+    <li className="flex flex-col gap-0.5 font-sans text-sm leading-relaxed text-[#1d1d1d] sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-x-2">
       <span className="font-bold">
         {label}{" "}
-        <a href={href} className="font-bold hover:text-coral">
+        <a href={href} className="font-bold break-all hover:text-coral">
           {value}
         </a>
       </span>
-      <span className="select-none text-[#8a8a8a]" aria-hidden>
+      <span className="hidden select-none text-[#8a8a8a] sm:inline" aria-hidden>
         |
       </span>
       <span className="text-[#555]">{note}</span>
@@ -212,7 +212,7 @@ function LandingFooter() {
         </div>
 
         <div className="bg-[#222]">
-          <div className="page-shell flex items-center gap-3 py-3">
+          <div className="page-shell flex items-center gap-3 py-3 pr-20">
             <span className="font-sans text-sm font-semibold text-white">{t("nav.brand")}</span>
             <span className="font-sans text-sm text-white/80">{t("landing.footerBarNote")}</span>
           </div>
