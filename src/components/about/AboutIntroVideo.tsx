@@ -9,6 +9,8 @@ import {
 import { ABOUT_INTRO_VIDEO_SRC } from "../../constants/aboutMedia.ts";
 import { iconTip } from "../../utils/iconTip.ts";
 
+const CONTROLS_HIDE_MS = 1000;
+
 function formatTime(seconds: number) {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
   const whole = Math.floor(seconds);
@@ -26,35 +28,38 @@ export default function AboutIntroVideo() {
   const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const hideTimerRef = useRef<number>(0);
+  const playingRef = useRef(false);
+  const overControlsRef = useRef(false);
   const [failed, setFailed] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [current, setCurrent] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(true);
 
-  const togglePlay = useCallback(() => {
-    const video = videoRef.current;
-    if (!video || failed) return;
-    if (video.paused) void video.play();
-    else video.pause();
-  }, [failed]);
+  playingRef.current = playing;
 
-  const seekTo = useCallback((next: number) => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.currentTime = next;
-    setCurrent(next);
+  const armHideControls = useCallback(() => {
+    window.clearTimeout(hideTimerRef.current);
+    if (!playingRef.current || overControlsRef.current) return;
+    hideTimerRef.current = window.setTimeout(() => {
+      setControlsVisible(false);
+    }, CONTROLS_HIDE_MS);
   }, []);
 
-  const toggleFullscreen = useCallback(() => {
+  const revealControls = useCallback(() => {
+    setControlsVisible(true);
+    armHideControls();
+  }, [armHideControls]);
+
+  const enterFullscreen = useCallback(() => {
+    if (fullscreenEl()) return;
     const stage = stageRef.current;
     const video = videoRef.current;
     if (!stage) return;
     const anyStage = stage as HTMLElement & {
       webkitRequestFullscreen?: () => void;
-    };
-    const anyDoc = document as Document & {
-      webkitExitFullscreen?: () => void;
     };
     const anyVideo = video as
       | (HTMLVideoElement & {
@@ -62,12 +67,6 @@ export default function AboutIntroVideo() {
           webkitRequestFullscreen?: () => void;
         })
       | null;
-
-    if (fullscreenEl()) {
-      if (document.exitFullscreen) void document.exitFullscreen();
-      else anyDoc.webkitExitFullscreen?.();
-      return;
-    }
 
     const fallback = () => {
       if (video?.requestFullscreen) {
@@ -88,6 +87,53 @@ export default function AboutIntroVideo() {
     fallback();
   }, []);
 
+  const exitFullscreen = useCallback(() => {
+    const video = videoRef.current as
+      | (HTMLVideoElement & { webkitExitFullscreen?: () => void })
+      | null;
+    const anyDoc = document as Document & {
+      webkitExitFullscreen?: () => void;
+    };
+    if (fullscreenEl()) {
+      if (document.exitFullscreen) void document.exitFullscreen();
+      else anyDoc.webkitExitFullscreen?.();
+    }
+    video?.webkitExitFullscreen?.();
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || failed) return;
+    if (video.paused) {
+      enterFullscreen();
+      void video.play();
+    } else {
+      video.pause();
+    }
+  }, [enterFullscreen, failed]);
+
+  const seekTo = useCallback((next: number) => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.currentTime = next;
+    setCurrent(next);
+    revealControls();
+  }, [revealControls]);
+
+  const toggleFullscreen = useCallback(() => {
+    if (fullscreenEl()) exitFullscreen();
+    else enterFullscreen();
+  }, [enterFullscreen, exitFullscreen]);
+
+  useEffect(() => {
+    if (playing) armHideControls();
+    else {
+      window.clearTimeout(hideTimerRef.current);
+      setControlsVisible(true);
+    }
+    return () => window.clearTimeout(hideTimerRef.current);
+  }, [armHideControls, playing]);
+
   useEffect(() => {
     const onFs = () => setIsFullscreen(Boolean(fullscreenEl()));
     document.addEventListener("fullscreenchange", onFs);
@@ -102,7 +148,10 @@ export default function AboutIntroVideo() {
     <figure className="w-full">
       <div
         ref={stageRef}
-        className="relative mx-auto aspect-video max-h-[min(28rem,calc(100svh-16rem))] w-full overflow-hidden rounded-xl bg-[#FFFBF7] shadow-sm [:fullscreen]:aspect-auto [:fullscreen]:max-h-none [:fullscreen]:flex [:fullscreen]:h-full [:fullscreen]:w-full [:fullscreen]:items-center [:fullscreen]:rounded-none [:fullscreen]:bg-black"
+        className={`relative mx-auto aspect-video max-h-[min(28rem,calc(100svh-16rem))] w-full overflow-hidden rounded-xl bg-[#FFFBF7] shadow-sm [:fullscreen]:aspect-auto [:fullscreen]:max-h-none [:fullscreen]:flex [:fullscreen]:h-full [:fullscreen]:w-full [:fullscreen]:items-center [:fullscreen]:rounded-none [:fullscreen]:bg-black ${
+          playing && !controlsVisible ? "cursor-none" : ""
+        }`}
+        onPointerMove={revealControls}
       >
         <video
           ref={videoRef}
@@ -113,6 +162,11 @@ export default function AboutIntroVideo() {
           onClick={togglePlay}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
+          onEnded={() => {
+            setPlaying(false);
+            setControlsVisible(true);
+            exitFullscreen();
+          }}
           onTimeUpdate={(event) => setCurrent(event.currentTarget.currentTime)}
           onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || 0)}
           onError={() => setFailed(true)}
@@ -130,7 +184,20 @@ export default function AboutIntroVideo() {
             </p>
           </div>
         ) : (
-          <div className="absolute inset-x-0 bottom-0 z-10 flex items-center gap-2 bg-black/70 px-3 py-2.5">
+          <div
+            className={`absolute inset-x-0 bottom-0 z-10 flex items-center gap-2 bg-black/70 px-3 py-2.5 transition-opacity duration-200 ${
+              controlsVisible ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
+            onPointerEnter={() => {
+              overControlsRef.current = true;
+              window.clearTimeout(hideTimerRef.current);
+              setControlsVisible(true);
+            }}
+            onPointerLeave={() => {
+              overControlsRef.current = false;
+              armHideControls();
+            }}
+          >
             <button
               type="button"
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-stone-800 shadow-sm"
