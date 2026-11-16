@@ -225,12 +225,26 @@ export function ForgotScreen() {
 }
 
 const SLIDES = [
-  { title: "뜨개러투게더와\n함께하는\n새로운 뜨개라이프", body: "뜨개 흐름 읽기가 더 쉬워질게요", mood: "cheer" as const },
-  { title: "푸르시오는 이제 그만!\n뜨개 내비만 따라하세요", body: "막히는 구간은 단계만 따라가면 돼요", mood: "knit" as const },
-  { title: "여러 프로젝트를\n동시에 관리해요", body: "가방 하나에서 진행과 완성을 봐요", mood: "wave" as const },
-  { title: "손쉽게 도안을 제작하고\n3D로 미리 확인해요", body: "코 칸에 색을 남겨 두세요", mood: "cheer" as const },
-  { title: "다른 뜨개더들과\n교류하고 거래해봐요", body: "작품과 질문, 실과 바늘을 나눠요", mood: "wave" as const },
+  "뜨개러투게더와\n함께하는\n새로운 뜨개라이프",
+  "푸르시오는 이제 그만!\n뜨개 내비만 따라하세요",
+  "여러 프로젝트를\n동시에 관리해요",
+  "손쉽게 도안을 제작하고\n3D로 미리 확인해요",
+  "다른 뜨개더들과\n교류하고 거래해봐요",
 ];
+
+function onboardingArt(index: number) {
+  return `${import.meta.env.BASE_URL}onboarding/slide-${index + 1}.png`;
+}
+
+function OnboardingProgress({ step }: { step: number }) {
+  return (
+    <div className="mt-3 flex gap-1.5" aria-hidden>
+      {Array.from({ length: 6 }, (_, index) => (
+        <span key={index} className={cx("h-1 flex-1 rounded-full", index < step ? "bg-blush" : "bg-[#f1f1f1]")} />
+      ))}
+    </div>
+  );
+}
 
 export function OnboardingScreen() {
   const { data, patch, push, finishOnboarding } = useApp();
@@ -238,30 +252,25 @@ export function OnboardingScreen() {
   const last = step === 6;
 
   return (
-    <div className="flex min-h-full w-full flex-1 flex-col bg-white px-6 pb-8 [@media(max-height:520px)]:pb-3">
-      {step < 5 ? (
-        <div className="flex flex-1 flex-col">
-          <div className="flex justify-center pt-6">
-            <Mascot mood={SLIDES[step].mood} className="h-56 w-56 [@media(max-height:520px)]:h-24 [@media(max-height:520px)]:w-24" />
-          </div>
-          <div className="mt-16 [@media(max-height:520px)]:mt-6">
-            <h1 className="whitespace-pre-wrap text-[26px] font-bold leading-snug">{SLIDES[step].title}</h1>
-            <p className="mt-3 text-[14px] text-[#888]">{SLIDES[step].body}</p>
-          </div>
+    <div className="flex min-h-full w-full flex-1 flex-col bg-white pb-8 [@media(max-height:520px)]:pb-3">
+      {step === 0 ? (
+        <img src={onboardingArt(0)} alt="" className="min-h-0 w-full flex-1 object-contain object-top" />
+      ) : (
+        <div className="flex min-h-0 flex-1 flex-col px-6">
+          <OnboardingProgress step={step} />
+          {step < 5 ? (
+            <>
+              <h1 className="mt-8 whitespace-pre-wrap text-[26px] font-bold leading-snug">{SLIDES[step]}</h1>
+              <div className="mt-4 min-h-0 flex-1">
+                <img src={onboardingArt(step)} alt="" className="max-h-full w-full object-contain object-top" />
+              </div>
+            </>
+          ) : null}
+          {step === 5 ? <UnitStep unit={data.unit} onChange={(unit) => patch({ unit })} /> : null}
+          {step === 6 ? <ToolStep tool={data.tool} onChange={(tool) => patch({ tool })} /> : null}
         </div>
-      ) : null}
-      {step === 5 ? (
-        <UnitStep unit={data.unit} onChange={(unit) => patch({ unit })} />
-      ) : null}
-      {step === 6 ? (
-        <ToolStep tool={data.tool} onChange={(tool) => patch({ tool })} />
-      ) : null}
-      <div className="mt-auto shrink-0 space-y-4 pt-8 [@media(max-height:520px)]:pt-2">
-        <div className="flex gap-1" aria-hidden>
-          {Array.from({ length: 7 }, (_, index) => (
-            <span key={index} className={cx("h-1 flex-1 rounded-full", index <= step ? "bg-blush" : "bg-[#f1f1f1]")} />
-          ))}
-        </div>
+      )}
+      <div className="mt-auto shrink-0 space-y-3 px-6 pt-4 [@media(max-height:520px)]:pt-2">
         {last ? (
           <>
             <BlackButton onClick={() => push({ name: "skill" })}>실력 측정하기</BlackButton>
