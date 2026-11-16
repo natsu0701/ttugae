@@ -38,6 +38,7 @@ import {
 import {
   applyLoungeFilters,
   DEFAULT_LOUNGE_FILTERS,
+  sortLoungePatterns,
   type LoungeFilters,
 } from "./data/loungeFilters.ts";
 
@@ -222,7 +223,7 @@ export default function Community({
       }
     }
 
-    return applyLoungeFilters(ranked, loungeFilters);
+    return sortLoungePatterns(applyLoungeFilters(ranked, loungeFilters), loungeFilters.sort);
   }, [activeTab, allPatterns, loungeFilters]);
 
   const selectedPost = selectedQaId ? getQaPost(selectedQaId) : null;
@@ -323,7 +324,9 @@ export default function Community({
               </div>
             ) : (
               <>
-                {activeTab === "all" && loadTasteProfile().styles.length > 0 ? (
+                {activeTab === "all" &&
+                loungeFilters.sort === "recommended" &&
+                loadTasteProfile().styles.length > 0 ? (
                   <p className="mb-4 font-sans text-base font-medium text-stone-600">
                     {t("community.tasteHint")}
                   </p>
