@@ -8,6 +8,7 @@ import {
 import {
   DEFAULT_LOUNGE_FILTERS,
   type LoungeFilters,
+  type LoungeSort,
 } from "../../data/loungeFilters.ts";
 import { LOUNGE_CLOSE_FILTER_EVENT } from "../../utils/communityTabEvent.ts";
 import { iconTip } from "../../utils/iconTip.ts";
@@ -25,6 +26,12 @@ const TOOL_FILTERS: FilterOption[] = [
   { id: "all", labelKey: "community.filterToolAll" },
   { id: "knitting", labelKey: "community.filterToolKnit" },
   { id: "crochet", labelKey: "community.filterToolCrochet" },
+];
+
+const SORT_OPTIONS: FilterOption[] = [
+  { id: "recommended", labelKey: "community.filterSortRecommended" },
+  { id: "popular", labelKey: "community.filterSortPopular" },
+  { id: "newest", labelKey: "community.filterSortNewest" },
 ];
 
 type CommunityFilterBarProps = {
@@ -136,9 +143,31 @@ function CommunityFilterBar({
           <FilterFillIcon className="h-4 w-4" />
         </button>
       </div>
-      <p className="mt-3 font-sans text-base font-bold leading-6 text-stone-900">
-        {t("community.searchResultCount", { count: resultCount })}
-      </p>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <p className="font-sans text-base font-bold leading-6 text-stone-900">
+          {t("community.searchResultCount", { count: resultCount })}
+        </p>
+        <div className="flex flex-wrap gap-1" role="group" aria-label={t("community.filterSort")}>
+          {SORT_OPTIONS.map((opt) => {
+            const active = filters.sort === opt.id;
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => patch({ sort: opt.id as LoungeSort })}
+                aria-pressed={active}
+                className={`rounded-full px-3 py-1 font-sans text-sm transition-colors ${
+                  active
+                    ? "bg-gray-900 font-medium text-white"
+                    : "bg-gray-100 font-normal text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {t(opt.labelKey)}
+              </button>
+            );
+          })}
+        </div>
+      </div>
       {searching ? (
         <p className="mt-1 font-sans text-sm font-medium leading-5 text-stone-500">
           {t("community.searchIncludesAuthor")}
@@ -151,7 +180,9 @@ function CommunityFilterBar({
             {hasActive ? (
               <button
                 type="button"
-                onClick={() => onChange({ ...DEFAULT_LOUNGE_FILTERS, query: filters.query })}
+                onClick={() =>
+                  onChange({ ...DEFAULT_LOUNGE_FILTERS, query: filters.query, sort: filters.sort })
+                }
                 className="flex items-center gap-1 rounded-xl px-3 py-2 font-sans text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
               >
                 <RefreshFillIcon className="h-3 w-3" />

@@ -15,16 +15,20 @@ export type LoungeMeta = {
   material: LoungeMaterial;
 };
 
+export type LoungeSort = "recommended" | "popular" | "newest";
+
 export type LoungeFilters = {
   query: string;
   level: "all" | LoungeLevel;
   tool: "all" | LoungeTool;
+  sort: LoungeSort;
 };
 
 export const DEFAULT_LOUNGE_FILTERS: LoungeFilters = {
   query: "",
   level: "all",
   tool: "all",
+  sort: "recommended",
 };
 
 const SEEDED_META: Record<string, LoungeMeta> = {
@@ -108,4 +112,21 @@ export function applyLoungeFilters(
     if (filters.tool !== "all" && meta.tool !== filters.tool) return false;
     return true;
   });
+}
+
+export function sortLoungePatterns(
+  patterns: CommunityPattern[],
+  sort: LoungeSort,
+): CommunityPattern[] {
+  if (sort === "popular") {
+    return [...patterns].sort(
+      (a, b) => b.likes - a.likes || b.publishedAt.localeCompare(a.publishedAt),
+    );
+  }
+  if (sort === "newest") {
+    return [...patterns].sort(
+      (a, b) => b.publishedAt.localeCompare(a.publishedAt) || b.likes - a.likes,
+    );
+  }
+  return patterns;
 }
