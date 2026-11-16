@@ -215,6 +215,8 @@
       "period": "산정 기간: 최근 {{days}}일",
       "score": "등급 점수: {{score}}점",
       "next": "다음 레벨까지 {{remaining}}점 남음",
+      "nextCheer": "다음 레벨까지 {{remaining}}점 남았어요!",
+      "criteriaPeriod": "산정 기준: 최근 {{days}}일 동안 완성 코 수 + 작품 수 + 모임 출석",
       "max": "최고 레벨입니다."
     },
     "follow": {
