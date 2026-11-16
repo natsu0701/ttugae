@@ -178,13 +178,27 @@ button {
   animation: page-in 180ms ease-out;
 }
 
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.sheet-up {
+  animation: sheet-up 280ms ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .skeleton {
     animation: none;
     background-image: none;
   }
 
-  .page-in {
+  .page-in,
+  .sheet-up {
     animation: none;
   }
 }

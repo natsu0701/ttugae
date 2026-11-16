@@ -956,22 +956,27 @@ function speakCount(word: string, enabled: boolean) {
 
 export function CounterRunScreen({ id, row }: { id: string; row: string }) {
   const { data, back, notify, push, bumpCounter, setCounterRowValue, resetCounterRow, setProjectRunning } = useApp();
-  const counter = data.counters.find((item) => item.id === id);
+  const [counterId, setCounterId] = useState(id);
   const [rowId, setRowId] = useState(row);
+  const counter = data.counters.find((item) => item.id === counterId);
   const [seconds, setSeconds] = useState(0);
   const [heard, setHeard] = useState("");
   const [soundOn, setSoundOn] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [listOpen, setListOpen] = useState(false);
   const [scale, setScale] = useState<(typeof COUNT_SIZES)[number]["id"]>("md");
   const [colorId, setColorId] = useState<(typeof COUNT_COLORS)[number]["id"] | "custom">("pink");
   const [customColor, setCustomColor] = useState("#f47c7b");
   const [draftValue, setDraftValue] = useState("");
   const rowsRef = useRef(counter?.rows ?? []);
   const rowRef = useRef(rowId);
+  const counterIdRef = useRef(counterId);
   const soundRef = useRef(soundOn);
   const setRunningRef = useRef(setProjectRunning);
+  const tracked = useRef<{ projectId: string | null; started: boolean } | null>(null);
   rowsRef.current = counter?.rows ?? [];
   rowRef.current = rowId;
+  counterIdRef.current = counterId;
   soundRef.current = soundOn;
   setRunningRef.current = setProjectRunning;
   const boot = useRef<{ projectId: string | null; running: boolean } | null>(null);
@@ -987,20 +992,25 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
       return;
     }
     setRowId(step.rowId);
-    bumpCounter(id, step.rowId, step.delta);
+    bumpCounter(counterIdRef.current, step.rowId, step.delta);
     if (step.delta !== 0) speakCount(step.delta > 0 ? "다음" : "이전", soundRef.current);
   });
 
   useEffect(() => {
-    const projectId = boot.current?.projectId;
-    if (projectId) {
-      if (!boot.current?.running) setRunningRef.current(projectId, true);
-      return () => {
-        if (!boot.current?.running && projectId) setRunningRef.current(projectId, false);
-      };
+    const projectId = boot.current?.projectId ?? null;
+    const already = boot.current?.running ?? false;
+    if (projectId && !already) {
+      setRunningRef.current(projectId, true);
+      tracked.current = { projectId, started: true };
+    } else {
+      tracked.current = { projectId, started: false };
     }
     const timer = window.setInterval(() => setSeconds((value) => value + 1), 1000);
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearInterval(timer);
+      const current = tracked.current;
+      if (current?.started && current.projectId) setRunningRef.current(current.projectId, false);
+    };
   }, []);
 
   if (!counter) return <p className="px-6 py-16 text-center text-white">카운터를 찾지 못했어요.</p>;
@@ -1017,8 +1027,28 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
       return;
     }
     setProjectRunning(linked.id, false);
-    if (boot.current) boot.current.running = false;
+    if (tracked.current) tracked.current = { projectId: linked.id, started: false };
     push({ name: "diary", id: linked.id });
+  };
+  const switchItem = (nextCounterId: string, nextRowId: string) => {
+    const next = data.counters.find((item) => item.id === nextCounterId);
+    if (!next) return;
+    const nextProjectId = next.projectId;
+    const current = tracked.current;
+    if ((current?.projectId ?? null) !== (nextProjectId ?? null)) {
+      if (current?.started && current.projectId) setProjectRunning(current.projectId, false);
+      const nextProject = data.projects.find((item) => item.id === nextProjectId);
+      if (nextProjectId && !nextProject?.running) {
+        setProjectRunning(nextProjectId, true);
+        tracked.current = { projectId: nextProjectId, started: true };
+      } else {
+        tracked.current = { projectId: nextProjectId, started: false };
+      }
+      if (!nextProjectId) setSeconds(0);
+    }
+    setCounterId(nextCounterId);
+    setRowId(nextRowId);
+    setListOpen(false);
   };
   const openSettings = () => {
     setDraftValue(String(active.value));
@@ -1098,10 +1128,57 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
       </div>
 
       <div className="px-6 pb-8">
-        <button type="button" onClick={back} className="h-12 w-full rounded-full bg-black text-[16px] font-semibold">
+        <button
+          type="button"
+          aria-expanded={listOpen}
+          onClick={() => setListOpen(true)}
+          className="h-12 w-full rounded-full bg-black text-[16px] font-semibold"
+        >
           카운터 목록
         </button>
       </div>
+
+      {listOpen ? (
+        <div className="absolute inset-0 z-20 flex items-end bg-black/35" onClick={() => setListOpen(false)}>
+          <div
+            className="sheet-up max-h-[72%] w-full overflow-y-auto rounded-t-lg bg-white px-5 pb-8 pt-4 text-ink"
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-label="카운터 목록"
+          >
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[#e6e6e6]" />
+            <h2 className="text-[17px] font-bold">카운터 목록</h2>
+            <ul className="mt-4 space-y-4">
+              {data.counters.map((item) => (
+                <li key={item.id}>
+                  <p className="text-[13px] font-semibold text-[#888]">{item.name}</p>
+                  <ul className="mt-2 space-y-2">
+                    {item.rows.map((entry) => {
+                      const selected = item.id === counter.id && entry.id === active.id;
+                      return (
+                        <li key={`${item.id}-${entry.id}`}>
+                          <button
+                            type="button"
+                            aria-pressed={selected}
+                            onClick={() => switchItem(item.id, entry.id)}
+                            className={cx(
+                              "flex h-12 w-full items-center justify-between rounded-lg px-4 text-left",
+                              selected ? "bg-blush-soft" : "bg-[#f6f6f6]",
+                            )}
+                          >
+                            <span className="font-semibold">{entry.label}</span>
+                            <span className="text-[18px] font-bold">{entry.value}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ) : null}
 
       {settingsOpen ? (
         <div className="absolute inset-0 z-20 flex items-end bg-black/35" onClick={() => setSettingsOpen(false)}>
