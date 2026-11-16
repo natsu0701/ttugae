@@ -138,7 +138,7 @@ const OFFLINE_EVENTS_DATA: OfflineEvent[] = [
     date: "2026.09.02 - 2026.09.10",
     location: "서울시 강남구 신사동 가로수길 갤러리 메종",
     latLng: [37.521, 127.023],
-    description: "프리미엄 모헤어 실 브랜드와 뜨개더의 독점 컬러 배색 팔레트 실물 쇼케이스",
+    description: "프리미엄 모헤어 실 브랜드와 뜨개러투게더의 독점 컬러 배색 팔레트 실물 쇼케이스",
     featuredYarn: "안개 구름 모헤어",
     featuredNeedle: "대바늘 3.5mm",
   },
@@ -166,7 +166,7 @@ const OFFLINE_REVIEWS: OfflineReview[] = [
       "홍대 아틀리에 팝업에서 실물 가디건을 스캔해 보니 도안 기호로 바로 분석되고, 현장에서 산 낙양모사 울에 맞춘 변환 도안을 공유합니다.",
     hasPattern: true,
     attachedPatternName: "완성! 베이지 가디건",
-    attachedPatternDesc: "후기에 붙은 격자 도안을 에디터로 그대로 가져갈 수 있어요",
+    attachedPatternDesc: "후기에 붙은 격자 도안을 도안그리기로 그대로 가져갈 수 있어요",
     attachedPatternData: {
       title: "완성! 베이지 가디건",
       needleType: "knitting",
@@ -187,10 +187,10 @@ const OFFLINE_REVIEWS: OfflineReview[] = [
     rating: 4,
     eventTitle: "안개 구름 모헤어 콜라보 가을 기획전",
     content:
-      "가로수길 가을 기획전에서 모헤어 패키지를 받고, 웹 에디터로 불러와 리믹스하기 좋은 레이스 숄 도안을 남깁니다.",
+      "가로수길 가을 기획전에서 모헤어 패키지를 받고, 도안그리기로 불러와 리믹스하기 좋은 레이스 숄 도안을 남깁니다.",
     hasPattern: true,
     attachedPatternName: "가을 스페셜 모헤어 숄",
-    attachedPatternDesc: "현장에서 한땀 한땀 뜬 기획전 특전 모헤어 도안을 에디터에 그대로 옮겨서 리믹스하세요",
+    attachedPatternDesc: "현장에서 한땀 한땀 뜬 기획전 특전 모헤어 도안을 도안그리기에 그대로 옮겨서 리믹스하세요",
     attachedPatternData: {
       title: "가을 스페셜 모헤어 숄",
       needleType: "knitting",

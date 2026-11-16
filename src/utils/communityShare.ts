@@ -144,7 +144,7 @@ export function publishPatternToCommunity(input: {
       yarn: yarnText,
       needle: needleText,
       duration: prev?.finishedDetail.duration ?? "—",
-      review: review || "에디터에서 공유한 도안입니다.",
+      review: review || "도안그리기에서 공유한 도안입니다.",
     },
   };
 
