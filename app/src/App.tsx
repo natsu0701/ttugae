@@ -156,7 +156,7 @@ function Shell() {
   }, [routeKey]);
   const counting = route.name === "counter-run";
   const scrolling = route.name !== "chat" && !counting;
-  const fillScreen = route.name === "login" || route.name === "signup" || counting;
+  const fillScreen = route.name === "login" || route.name === "signup" || route.name === "chat" || counting;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const ready = usePageReady(skeletonKey, !reduceMotion && !NO_SKELETON.has(route.name));
   return (

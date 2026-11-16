@@ -1429,7 +1429,7 @@ export function ChatScreen() {
   const suggestions = useMemo(() => ["게이지가 뭐예요?", "내비 어떻게 써요?", "바늘 추천"], []);
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-white">
+    <div className="flex min-h-0 w-full flex-1 flex-col bg-white">
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3">
         {messages.map((message, index) => (
           <div key={`${message.from}-${index}`} className={cx("flex", message.from === "me" ? "justify-end" : "justify-start gap-2")}>
@@ -1448,7 +1448,7 @@ export function ChatScreen() {
         </div>
       </div>
       <form
-        className="flex shrink-0 gap-2 border-t border-[#f2f2f2] bg-white px-3 py-3"
+        className="mt-auto flex shrink-0 gap-2 border-t border-[#f2f2f2] bg-white px-3 py-3"
         onSubmit={(event) => {
           event.preventDefault();
           send(text);
