@@ -43,11 +43,31 @@ export function GaugeHelpScreen() {
           뜨개 내비
         </button>
       </div>
-      {tab === "tutorial" ? (
-        <img src="/media/gauge-help-tutorial.png" alt="스와치를 뜨고 10cm 안의 코를 세면 필요한 코수를 계산할 수 있어요." className="mt-6 w-full" />
-      ) : (
-        <NaviHelp />
-      )}
+      {tab === "tutorial" ? <GaugeTutorial /> : <NaviHelp />}
+    </div>
+  );
+}
+
+const HELP_HEADINGS = [
+  { n: "1", title: "스와치 뜨기", top: "2.7%" },
+  { n: "2", title: "코 세기", top: "29.59%" },
+  { n: "3", title: "결과 확인", top: "53.67%" },
+];
+
+function GaugeTutorial() {
+  return (
+    <div className="relative mt-6 [container-type:inline-size]">
+      <img src="/media/gauge-help-tutorial.png" alt="스와치 예시와 10cm 코 세기, 필요한 코수 계산식" className="w-full" />
+      {HELP_HEADINGS.map((heading) => (
+        <h2
+          key={heading.n}
+          className="absolute flex items-center gap-[1.6cqw] text-[#3a3a3a]"
+          style={{ top: heading.top, left: "8%", transform: "translateY(-50%)" }}
+        >
+          <span className="text-[6.2cqw] font-black leading-none">{heading.n}</span>
+          <span className="text-[4.8cqw] font-bold leading-none">{heading.title}</span>
+        </h2>
+      ))}
     </div>
   );
 }
@@ -62,7 +82,10 @@ function NaviHelp() {
     <div className="mt-6 space-y-5">
       {steps.map((step) => (
         <section key={step.n}>
-          <h2 className="flex items-baseline gap-2 text-[18px] font-bold"><span className="text-[32px] font-black leading-none text-blush">{step.n}</span> {step.title}</h2>
+          <h2 className="flex items-center gap-2">
+            <span className="text-[32px] font-black leading-none text-blush">{step.n}</span>
+            <span className="text-[18px] font-bold leading-none">{step.title}</span>
+          </h2>
           <p className="mt-1 text-[14px] leading-relaxed text-[#555]">{step.body}</p>
         </section>
       ))}
