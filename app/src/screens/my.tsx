@@ -41,39 +41,8 @@ const STAMPS = [
 ];
 
 export function MyScreen() {
-  const { data, patch, push, goTab, replace, openSheet } = useApp();
-  const units: { id: UnitSystem; label: string }[] = [
-    { id: "metric", label: "미터법" },
-    { id: "imperial", label: "영미식" },
-  ];
-  const tools: ToolKind[] = ["코바늘", "대바늘", "손뜨개"];
-  const minutes = Math.floor(data.projects.reduce((sum, project) => sum + project.elapsed, 0) / 60);
+  const { data, push, goTab, replace, openSheet } = useApp();
   const level = data.level ?? "입문자";
-  const calendarMarks = data.calendarMarks ?? {};
-  const knitMinutes = data.knitMinutes ?? {};
-  const [cursor, setCursor] = useState(() => {
-    const now = new Date();
-    return { year: now.getFullYear(), month: now.getMonth() };
-  });
-  const [pickedDay, setPickedDay] = useState<number | null>(null);
-  const shiftMonth = (delta: number) => {
-    setCursor((current) => {
-      const next = new Date(current.year, current.month + delta, 1);
-      return { year: next.getFullYear(), month: next.getMonth() };
-    });
-    setPickedDay(null);
-  };
-  const setCalendarMark = (day: number, emoji: string | null) => {
-    const key = calendarKey(cursor.year, cursor.month, day);
-    const next = { ...calendarMarks };
-    if (emoji) next[key] = emoji;
-    else delete next[key];
-    patch({ calendarMarks: next });
-  };
-  const daysInMonth = new Date(cursor.year, cursor.month + 1, 0).getDate();
-  const firstWeekday = new Date(cursor.year, cursor.month, 1).getDay();
-  const pickedKey = pickedDay ? calendarKey(cursor.year, cursor.month, pickedDay) : "";
-  const pickedSeconds = pickedKey ? (knitMinutes[pickedKey] ?? 0) : 0;
 
   return (
     <div className="pb-8">
@@ -83,14 +52,14 @@ export function MyScreen() {
         <button
           type="button"
           aria-label="설정"
-          onClick={() => document.getElementById("my-settings")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          onClick={() => push({ name: "profile", section: "settings" })}
           className="grid h-10 w-10 place-items-center"
         >
           <GearIcon />
         </button>
       </div>
 
-      <button type="button" onClick={() => push({ name: "skill" })} className="flex w-full items-center gap-3 border-b border-[#f2f2f2] px-4 py-3 text-left">
+      <button type="button" aria-label="내 프로필 더 자세히 보기" onClick={() => push({ name: "profile" })} className="flex w-full items-center gap-3 border-b border-[#f2f2f2] px-4 py-3 text-left">
         <Mascot className="h-14 w-14 shrink-0 rounded-full bg-[#f6f6f6]" mood="cheer" />
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2">
@@ -118,6 +87,77 @@ export function MyScreen() {
         </button>
       </section>
 
+      <Menu title="나의 거래">
+        <MenuRow icon={<FileTextFillIcon className="h-5 w-5" />} label="판매 관리" onClick={() => push({ name: "orders", tab: "sell" })} />
+        <MenuRow icon={<BagFillIcon className="h-5 w-5" />} label="구매 내역" onClick={() => push({ name: "orders", tab: "buy" })} />
+      </Menu>
+      <Menu title="나의 활동">
+        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="내 게시물" onClick={() => goTab("lounge", "works")} />
+        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="내 댓글" onClick={() => goTab("lounge", "qa")} />
+        <MenuRow icon={<BookmarkFillIcon className="h-5 w-5" />} label="저장한 글" onClick={() => push({ name: "likes" })} />
+        <MenuRow icon={<CommunityFillIcon className="h-5 w-5" />} label="뜨개 모임" onClick={() => goTab("lounge")} />
+      </Menu>
+      <Menu title="고객 지원">
+        <MenuRow icon={<BellFillIcon className="h-5 w-5" />} label="공지사항" onClick={() => push({ name: "notifications" })} />
+        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="고객센터" onClick={() => openSheet({ kind: "support" })} />
+        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="의견 남기기" onClick={() => push({ name: "chat" })} />
+        <MenuRow
+          icon={<FileTextFillIcon className="h-5 w-5" />}
+          label="약관 및 정책"
+          onClick={() => openSheet({ kind: "info", title: "약관 및 정책", body: "이 화면은 뜨개 연습용 프로토타입이에요. 계정과 결제 정보는 저장하지 않아요." })}
+        />
+      </Menu>
+
+      <button type="button" onClick={() => replace({ name: "login" })} className="mx-4 mt-4 h-12 w-[calc(100%-2rem)] rounded-lg bg-[#f6f6f6] text-[14px] font-semibold">
+        로그아웃
+      </button>
+    </div>
+  );
+}
+
+export function ProfileScreen({ section }: { section?: "settings" }) {
+  const { data, patch, push } = useApp();
+  const units: { id: UnitSystem; label: string }[] = [
+    { id: "metric", label: "미터법" },
+    { id: "imperial", label: "영미식" },
+  ];
+  const tools: ToolKind[] = ["코바늘", "대바늘", "손뜨개"];
+  const minutes = Math.floor(data.projects.reduce((sum, project) => sum + project.elapsed, 0) / 60);
+  const calendarMarks = data.calendarMarks ?? {};
+  const knitMinutes = data.knitMinutes ?? {};
+  const [cursor, setCursor] = useState(() => {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() };
+  });
+  const [pickedDay, setPickedDay] = useState<number | null>(null);
+  useEffect(() => {
+    if (section !== "settings") return;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById("my-settings")?.scrollIntoView({ block: "start" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [section]);
+  const shiftMonth = (delta: number) => {
+    setCursor((current) => {
+      const next = new Date(current.year, current.month + delta, 1);
+      return { year: next.getFullYear(), month: next.getMonth() };
+    });
+    setPickedDay(null);
+  };
+  const setCalendarMark = (day: number, emoji: string | null) => {
+    const key = calendarKey(cursor.year, cursor.month, day);
+    const next = { ...calendarMarks };
+    if (emoji) next[key] = emoji;
+    else delete next[key];
+    patch({ calendarMarks: next });
+  };
+  const daysInMonth = new Date(cursor.year, cursor.month + 1, 0).getDate();
+  const firstWeekday = new Date(cursor.year, cursor.month, 1).getDay();
+  const pickedKey = pickedDay ? calendarKey(cursor.year, cursor.month, pickedDay) : "";
+  const pickedSeconds = pickedKey ? (knitMinutes[pickedKey] ?? 0) : 0;
+
+  return (
+    <div className="pb-8">
       <section className="mx-4 mt-4 rounded-lg bg-[#ffe8ea] px-3 py-4">
         <div className="mb-1 flex items-center justify-center gap-6 text-[14px] font-semibold">
           <button type="button" aria-label="이전 달" onClick={() => shiftMonth(-1)} className="grid h-6 w-6 place-items-center text-[#e7a0ab]">
@@ -262,26 +302,6 @@ export function MyScreen() {
         </ul>
       </section>
 
-      <Menu title="나의 거래">
-        <MenuRow icon={<FileTextFillIcon className="h-5 w-5" />} label="판매 관리" onClick={() => push({ name: "orders", tab: "sell" })} />
-        <MenuRow icon={<BagFillIcon className="h-5 w-5" />} label="구매 내역" onClick={() => push({ name: "orders", tab: "buy" })} />
-      </Menu>
-      <Menu title="나의 활동">
-        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="내 게시물" onClick={() => goTab("lounge", "works")} />
-        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="내 댓글" onClick={() => goTab("lounge", "qa")} />
-        <MenuRow icon={<BookmarkFillIcon className="h-5 w-5" />} label="저장한 글" onClick={() => push({ name: "likes" })} />
-        <MenuRow icon={<CommunityFillIcon className="h-5 w-5" />} label="뜨개 모임" onClick={() => goTab("lounge")} />
-      </Menu>
-      <Menu title="고객 지원">
-        <MenuRow icon={<BellFillIcon className="h-5 w-5" />} label="공지사항" onClick={() => push({ name: "notifications" })} />
-        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="고객센터" onClick={() => openSheet({ kind: "support" })} />
-        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="의견 남기기" onClick={() => push({ name: "chat" })} />
-        <MenuRow
-          icon={<FileTextFillIcon className="h-5 w-5" />}
-          label="약관 및 정책"
-          onClick={() => openSheet({ kind: "info", title: "약관 및 정책", body: "이 화면은 뜨개 연습용 프로토타입이에요. 계정과 결제 정보는 저장하지 않아요." })}
-        />
-      </Menu>
 
       <section id="my-settings" className="mx-4 mt-4 rounded-lg border border-[#f0f0f0] px-4 py-4">
         <h2 className="text-[16px] font-bold">뜨개 설정</h2>
@@ -317,9 +337,6 @@ export function MyScreen() {
         </div>
       </section>
 
-      <button type="button" onClick={() => replace({ name: "login" })} className="mx-4 mt-4 h-12 w-[calc(100%-2rem)] rounded-lg bg-[#f6f6f6] text-[14px] font-semibold">
-        로그아웃
-      </button>
     </div>
   );
 }

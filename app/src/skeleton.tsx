@@ -126,12 +126,29 @@ function MySkeleton() {
         ))}
       </div>
       <Bone className="mx-4 mt-4 h-28 rounded-lg" />
-      <Bone className="mx-4 mt-4 h-72 rounded-lg" />
       <div className="mx-4 mt-4 space-y-3">
         {Array.from({ length: 4 }, (_, index) => (
           <Bone key={index} className="h-12 rounded-lg" />
         ))}
       </div>
+    </div>
+  );
+}
+
+function ProfileSkeleton() {
+  return (
+    <div className="pb-8">
+      <Bone className="mx-4 mt-4 h-72 rounded-lg" />
+      <Bone className="mx-4 mt-3 h-20 rounded-lg" />
+      <Bone className="mx-4 mt-3 h-24 rounded-lg" />
+      <Bone className="mx-4 mt-4 h-16 rounded-lg" />
+      <div className="mt-4 flex gap-2 px-4">
+        {Array.from({ length: 3 }, (_, index) => (
+          <Bone key={index} className="h-28 w-28 shrink-0 rounded-lg" />
+        ))}
+      </div>
+      <Bone className="mx-4 mt-4 h-48 rounded-lg" />
+      <Bone className="mx-4 mt-4 h-40 rounded-lg" />
     </div>
   );
 }
@@ -387,6 +404,8 @@ function bodyFor(route: Route) {
       return <LoungeSkeleton />;
     case "my":
       return <MySkeleton />;
+    case "profile":
+      return <ProfileSkeleton />;
     case "project":
     case "finished":
       return <ProjectSkeleton />;

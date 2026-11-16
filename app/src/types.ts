@@ -19,6 +19,7 @@ export type Route =
   | { name: "bag" }
   | { name: "lounge" }
   | { name: "my" }
+  | { name: "profile"; section?: "settings" }
   | { name: "project"; id: string }
   | { name: "project-form"; id?: string }
   | { name: "navi"; id: string }

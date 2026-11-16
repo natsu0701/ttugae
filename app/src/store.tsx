@@ -147,6 +147,8 @@ function routeToHash(route: Route) {
       return route.id ? `#/collection/${route.id}` : "#/collection";
     case "orders":
       return route.tab === "buy" ? "#/orders/buy" : "#/orders";
+    case "profile":
+      return route.section === "settings" ? "#/profile/settings" : "#/profile";
     default:
       return `#/${route.name}`;
   }
@@ -176,6 +178,7 @@ function hashToRoute(hash: string): Route {
   if (name === "news" && id) return { name: "news", id };
   if (name === "product" && id) return { name: "product", id };
   if (name === "orders") return { name: "orders", tab: id === "buy" ? "buy" : "sell" };
+  if (name === "profile") return { name: "profile", section: id === "settings" ? "settings" : undefined };
   if (name === "short" && id) return { name: "short", id };
   if (name === "question" && id) return { name: "question", id };
   if (name === "project-form") return { name: "project-form", id };
@@ -191,6 +194,7 @@ function hashToRoute(hash: string): Route {
     "bag",
     "lounge",
     "my",
+    "profile",
     "gauge-form",
     "gauge-help",
     "counters",
