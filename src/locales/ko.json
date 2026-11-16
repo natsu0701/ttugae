@@ -559,7 +559,7 @@
       "recommendedBefore": "세탁 전 기준 {{sts}}코 · {{rows}}단",
       "applyRecommended": "권장 코 수로 넣기",
       "gaugeSave": "게이지(Gauge) 저장",
-      "needleTitle": "바늘 사양 설정",
+      "needleTitle": "바늘 선택",
       "needleHint": "대바늘 또는 코바늘을 고르고, 형태에 맞는 타입과 호수를 정해 주세요.",
       "cancel": "취소",
       "createCanvas": "캔버스 만들기"
@@ -617,8 +617,7 @@
     "resetView": "초기화",
     "needleSizePhKnit": "예: 5.5mm",
     "needleSizePhCrochet": "예: 4호",
-    "needlePanelTitle": "바늘 사양 설정",
-    "needlePanelHint": "코·단 수와 함께 도안에 묶이는 사용 바늘입니다.",
+    "needlePanelTitle": "바늘 선택",
     "needleKind": "바늘 종류",
     "needleDetailLabel": "바늘 세부 타입",
     "needleSizeLabel": "바늘 사이즈",
