@@ -45,7 +45,7 @@ import {
   type UserAccount,
 } from "./utils/accountStorage.ts";
 import { currentUserAvatar } from "./utils/identity.ts";
-import { useIdleHome } from "./hooks/useIdleHome.ts";
+import { isArOverlayRoute, useIdleHome } from "./hooks/useIdleHome.ts";
 
 const PatternEditor = lazy(() => import("./PatternEditor.tsx"));
 const MyPage = lazy(() => import("./MyPage.tsx"));
@@ -141,6 +141,7 @@ function AppRoutes() {
   );
 
   const goHomeIdle = useCallback(() => {
+    if (isArOverlayRoute()) return;
     setShowLogin(false);
     setEditorEntryOpen(false);
     setToastMessage(null);
