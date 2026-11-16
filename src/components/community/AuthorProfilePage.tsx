@@ -8,8 +8,8 @@ import { loadSharedCommunityPatterns } from "../../utils/communityShare.ts";
 import { isFollowing, listFollowers, listFollowing, toggleFollow } from "../../utils/followStorage.ts";
 import { currentUserHandle } from "../../utils/identity.ts";
 import type { CommunityPattern } from "../../data/communityPatterns.ts";
-import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 import { loadProfile } from "../../utils/profileStorage.ts";
+import AuthorAvatar from "./AuthorAvatar.tsx";
 
 type AuthorProfilePageProps = {
   handle: string;
@@ -50,11 +50,7 @@ export default function AuthorProfilePage({
       <BackButton onClick={onBack} />
       <section className="mt-6 rounded-xl border border-stone-200 bg-white p-6">
         <div className="flex flex-wrap items-center gap-4">
-          <img
-            src={author.avatarUrl || TTEUNI_IMAGES.chatProfile}
-            alt=""
-            className="h-20 w-20 rounded-full object-cover"
-          />
+          <AuthorAvatar author={author.handle || handle} className="h-20 w-20" />
           <div className="min-w-0 flex-1">
             <h1 className="text-title font-sans font-bold text-gray-900">{author.nickname}</h1>
             <p className="mt-1 font-sans text-base text-stone-500">@{author.handle}</p>

@@ -30,6 +30,7 @@ import {
 import { currentUserHandle, isOwnAuthor } from "../../utils/identity.ts";
 import { handleFromAuthor } from "../../data/loungeAuthors.ts";
 import { pushLoungePath } from "../../utils/navReturn.ts";
+import AuthorAvatar from "./AuthorAvatar.tsx";
 import { loadAuthSession } from "../../utils/authStorage.ts";
 
 type FinishedWorkDetailProps = {
@@ -159,9 +160,7 @@ export default function FinishedWorkDetail({
           </div>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <button type="button" onClick={openAuthor} className="flex items-center gap-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 font-sans text-base font-bold text-coral">
-                {displayAuthor(t, pattern.author).slice(0, 1)}
-              </span>
+              <AuthorAvatar author={pattern.author} />
               <div>
                 <p className="flex items-center gap-1.5 font-sans text-xs font-normal text-stone-400">
                   @{displayAuthor(t, pattern.author)}
@@ -270,6 +269,7 @@ export default function FinishedWorkDetail({
               return (
                 <li key={c.id} className="rounded-xl bg-gray-50 p-4">
                   <div className="flex flex-wrap items-center gap-2 font-sans text-sm text-gray-500">
+                    <AuthorAvatar author={c.author} className="h-7 w-7" />
                     <span className="text-gray-700">
                       @{c.author === "나" ? myHandle : comment.author.replace(/^@/, "")}
                     </span>

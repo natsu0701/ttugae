@@ -12,6 +12,7 @@ import { loadCommentsForPattern } from "../../utils/commentStorage.ts";
 import { communityPostPath } from "./PatternCard.tsx";
 import PatternChartGrid from "./PatternChartGrid.tsx";
 import { localizedPattern } from "../../utils/i18nContent.ts";
+import AuthorAvatar from "./AuthorAvatar.tsx";
 
 type ShowcaseFeedCardProps = {
   pattern: CommunityPattern;
@@ -83,9 +84,7 @@ function ShowcaseFeedCard({
           className="flex min-w-0 items-center gap-3 text-left"
           onClick={() => onOpenAuthor?.(pattern)}
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral/15 font-sans text-base font-bold text-coral">
-            {pattern.author.slice(0, 1)}
-          </span>
+          <AuthorAvatar author={pattern.author} />
           <p className="min-w-0 truncate font-sans text-xs font-normal text-stone-400">
             {pattern.author}
           </p>
@@ -101,7 +100,7 @@ function ShowcaseFeedCard({
         className="group relative block overflow-hidden rounded-2xl"
         aria-label={view.title}
       >
-        <div className="relative aspect-[4/5] w-full overflow-hidden bg-stone-100">
+        <div className="relative aspect-square w-full overflow-hidden bg-stone-100">
           {imageFailed ? (
             <div className="flex h-full items-center justify-center font-sans text-base text-stone-400">
               {t("community.photoFail")}
