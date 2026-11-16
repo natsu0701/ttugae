@@ -19,13 +19,11 @@ export function HeartFillIcon({ className = "h-5 w-5", filled = false }: IconPro
 export function SettingsFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <g transform="translate(0 -1.45)">
-        <path d="M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z" fill="currentColor" />
-        <path
-          d="M19.4 13a7.9 7.9 0 01.1 1 7.9 7.9 0 01-.1 1l2 1.5-2 3.5-2.4-1a8.2 8.2 0 01-1.7 1l-.4 2.6H9l-.4-2.6a8.2 8.2 0 01-1.7-1l-2.4 1-2-3.5 2-1.5a7.9 7.9 0 01-.1-1 7.9 7.9 0 01.1-1L2.6 10.5l2-3.5 2.4 1a8.2 8.2 0 011.7-1L9.1 4.3h5.8l.4 2.6a8.2 8.2 0 011.7 1l2.4-1 2 3.5-2 1.5z"
-          fill="currentColor"
-        />
-      </g>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M19.4 13a7.9 7.9 0 01.1 1 7.9 7.9 0 01-.1 1l2 1.5-2 3.5-2.4-1a8.2 8.2 0 01-1.7 1l-.4 2.6H9l-.4-2.6a8.2 8.2 0 01-1.7-1l-2.4 1-2-3.5 2-1.5a7.9 7.9 0 01-.1-1 7.9 7.9 0 01.1-1L2.6 10.5l2-3.5 2.4 1a8.2 8.2 0 011.7-1L9.1 4.3h5.8l.4 2.6a8.2 8.2 0 011.7 1l2.4-1 2 3.5-2 1.5zM12 9.3a2.7 2.7 0 100 5.4 2.7 2.7 0 000-5.4z"
+      />
     </svg>
   );
 }
@@ -83,9 +81,14 @@ export function BagFillIcon({ className = "h-5 w-5" }: IconProps) {
 export function ClockFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="12" cy="12" r="8.8" fill="currentColor" />
       <path
-        fill="currentColor"
-        d="M12 3.2a8.8 8.8 0 100 17.6 8.8 8.8 0 000-17.6zM12 6a1.1 1.1 0 011.1 1.1v4.4l3 1.8a1.1 1.1 0 11-1.1 1.9l-3.6-2.2A1.1 1.1 0 0110.9 12V7.1A1.1 1.1 0 0112 6z"
+        d="M12 6.4v6.1l3.6 2.1"
+        fill="none"
+        stroke="white"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
