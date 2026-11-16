@@ -158,13 +158,14 @@ function Calculator() {
       <PinkButton className="mt-3" disabled={calcResult === null} onClick={() => push({ name: "gauge-form" })}>
         게이지 저장하기
       </PinkButton>
-      <button type="button" aria-label="자 열기" onClick={() => setRuler(true)} className="mt-8 flex w-full items-end justify-between text-left">
-        <span className="max-w-[180px] rounded-lg bg-[#f4f4f4] px-3 py-2 text-[13px] leading-snug">
+      <button type="button" aria-label="자 열기" onClick={() => setRuler(true)} className="mt-8 flex w-full items-center justify-end gap-1 text-left">
+        <span className="relative max-w-[180px] rounded-lg bg-[#f4f4f4] px-3 py-2 text-[13px] leading-snug">
           자가 필요하면
           <br />
           저를 클릭하세요!
+          <span aria-hidden className="absolute -right-1 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 bg-[#f4f4f4]" />
         </span>
-        <Mascot mood="cheer" className="h-28 w-28" />
+        <Mascot mood="cheer" className="h-28 w-28 shrink-0" />
       </button>
       {ruler ? <GaugeRuler onClose={() => setRuler(false)} /> : null}
     </div>
