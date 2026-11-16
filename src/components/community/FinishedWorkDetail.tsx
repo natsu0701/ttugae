@@ -163,11 +163,11 @@ export default function FinishedWorkDetail({
                 {displayAuthor(t, pattern.author).slice(0, 1)}
               </span>
               <div>
-                <p className="flex items-center gap-1.5 font-sans text-base font-normal text-gray-800">
+                <p className="flex items-center gap-1.5 font-sans text-xs font-normal text-stone-400">
                   @{displayAuthor(t, pattern.author)}
                   <EquippedAuthorChip author={pattern.author} />
                 </p>
-                <p className="font-sans text-sm font-normal text-gray-500">{pattern.publishedAt}</p>
+                <p className="font-sans text-xs font-normal text-stone-400">{pattern.publishedAt}</p>
               </div>
             </button>
             <div className="ml-auto flex items-center gap-4">
