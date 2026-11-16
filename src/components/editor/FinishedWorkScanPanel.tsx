@@ -1,26 +1,32 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type DragEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { ImageFillIcon, SpinnerFillIcon } from "../icons/FillIcons.tsx";
+import { SpinnerFillIcon } from "../icons/FillIcons.tsx";
 import { generatePatternFromPhoto } from "../../utils/scanFinishedWork.ts";
 import type { EditorCell } from "../../utils/patternGrid.ts";
 import type { EditorYarn } from "../../types/editorYarn.ts";
-import { iconTip } from "../../utils/iconTip.ts";
 import { editorSectionTitle } from "../ui/tabButtonStyles.ts";
 
 type FinishedWorkScanPanelProps = {
   onApply: (nextGrid: EditorCell[][], yarns: EditorYarn[]) => void;
 };
 
+function firstImageFile(files: FileList | null | undefined): File | undefined {
+  if (!files?.length) return;
+  return [...files].find((file) => file.type.startsWith("image/"));
+}
+
 export default function FinishedWorkScanPanel({ onApply }: FinishedWorkScanPanelProps) {
   const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
+  const dragCountRef = useRef(0);
   const [preview, setPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
   const runFromFile = async (file: File | undefined) => {
-    if (!file) return;
+    if (!file || busy) return;
     if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
     const url = URL.createObjectURL(file);
     setPreview(url);
@@ -39,12 +45,41 @@ export default function FinishedWorkScanPanel({ onApply }: FinishedWorkScanPanel
     }
   };
 
+  const resetDrag = () => {
+    dragCountRef.current = 0;
+    setDragging(false);
+  };
+
+  const onDragEnter = (e: DragEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    dragCountRef.current += 1;
+    setDragging(true);
+  };
+
+  const onDragOver = (e: DragEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+  };
+
+  const onDragLeave = () => {
+    dragCountRef.current = Math.max(0, dragCountRef.current - 1);
+    if (dragCountRef.current === 0) setDragging(false);
+  };
+
+  const onDrop = (e: DragEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    resetDrag();
+    const file = firstImageFile(e.dataTransfer.files);
+    if (!file) {
+      setError(t("editor.scanNeedPhoto"));
+      return;
+    }
+    void runFromFile(file);
+  };
+
   return (
     <div>
-      <p className={`mb-1 ${editorSectionTitle}`}>{t("editor.scanTitle")}</p>
-      <p className="mb-3 font-seoyun text-sm font-normal leading-snug text-stone-500">
-        {t("editor.scanHint")}
-      </p>
+      <p className={`mb-3 ${editorSectionTitle}`}>{t("editor.scanTitle")}</p>
 
       <input
         ref={fileRef}
@@ -60,25 +95,38 @@ export default function FinishedWorkScanPanel({ onApply }: FinishedWorkScanPanel
 
       <button
         type="button"
-        onClick={() => fileRef.current?.click()}
-        disabled={busy}
-        className="flex h-9 w-9 items-center justify-center text-stone-600 transition-colors hover:text-stone-900 disabled:opacity-60"
-        {...iconTip(busy ? t("editor.scanBusy") : t("common.photoUpload"))}
+        onClick={() => {
+          if (!busy) fileRef.current?.click();
+        }}
+        onDragEnter={onDragEnter}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={onDrop}
+        aria-label={busy ? t("editor.scanBusy") : t("editor.scanDrop")}
+        aria-busy={busy}
+        className={`relative mx-auto flex aspect-square w-40 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed transition-colors ${
+          dragging
+            ? "border-coral bg-coral/10"
+            : "border-stone-300 bg-stone-50 hover:border-stone-400 hover:bg-stone-100"
+        } ${busy ? "cursor-wait" : "cursor-pointer"}`}
       >
-        {busy ? (
-          <SpinnerFillIcon className="h-4 w-4 animate-spin" />
+        {preview ? (
+          <img src={preview} alt="" className="absolute inset-0 h-full w-full object-cover" />
         ) : (
-          <ImageFillIcon className="h-4 w-4" />
+          <span className="select-none text-5xl leading-none" aria-hidden>
+            📷
+          </span>
         )}
+        {busy ? (
+          <span className="absolute inset-0 flex items-center justify-center bg-white/70">
+            <SpinnerFillIcon className="h-6 w-6 animate-spin text-stone-600" />
+          </span>
+        ) : null}
       </button>
 
-      {preview ? (
-        <img
-          src={preview}
-          alt=""
-          className="mt-3 max-h-28 w-full rounded-xl object-cover"
-        />
-      ) : null}
+      <p className="mt-3 font-seoyun text-sm font-normal leading-snug text-stone-500">
+        {t("editor.scanHint")}
+      </p>
 
       {error ? (
         <p className="mt-3 font-seoyun text-sm leading-snug text-coral">{error}</p>
