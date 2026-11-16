@@ -14,6 +14,11 @@
     "addAccount": "계정 추가",
     "switchAccount": "계정 전환"
   },
+  "profileStats": {
+    "posts": "게시물",
+    "followers": "팔로워",
+    "following": "팔로잉"
+  },
   "mypage": {
     "title": "마이페이지",
     "subtitle": "도안, 저장 목록, 프로필을 한곳에서 관리하세요.",

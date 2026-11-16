@@ -14,6 +14,11 @@
     "addAccount": "Add account",
     "switchAccount": "Switch account"
   },
+  "profileStats": {
+    "posts": "Posts",
+    "followers": "Followers",
+    "following": "Following"
+  },
   "mypage": {
     "title": "My Page",
     "subtitle": "Manage your patterns, saves, and profile in one place.",
