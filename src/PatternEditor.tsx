@@ -1113,7 +1113,7 @@ export default function PatternEditor({
               colorMap={colorMap}
               stitchSymbols={stitchSymbols}
             />
-            <div ref={chatbotPanelRef}>
+            <div ref={chatbotPanelRef} className="-my-8 border-y border-stone-200 py-8">
               <TteuniChatbot onUserMessage={handleAiMessage} />
             </div>
             <FinishedWorkScanPanel
