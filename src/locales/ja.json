@@ -14,6 +14,11 @@
     "addAccount": "アカウント追加",
     "switchAccount": "アカウント切替"
   },
+  "profileStats": {
+    "posts": "投稿",
+    "followers": "フォロワー",
+    "following": "フォロー中"
+  },
   "mypage": {
     "title": "マイページ",
     "subtitle": "編み図・保存リスト・プロフィールをまとめて管理。",

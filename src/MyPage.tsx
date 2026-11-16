@@ -14,6 +14,7 @@ import GaugeCalculator from "./components/mypage/GaugeCalculator.tsx";
 import KnitCalendar from "./components/mypage/KnitCalendar.tsx";
 import RegionPicker from "./components/mypage/RegionPicker.tsx";
 import WelcomeBanner from "./components/ui/WelcomeBanner.tsx";
+import ProfileStatsHeader from "./components/ui/ProfileStatsHeader.tsx";
 import Button from "./components/ui/Button.tsx";
 import {
   buildBadgeUnlocks,
@@ -269,23 +270,32 @@ function ProfileInfoPanel({
           className="hidden"
           onChange={(e) => handleAvatarChange(e.target.files?.[0])}
         />
-        <div className="flex flex-col items-center">
-          <div className="relative h-28 w-28">
-            <img
-              src={avatarUrl || TTEUNI_IMAGES.chatProfile}
-              alt=""
-              className="h-full w-full rounded-full object-cover"
-            />
-            <button
-              type="button"
-              onClick={() => avatarInputRef.current?.click()}
-              className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-coral text-white shadow"
-              {...iconTip(t("mypage.profile.changeAvatar"))}
-            >
-              <PencilFillIcon className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+        <div>
+          <ProfileStatsHeader
+            avatar={
+              <div className="relative h-28 w-28">
+                <img
+                  src={avatarUrl || TTEUNI_IMAGES.chatProfile}
+                  alt=""
+                  className="h-full w-full rounded-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-coral text-white shadow"
+                  {...iconTip(t("mypage.profile.changeAvatar"))}
+                >
+                  <PencilFillIcon className="h-4 w-4" />
+                </button>
+              </div>
+            }
+            posts={patterns.length}
+            followers={followers.length}
+            following={following.length}
+            onFollowersClick={() => setFollowOpen("followers")}
+            onFollowingClick={() => setFollowOpen("following")}
+          />
+          <div className="mt-5 flex flex-wrap items-center gap-2">
             <span className="font-sans text-lg font-bold leading-7 text-stone-900">{nickname}</span>
             <span className="rounded-full bg-stone-900 px-2.5 py-0.5 font-sans text-sm font-bold text-white">
               Lv.{level.level}
@@ -301,7 +311,7 @@ function ProfileInfoPanel({
           </div>
           <p className="mt-1.5 font-sans text-base leading-5 text-stone-500">@{handle}</p>
           <p className="mt-1 font-sans text-sm leading-5 text-stone-400">{level.title}</p>
-          <div className="mt-4 w-full max-w-xl rounded-lg bg-stone-50 p-4 text-left">
+          <div className="mt-4 w-full rounded-lg bg-stone-50 p-4 text-left">
             <p className="font-sans text-sm font-bold text-stone-700">{t("mypage.level.guideTitle")}</p>
             <ul className="mt-2 space-y-1 font-sans text-sm text-stone-500">
               <li>{t("mypage.level.criteria")}</li>
@@ -313,14 +323,6 @@ function ProfileInfoPanel({
                   : t("mypage.level.max")}
               </li>
             </ul>
-          </div>
-          <div className="mt-4 flex gap-4 text-base">
-            <button type="button" className="hover:text-coral" onClick={() => setFollowOpen("following")}>
-              {t("mypage.follow.followingCount", { count: following.length })}
-            </button>
-            <button type="button" className="hover:text-coral" onClick={() => setFollowOpen("followers")}>
-              {t("mypage.follow.followerCount", { count: followers.length })}
-            </button>
           </div>
         </div>
 

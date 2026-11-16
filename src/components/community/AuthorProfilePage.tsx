@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import BackButton from "../ui/BackButton.tsx";
 import Button from "../ui/Button.tsx";
 import PatternCard from "./PatternCard.tsx";
+import ProfileStatsHeader from "../ui/ProfileStatsHeader.tsx";
 import { resolveLoungeAuthor, patternsByAuthorHandle } from "../../data/loungeAuthors.ts";
 import { loadSharedCommunityPatterns } from "../../utils/communityShare.ts";
 import { isFollowing, listFollowers, listFollowing, toggleFollow } from "../../utils/followStorage.ts";
@@ -49,23 +50,20 @@ export default function AuthorProfilePage({
     <div className="page-shell pb-16 pt-4">
       <BackButton onClick={onBack} />
       <section className="mt-6 rounded-xl border border-stone-200 bg-white p-6">
-        <div className="flex flex-wrap items-center gap-4">
-          <AuthorAvatar author={author.handle || handle} className="h-20 w-20" />
-          <div className="min-w-0 flex-1">
-            <h1 className="text-title font-sans font-bold text-gray-900">{author.nickname}</h1>
-            <p className="mt-1 font-sans text-base text-stone-500">@{author.handle}</p>
-            <p className="mt-2 text-body text-stone-600">{author.bio}</p>
-            <p className="mt-3 font-sans text-sm text-stone-500">
-              {t("community.followCounts", {
-                following: listFollowing(resolvedHandle).length,
-                followers: listFollowers(resolvedHandle).length,
-              })}
-            </p>
-          </div>
+        <ProfileStatsHeader
+          avatar={<AuthorAvatar author={author.handle || handle} className="h-28 w-28" />}
+          posts={patterns.length}
+          followers={listFollowers(resolvedHandle).length}
+          following={listFollowing(resolvedHandle).length}
+        />
+        <div className="mt-5">
+          <h1 className="text-title font-sans font-bold text-gray-900">{author.nickname}</h1>
+          <p className="mt-1 font-sans text-base text-stone-500">@{author.handle}</p>
+          {author.bio ? <p className="mt-2 text-body text-stone-600">{author.bio}</p> : null}
           {!mine ? (
             <Button
               type="button"
-              className="px-4 py-2 text-base"
+              className="mt-4 px-4 py-2 text-base"
               onClick={() => {
                 toggleFollow(resolvedHandle);
                 setTick((n) => n + 1);
