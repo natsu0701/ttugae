@@ -86,10 +86,10 @@ function ShowcaseFeedCard({
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-coral/15 font-sans text-base font-bold text-coral">
             {pattern.author.slice(0, 1)}
           </span>
-          <p className="min-w-0 truncate font-sans text-base font-semibold text-stone-800">
+          <p className="min-w-0 truncate font-sans text-xs font-normal text-stone-400">
             {pattern.author}
           </p>
-          <time className="shrink-0 font-sans text-sm text-stone-400" dateTime={pattern.publishedAt}>
+          <time className="shrink-0 font-sans text-xs font-normal text-stone-400" dateTime={pattern.publishedAt}>
             {pattern.publishedAt}
           </time>
         </button>

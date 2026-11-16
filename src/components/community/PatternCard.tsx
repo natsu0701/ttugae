@@ -149,7 +149,7 @@ function PatternCard({
           <h3 className="line-clamp-2 break-keep font-sans text-base font-bold leading-snug text-stone-900 transition-colors group-hover:text-coral">
             {view.title}
           </h3>
-          <p className="mt-2 flex items-center gap-1.5 font-sans text-sm font-medium text-stone-500">
+          <p className="mt-2 flex items-center gap-1.5 font-sans text-xs font-normal text-stone-400">
             <button
               type="button"
               className="hover:text-coral"
