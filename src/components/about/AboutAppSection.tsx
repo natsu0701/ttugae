@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import ArIpadLink from "../ar/ArIpadLink.tsx";
 import { ABOUT_APP_IMAGES } from "../../constants/aboutMedia.ts";
 
 export default function AboutAppSection() {
@@ -34,14 +33,6 @@ export default function AboutAppSection() {
             className="block h-auto w-full"
           />
         </figure>
-        <div className="page-shell">
-          <p className="text-center font-seoyun text-base font-normal text-stone-500">
-            {t("ar.ipadHint")}
-          </p>
-          <div className="mt-4">
-            <ArIpadLink showQr={false} />
-          </div>
-        </div>
 
         <figure className="overflow-hidden bg-white">
           <img
