@@ -12,6 +12,7 @@ import EditorResizableSidebar from "./components/editor/EditorResizableSidebar.t
 import EditorHeader from "./components/editor/EditorHeader.tsx";
 import CastOnModal from "./components/editor/CastOnModal.tsx";
 import NeedleSpecFields from "./components/editor/NeedleSpecFields.tsx";
+import YarnKindFields from "./components/editor/YarnKindFields.tsx";
 import ChartTabs from "./components/editor/ChartTabs.tsx";
 import KnitProgressPanel from "./components/editor/KnitProgressPanel.tsx";
 import EditorCanvasStage from "./components/editor/EditorCanvasStage.tsx";
@@ -47,6 +48,7 @@ import {
   type NeedleSpec,
 } from "./data/knittingMetadataLibrary.ts";
 import { YARN_CATALOG } from "./data/yarnCatalog.ts";
+import { YARN_KIND_IDS, yarnKindFromNote, type YarnKindId } from "./data/yarnKinds.ts";
 import {
   backBodyChart,
   CHART_PART_LABELS,
@@ -408,6 +410,14 @@ export default function PatternEditor({
 
   const usedYarnLabel = usedYarns.map((y) => y.label).join(", ") || t("editor.yarnUnset");
   const yarnLabel = yarnNote.trim() || usedYarnLabel;
+  const yarnKindLabels = useMemo(
+    () =>
+      Object.fromEntries(
+        YARN_KIND_IDS.map((id) => [id, t(`editor.yarnKinds.${id}`)]),
+      ) as Record<YarnKindId, string>,
+    [t],
+  );
+  const yarnKind = yarnKindFromNote(yarnNote, yarnKindLabels);
 
   const needleOptions = useMemo(() => {
     const specs = [...HEADER_NEEDLE_PRESETS];
@@ -960,9 +970,22 @@ export default function PatternEditor({
             />
           </div>
 
-          <div ref={yarnPaletteRef} className="relative border-b border-stone-200 py-8">
+          <div className="border-b border-stone-200 py-8">
             <p className={`mb-3 ${editorSectionTitle}`}>
               {t("editor.yarnSelect")}
+            </p>
+            <YarnKindFields
+              value={yarnKind}
+              onChange={(next) => {
+                setYarnNote(next ? t(`editor.yarnKinds.${next}`) : "");
+                markDirty();
+              }}
+            />
+          </div>
+
+          <div ref={yarnPaletteRef} className="relative border-b border-stone-200 py-8">
+            <p className={`mb-3 ${editorSectionTitle}`}>
+              {t("editor.colorSelect")}
             </p>
             <div className="grid grid-cols-3 gap-2.5">
               {paletteYarns.map((yarn) => (
