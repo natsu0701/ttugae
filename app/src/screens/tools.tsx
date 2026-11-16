@@ -501,15 +501,34 @@ function Pair({
 }
 
 export function CounterListScreen() {
-  const { data, push, addCounter, removeCounter } = useApp();
+  const { data, push, addCounter, removeCounter, renameCounter } = useApp();
+  const [editingId, setEditingId] = useState<string | null>(null);
   return (
     <div className="relative min-h-full pb-24">
       <ul className="space-y-3 px-4 pt-3">
         {data.counters.map((counter) => (
           <li key={counter.id} className="flex items-center rounded-lg border border-[#f3f3f3] shadow-card">
-            <button type="button" onClick={() => push({ name: "counter", id: counter.id })} className="min-w-0 flex-1 px-4 py-4 text-left">
-              <span className="block truncate text-[18px] font-semibold">{counter.name}</span>
-              <span className="mt-0.5 block text-[13px] text-[#999]">카운터 {counter.rows.length}개</span>
+            <div className="min-w-0 flex-1 px-4 py-4">
+              <NameField
+                value={counter.name}
+                editing={editingId === counter.id}
+                onClose={() => setEditingId((current) => (current === counter.id ? null : current))}
+                onCommit={(next) => renameCounter(counter.id, next)}
+                onOpen={() => push({ name: "counter", id: counter.id })}
+                label="카운터 이름"
+                className="text-[18px]"
+              />
+              <button type="button" onClick={() => push({ name: "counter", id: counter.id })} className="mt-0.5 text-[13px] text-[#999]">
+                카운터 {counter.rows.length}개
+              </button>
+            </div>
+            <button
+              type="button"
+              aria-label={`${counter.name} 수정`}
+              onClick={() => setEditingId(counter.id)}
+              className="grid h-10 w-10 shrink-0 place-items-center text-[#bbb]"
+            >
+              <PencilIcon />
             </button>
             <button
               type="button"
