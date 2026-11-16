@@ -14,7 +14,7 @@ export default function AboutAppSection() {
   return (
     <section className="pt-20 md:pt-28">
       <div className="page-shell">
-        <div className="max-w-3xl">
+        <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-title break-keep font-sans font-bold text-gray-900">
             {t("about.appTitle")}
           </h2>
@@ -22,50 +22,50 @@ export default function AboutAppSection() {
             {t("about.appBody")}
           </p>
         </div>
+      </div>
 
-        <div className="mt-20 space-y-8 md:mt-28">
-          <ul className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {SCREENS.map((screen) => (
-              <li key={screen.titleKey} className="overflow-hidden rounded-xl bg-white shadow-sm">
-                <img
-                  src={screen.src}
-                  alt={t(screen.titleKey)}
-                  className="h-auto w-full object-contain"
-                />
-                <div className="border-t border-stone-100 px-5 py-4">
-                  <p className="font-sans text-base font-bold text-stone-900">{t(screen.titleKey)}</p>
-                  <p className="mt-1 break-keep font-seoyun text-base font-normal leading-relaxed text-stone-500">
-                    {t(screen.hintKey)}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+      <div className="mt-20 space-y-8 md:mt-28">
+        <ul className="grid grid-cols-1 md:grid-cols-3">
+          {SCREENS.map((screen) => (
+            <li key={screen.titleKey} className="overflow-hidden bg-white">
+              <img
+                src={screen.src}
+                alt={t(screen.titleKey)}
+                className="h-auto w-full object-contain"
+              />
+              <div className="border-t border-stone-100 px-5 py-4">
+                <p className="font-sans text-base font-bold text-stone-900">{t(screen.titleKey)}</p>
+                <p className="mt-1 break-keep font-seoyun text-base font-normal leading-relaxed text-stone-500">
+                  {t(screen.hintKey)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
 
-          <figure className="overflow-hidden rounded-xl bg-white shadow-sm">
-            <img
-              src={ABOUT_APP_IMAGES.webNavi}
-              alt={t("about.appWebNaviAlt")}
-              className="block h-auto w-full"
-            />
-          </figure>
-          <div>
-            <p className="text-center font-seoyun text-base font-normal text-stone-500">
-              {t("ar.ipadHint")}
-            </p>
-            <div className="mt-4">
-              <ArIpadLink showQr={false} />
-            </div>
+        <figure className="overflow-hidden bg-white">
+          <img
+            src={ABOUT_APP_IMAGES.webNavi}
+            alt={t("about.appWebNaviAlt")}
+            className="block h-auto w-full"
+          />
+        </figure>
+        <div className="page-shell">
+          <p className="text-center font-seoyun text-base font-normal text-stone-500">
+            {t("ar.ipadHint")}
+          </p>
+          <div className="mt-4">
+            <ArIpadLink showQr={false} />
           </div>
-
-          <figure className="overflow-hidden rounded-xl bg-white shadow-sm">
-            <img
-              src={ABOUT_APP_IMAGES.brand}
-              alt={t("about.brandAlt")}
-              className="block h-auto w-full"
-            />
-          </figure>
         </div>
+
+        <figure className="overflow-hidden bg-white">
+          <img
+            src={ABOUT_APP_IMAGES.brand}
+            alt={t("about.brandAlt")}
+            className="block h-auto w-full"
+          />
+        </figure>
       </div>
     </section>
   );
