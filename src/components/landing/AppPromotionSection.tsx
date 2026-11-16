@@ -6,6 +6,7 @@ import type { Swiper as SwiperClass } from "swiper";
 import { ChevronLeftFillIcon, ChevronRightFillIcon } from "../icons/FillIcons.tsx";
 import Reveal from "./Reveal.tsx";
 import { assetUrl } from "../../utils/appPath.ts";
+import ArIpadLink from "../ar/ArIpadLink.tsx";
 import { landingHeading } from "./landingStyles.ts";
 
 import "swiper/css";
@@ -178,6 +179,12 @@ function AppPromotionSection() {
           <h2 className={landingHeading.h2Center}>
             {t("landing.promoLine1")}
           </h2>
+          <p className={landingHeading.body}>
+            {t("landing.promoBody1")}
+          </p>
+          <div className="pt-8">
+            <ArIpadLink />
+          </div>
         </div>
       </Reveal>
       <style>{css}</style>
