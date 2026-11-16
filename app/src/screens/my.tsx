@@ -154,11 +154,11 @@ export function MyScreen() {
                 aria-label={[`${day}일`, emoji, seconds ? formatKnit(seconds) : ""].filter(Boolean).join(" ")}
                 aria-pressed={selected}
                 onClick={() => setPickedDay(selected ? null : day)}
-                className="flex h-11 flex-col items-center rounded-md pt-1 text-[#7a4d55]"
+                className="flex h-14 flex-col items-center justify-center gap-0.5 rounded-md text-[#7a4d55]"
                 style={shade ? { backgroundColor: `rgba(176, 48, 82, ${shade})` } : undefined}
               >
-                <span className={cx("grid h-5 w-5 place-items-center rounded-full leading-none", (selected || shade > 0) && "bg-white font-bold")}>{day}</span>
-                <span className="mt-0.5 h-4 text-[13px] leading-none">{emoji ?? ""}</span>
+                <span className={cx("grid h-5 w-5 place-items-center rounded-full text-[12px] leading-none", (selected || shade > 0) && "bg-white font-bold")}>{day}</span>
+                <span className="flex h-7 items-center justify-center text-[24px] leading-none">{emoji ?? ""}</span>
               </button>
             );
           })}
