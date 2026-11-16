@@ -2,12 +2,6 @@ import { useTranslation } from "react-i18next";
 import ArIpadLink from "../ar/ArIpadLink.tsx";
 import { ABOUT_APP_IMAGES } from "../../constants/aboutMedia.ts";
 
-const SCREENS = [
-  { src: ABOUT_APP_IMAGES.home, titleKey: "about.appScreenHome", hintKey: "about.appScreenHomeHint" },
-  { src: ABOUT_APP_IMAGES.bag, titleKey: "about.appScreenBag", hintKey: "about.appScreenBagHint" },
-  { src: ABOUT_APP_IMAGES.gauge, titleKey: "about.appScreenGauge", hintKey: "about.appScreenGaugeHint" },
-] as const;
-
 export default function AboutAppSection() {
   const { t } = useTranslation();
 
@@ -25,23 +19,13 @@ export default function AboutAppSection() {
       </div>
 
       <div className="mt-20 space-y-8 md:mt-28">
-        <ul className="grid grid-cols-1 md:grid-cols-3">
-          {SCREENS.map((screen) => (
-            <li key={screen.titleKey} className="overflow-hidden bg-white">
-              <img
-                src={screen.src}
-                alt={t(screen.titleKey)}
-                className="h-auto w-full object-contain"
-              />
-              <div className="border-t border-stone-100 px-5 py-4">
-                <p className="font-sans text-base font-bold text-stone-900">{t(screen.titleKey)}</p>
-                <p className="mt-1 break-keep font-seoyun text-base font-normal leading-relaxed text-stone-500">
-                  {t(screen.hintKey)}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <figure className="overflow-hidden bg-white">
+          <img
+            src={ABOUT_APP_IMAGES.screens}
+            alt={t("about.appScreensAlt")}
+            className="block h-auto w-full"
+          />
+        </figure>
 
         <figure className="overflow-hidden bg-white">
           <img

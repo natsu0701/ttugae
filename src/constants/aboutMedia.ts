@@ -8,9 +8,7 @@ export const ABOUT_APP_IMAGES = {
   background: assetUrl("/about/app-background.png"),
   research: assetUrl("/about/app-research.png"),
   hero: assetUrl("/about/app-hero.png"),
-  home: assetUrl("/about/app-home.jpg"),
-  bag: assetUrl("/about/app-bag.jpg"),
-  gauge: assetUrl("/about/app-gauge.jpg"),
+  screens: assetUrl("/about/app-screens.png"),
   webNavi: assetUrl("/about/app-web-navi.png"),
   brand: assetUrl("/about/app-brand.png"),
 } as const;
