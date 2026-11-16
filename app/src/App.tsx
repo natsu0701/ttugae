@@ -134,7 +134,7 @@ function Shell() {
     scrollRef.current?.scrollTo(0, 0);
   }, [routeKey]);
   const scrolling = route.name !== "chat";
-  const fillScreen = route.name === "login";
+  const fillScreen = route.name === "login" || route.name === "signup";
   return (
     <div className="stage">
       <div className="phone">

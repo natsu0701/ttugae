@@ -170,8 +170,8 @@ export function SignupScreen() {
   const [password, setPassword] = useState("");
 
   return (
-    <div className="min-h-full bg-blush-wash px-6 pb-10 pt-4 text-white">
-      <button type="button" onClick={back} className="text-[14px]">
+    <div className="flex min-h-full w-full flex-1 flex-col bg-blush-wash px-6 pb-10 pt-4 text-white">
+      <button type="button" onClick={back} className="self-start text-left text-[14px]">
         뒤로
       </button>
       <h1 className="mt-6 text-[24px] font-bold">회원가입</h1>
