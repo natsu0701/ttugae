@@ -69,6 +69,7 @@ import {
   toggleFollow,
 } from "./utils/followStorage.ts";
 import { findLoungeAuthor, searchLoungeAuthors } from "./data/loungeAuthors.ts";
+import AuthorAvatar from "./components/community/AuthorAvatar.tsx";
 import { currentUserHandle } from "./utils/identity.ts";
 import { resolveKnitLevel, LEVEL_PERIOD_DAYS } from "./utils/knitLevel.ts";
 import { loadKnitCalendarEvents, loadKnitMinutes } from "./utils/knittingLogStorage.ts";
@@ -431,9 +432,12 @@ function ProfileInfoPanel({
                       key={author.handle}
                       className="flex items-center justify-between gap-3 rounded-lg bg-stone-50 px-3 py-2 text-base"
                     >
-                      <div className="min-w-0">
-                        <p className="truncate font-medium leading-5">{author.nickname}</p>
-                        <p className="truncate text-sm leading-4 text-stone-400">@{author.handle}</p>
+                      <div className="flex min-w-0 items-center gap-3">
+                        <AuthorAvatar author={author.handle} className="h-9 w-9" />
+                        <div className="min-w-0">
+                          <p className="truncate font-medium leading-5">{author.nickname}</p>
+                          <p className="truncate text-sm leading-4 text-stone-400">@{author.handle}</p>
+                        </div>
                       </div>
                       <button
                         type="button"

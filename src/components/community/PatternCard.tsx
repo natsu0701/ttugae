@@ -11,6 +11,7 @@ import PatternChartGrid from "./PatternChartGrid.tsx";
 import { displayAuthor, localizedPattern } from "../../utils/i18nContent.ts";
 import { appPath } from "../../utils/appPath.ts";
 import { iconTip } from "../../utils/iconTip.ts";
+import AuthorAvatar from "./AuthorAvatar.tsx";
 
 export function communityPostPath(patternId: string) {
   return appPath(`/community/post/${patternId}`);
@@ -150,6 +151,7 @@ function PatternCard({
             {view.title}
           </h3>
           <p className="mt-2 flex items-center gap-1.5 font-sans text-xs font-normal text-stone-400">
+            <AuthorAvatar author={pattern.author} className="h-5 w-5" />
             <button
               type="button"
               className="hover:text-coral"

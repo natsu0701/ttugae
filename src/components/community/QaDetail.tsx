@@ -14,6 +14,7 @@ import {
   localizedQaAnswer,
   localizedQaPost,
 } from "../../utils/i18nContent.ts";
+import AuthorAvatar from "./AuthorAvatar.tsx";
 
 const LOCAL_AUTHOR = "나";
 
@@ -103,8 +104,11 @@ function QaDetail({ post, onBack }: QaDetailProps) {
               {t("report.action")}
             </button>
           </div>
-          <div className="mt-4 flex flex-wrap gap-3 font-sans text-base font-normal text-gray-500">
-            <span>@{displayAuthor(t, post.author)}</span>
+          <div className="mt-4 flex flex-wrap items-center gap-3 font-sans text-base font-normal text-gray-500">
+            <span className="inline-flex items-center gap-2">
+              <AuthorAvatar author={post.author} className="h-7 w-7" />
+              @{displayAuthor(t, post.author)}
+            </span>
             <span>{post.createdAt}</span>
           </div>
           <p className="mt-6 whitespace-pre-wrap font-sans text-base font-normal leading-relaxed text-gray-700">
@@ -156,6 +160,7 @@ function QaDetail({ post, onBack }: QaDetailProps) {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2 pr-28 font-sans text-sm font-normal text-gray-500">
+                    <AuthorAvatar author={ans.author} className="h-6 w-6" />
                     <span className="font-normal text-gray-700">@{displayAuthor(t, ans.author)}</span>
                     <span>{ans.createdAt}</span>
                   </div>

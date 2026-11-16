@@ -7,6 +7,7 @@ import {
 import { getQaCommentCount, type QaPost } from "../../data/qaPosts.ts";
 import { localizedQaPost } from "../../utils/i18nContent.ts";
 import { iconTip } from "../../utils/iconTip.ts";
+import AuthorAvatar from "./AuthorAvatar.tsx";
 
 const PAGE_SIZE = 5;
 
@@ -56,7 +57,10 @@ export default function QaList({ posts, onSelect }: QaListProps) {
                 {post.excerpt}
               </p>
               <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 font-sans text-sm font-normal text-gray-500">
-                <span>@{post.author}</span>
+                <span className="inline-flex items-center gap-2">
+                  <AuthorAvatar author={post.author} className="h-6 w-6" />
+                  @{post.author}
+                </span>
                 <span>{post.createdAt}</span>
                 <span className="text-coral">
                   {t("community.commentCount", { count: getQaCommentCount(post.id) })}
