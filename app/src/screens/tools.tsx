@@ -502,17 +502,33 @@ function Pair({
 
 export function CounterListScreen() {
   const { data, push, addCounter, removeCounter, renameCounter } = useApp();
+  const [editingId, setEditingId] = useState<string | null>(null);
   return (
     <div className="relative min-h-full pb-24">
       <ul className="space-y-3 px-4 pt-3">
         {data.counters.map((counter) => (
           <li key={counter.id} className="flex items-center rounded-lg border border-[#f3f3f3] shadow-card">
             <div className="min-w-0 flex-1 px-4 py-4">
-              <NameField value={counter.name} onCommit={(next) => renameCounter(counter.id, next)} className="text-[18px]" />
+              <NameField
+                value={counter.name}
+                editing={editingId === counter.id}
+                onClose={() => setEditingId((current) => (current === counter.id ? null : current))}
+                onCommit={(next) => renameCounter(counter.id, next)}
+                label="카운터 이름"
+                className="text-[18px]"
+              />
               <button type="button" onClick={() => push({ name: "counter", id: counter.id })} className="mt-0.5 text-[13px] text-[#999]">
                 카운터 {counter.rows.length}개
               </button>
             </div>
+            <button
+              type="button"
+              aria-label={`${counter.name} 수정`}
+              onClick={() => setEditingId(counter.id)}
+              className="grid h-10 w-10 shrink-0 place-items-center text-[#bbb]"
+            >
+              <PencilIcon />
+            </button>
             <button type="button" aria-label={`${counter.name} 삭제`} onClick={() => removeCounter(counter.id)} className="grid h-10 w-10 shrink-0 place-items-center text-[#bbb]">
               <TrashIcon />
             </button>
@@ -598,6 +614,7 @@ export function CounterScreen({ id }: { id: string }) {
   const { data, back, notify, setCounterProject, bumpCounter, removeCounter, removeCounterRow, addCounterRow, renameCounter, renameCounterRow } = useApp();
   const counter = data.counters.find((item) => item.id === id);
   const [openProjects, setOpenProjects] = useState(false);
+  const [editingRow, setEditingRow] = useState<string | null>(null);
   const [listening, setListening] = useState(false);
   const [heard, setHeard] = useState("");
   const listeningRef = useRef(false);
@@ -764,11 +781,22 @@ export function CounterScreen({ id }: { id: string }) {
             <div className="min-w-0 flex-1">
               <NameField
                 value={row.label}
+                editing={editingRow === row.id}
+                onClose={() => setEditingRow((current) => (current === row.id ? null : current))}
                 onCommit={(next) => renameCounterRow(counter.id, row.id, next)}
+                label="칸 이름"
                 className="text-[14px] text-white caret-white"
                 dark
               />
             </div>
+            <button
+              type="button"
+              aria-label={`${row.label} 수정`}
+              onClick={() => setEditingRow(row.id)}
+              className="grid h-8 w-8 place-items-center"
+            >
+              <PencilIcon />
+            </button>
             <button
               type="button"
               aria-label={`${row.label} 삭제`}
@@ -808,37 +836,49 @@ export function CounterScreen({ id }: { id: string }) {
 
 function NameField({
   value,
+  editing,
+  onClose,
   onCommit,
   className,
   dark,
+  label,
 }: {
   value: string;
+  editing: boolean;
+  onClose: () => void;
   onCommit: (next: string) => void;
   className?: string;
   dark?: boolean;
+  label: string;
 }) {
-  const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
+  const cancelRef = useRef(false);
+  useEffect(() => {
+    if (editing) setDraft(value);
+  }, [editing, value]);
   if (!editing) {
-    return (
-      <button type="button" onClick={() => { setDraft(value); setEditing(true); }} className={cx("block w-full truncate text-left font-semibold", className)}>
-        {value}
-      </button>
-    );
+    return <p className={cx("truncate font-semibold", className)}>{value}</p>;
   }
   return (
     <input
       autoFocus
-      aria-label="카운터 이름"
+      aria-label={label}
       value={draft}
       onChange={(event) => setDraft(event.target.value)}
       onBlur={() => {
-        const next = draft.trim();
-        if (next) onCommit(next);
-        setEditing(false);
+        if (!cancelRef.current) {
+          const next = draft.trim();
+          if (next) onCommit(next);
+        }
+        cancelRef.current = false;
+        onClose();
       }}
       onKeyDown={(event) => {
         if (event.key === "Enter") event.currentTarget.blur();
+        if (event.key === "Escape") {
+          cancelRef.current = true;
+          event.currentTarget.blur();
+        }
       }}
       className={cx(
         "h-8 w-full bg-transparent font-semibold outline-none",
