@@ -9,7 +9,6 @@ type Floater = {
   y: number;
   dx: number;
   dy: number;
-  tteuni?: boolean;
 };
 
 function asset(name: string) {
@@ -25,7 +24,6 @@ const FLOATERS: Floater[] = [
     y: -14,
     dx: 72,
     dy: 36,
-    tteuni: true,
   },
   {
     src: asset("Stroked Image2.png"),
@@ -35,7 +33,6 @@ const FLOATERS: Floater[] = [
     y: -11,
     dx: 80,
     dy: 34,
-    tteuni: true,
   },
   {
     src: asset("Star 1.png"),
@@ -108,9 +105,7 @@ function HeroDecorations() {
             <img
               src={item.src}
               alt=""
-              className={`pointer-events-none h-full w-full select-none object-contain${
-                item.tteuni ? " tteuni-white-stroke" : ""
-              }`}
+              className="pointer-events-none h-full w-full select-none object-contain"
             />
           </div>
         </div>

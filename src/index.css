@@ -285,28 +285,6 @@ body {
     animation: hero-floater var(--float-dur, 4s) ease-in-out var(--float-delay, 0s) infinite;
   }
 
-  .tteuni-white-stroke {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    filter:
-      drop-shadow(3px 0 0 #fff)
-      drop-shadow(-3px 0 0 #fff)
-      drop-shadow(0 3px 0 #fff)
-      drop-shadow(0 -3px 0 #fff)
-      drop-shadow(2px 2px 0 #fff)
-      drop-shadow(-2px 2px 0 #fff)
-      drop-shadow(2px -2px 0 #fff)
-      drop-shadow(-2px -2px 0 #fff)
-      drop-shadow(4px 1px 0 #fff)
-      drop-shadow(-4px 1px 0 #fff)
-      drop-shadow(1px 4px 0 #fff)
-      drop-shadow(-1px 4px 0 #fff)
-      drop-shadow(5px 0 0 #fff)
-      drop-shadow(-5px 0 0 #fff)
-      drop-shadow(0 5px 0 #fff)
-      drop-shadow(0 -5px 0 #fff);
-  }
-
   .tteuni-peek {
     transform: translate3d(0, 8px, 0);
     will-change: transform;
