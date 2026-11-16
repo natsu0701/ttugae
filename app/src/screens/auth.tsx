@@ -238,7 +238,7 @@ function onboardingArt(index: number) {
 
 function OnboardingProgress({ step }: { step: number }) {
   return (
-    <div className="mt-3 flex gap-1.5" aria-hidden>
+    <div className="flex gap-1.5" aria-hidden>
       {Array.from({ length: 6 }, (_, index) => (
         <span key={index} className={cx("h-1 flex-1 rounded-full", index < step ? "bg-blush" : "bg-[#f1f1f1]")} />
       ))}
@@ -257,11 +257,10 @@ export function OnboardingScreen() {
         <img src={onboardingArt(0)} alt="" className="min-h-0 w-full flex-1 object-contain object-top" />
       ) : (
         <div className="flex min-h-0 flex-1 flex-col px-6">
-          <OnboardingProgress step={step} />
           {step < 5 ? (
             <>
-              <h1 className="mt-8 whitespace-pre-wrap text-[26px] font-bold leading-snug">{SLIDES[step]}</h1>
-              <div className="mt-4 min-h-0 flex-1">
+              <h1 className="mt-8 whitespace-pre-wrap text-[36px] font-bold leading-[1.35] [@media(max-height:520px)]:mt-4 [@media(max-height:520px)]:text-[24px]">{SLIDES[step]}</h1>
+              <div className="mt-6 min-h-0 flex-1 [@media(max-height:520px)]:mt-3">
                 <img src={onboardingArt(step)} alt="" className="max-h-full w-full object-contain object-top" />
               </div>
             </>
@@ -270,7 +269,8 @@ export function OnboardingScreen() {
           {step === 6 ? <ToolStep tool={data.tool} onChange={(tool) => patch({ tool })} /> : null}
         </div>
       )}
-      <div className="mt-auto shrink-0 space-y-3 px-6 pt-4 [@media(max-height:520px)]:pt-2">
+      <div className="mt-auto shrink-0 space-y-4 px-6 pt-4 [@media(max-height:520px)]:space-y-2 [@media(max-height:520px)]:pt-2">
+        {step > 0 ? <OnboardingProgress step={step} /> : null}
         {last ? (
           <>
             <BlackButton onClick={() => push({ name: "skill" })}>실력 측정하기</BlackButton>
