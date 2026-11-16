@@ -238,19 +238,16 @@ export function OnboardingScreen() {
   const last = step === 6;
 
   return (
-    <div className="flex min-h-full flex-col bg-white px-6 pb-8">
-      <div className="mt-2 flex gap-1">
-        {Array.from({ length: 7 }, (_, index) => (
-          <span key={index} className={cx("h-1 flex-1 rounded-full", index <= step ? "bg-blush" : "bg-[#f1f1f1]")} />
-        ))}
-      </div>
+    <div className="flex min-h-full w-full flex-1 flex-col bg-white px-6 pb-8 [@media(max-height:520px)]:pb-3">
       {step < 5 ? (
         <div className="flex flex-1 flex-col">
-          <div className="mt-8 grid flex-1 place-items-center">
-            <Mascot mood={SLIDES[step].mood} className="h-44 w-44" />
+          <div className="flex justify-center pt-6">
+            <Mascot mood={SLIDES[step].mood} className="h-56 w-56 [@media(max-height:520px)]:h-24 [@media(max-height:520px)]:w-24" />
           </div>
-          <h1 className="whitespace-pre-wrap text-[26px] font-bold leading-snug">{SLIDES[step].title}</h1>
-          <p className="mt-3 text-[14px] text-[#888]">{SLIDES[step].body}</p>
+          <div className="mt-16 [@media(max-height:520px)]:mt-6">
+            <h1 className="whitespace-pre-wrap text-[26px] font-bold leading-snug">{SLIDES[step].title}</h1>
+            <p className="mt-3 text-[14px] text-[#888]">{SLIDES[step].body}</p>
+          </div>
         </div>
       ) : null}
       {step === 5 ? (
@@ -259,7 +256,12 @@ export function OnboardingScreen() {
       {step === 6 ? (
         <ToolStep tool={data.tool} onChange={(tool) => patch({ tool })} />
       ) : null}
-      <div className="mt-6 space-y-3">
+      <div className="mt-auto shrink-0 space-y-4 pt-8 [@media(max-height:520px)]:pt-2">
+        <div className="flex gap-1" aria-hidden>
+          {Array.from({ length: 7 }, (_, index) => (
+            <span key={index} className={cx("h-1 flex-1 rounded-full", index <= step ? "bg-blush" : "bg-[#f1f1f1]")} />
+          ))}
+        </div>
         {last ? (
           <>
             <BlackButton onClick={() => push({ name: "skill" })}>실력 측정하기</BlackButton>
