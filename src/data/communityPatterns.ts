@@ -380,7 +380,6 @@ export const COMMUNITY_PATTERNS: CommunityPattern[] = [
 
 export const COMMUNITY_TABS: { id: CommunityCategory }[] = [
   { id: "all" },
-  { id: "best" },
   { id: "qa" },
   { id: "showcase" },
   { id: "offline" },

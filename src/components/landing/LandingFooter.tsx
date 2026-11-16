@@ -72,7 +72,6 @@ function LandingFooter() {
       title: t("landing.footerRelatedLounge"),
       links: [
         { href: appPath("/community"), label: t("community.tabs.all") },
-        { href: appPath("/community"), label: t("community.tabs.best") },
         { href: appPath("/community"), label: t("community.tabs.qa") },
         { href: appPath("/community"), label: t("community.tabs.showcase") },
         { href: appPath("/community"), label: t("community.tabs.offline") },
