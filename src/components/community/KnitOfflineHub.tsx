@@ -479,9 +479,6 @@ function KnitOfflineHub({ onGoEditor }: KnitOfflineHubProps) {
                   </button>
                 </div>
               </div>
-              <div className="break-keep rounded-2xl bg-stone-50/60 p-4 font-seoyun text-sm leading-relaxed text-stone-500">
-                {t("offline.passHint")}
-              </div>
             </div>
           </div>
         ) : null}
