@@ -870,6 +870,7 @@
     "zoomOut": "縮小",
     "compass": "エリア全体を見る",
     "mapHint": "地図をドラッグ・拡大してポップアップを探してください",
+    "mapCredit": "© OpenStreetMap",
     "detailLabel": "イベント詳細",
     "dateLabel": "期間",
     "placeLabel": "場所",

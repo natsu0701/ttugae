@@ -869,6 +869,7 @@
     "zoomOut": "지도 축소",
     "compass": "권역 전체 보기",
     "mapHint": "지도를 드래그하고 확대하여 팝업 위치를 확인하세요",
+    "mapCredit": "© OpenStreetMap",
     "detailLabel": "상세 오프라인 소식",
     "dateLabel": "진행 기간",
     "placeLabel": "정확한 장소",
