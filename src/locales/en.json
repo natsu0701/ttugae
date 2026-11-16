@@ -706,11 +706,11 @@
     "loggedIn": "You are logged in"
   },
   "chat": {
-    "widgetTitle": "Tteuni chat (AI)",
+    "widgetTitle": "Tteuni chat",
     "widgetHint": "Ask about color pairing, chart edits, or yarn choices.",
     "scrollTop": "Back to top",
-    "open": "Open Tteuni chat (AI)",
-    "close": "Close Tteuni chat (AI)",
+    "open": "Open Tteuni chat",
+    "close": "Close Tteuni chat",
     "thinking": "Tteuni is picking a yarn...",
     "offline": "The connection is slow. Please ask again in a moment.",
     "greetLead": "A knitter's friend — Tteuni the knitting fairy.",
