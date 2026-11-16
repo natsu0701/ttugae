@@ -262,19 +262,24 @@ export function TabBar() {
           <button
             key={item.id}
             type="button"
-            onClick={() => goTab(item.id)}
-            className={cx("flex flex-col items-center gap-0.5 py-1 text-[11px]", active ? "text-ink" : "text-[#8d8d8d]")}
+            onClick={(event) => {
+              const glyph = event.currentTarget.querySelector(".tab-glyph");
+              const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+              if (!reduce && glyph instanceof HTMLElement) {
+                glyph.animate(
+                  [{ transform: "scale(0.82)" }, { transform: "scale(1.12)", offset: 0.55 }, { transform: "none" }],
+                  { duration: 460, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+                );
+              }
+              goTab(item.id);
+            }}
+            className={cx("tab-hit flex flex-col items-center gap-0.5 py-1 text-[11px]", active ? "text-ink" : "text-[#8d8d8d]")}
           >
-            <span
-              className={cx(
-                "grid h-9 w-9 place-items-center rounded-full",
-                active && "-mt-4 bg-white shadow-card ring-1 ring-[#f3f3f3]",
-              )}
-            >
+            <span className={cx("tab-glyph grid h-9 w-9 place-items-center rounded-full", active && "-mt-4 bg-white shadow-card ring-1 ring-[#f3f3f3]")}>
               {item.icon}
             </span>
             <span className={cx("max-w-full truncate text-center text-[10px] leading-none min-[400px]:text-[11px]", active ? "font-bold" : "text-[#8d8d8d]")}>{item.label}</span>
-            <span className={cx("mt-0.5 h-1 w-8 rounded-full", active ? "bg-ink" : "bg-transparent")} />
+            <span className={cx("tab-mark mt-0.5 h-1 w-8 rounded-full", active ? "bg-ink" : "bg-transparent")} />
           </button>
         );
       })}

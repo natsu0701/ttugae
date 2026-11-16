@@ -140,10 +140,39 @@ button {
   animation-name: tab-enter-right;
 }
 
+.tab-glyph {
+  transition:
+    margin-top 340ms cubic-bezier(0.34, 1.28, 0.64, 1),
+    background-color 220ms ease,
+    box-shadow 280ms ease;
+}
+
+.tab-hit:active .tab-glyph {
+  transform: scale(0.9);
+}
+
+.tab-mark {
+  transform-origin: center;
+  transition:
+    transform 320ms cubic-bezier(0.34, 1.45, 0.64, 1),
+    background-color 180ms ease;
+}
+
+.tab-mark:not(.bg-ink) {
+  transform: scaleX(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tab-enter-left,
   .tab-enter-right {
     animation: none;
+  }
+
+  .tab-glyph,
+  .tab-mark,
+  .tab-hit:active .tab-glyph {
+    transition: none;
+    transform: none;
   }
 }
 
