@@ -122,12 +122,9 @@ export function SettingsFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
-        d="M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z"
         fill="currentColor"
-      />
-      <path
-        d="M19.4 13a7.9 7.9 0 01.1 1 7.9 7.9 0 01-.1 1l2 1.5-2 3.5-2.4-1a8.2 8.2 0 01-1.7 1l-.4 2.6H9l-.4-2.6a8.2 8.2 0 01-1.7-1l-2.4 1-2-3.5 2-1.5a7.9 7.9 0 01-.1-1 7.9 7.9 0 01.1-1L2.6 10.5l2-3.5 2.4 1a8.2 8.2 0 011.7-1L9.1 4.3h5.8l.4 2.6a8.2 8.2 0 011.7 1l2.4-1 2 3.5-2 1.5z"
-        fill="currentColor"
+        fillRule="evenodd"
+        d="M19.4 13a7.9 7.9 0 01.1 1 7.9 7.9 0 01-.1 1l2 1.5-2 3.5-2.4-1a8.2 8.2 0 01-1.7 1l-.4 2.6H9l-.4-2.6a8.2 8.2 0 01-1.7-1l-2.4 1-2-3.5 2-1.5a7.9 7.9 0 01-.1-1 7.9 7.9 0 01.1-1L2.6 10.5l2-3.5 2.4 1a8.2 8.2 0 011.7-1L9.1 4.3h5.8l.4 2.6a8.2 8.2 0 011.7 1l2.4-1 2 3.5-2 1.5zM12 9.3a2.7 2.7 0 100 5.4 2.7 2.7 0 000-5.4z"
       />
     </svg>
   );
@@ -228,8 +225,14 @@ export function GlobeFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <circle cx="12" cy="12" r="9" fill="currentColor" />
-      <ellipse cx="12" cy="12" rx="3.6" ry="9" fill="white" fillOpacity="0.22" />
-      <ellipse cx="12" cy="12" rx="9" ry="3.6" fill="white" fillOpacity="0.18" />
+      <ellipse cx="12" cy="12" rx="3.5" ry="8.15" fill="none" stroke="white" strokeWidth="1.7" />
+      <path
+        d="M3.2 12h17.6M5.4 8h13.2M5.4 16h13.2"
+        fill="none"
+        stroke="white"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -394,7 +397,7 @@ export function OpenLinkFillIcon({ className = "h-5 w-5" }: IconProps) {
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
         fill="currentColor"
-        d="M14 5h5v5h-1.8V8.05l-6.72 6.73-1.26-1.26 6.73-6.72H14V5zM6.5 7H11V8.8H6.5A.7.7 0 005.8 9.5v8a.7.7 0 00.7.7h8a.7.7 0 00.7-.7V13H17v4.5a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 014 17.5v-8A2.5 2.5 0 016.5 7z"
+        d="M14.2 4.4H20v5.8h-2.4V8.1l-6.5 6.5-1.7-1.7 6.5-6.5h-1.7V4.4zM6.4 7.2H12V9.6H6.8a.8.8 0 00-.8.8v7.6a.8.8 0 00.8.8h7.6a.8.8 0 00.8-.8V12H17v6.4a2.8 2.8 0 01-2.8 2.8H6.4A2.8 2.8 0 013.6 18.4V10A2.8 2.8 0 016.4 7.2z"
       />
     </svg>
   );
@@ -494,7 +497,7 @@ export function SwitchFillIcon({ className = "h-5 w-5" }: IconProps) {
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
         fill="currentColor"
-        d="M7.2 6.2l-3 3 3 3V9.8h8.2V7.4H7.2V6.2zm9.6 5.6v2.4H8.6v2.4h8.2v2.4l3-3-3-3.2z"
+        d="M7.4 4.6l-4 4 4 4V10.2h9.2V7.8H7.4V4.6zm9.2 6.8v2.4H7.4v2.4h9.2v2.4l4-4-4-3.2z"
       />
     </svg>
   );
@@ -547,7 +550,7 @@ export function ExpandFillIcon({ className = "h-5 w-5" }: IconProps) {
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
         fill="currentColor"
-        d="M4 4h6.2v2.2H6.2V10.2H4V4zm9.8 0H20v6.2h-2.2V6.2H13.8V4zM4 13.8H6.2V17.8H10.2V20H4v-6.2zm13.8 0H20V20h-6.2v-2.2H17.8V13.8z"
+        d="M3.6 3.6H10.4V6.4H6.4V10.4H3.6V3.6zm10 0H20.4V10.4H17.6V6.4H13.6V3.6zM3.6 13.6H6.4V17.6H10.4V20.4H3.6V13.6zm14 0H20.4V20.4H13.6V17.6H17.6V13.6z"
       />
     </svg>
   );
@@ -558,7 +561,7 @@ export function CollapseFillIcon({ className = "h-5 w-5" }: IconProps) {
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path
         fill="currentColor"
-        d="M8.2 4H10.4V10.4H4V8.2H8.2V4zm5.4 0H15.8V8.2H20V10.4H13.6V4zM4 13.6H10.4V20H8.2V15.8H4V13.6zm9.6 0H20V15.8H15.8V20H13.6V13.6z"
+        d="M8.4 3.6H11.2V11.2H3.6V8.4H8.4V3.6zm4.4 0H15.6V8.4H20.4V11.2H12.8V3.6zM3.6 12.8H11.2V20.4H8.4V15.6H3.6V12.8zm9.2 0H20.4V15.6H15.6V20.4H12.8V12.8z"
       />
     </svg>
   );
@@ -684,9 +687,14 @@ export function CameraFillIcon({ className = "h-5 w-5" }: IconProps) {
 export function ClockFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="12" cy="12" r="8.8" fill="currentColor" />
       <path
-        fill="currentColor"
-        d="M12 3.2a8.8 8.8 0 100 17.6 8.8 8.8 0 000-17.6zM12 6a1.1 1.1 0 011.1 1.1v4.4l3 1.8a1.1 1.1 0 11-1.1 1.9l-3.6-2.2A1.1 1.1 0 0110.9 12V7.1A1.1 1.1 0 0112 6z"
+        d="M12 6.4v6.1l3.6 2.1"
+        fill="none"
+        stroke="white"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
