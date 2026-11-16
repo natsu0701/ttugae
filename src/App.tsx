@@ -510,7 +510,6 @@ function AppRoutes() {
         }}
         onGoMypage={requestMypage}
         onGoEditor={() => setEditorEntryOpen(true)}
-        onGoAr={openAr}
         onLogin={() => {
           setLoginMode("login");
           setShowLogin(true);
