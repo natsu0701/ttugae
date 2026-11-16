@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -7,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { IDLE_LOCK_MS, shouldReturnToLogin } from "./idleLock.ts";
 import {
   seedCounters,
   seedGauges,
@@ -318,37 +320,53 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
+  const lastActivity = useRef(Date.now());
+  const returnToLogin = useCallback(() => {
+    setFinishId(null);
+    setSheet(null);
+    setHomeTab("home");
+    setBagTab("projects");
+    setLoungeTab("works");
+    setSort({ field: "recent", dir: "desc" });
+    setCalcSts("");
+    setCalcLen("");
+    setCalcResult(null);
+    const login = { name: "login" as const };
+    setStack([login]);
+    window.history.replaceState({ ttg: 1 }, "", routeToHash(login));
+  }, []);
+
   useEffect(() => {
     let timer = 0;
-    const arm = () => {
+    const schedule = () => {
       window.clearTimeout(timer);
+      const wait = Math.max(0, IDLE_LOCK_MS - (Date.now() - lastActivity.current));
       timer = window.setTimeout(() => {
         const name = stackRef.current[stackRef.current.length - 1]?.name;
-        if (name === "login" || name === "splash") return;
-        setFinishId(null);
-        setSheet(null);
-        setHomeTab("home");
-        setBagTab("projects");
-        setLoungeTab("works");
-        setSort({ field: "recent", dir: "desc" });
-        setCalcSts("");
-        setCalcLen("");
-        setCalcResult(null);
-        const login = { name: "login" as const };
-        setStack([login]);
-        window.history.replaceState({ ttg: 1 }, "", routeToHash(login));
-      }, 20 * 60 * 1000);
+        if (!shouldReturnToLogin(name)) return;
+        returnToLogin();
+      }, wait);
     };
-    arm();
-    const events = ["pointerdown", "keydown", "wheel"] as const;
-    events.forEach((event) => window.addEventListener(event, arm, { passive: true }));
-    window.addEventListener("scroll", arm, { passive: true, capture: true });
+    const bump = () => {
+      lastActivity.current = Date.now();
+      schedule();
+    };
+    bump();
+    const events = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
+    events.forEach((event) => window.addEventListener(event, bump, { passive: true }));
+    window.addEventListener("scroll", bump, { passive: true, capture: true });
     return () => {
       window.clearTimeout(timer);
-      events.forEach((event) => window.removeEventListener(event, arm));
-      window.removeEventListener("scroll", arm, { capture: true });
+      events.forEach((event) => window.removeEventListener(event, bump));
+      window.removeEventListener("scroll", bump, { capture: true });
     };
-  }, []);
+  }, [returnToLogin]);
+
+  useEffect(() => {
+    if (Date.now() - lastActivity.current < IDLE_LOCK_MS) return;
+    if (!shouldReturnToLogin(route.name)) return;
+    returnToLogin();
+  }, [route, returnToLogin]);
 
   useEffect(() => {
     if (route.name === "gauge" && route.tab === "calc") return;
