@@ -238,7 +238,7 @@ function onboardingArt(index: number) {
 
 function OnboardingProgress({ step }: { step: number }) {
   return (
-    <div className="mt-3 flex gap-1.5" aria-hidden>
+    <div className="flex gap-1.5" aria-hidden>
       {Array.from({ length: 6 }, (_, index) => (
         <span key={index} className={cx("h-1 flex-1 rounded-full", index < step ? "bg-blush" : "bg-[#f1f1f1]")} />
       ))}
@@ -257,11 +257,10 @@ export function OnboardingScreen() {
         <img src={onboardingArt(0)} alt="" className="min-h-0 w-full flex-1 object-contain object-top" />
       ) : (
         <div className="flex min-h-0 flex-1 flex-col px-6">
-          <OnboardingProgress step={step} />
           {step < 5 ? (
             <>
-              <h1 className="mt-8 whitespace-pre-wrap text-[26px] font-bold leading-snug">{SLIDES[step]}</h1>
-              <div className="mt-4 min-h-0 flex-1">
+              <h1 className="mt-8 whitespace-pre-wrap text-[36px] font-bold leading-[1.35] [@media(max-height:520px)]:mt-4 [@media(max-height:520px)]:text-[24px]">{SLIDES[step]}</h1>
+              <div className="mt-6 min-h-0 flex-1 [@media(max-height:520px)]:mt-3">
                 <img src={onboardingArt(step)} alt="" className="max-h-full w-full object-contain object-top" />
               </div>
             </>
@@ -270,7 +269,8 @@ export function OnboardingScreen() {
           {step === 6 ? <ToolStep tool={data.tool} onChange={(tool) => patch({ tool })} /> : null}
         </div>
       )}
-      <div className="mt-auto shrink-0 space-y-3 px-6 pt-4 [@media(max-height:520px)]:pt-2">
+      <div className="mt-auto shrink-0 space-y-4 px-6 pt-4 [@media(max-height:520px)]:space-y-2 [@media(max-height:520px)]:pt-2">
+        {step > 0 ? <OnboardingProgress step={step} /> : null}
         {last ? (
           <>
             <BlackButton onClick={() => push({ name: "skill" })}>실력 측정하기</BlackButton>
@@ -296,13 +296,21 @@ export function OnboardingScreen() {
 }
 
 function UnitStep({ unit, onChange }: { unit: UnitSystem; onChange: (unit: UnitSystem) => void }) {
+  const units: { id: UnitSystem; title: string; detail: string }[] = [
+    { id: "metric", title: "미터법", detail: "m, cm, mm" },
+    { id: "imperial", title: "영미식", detail: "in, yd, US size" },
+  ];
   return (
     <div className="flex-1 pt-10">
       <h1 className="whitespace-pre-wrap text-[26px] font-bold leading-snug">{"단위를 어떻게\n표시할까요?"}</h1>
       <p className="mt-2 text-[13px] text-[#999]">나중에 설정에서 변경할 수 있어요.</p>
-      <div className="mt-6 grid gap-3">
-        <Choice active={unit === "metric"} onClick={() => onChange("metric")} title="미터법 (m, cm, mm)" />
-        <Choice active={unit === "imperial"} onClick={() => onChange("imperial")} title="영미식 (in, yd, US size)" />
+      <div className="mt-6 grid grid-cols-2 gap-2">
+        {units.map((item) => (
+          <SelectCard key={item.id} active={unit === item.id} onClick={() => onChange(item.id)}>
+            <span>{item.title}</span>
+            <span className="mt-1 block text-[12px] font-medium text-[#888]">{item.detail}</span>
+          </SelectCard>
+        ))}
       </div>
     </div>
   );
@@ -315,31 +323,26 @@ function ToolStep({ tool, onChange }: { tool: ToolKind | null; onChange: (tool: 
       <h1 className="text-[26px] font-bold">주로 쓰는 도구는?</h1>
       <div className="mt-6 grid grid-cols-3 gap-2">
         {tools.map((item) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => onChange(item)}
-            className={cx(
-              "h-24 rounded-lg border text-[14px] font-semibold",
-              tool === item ? "border-blush bg-blush-soft" : "border-[#eee]",
-            )}
-          >
+          <SelectCard key={item} active={tool === item} onClick={() => onChange(item)}>
             {item}
-          </button>
+          </SelectCard>
         ))}
       </div>
     </div>
   );
 }
 
-function Choice({ title, active, onClick }: { title: string; active: boolean; onClick: () => void }) {
+function SelectCard({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={cx("h-14 rounded-lg border px-4 text-left text-[15px] font-semibold", active ? "border-blush bg-blush-soft" : "border-[#eee]")}
+      className={cx(
+        "flex h-24 flex-col items-center justify-center rounded-lg border px-2 text-center text-[14px] font-semibold leading-tight",
+        active ? "border-blush bg-blush-soft" : "border-[#eee]",
+      )}
     >
-      {title}
+      {children}
     </button>
   );
 }
