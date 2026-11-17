@@ -206,7 +206,7 @@ function HomePane() {
       </section>
 
       <section className="px-4 pt-8">
-        <SectionTitle title="이번달 뜨개왕 발표!" icon={<CrownIcon />} moreLabel="자세히 보기" onMore={() => push({ name: "ranking" })} />
+        <SectionTitle title="이번달 뜨개왕 발표!" icon={<CrownIcon />} onMore={() => push({ name: "ranking" })} />
         <div className="mt-4 grid grid-cols-3 gap-2 text-center">
           {KINGS.map((king) => (
             <button key={king.name} type="button" onClick={() => push({ name: "ranking" })}>
@@ -384,12 +384,10 @@ function SectionTitle({
   title,
   onMore,
   icon,
-  moreLabel,
 }: {
   title: string;
   onMore?: () => void;
   icon?: ReactNode;
-  moreLabel?: string;
 }) {
   return (
     <div className="flex items-center justify-between gap-3 px-4">
@@ -398,15 +396,9 @@ function SectionTitle({
         <span className="truncate">{title}</span>
       </h2>
       {onMore ? (
-        moreLabel ? (
-          <button type="button" onClick={onMore} className="shrink-0 text-[13px] font-semibold text-[#777]">
-            {moreLabel}
-          </button>
-        ) : (
-          <button type="button" aria-label={`${title} 더 보기`} onClick={onMore} className="grid h-6 w-6 shrink-0 place-items-center leading-none">
-            <ChevronRight />
-          </button>
-        )
+        <button type="button" aria-label={`${title} 자세히 보기`} onClick={onMore} className="grid h-6 w-6 shrink-0 place-items-center leading-none">
+          <ChevronRight />
+        </button>
       ) : null}
     </div>
   );
