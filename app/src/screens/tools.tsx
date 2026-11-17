@@ -1065,14 +1065,14 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
 
   return (
     <div className="relative flex min-h-full flex-1 flex-col text-white" style={{ backgroundColor: color }}>
-      <header className="grid h-12 grid-cols-[40px_1fr_auto] items-center px-2">
-        <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
+      <header className="relative flex h-12 items-center px-2">
+        <button type="button" aria-label="뒤로" onClick={back} className="relative z-10 grid h-10 w-10 place-items-center">
           <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
             <path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-        <h1 className="truncate text-center text-[17px] font-bold">{title}</h1>
-        <button type="button" onClick={finishWork} className="mr-1 h-8 rounded-full bg-black px-3 text-[13px] font-semibold">
+        <h1 className="pointer-events-none absolute inset-x-16 truncate text-center text-[17px] font-bold">{title}</h1>
+        <button type="button" onClick={finishWork} className="relative z-10 ml-auto mr-1 h-8 rounded-full bg-black px-3 text-[13px] font-semibold">
           완료
         </button>
       </header>

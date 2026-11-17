@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { naviSteps } from "../data.ts";
 import { useApp } from "../store.tsx";
-import { CloseIcon, PauseIcon, PlayIcon } from "../ui.tsx";
+import { ChevronLeft, CloseIcon, PauseIcon, PlayIcon } from "../ui.tsx";
+
+function isMobileDevice() {
+  if (typeof navigator === "undefined") return false;
+  return window.matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
 
 type Track = {
   id: string;
@@ -43,7 +49,12 @@ function canPlayWebmVp9Alpha() {
 type CameraStatus = "starting" | "live" | "blocked" | "missing";
 
 export function CameraScreen({ id }: { id: string }) {
-  const { completeSession } = useApp();
+  const { completeSession, back, data } = useApp();
+  const mobile = isMobileDevice();
+  const project = data.projects.find((item) => item.id === id);
+  const steps = naviSteps(project?.parts.find((part) => !part.done)?.name ?? project?.parts[0]?.name ?? "소매");
+  const done = new Set(data.naviDone[id] ?? []);
+  const currentStep = steps.find((step) => !done.has(step)) ?? steps[steps.length - 1];
   const cameraRef = useRef<HTMLVideoElement>(null);
   const overlayRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -173,8 +184,15 @@ export function CameraScreen({ id }: { id: string }) {
           </>
         )}
       </div>
-      <div className="absolute inset-x-0 top-0 flex items-center justify-between px-3 pt-3">
-        <p className="rounded-full bg-black px-3 py-1 text-[13px] font-semibold">뜨개 오버레이</p>
+      <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 px-3 pt-3">
+        {mobile ? (
+          <button type="button" aria-label="이전" onClick={back} className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-black text-white">
+            <ChevronLeft />
+          </button>
+        ) : (
+          <span className="w-11" />
+        )}
+        <p className="min-w-0 truncate rounded-full bg-black px-3 py-1 text-center text-[13px] font-semibold">지금 할 단계 · {currentStep}</p>
         <button
           type="button"
           aria-label="작업 완료"

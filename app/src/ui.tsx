@@ -133,15 +133,15 @@ export function TopBar({
   const { back: goBack } = useApp();
   return (
     <div className={cx("sticky top-0 z-20 flex h-12 items-center px-2", light ? "bg-transparent" : "bg-white")}>
-      <div className="w-14">
+      <div className="relative z-10 w-10">
         {back ? (
           <button type="button" aria-label="뒤로" onClick={goBack} className="grid h-10 w-10 place-items-center rounded-full">
             <ChevronLeft />
           </button>
         ) : null}
       </div>
-      <h1 className="flex-1 truncate text-center text-[17px] font-bold">{title}</h1>
-      <div className="flex w-14 justify-end">{right}</div>
+      <h1 className="pointer-events-none absolute inset-x-14 truncate text-center text-[17px] font-bold">{title}</h1>
+      <div className="relative z-10 ml-auto flex justify-end">{right}</div>
     </div>
   );
 }
@@ -314,17 +314,17 @@ export function InfoButton({ title, body, onClick, label = "도움말" }: { titl
       onClick={onClick ?? (() => openSheet({ kind: "info", title: title ?? "도움말", body: body ?? "" }))}
       className="grid h-11 w-11 shrink-0 place-items-center text-ink"
     >
-      <AppleHelpIcon />
+      <HelpIcon />
     </button>
   );
 }
 
-function AppleHelpIcon() {
+export function HelpIcon({ className = "h-[22px] w-[22px]" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" aria-hidden>
-      <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M9.55 9.2c.3-1.45 1.6-2.3 3-2.2 1.4.1 2.4 1.2 2.3 2.55-.1 1.1-.9 1.75-1.75 2.2-.75.4-1.2.95-1.2 1.75V14.4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <circle cx="11.9" cy="16.75" r="0.85" fill="currentColor" />
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M12 10.6v5.2" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <circle cx="12" cy="7.7" r="0.9" fill="currentColor" />
     </svg>
   );
 }

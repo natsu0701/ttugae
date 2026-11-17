@@ -26,7 +26,7 @@ export function YarnScreen({ id }: { id: string }) {
           options={[
             { id: "projects", label: "프로젝트" },
             { id: "done", label: "완성작" },
-            { id: "yarn", label: "실장고" },
+            { id: "yarn", label: "실 창고" },
             { id: "needles", label: "바늘 창고" },
           ]}
           onChange={(tab) => goTab("bag", tab)}
@@ -34,7 +34,9 @@ export function YarnScreen({ id }: { id: string }) {
       </div>
       <div className="px-5 pt-4">
         <div className="relative mx-auto w-52">
-          <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover object-center" />
+          <span className="grid aspect-square w-full place-items-center rounded-lg" style={{ background: yarnDot(yarn.colorName) }}>
+            <YarnBallGlyph />
+          </span>
           <span className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-white px-3 py-1 text-[12px] shadow-card">
             <i className="h-2 w-2 rounded-full" style={{ background: yarnDot(yarn.colorName) }} />
             {yarn.colorName}
@@ -86,7 +88,7 @@ export function NeedleScreen({ id }: { id: string }) {
           options={[
             { id: "projects", label: "프로젝트" },
             { id: "done", label: "완성작" },
-            { id: "yarn", label: "실장고" },
+            { id: "yarn", label: "실 창고" },
             { id: "needles", label: "바늘 창고" },
           ]}
           onChange={(tab) => goTab("bag", tab)}
@@ -102,10 +104,10 @@ export function NeedleScreen({ id }: { id: string }) {
         <h2 className="mt-4 text-center text-[20px] font-bold">{needle.name}</h2>
         <p className="text-center text-[12px] text-[#999]">{needle.lot}</p>
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <Spec icon={<ClockIcon />} value={needle.size} label="사이즈" />
-          <Spec icon={<ClockIcon />} value={needle.material} label="소재" />
-          <Spec icon={<ClockIcon />} value={needle.kind} label="종류" />
-          <Spec icon={<ClockIcon />} value={needle.cable} label="케이블" />
+          <Spec icon={<SizeIcon />} value={needle.size} label="사이즈" />
+          <Spec icon={<MaterialIcon />} value={needle.material} label="소재" />
+          <Spec icon={<KindIcon />} value={needle.kind} label="종류" />
+          <Spec icon={<CableIcon />} value={needle.cable} label="케이블" />
         </div>
         <section className="mt-3 rounded-lg border border-[#f0f0f0] px-4 py-3">
           <p className="text-[12px] text-[#999]">보관 위치</p>
@@ -118,6 +120,61 @@ export function NeedleScreen({ id }: { id: string }) {
         <ShopCard name={needle.shop} url={needle.shopUrl} />
       </div>
     </div>
+  );
+}
+
+function YarnBallGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-16 w-16" aria-hidden>
+      <circle cx="12" cy="12" r="7.2" fill="none" stroke="#1c1c1c" strokeWidth="1.4" />
+      <path d="M8 9.5c2.2 1.2 5.8 1.2 8 0M8.4 12.2c2.1 1.1 5.1 1.1 7.2 0M9.2 15c1.6.7 3.8.7 5.4 0" fill="none" stroke="#1c1c1c" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function LineIcon({ children }: { children: ReactNode }) {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+      {children}
+    </svg>
+  );
+}
+
+function SizeIcon() {
+  return (
+    <LineIcon>
+      <path d="M4 8h16v8H4z" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M8 8v3.2M12 8v4.4M16 8v3.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </LineIcon>
+  );
+}
+
+function MaterialIcon() {
+  return (
+    <LineIcon>
+      <path d="M12 4.5l6 3.2v6.6l-6 3.2-6-3.2V7.7z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M12 11.3V17.5M12 11.3L6.2 8.2M12 11.3l5.8-3.1" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </LineIcon>
+  );
+}
+
+function KindIcon() {
+  return (
+    <LineIcon>
+      <path d="M8 5.5c0 2.2 1.2 3.4 1.2 5.2S8 13.4 8 16.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M14.5 5.5c0 2.2 1.2 3.4 1.2 5.2s-1.2 3.5-1.2 6.3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M6.6 5.5h2.8M13.1 5.5h2.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </LineIcon>
+  );
+}
+
+function CableIcon() {
+  return (
+    <LineIcon>
+      <path d="M5 8c4 0 4 8 8 8s4-8 6-8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="5" cy="8" r="1.3" fill="currentColor" />
+      <circle cx="19" cy="8" r="1.3" fill="currentColor" />
+    </LineIcon>
   );
 }
 
@@ -137,7 +194,7 @@ function ShopCard({ name, url }: { name: string; url: string }) {
     openSheet({
       kind: "info",
       title: "추가 구매",
-      body: "연습용 화면이라 상점 페이지로는 연결되지 않아요.",
+      body: "아직 상점 페이지로는 연결되지 않아요.",
     });
   return (
     <section className="mt-3 flex items-center justify-between rounded-lg border border-[#f0f0f0] px-4 py-3">

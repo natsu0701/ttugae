@@ -30,7 +30,24 @@ const woolSwatch = media("media/swatch-wool.jpg");
 const etiNeedle = media("media/needle-eti.jpg");
 const woodNeedle = media("media/needle-wood.jpg");
 
-export const YARN_CATEGORIES = ["코튼", "린넨", "울", "폴리에스터", "나일론"] as const;
+export const YARN_CATEGORIES = [
+  "울",
+  "면",
+  "린넨",
+  "모헤어",
+  "트위드",
+  "아크릴",
+  "폴리에스터",
+  "레이스",
+  "캐시미어",
+  "알파카",
+  "실크",
+  "앙고라",
+  "뱀부",
+  "양말실",
+  "부클레",
+  "테이프사",
+] as const;
 export const NEEDLE_CATEGORIES = ["대바늘", "코바늘", "특수바늘", "기타"] as const;
 
 export const FAQ = [
@@ -180,7 +197,7 @@ export function seedYarns(): Yarn[] {
       memo: "고리가 도드라진 더스티 핑크 코튼이에요. 사진과 같은 색입니다.",
       shop: "바늘이야기",
       shopUrl: "http://banulstory.kku.ac.kr",
-      category: "코튼",
+      category: "면",
       lot: "Lot 118",
       colorName: "더스티 핑크",
       image: swatchPink,
@@ -202,7 +219,7 @@ export function seedYarns(): Yarn[] {
       memo: "가로 골이 고른 헤더 그레이 울 편물이에요.",
       shop: "바늘이야기",
       shopUrl: "http://banulstory.kku.ac.kr",
-      category: "울",
+      category: "트위드",
       lot: "Lot 077",
       colorName: "헤더 그레이",
       image: swatchGray,
@@ -432,6 +449,45 @@ export const WORKS: Work[] = [
   { id: "w4", author: "김미니", title: "노란 비니", likes: 123, image: media("media/pop-beanie.jpg") },
   { id: "w5", author: "가민", title: "도톰 담요!", likes: 456, image: media("media/pop-blanket.jpg") },
   { id: "w6", author: "이현수", title: "포근 겨울 양말", likes: 789, image: media("media/pop-sock.jpg") },
+  { id: "w7", author: "모카모카", title: "크림 풀오버", likes: 214, image: media("media/proj-cream.jpg") },
+  { id: "w8", author: "실꾸미기", title: "버튼 미니백", likes: 168, image: media("media/proj-bag.jpg") },
+  { id: "w9", author: "하늘바다", title: "줄무늬 양말", likes: 302, image: media("media/proj-socks.jpg") },
+  { id: "w10", author: "김뜨개", title: "린넨 숄", likes: 97, image: media("media/swatch-linen.jpg") },
+  { id: "w11", author: "이은주", title: "로즈 목도리", likes: 241, image: media("media/swatch-rose.jpg") },
+  { id: "w12", author: "가민", title: "핑크 스와치", likes: 88, image: media("media/swatch-pink.jpg") },
+  { id: "w13", author: "김미니", title: "울 비니", likes: 176, image: media("media/swatch-wool.jpg") },
+  { id: "w14", author: "이현수", title: "겨울 코트", likes: 512, image: media("media/coat.jpg") },
+  { id: "w15", author: "모카모카", title: "손뜨개 가디건", likes: 267, image: media("media/cardigan.jpg") },
+  { id: "w16", author: "실꾸미기", title: "그레이 조끼", likes: 143, image: media("media/swatch-gray.jpg") },
+  { id: "w17", author: "하늘바다", title: "핑크 실 모자", likes: 198, image: media("media/yarn-pink.jpg") },
+  { id: "w18", author: "김뜨개", title: "패턴 스웨터", likes: 334, image: media("media/pattern-sweater.jpg") },
+];
+
+export const MY_POSTS = [
+  { id: "mp1", title: "왼쪽 팔 23단", body: "벤쿠버 가디건 소매를 이어서 떴어요. 코 수는 어제와 같아요.", image: media("media/cardigan.jpg"), date: "오늘" },
+  { id: "mp2", title: "노란 비니 마감", body: "정수리까지 감아서 끝냈어요. 내일 세탁만 하면 돼요.", image: media("media/pop-beanie.jpg"), date: "어제" },
+  { id: "mp3", title: "수면사 가방 시접", body: "버튼 미니백 시접을 정리하고 있어요. 실이 1.5볼 남았어요.", image: media("media/proj-bag.jpg"), date: "3일 전" },
+  { id: "mp4", title: "크림 풀오버 요크", body: "요크 18단에서 코가 당겨 한 단을 풀었어요.", image: media("media/proj-cream.jpg"), date: "지난주" },
+];
+
+export const MY_COMMENTS = [
+  { id: "mc1", where: "첫 가디건, 소매 게이지가 안 맞아요", body: "스와치를 물에 적신 뒤 다시 재 보면 차이가 줄어요.", date: "어제" },
+  { id: "mc2", where: "수면사 가방, 바닥이 늘어져요", body: "바닥만 한 치수 작은 바늘로 조여 보세요.", date: "3일 전" },
+  { id: "mc3", where: "모헤어 숄, 단이 말려요", body: "가장자리를 가터로 네 단만 더 뜨면 덜 말려요.", date: "지난주" },
+  { id: "mc4", where: "양말 두 짝, 단 수가 달라요", body: "첫 짝의 단 수를 메모에 남겨 두면 다음 짝이 맞아요.", date: "2주 전" },
+];
+
+export const GROUPS = [
+  { id: "g1", name: "일요일 오후 뜨개", place: "연남동 작업실", when: "매주 일요일 14:00", members: 12 },
+  { id: "g2", name: "점심시간 한 단", place: "온라인", when: "평일 12:30", members: 28 },
+  { id: "g3", name: "처음 뜨는 사람들", place: "합정 카페", when: "격주 토요일 11:00", members: 9 },
+  { id: "g4", name: "양말 두 짝 모임", place: "성수 공방", when: "매월 첫째 금요일", members: 16 },
+];
+
+export const NOTICES = [
+  { id: "nt1", title: "뜨개 오버레이를 열었어요", body: "뜨개내비에서 지금 할 단계를 확인한 뒤, 카메라 위에 바늘 영상을 겹칠 수 있어요.", date: "11월 18일" },
+  { id: "nt2", title: "이미지는 기기에 남겨 둬요", body: "한 번 열면 사진과 영상을 저장해 두어, 다시 열 때는 같은 화면이 바로 나와요.", date: "11월 10일" },
+  { id: "nt3", title: "상점 연결은 준비 중이에요", body: "실과 바늘의 상점 링크는 아직 상점 페이지로 이어지지 않아요.", date: "11월 3일" },
 ];
 
 export const NEWS: NewsItem[] = [
@@ -631,6 +687,16 @@ export const NAVI_STEPS = [
   "왼쪽 소매를 이어서 떠요",
   "시보리로 마감하고 실을 정리해요",
 ];
+
+export function naviSteps(partName = "소매") {
+  return [
+    NAVI_STEPS[0],
+    NAVI_STEPS[1],
+    NAVI_STEPS[2],
+    `${partName} 이어서 뜨기`,
+    NAVI_STEPS[4],
+  ];
+}
 
 export const NOTIFICATIONS: { title: string; body: string; to: Route }[] = [
   { title: "벤쿠버 가디건", body: "어제 몸통까지 떠 두었어요. 오늘은 왼쪽 팔 23단부터예요.", to: { name: "project", id: "p1" } },
