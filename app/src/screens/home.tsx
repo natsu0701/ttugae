@@ -167,8 +167,8 @@ function HomePane() {
               className="w-[min(86%,20rem)] shrink-0 rounded-lg bg-white p-3 text-left shadow-card"
             >
               <div className="flex gap-3">
-                <img src={pattern.image} alt="" className="h-28 w-28 rounded-lg object-cover" />
-                <div>
+                <img src={pattern.image} alt="" className="aspect-square h-28 w-28 shrink-0 rounded-lg object-cover" />
+                <div className="min-w-0 flex-1">
                   <p className="text-[16px] font-bold">{pattern.title}</p>
                   <p className="mt-1 text-[12px] text-[#999]">{pattern.needles}</p>
                   <p className="mt-2 line-clamp-2 text-[13px] leading-snug">{pattern.summary}</p>
