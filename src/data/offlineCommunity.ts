@@ -224,7 +224,7 @@ export const KNITTING_MEETUPS: KnittingMeetup[] = [
     memberIds: [],
     place: "망원동 북카페 2층",
     datetime: "8월 30일 오후 3시",
-    prep: "메리노울 실장고 소지자 우선",
+    prep: "메리노울 실 창고 소지자 우선",
   },
   {
     meetupId: "mt-garosu-beanie",

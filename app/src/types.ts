@@ -45,6 +45,10 @@ export type Route =
   | { name: "ranking" }
   | { name: "news"; id: string }
   | { name: "notifications" }
+  | { name: "posts" }
+  | { name: "comments" }
+  | { name: "groups" }
+  | { name: "notices" }
   | { name: "likes" }
   | { name: "product"; id: string }
   | { name: "orders"; tab?: "sell" | "buy" }

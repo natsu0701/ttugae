@@ -22,7 +22,7 @@ import {
   WorkScreen,
 } from "./screens/home.tsx";
 import { LoungeScreen, QuestionScreen, ShortScreen } from "./screens/lounge.tsx";
-import { MyScreen, OrdersScreen, ProfileScreen } from "./screens/my.tsx";
+import { CommentsScreen, GroupsScreen, MyScreen, NoticesScreen, OrdersScreen, PostsScreen, ProfileScreen } from "./screens/my.tsx";
 import { CodexScreen } from "./screens/codex.tsx";
 import { CollectionScreen } from "./screens/collection.tsx";
 import { codexById } from "./codex.ts";
@@ -39,7 +39,7 @@ import {
 } from "./screens/tools.tsx";
 import { CameraScreen } from "./screens/camera.tsx";
 import { DiaryEntryScreen, DiaryScreen } from "./screens/diary.tsx";
-import { ChevronLeft, FolderIcon, InfoButton, PlayBadge, SheetHost, TabBar, ToastHost } from "./ui.tsx";
+import { ChevronLeft, FolderIcon, HelpIcon, InfoButton, PlayBadge, SheetHost, TabBar, ToastHost } from "./ui.tsx";
 
 function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
   if (route.name === "project" || route.name === "finished" || route.name === "navi") {
@@ -81,6 +81,14 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
       return "뜨개 소식";
     case "notifications":
       return "알림";
+    case "posts":
+      return "내 게시물";
+    case "comments":
+      return "내 댓글";
+    case "groups":
+      return "뜨개 모임";
+    case "notices":
+      return "공지사항";
     case "likes":
       return "좋아요";
     case "cart":
@@ -92,7 +100,7 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
     case "profile":
       return "내 프로필";
     case "short":
-      return "기와뜨기";
+      return "뜨개 소통";
     case "question":
       return "질문";
     case "diary-entry":
@@ -142,10 +150,11 @@ const OWN_CHROME = new Set([
   "camera",
   "diary",
   "counter-run",
+  "short",
 ]);
 
 function Shell() {
-  const { route, back, data, openSheet, push } = useApp();
+  const { route, back, data, openSheet, push, loungeTab } = useApp();
   const screen = renderRoute(route);
   const showBack = !OWN_CHROME.has(route.name);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -160,6 +169,7 @@ function Shell() {
     scrollRef.current?.scrollTo(0, 0);
   }, [routeKey]);
   const counting = route.name === "counter-run";
+  const stretch = route.name === "short" || (route.name === "lounge" && loungeTab === "shorts");
   const scrolling = route.name !== "chat" && !counting;
   const fillScreen = route.name === "login" || route.name === "signup" || route.name === "onboarding" || route.name === "chat" || counting;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -168,40 +178,38 @@ function Shell() {
     <div className="stage">
       <div className="phone">
         {showBack ? (
-          <div className="flex h-12 shrink-0 items-center bg-white px-1">
+          <div className="relative flex h-12 shrink-0 items-center bg-white px-1">
             <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
               <ChevronLeft />
             </button>
-            <h1 className={`flex min-w-0 flex-1 items-center justify-center gap-1 text-[17px] font-bold ${route.name === "gauge" || route.name === "counters" ? "" : "pr-10"}`}>
-              <span className="truncate">{titleFor(route, data)}</span>
-              {route.name === "collection" ? (
-                <button
-                  type="button"
-                  aria-label="컬렉션 안내"
-                  onClick={() =>
-                    openSheet({
-                      kind: "info",
-                      title: "뜨개컬렉션",
-                      body: "실 종류를 고른 뒤 도안을 누르면 제작자, 뜨는 부분, 도안 설명을 볼 수 있어요.",
-                    })
-                  }
-                  className="grid h-6 w-6 shrink-0 place-items-center"
-                >
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
-                    <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.6" />
-                    <path d="M12 10.6v5.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                    <circle cx="12" cy="7.7" r="0.9" fill="currentColor" />
-                  </svg>
-                </button>
-              ) : null}
+            <h1 className="pointer-events-none absolute inset-x-12 text-center text-[17px] font-bold">
+              <span className="block truncate">{titleFor(route, data)}</span>
             </h1>
-            {route.name === "gauge" ? <InfoButton label="게이지 도움말" onClick={() => push({ name: "gauge-help" })} /> : null}
+            {route.name === "collection" ? (
+              <button
+                type="button"
+                aria-label="컬렉션 안내"
+                onClick={() =>
+                  openSheet({
+                    kind: "info",
+                    title: "뜨개컬렉션",
+                    body: "실 종류를 고른 뒤 도안을 누르면 제작자, 뜨는 부분, 도안 설명을 볼 수 있어요.",
+                  })
+                }
+                className="relative z-10 ml-auto grid h-11 w-11 place-items-center"
+              >
+                <HelpIcon />
+              </button>
+            ) : null}
+            {route.name === "gauge" ? <span className="ml-auto"><InfoButton label="게이지 도움말" onClick={() => push({ name: "gauge-help" })} /></span> : null}
             {route.name === "counters" ? (
+              <span className="ml-auto">
               <InfoButton
                 label="행/코 카운터 도움말"
                 title="행/코 카운터"
                 body="단과 코를 따로 세고, 프로젝트에 연결해 두면 다음에 이어서 뜰 위치를 잊지 않아요. 단수·코수 숫자를 누르면 크게 세는 화면이 열리고, “다음”이라고 말하면 카운트가 올라가고 “이전”이라고 말하면 카운트가 내려가요."
               />
+              </span>
             ) : null}
           </div>
         ) : null}
@@ -209,10 +217,10 @@ function Shell() {
           <div
             key={route.name}
             data-tab-motion={slide || undefined}
-            className={[slide ? `tab-enter-${slide}` : "", fillScreen ? "flex min-h-0 w-full flex-1 flex-col" : ""].filter(Boolean).join(" ") || undefined}
+            className={[slide ? `tab-enter-${slide}` : "", fillScreen || stretch ? "flex h-full min-h-0 w-full flex-1 flex-col" : ""].filter(Boolean).join(" ") || undefined}
           >
             {ready ? (
-              <div className={fillScreen ? "page-in flex min-h-full w-full flex-1 flex-col" : "page-in"}>{screen}</div>
+              <div className={fillScreen || stretch ? "page-in flex h-full min-h-full w-full flex-1 flex-col" : "page-in"}>{screen}</div>
             ) : (
               <PageSkeleton route={route} />
             )}
@@ -326,6 +334,14 @@ function renderRoute(route: Route): ReactNode {
       return <NewsScreen id={route.id} />;
     case "notifications":
       return <NotificationsScreen />;
+    case "posts":
+      return <PostsScreen />;
+    case "comments":
+      return <CommentsScreen />;
+    case "groups":
+      return <GroupsScreen />;
+    case "notices":
+      return <NoticesScreen />;
     case "likes":
       return <LikesScreen />;
     case "product":

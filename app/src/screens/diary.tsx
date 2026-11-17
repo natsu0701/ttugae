@@ -272,12 +272,12 @@ export function DiaryScreen({ id }: { id: string }) {
 
   return (
     <div className="bg-white pb-4">
-      <header className="sticky top-0 z-20 flex h-12 items-center bg-white px-1">
-        <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
+      <header className="relative sticky top-0 z-20 flex h-12 items-center bg-white px-1">
+        <button type="button" aria-label="뒤로" onClick={back} className="relative z-10 grid h-10 w-10 place-items-center">
           <ChevronLeft />
         </button>
-        <h1 className="flex-1 text-center text-[17px] font-bold">뜨개일기</h1>
-        <button type="button" onClick={save} className="px-3 text-[15px] font-semibold text-blush">
+        <h1 className="pointer-events-none absolute inset-x-16 text-center text-[17px] font-bold">뜨개일기</h1>
+        <button type="button" onClick={save} className="relative z-10 ml-auto px-3 text-[15px] font-semibold text-blush">
           저장
         </button>
       </header>

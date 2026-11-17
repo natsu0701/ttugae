@@ -1,12 +1,12 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { LISTINGS, PURCHASES, media } from "../data.ts";
+import { GROUPS, LISTINGS, MY_COMMENTS, MY_POSTS, NOTICES, PURCHASES, media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { ToolKind, UnitSystem } from "../types.ts";
 import { BagFillIcon, BellFillIcon, BookmarkFillIcon, ChatFillIcon, ClockFillIcon, CommunityFillIcon, FileTextFillIcon, HeartFillIcon, PencilFillIcon } from "../icons/webFill.tsx";
 import { ChevronRight, DragScroll, GearIcon, Mascot, cx } from "../ui.tsx";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
-const CALENDAR_EMOJIS = ["🧶", "❤️", "⭐", "✅", "🌸", "😊", "☕", "🌙"];
+const CALENDAR_EMOJIS = ["🧶", "❤️", "⭐", "✅", "🌸", "😊", "😢", "😠", "😴", "☕", "🌙", "🌧️", "🔥", "😂", "💪", "🥲"];
 
 function calendarKey(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -27,17 +27,17 @@ function formatKnit(seconds: number) {
 }
 
 const STAMPS = [
-  { name: "첫 바늘의 설렘", image: media("badges/badge1.png"), on: true },
-  { name: "푸르시오 극복가", image: media("badges/badge2.png"), on: true },
-  { name: "꼬막음 완성", image: media("badges/badge3.png"), on: true },
-  { name: "게이지 계산요정", image: media("badges/badge4.png"), on: true },
-  { name: "배색 가디건 컬렉터", image: media("badges/badge5.png"), on: false },
-  { name: "문어발 뜨개질러", image: media("badges/badge6.png"), on: false },
-  { name: "실 보관 마스터", image: media("badges/badge7.png"), on: true },
-  { name: "따뜻한 뜨개라운지 리더", image: media("badges/badge8.png"), on: true },
-  { name: "뜨니의 소울메이트", image: media("badges/badge9.png"), on: false },
-  { name: "공방 골목대장", image: media("badges/badge10.png"), on: false },
-  { name: "한 땀의 예술가", image: media("badges/badge11.png"), on: false },
+  { name: "첫 바늘의 설렘", how: "첫 프로젝트를 시작하면 받아요.", image: media("badges/badge1.png"), on: true },
+  { name: "푸르시오 극복가", how: "풀어 둔 단을 다시 떠서 마무리하면 받아요.", image: media("badges/badge2.png"), on: true },
+  { name: "꼬막음 완성", how: "작품 하나를 끝까지 마감하면 받아요.", image: media("badges/badge3.png"), on: true },
+  { name: "게이지 계산요정", how: "게이지를 한 번 저장하면 받아요.", image: media("badges/badge4.png"), on: true },
+  { name: "배색 가디건 컬렉터", how: "색이 두 가지 이상인 가디건을 완성하면 받아요.", image: media("badges/badge5.png"), on: false },
+  { name: "문어발 뜨개질러", how: "진행 중인 프로젝트를 세 개 이상 두면 받아요.", image: media("badges/badge6.png"), on: false },
+  { name: "실 보관 마스터", how: "실 창고에 실을 다섯 개 등록하면 받아요.", image: media("badges/badge7.png"), on: true },
+  { name: "따뜻한 뜨개라운지 리더", how: "라운지에 작품 글을 남기면 받아요.", image: media("badges/badge8.png"), on: true },
+  { name: "뜨니의 소울메이트", how: "뜨니챗에서 대화를 열 번 이어 가면 받아요.", image: media("badges/badge9.png"), on: false },
+  { name: "공방 골목대장", how: "뜨개 모임에 세 곳 이상 이름을 올리면 받아요.", image: media("badges/badge10.png"), on: false },
+  { name: "한 땀의 예술가", how: "완성작을 다섯 개 모으면 받아요.", image: media("badges/badge11.png"), on: false },
 ];
 
 export function MyScreen() {
@@ -75,7 +75,7 @@ export function MyScreen() {
         <Shortcut icon={<BagFillIcon className="h-6 w-6" />} label="장바구니" onClick={() => push({ name: "cart" })} />
         <Shortcut icon={<HeartFillIcon className="h-6 w-6" />} label="관심 목록" onClick={() => push({ name: "likes" })} />
         <Shortcut icon={<ClockFillIcon className="h-6 w-6" />} label="최근 본 글" onClick={() => goTab("lounge", "works")} />
-        <Shortcut icon={<ChatFillIcon className="h-6 w-6" />} label="내 댓글" onClick={() => goTab("lounge", "qa")} />
+        <Shortcut icon={<ChatFillIcon className="h-6 w-6" />} label="내 댓글" onClick={() => push({ name: "comments" })} />
       </div>
 
       <section className="mx-4 rounded-lg border border-[#f0f0f0] px-4 py-4 text-center">
@@ -92,15 +92,15 @@ export function MyScreen() {
         <MenuRow icon={<BagFillIcon className="h-5 w-5" />} label="구매 내역" onClick={() => push({ name: "orders", tab: "buy" })} />
       </Menu>
       <Menu title="나의 활동">
-        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="내 게시물" onClick={() => goTab("lounge", "works")} />
-        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="내 댓글" onClick={() => goTab("lounge", "qa")} />
+        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="내 게시물" onClick={() => push({ name: "posts" })} />
+        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="내 댓글" onClick={() => push({ name: "comments" })} />
         <MenuRow icon={<BookmarkFillIcon className="h-5 w-5" />} label="저장한 글" onClick={() => push({ name: "likes" })} />
-        <MenuRow icon={<CommunityFillIcon className="h-5 w-5" />} label="뜨개 모임" onClick={() => goTab("lounge")} />
+        <MenuRow icon={<CommunityFillIcon className="h-5 w-5" />} label="뜨개 모임" onClick={() => push({ name: "groups" })} />
       </Menu>
       <Menu title="고객 지원">
-        <MenuRow icon={<BellFillIcon className="h-5 w-5" />} label="공지사항" onClick={() => push({ name: "notifications" })} />
+        <MenuRow icon={<BellFillIcon className="h-5 w-5" />} label="공지사항" onClick={() => push({ name: "notices" })} />
         <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="고객센터" onClick={() => openSheet({ kind: "support" })} />
-        <MenuRow icon={<PencilFillIcon className="h-5 w-5" />} label="의견 남기기" onClick={() => push({ name: "chat" })} />
+        <MenuRow icon={<ChatFillIcon className="h-5 w-5" />} label="뜨니챗" onClick={() => push({ name: "chat" })} />
         <MenuRow
           icon={<FileTextFillIcon className="h-5 w-5" />}
           label="약관 및 정책"
@@ -116,7 +116,7 @@ export function MyScreen() {
 }
 
 export function ProfileScreen({ section }: { section?: "settings" }) {
-  const { data, patch, push } = useApp();
+  const { data, patch, push, openSheet } = useApp();
   const units: { id: UnitSystem; label: string }[] = [
     { id: "metric", label: "미터법" },
     { id: "imperial", label: "영미식" },
@@ -254,12 +254,18 @@ export function ProfileScreen({ section }: { section?: "settings" }) {
 
       <section className="mx-4 mt-4">
         <h2 className="text-[14px] font-bold">최근 7일 뜨개 기록</h2>
-        <svg viewBox="0 0 280 72" className="mt-2 h-16 w-full" aria-hidden>
-          <polyline fill="none" stroke="#f3b6c4" strokeWidth="2" points="16,48 58,48 100,40 142,48 184,36 226,48 264,44" />
-          {[16, 58, 100, 142, 184, 226, 264].map((x, index) => (
-            <circle key={x} cx={x} cy={[48, 48, 40, 48, 36, 48, 44][index]} r="3.5" fill="#f3b6c4" />
-          ))}
-        </svg>
+        <div className="relative mt-2 h-16">
+          <svg viewBox="0 0 7 72" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden>
+            <polyline fill="none" stroke="#f3b6c4" strokeWidth="2" vectorEffect="non-scaling-stroke" points="0.5,48 1.5,48 2.5,40 3.5,48 4.5,36 5.5,48 6.5,44" />
+          </svg>
+          <div className="absolute inset-0 grid grid-cols-7">
+            {[48, 48, 40, 48, 36, 48, 44].map((y, index) => (
+              <span key={DAYS[index]} className="relative">
+                <span className="absolute left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#f3b6c4]" style={{ top: `${(y / 72) * 100}%` }} />
+              </span>
+            ))}
+          </div>
+        </div>
         <div className="grid grid-cols-7 text-center text-[11px] text-[#bbb]">
           {DAYS.map((day) => (
             <span key={day}>{day}</span>
@@ -294,9 +300,16 @@ export function ProfileScreen({ section }: { section?: "settings" }) {
         </div>
         <ul className="grid grid-cols-3 gap-3 text-center">
           {STAMPS.map((stamp) => (
-            <li key={stamp.name} className={cx("text-[11px] leading-tight", stamp.on ? "text-[#7a4d55]" : "opacity-40 grayscale")}>
-              <img src={stamp.image} alt="" className="mx-auto h-14 w-14 object-contain" />
-              <p className="mt-1 line-clamp-2">{stamp.name}</p>
+            <li key={stamp.name}>
+              <button
+                type="button"
+                disabled={stamp.on}
+                onClick={() => openSheet({ kind: "info", title: stamp.name, body: stamp.how })}
+                className={cx("w-full text-[11px] leading-tight", stamp.on ? "text-[#7a4d55]" : "opacity-40 grayscale")}
+              >
+                <img src={stamp.image} alt="" className="mx-auto h-14 w-14 object-contain" />
+                <p className="mt-1 line-clamp-2">{stamp.name}</p>
+              </button>
             </li>
           ))}
         </ul>
@@ -411,6 +424,81 @@ export function OrdersScreen({ tab = "sell" }: { tab?: "sell" | "buy" }) {
           </ul>
         )}
       </section>
+    </div>
+  );
+}
+
+export function PostsScreen() {
+  const { data } = useApp();
+  return (
+    <div className="px-4 pb-10">
+      <p className="text-[13px] text-[#888]">{data.nickname}님이 남긴 글만 모았어요.</p>
+      <ul className="mt-3 space-y-3">
+        {MY_POSTS.map((post) => (
+          <li key={post.id} className="overflow-hidden rounded-lg border border-[#f0f0f0]">
+            <img src={post.image} alt="" className="aspect-square w-full object-cover" />
+            <div className="px-4 py-3">
+              <p className="text-[12px] text-[#999]">{post.date}</p>
+              <p className="mt-1 text-[16px] font-bold">{post.title}</p>
+              <p className="mt-1 text-[14px] leading-relaxed">{post.body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function CommentsScreen() {
+  const { data } = useApp();
+  return (
+    <div className="px-4 pb-10">
+      <p className="text-[13px] text-[#888]">{data.nickname}님이 남긴 댓글만 모았어요.</p>
+      <ul className="mt-3 space-y-3">
+        {MY_COMMENTS.map((comment) => (
+          <li key={comment.id} className="rounded-lg border border-[#f0f0f0] px-4 py-3">
+            <p className="text-[12px] text-[#999]">{comment.date}</p>
+            <p className="mt-1 text-[13px] font-semibold text-[#666]">{comment.where}</p>
+            <p className="mt-1 text-[15px] leading-relaxed">{comment.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function GroupsScreen() {
+  return (
+    <div className="px-4 pb-10">
+      <p className="text-[13px] text-[#888]">모임 안내는 둘러보기만 할 수 있어요.</p>
+      <ul className="mt-3 space-y-3">
+        {GROUPS.map((group) => (
+          <li key={group.id} className="pointer-events-none rounded-lg border border-[#f0f0f0] px-4 py-3">
+            <p className="text-[16px] font-bold">{group.name}</p>
+            <p className="mt-1 text-[13px] text-[#666]">
+              {group.place} · {group.when}
+            </p>
+            <p className="mt-1 text-[12px] text-[#999]">멤버 {group.members}명</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function NoticesScreen() {
+  return (
+    <div className="px-4 pb-10">
+      <p className="text-[13px] text-[#888]">앱에서 전하는 공지예요.</p>
+      <ul className="mt-3 space-y-3">
+        {NOTICES.map((notice) => (
+          <li key={notice.id} className="rounded-lg border border-[#f0f0f0] px-4 py-3">
+            <p className="text-[12px] text-[#999]">{notice.date}</p>
+            <p className="mt-1 text-[16px] font-bold">{notice.title}</p>
+            <p className="mt-1 text-[14px] leading-relaxed">{notice.body}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

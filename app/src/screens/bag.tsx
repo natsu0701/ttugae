@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock, media } from "../data.ts";
+import { NEEDLE_CATEGORIES, PATTERNS, YARN_CATEGORIES, ballsLabel, formatClock, media, naviSteps } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { BagTab, Needle, Project, Yarn } from "../types.ts";
 import type { SortDir, SortField } from "../types.ts";
@@ -8,7 +8,7 @@ import { CheckIcon, ChevronDown, ChevronRight, DoneMark, DragScroll, Fab, Filter
 const TABS: { id: BagTab; label: string }[] = [
   { id: "projects", label: "프로젝트" },
   { id: "done", label: "완성작" },
-  { id: "yarn", label: "실장고" },
+  { id: "yarn", label: "실 창고" },
   { id: "needles", label: "바늘 창고" },
 ];
 
@@ -17,12 +17,14 @@ export function BagScreen() {
   return (
     <div className="pb-28">
       <div className="sticky top-0 z-20 bg-white">
-        <div className="flex items-center justify-center gap-1 pt-1">
-          <h1 className="text-[18px] font-bold">뜨개가방</h1>
-          <InfoButton
-            title="뜨개가방"
-            body={"진행 중인 프로젝트, 완성작, 실, 바늘을 한곳에 모아 둬요.\n카드의 + 로 새로 추가하고, 휴지통으로 실장고에서 뺄 수 있어요."}
-          />
+        <div className="relative flex h-12 items-center px-1">
+          <h1 className="pointer-events-none absolute inset-x-12 text-center text-[18px] font-bold">뜨개가방</h1>
+          <span className="relative z-10 ml-auto">
+            <InfoButton
+              title="뜨개가방"
+              body={"진행 중인 프로젝트, 완성작, 실, 바늘을 한곳에 모아 둬요.\n카드의 + 로 새로 추가하고, 휴지통으로 실 창고에서 뺄 수 있어요."}
+            />
+          </span>
         </div>
         <div className="mt-3">
           <UnderlineTabs value={bagTab} options={TABS} onChange={setBagTab} />
@@ -42,6 +44,26 @@ export function BagScreen() {
     </div>
   );
 }
+
+const YARN_COLORS: Record<string, string> = {
+  울: "#c4a484",
+  면: "#f3c1b8",
+  린넨: "#e6d3b4",
+  모헤어: "#f4e4c4",
+  트위드: "#8d8478",
+  아크릴: "#7eb6d6",
+  폴리에스터: "#e7b7b2",
+  레이스: "#f7f1ea",
+  캐시미어: "#e8d5c4",
+  알파카: "#d9c4a0",
+  실크: "#f6e27a",
+  앙고라: "#f7f4f2",
+  뱀부: "#b7d7a8",
+  양말실: "#6f8fbf",
+  부클레: "#c98686",
+  테이프사: "#f2d2a9",
+  코튼: "#f3c1b8",
+};
 
 const CATEGORY_IMAGES: Record<string, string> = {
   코튼: media("media/swatch-pink.jpg"),
@@ -72,11 +94,17 @@ function CategoryRow({
           const active = value === item;
           return (
             <button key={item} type="button" onClick={() => onChange(active ? null : item)} className="w-16 shrink-0 text-center">
-              <img
-                src={CATEGORY_IMAGES[item]}
-                alt=""
-                className={cx("mx-auto block h-14 w-14 rounded-full border-2 object-cover", active ? "border-ink" : "border-white")}
-              />
+              {YARN_COLORS[item] ? (
+                <span className={cx("mx-auto grid h-14 w-14 place-items-center rounded-full border-2", active ? "border-ink" : "border-white")} style={{ background: YARN_COLORS[item] }}>
+                  <YarnBallIcon light={item === "앙고라" || item === "레이스" || item === "실크"} />
+                </span>
+              ) : (
+                <img
+                  src={CATEGORY_IMAGES[item]}
+                  alt=""
+                  className={cx("mx-auto block h-14 w-14 rounded-full border-2 object-cover", active ? "border-ink" : "border-white")}
+                />
+              )}
               <span className="mt-1 block text-[12px]">{item}</span>
             </button>
           );
@@ -93,7 +121,7 @@ function ProjectPane() {
   const current = projects[0];
   return (
     <div>
-      <CategoryRow items={YARN_CATEGORIES} value={category} onChange={setCategory} />
+      <CategoryRow items={[...new Set(data.projects.map((project) => project.category))]} value={category} onChange={setCategory} />
       {current ? (
         <section className="px-4 pt-2">
           <h2 className="text-[16px] font-bold">진행 중인 프로젝트</h2>
@@ -372,7 +400,7 @@ function YarnPane() {
       <DragScroll className="mt-3 flex gap-3 overflow-x-auto px-4">
         {recent.map((yarn) => (
           <button key={yarn.id} type="button" onClick={() => push({ name: "yarn", id: yarn.id })} className="w-36 shrink-0 rounded-lg border border-[#f0f0f0] p-2 text-left">
-            <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
+            <YarnColorMark color={yarnMark(yarn)} className="aspect-square w-full" />
             <p className="mt-2 truncate text-[13px] font-bold">{yarn.name}</p>
             <p className="truncate text-[11px] text-[#999]">{yarn.code}</p>
             <p className="text-[11px] text-[#999]">
@@ -382,6 +410,7 @@ function YarnPane() {
         ))}
       </DragScroll>
       <h2 className="px-4 pt-6 text-[16px] font-bold">모든 실</h2>
+      {yarns.length === 0 ? <p className="px-4 py-8 text-center text-[14px] text-[#888]">이 카테고리의 실이 아직 없어요.</p> : null}
       <ul className="mt-3 space-y-3 px-4">
         {yarns.map((yarn) => (
           <YarnRow
@@ -390,7 +419,7 @@ function YarnPane() {
             onOpen={() => push({ name: "yarn", id: yarn.id })}
             onRemove={() => {
               removeYarn(yarn.id);
-              notify("실장고에서 뺐어요");
+              notify("실 창고에서 뺐어요");
             }}
           />
         ))}
@@ -404,13 +433,13 @@ function YarnRow({ yarn, onOpen, onRemove }: { yarn: Yarn; onOpen: () => void; o
     <li className="rounded-lg border border-[#f0f0f0] p-3">
       <div className="flex gap-3">
         <button type="button" onClick={onOpen} className="flex flex-1 gap-3 text-left">
-          <img src={yarn.image} alt="" className="h-16 w-16 rounded-lg object-cover" />
+          <YarnColorMark color={yarnMark(yarn)} />
           <span>
             <span className="rounded-full bg-[#f6f6f6] px-2 py-0.5 text-[11px]">{yarn.category}</span>
             <span className="mt-1 block font-bold">{yarn.name}</span>
-            <span className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><PencilIcon /> {yarn.code}</span>
+            <span className="mt-1 flex items-center gap-1 text-[12px] text-[#777]"><YarnDot color={yarnMark(yarn)} /> {yarn.code}</span>
             <span className="flex items-center gap-1 text-[12px] text-[#777]">
-              <PencilIcon /> {yarn.thickness} · {ballsLabel(yarn.balls)}
+              <YarnDot color={yarnMark(yarn)} /> {yarn.thickness} · {ballsLabel(yarn.balls)}
             </span>
           </span>
         </button>
@@ -528,7 +557,7 @@ export function ProjectScreen({ id }: { id: string }) {
             </button>
           ))}
         </div>
-        <button type="button" onClick={() => push({ name: "camera", id: project.id })} className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-blush font-semibold text-white">
+        <button type="button" onClick={() => push({ name: "navi", id: project.id })} className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-blush font-semibold text-white">
           <NaviIcon />
           뜨개내비
         </button>
@@ -608,17 +637,45 @@ export function MiniChart() {
   );
 }
 
+const COLOR_NAMES: Record<string, string> = {
+  "더스티 핑크": "#e8b7b0",
+  "헤더 그레이": "#a39e99",
+  로즈: "#e7b7b2",
+  "베이비 핑크": "#f3b6c0",
+  샌드: "#e6d3b4",
+};
+
+function yarnMark(yarn: Yarn) {
+  return COLOR_NAMES[yarn.colorName] ?? YARN_COLORS[yarn.category] ?? "#c4a484";
+}
+
+function YarnColorMark({ color, className = "h-16 w-16" }: { color: string; className?: string }) {
+  return (
+    <span className={cx("grid shrink-0 place-items-center rounded-lg", className)} style={{ background: color }}>
+      <YarnBallIcon light={color === "#f7f4f2" || color === "#f7f1ea" || color === "#f6e27a"} />
+    </span>
+  );
+}
+
+function YarnDot({ color }: { color: string }) {
+  return <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: color }} />;
+}
+
+function YarnBallIcon({ light = false }: { light?: boolean }) {
+  const tone = light ? "#1c1c1c" : "#fff";
+  return (
+    <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden>
+      <circle cx="12" cy="12" r="7.2" fill="none" stroke={tone} strokeWidth="1.6" />
+      <path d="M8 9.5c2.2 1.2 5.8 1.2 8 0M8.4 12.2c2.1 1.1 5.1 1.1 7.2 0M9.2 15c1.6.7 3.8.7 5.4 0" fill="none" stroke={tone} strokeWidth="1.3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function NaviScreen({ id }: { id: string }) {
-  const { data, toggleNavi } = useApp();
+  const { data, toggleNavi, push } = useApp();
   const project = data.projects.find((item) => item.id === id);
   const done = new Set(data.naviDone[id] ?? []);
-  const steps = [
-    "코 120개로 사슬을 시작해요",
-    "고무단을 8단 떠요",
-    "몸통 무늬를 23단까지 올려요",
-    `${project?.parts[0]?.name ?? "소매"}를 이어서 떠요`,
-    "시보리로 마감하고 실을 정리해요",
-  ];
+  const steps = naviSteps(project?.parts.find((part) => !part.done)?.name ?? project?.parts[0]?.name ?? "소매");
   const next = steps.findIndex((step) => !done.has(step));
   return (
     <div className="px-4 pb-10">
@@ -649,6 +706,14 @@ export function NaviScreen({ id }: { id: string }) {
           );
         })}
       </ol>
+      <button
+        type="button"
+        onClick={() => push({ name: "camera", id })}
+        className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-blush font-semibold text-white"
+      >
+        <NaviIcon />
+        {next >= 0 ? "이 단계로 카메라 켜기" : "카메라로 뜨기"}
+      </button>
     </div>
   );
 }

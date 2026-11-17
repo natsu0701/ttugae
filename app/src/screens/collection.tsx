@@ -359,7 +359,7 @@ function CollectionBrowse() {
             {popular.map((item) => (
               <li key={item.id} className="w-36 shrink-0">
                 <button type="button" onClick={() => push({ name: "collection", id: item.id })} className="w-full text-left">
-                  <img src={item.image} alt="" className="aspect-[3/4] w-full rounded-lg object-cover" />
+                  <img src={item.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
                   <span className="mt-2 block text-[14px] font-bold">{item.title}</span>
                   <span className="block text-[12px] text-[#888]">{item.fiber}</span>
                 </button>

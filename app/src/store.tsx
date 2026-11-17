@@ -203,6 +203,10 @@ function hashToRoute(hash: string): Route {
     "chat",
     "ranking",
     "notifications",
+    "posts",
+    "comments",
+    "groups",
+    "notices",
     "likes",
     "cart",
   ];

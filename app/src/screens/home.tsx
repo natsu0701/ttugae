@@ -105,7 +105,7 @@ function HomePane() {
             <div className="px-4 pb-4">
               <button
                 type="button"
-                onClick={() => push({ name: "camera", id: project.id })}
+                onClick={() => push({ name: "navi", id: project.id })}
                 className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-blush font-semibold text-white"
               >
                 <NaviIcon />
