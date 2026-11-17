@@ -172,7 +172,7 @@ function Shell() {
             <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
               <ChevronLeft />
             </button>
-            <h1 className={`flex min-w-0 flex-1 items-center justify-center gap-1 text-[17px] font-bold ${route.name === "gauge" || route.name === "counters" ? "" : "pr-10"}`}>
+            <h1 className={`flex min-w-0 flex-1 items-center justify-center gap-1 text-[17px] font-semibold ${route.name === "gauge" || route.name === "counters" ? "" : "pr-10"}`}>
               <span className="truncate">{titleFor(route, data)}</span>
               {route.name === "collection" ? (
                 <button

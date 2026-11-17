@@ -52,7 +52,7 @@ export function LoginScreen() {
       <div className="mx-auto mt-10 w-[16.5rem] max-w-full">
         <Wordmark className="w-full" />
       </div>
-      <p className="mt-4 text-center text-[14px] font-medium leading-relaxed text-white">
+      <p className="mt-4 text-center text-[15px] font-medium leading-relaxed text-white">
         따뜻한 뜨개질 이야기,
         <br />
         함께 나누어요
@@ -89,7 +89,7 @@ export function LoginScreen() {
           />
         </label>
         {error ? <p className="text-center text-[12px] text-white">{error}</p> : null}
-        <button type="submit" className="h-12 w-full rounded-full bg-white text-[15px] font-bold text-ink">
+        <button type="submit" className="h-12 w-full rounded-full bg-white text-[17px] font-semibold text-ink">
           로그인
         </button>
       </form>
@@ -171,10 +171,10 @@ export function SignupScreen() {
 
   return (
     <div className="flex min-h-full w-full flex-1 flex-col bg-blush-wash px-6 pb-10 pt-4 text-white">
-      <button type="button" onClick={back} className="self-start text-left text-[14px]">
+      <button type="button" onClick={back} className="self-start text-left text-[15px]">
         뒤로
       </button>
-      <h1 className="mt-6 text-[24px] font-bold">회원가입</h1>
+      <h1 className="mt-6 text-[28px] font-bold leading-[34px]">회원가입</h1>
       <p className="mt-1 text-[13px] text-white/90">가입하면 단위와 도구를 고르는 안내로 이어져요.</p>
       <form
         className="mt-6 space-y-3"
@@ -202,11 +202,11 @@ export function ForgotScreen() {
   const [sent, setSent] = useState(false);
   return (
     <div className="min-h-full bg-white px-6 pb-10">
-      <button type="button" onClick={back} className="mt-2 text-[14px]">
+      <button type="button" onClick={back} className="mt-2 text-[15px]">
         뒤로
       </button>
-      <h1 className="mt-6 text-[24px] font-bold">비밀번호 찾기</h1>
-      <p className="mt-2 text-[14px] leading-relaxed text-[#777]">가입한 이메일로 재설정 안내를 보내요.</p>
+      <h1 className="mt-6 text-[28px] font-bold leading-[34px]">비밀번호 찾기</h1>
+      <p className="mt-2 text-[17px] leading-[22px] text-[#777]">가입한 이메일로 재설정 안내를 보내요.</p>
       <form
         className="mt-6 space-y-3"
         onSubmit={(event) => {
@@ -260,7 +260,7 @@ export function OnboardingScreen() {
           <OnboardingProgress step={step} />
           {step < 5 ? (
             <>
-              <h1 className="mt-8 whitespace-pre-wrap text-[26px] font-bold leading-snug">{SLIDES[step]}</h1>
+              <h1 className="mt-8 whitespace-pre-wrap text-[28px] font-bold leading-[34px]">{SLIDES[step]}</h1>
               <div className="mt-4 min-h-0 flex-1">
                 <img src={onboardingArt(step)} alt="" className="max-h-full w-full object-contain object-top" />
               </div>
@@ -274,7 +274,7 @@ export function OnboardingScreen() {
         {last ? (
           <>
             <BlackButton onClick={() => push({ name: "skill" })}>실력 측정하기</BlackButton>
-            <button type="button" onClick={() => finishOnboarding(null)} className="h-10 w-full text-[14px] text-[#888]">
+            <button type="button" onClick={() => finishOnboarding(null)} className="h-10 w-full text-[15px] text-[#888]">
               건너뛰기
             </button>
           </>
@@ -298,7 +298,7 @@ export function OnboardingScreen() {
 function UnitStep({ unit, onChange }: { unit: UnitSystem; onChange: (unit: UnitSystem) => void }) {
   return (
     <div className="flex-1 pt-10">
-      <h1 className="whitespace-pre-wrap text-[26px] font-bold leading-snug">{"단위를 어떻게\n표시할까요?"}</h1>
+      <h1 className="whitespace-pre-wrap text-[28px] font-bold leading-[34px]">{"단위를 어떻게\n표시할까요?"}</h1>
       <p className="mt-2 text-[13px] text-[#999]">나중에 설정에서 변경할 수 있어요.</p>
       <div className="mt-6 grid gap-3">
         <Choice active={unit === "metric"} onClick={() => onChange("metric")} title="미터법 (m, cm, mm)" />
@@ -312,7 +312,7 @@ function ToolStep({ tool, onChange }: { tool: ToolKind | null; onChange: (tool: 
   const tools: ToolKind[] = ["코바늘", "대바늘", "손뜨개"];
   return (
     <div className="flex-1 pt-10">
-      <h1 className="text-[26px] font-bold">주로 쓰는 도구는?</h1>
+      <h1 className="text-[28px] font-bold leading-[34px]">주로 쓰는 도구는?</h1>
       <div className="mt-6 grid grid-cols-3 gap-2">
         {tools.map((item) => (
           <button
@@ -320,7 +320,7 @@ function ToolStep({ tool, onChange }: { tool: ToolKind | null; onChange: (tool: 
             type="button"
             onClick={() => onChange(item)}
             className={cx(
-              "h-24 rounded-lg border text-[14px] font-semibold",
+              "h-24 rounded-lg border text-[15px] font-semibold",
               tool === item ? "border-blush bg-blush-soft" : "border-[#eee]",
             )}
           >
@@ -381,13 +381,13 @@ export function SkillScreen() {
     return (
       <div className="flex min-h-full flex-col items-center px-6 pb-10 pt-16 text-center">
         <Mascot mood="cheer" className="h-40 w-40" />
-        <p className="mt-4 text-[14px] text-[#888]">지금 나의 뜨개 실력은</p>
-        <h1 className="mt-1 text-[32px] font-bold">{done}</h1>
-        <p className="mt-2 text-[14px] leading-relaxed text-[#777]">마이페이지에서 언제든 다시 볼 수 있어요.</p>
+        <p className="mt-4 text-[15px] text-[#888]">지금 나의 뜨개 실력은</p>
+        <h1 className="mt-1 text-[34px] font-bold leading-[41px]">{done}</h1>
+        <p className="mt-2 text-[17px] leading-[22px] text-[#777]">마이페이지에서 언제든 다시 볼 수 있어요.</p>
         <BlackButton className="mt-8" onClick={() => finishOnboarding(done)}>
           홈으로
         </BlackButton>
-        <button type="button" onClick={back} className="mt-3 h-12 w-full rounded-full bg-[#f4f4f4] text-[15px] font-semibold">
+        <button type="button" onClick={back} className="mt-3 h-12 w-full rounded-full bg-[#f4f4f4] text-[17px] font-semibold">
           취소
         </button>
       </div>
@@ -399,7 +399,7 @@ export function SkillScreen() {
       <p className="text-[13px] text-[#999]">
         {index + 1} / {QUIZ.length}
       </p>
-      <h1 className="mt-3 text-[24px] font-bold leading-snug">{current.q}</h1>
+      <h1 className="mt-3 text-[28px] font-bold leading-[34px]">{current.q}</h1>
       <div className="mt-6 grid gap-3">
         {current.options.map((option, optionIndex) => (
           <button
@@ -412,7 +412,7 @@ export function SkillScreen() {
           </button>
         ))}
       </div>
-      <button type="button" onClick={back} className="mt-6 h-12 w-full rounded-full bg-[#f4f4f4] text-[15px] font-semibold">
+      <button type="button" onClick={back} className="mt-6 h-12 w-full rounded-full bg-[#f4f4f4] text-[17px] font-semibold">
         취소
       </button>
     </div>

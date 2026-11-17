@@ -36,10 +36,10 @@ export function GaugeHelpScreen() {
         게이지 확인으로 사이즈 오차를 막을 수 있어요.
       </p>
       <div className="mt-4 flex gap-2">
-        <button type="button" onClick={() => setTab("tutorial")} className={cx("h-11 flex-1 rounded-full text-[14px] font-semibold", tab === "tutorial" ? "bg-ink text-white" : "border border-[#e4e4e4] bg-white")}>
+        <button type="button" onClick={() => setTab("tutorial")} className={cx("h-11 flex-1 rounded-full text-[15px] font-semibold", tab === "tutorial" ? "bg-ink text-white" : "border border-[#e4e4e4] bg-white")}>
           튜토리얼
         </button>
-        <button type="button" onClick={() => setTab("navi")} className={cx("h-11 flex-1 rounded-full text-[14px] font-semibold", tab === "navi" ? "bg-ink text-white" : "border border-[#e4e4e4] bg-white")}>
+        <button type="button" onClick={() => setTab("navi")} className={cx("h-11 flex-1 rounded-full text-[15px] font-semibold", tab === "navi" ? "bg-ink text-white" : "border border-[#e4e4e4] bg-white")}>
           뜨개 내비
         </button>
       </div>
@@ -84,9 +84,9 @@ function NaviHelp() {
         <section key={step.n}>
           <h2 className="flex items-center gap-2">
             <span className="text-[32px] font-black leading-none text-blush">{step.n}</span>
-            <span className="text-[18px] font-bold leading-none">{step.title}</span>
+            <span className="text-[20px] font-bold leading-none">{step.title}</span>
           </h2>
-          <p className="mt-1 text-[14px] leading-relaxed text-[#555]">{step.body}</p>
+          <p className="mt-1 text-[17px] leading-[22px] text-[#555]">{step.body}</p>
         </section>
       ))}
       <div className="flex items-end justify-end gap-2 pt-2">
@@ -150,8 +150,8 @@ function Calculator() {
       </BlackButton>
       {calcResult !== null ? (
         <div className="mt-4 rounded-lg border border-blush px-4 py-5 text-center">
-          <p className="text-[14px]">계산 결과</p>
-          <p className="text-[36px] font-bold">{calcResult}코</p>
+          <p className="text-[15px]">계산 결과</p>
+          <p className="text-[34px] font-bold leading-[41px]">{calcResult}코</p>
           <p className="text-[12px] text-[#999]">(올림 처리된 값)</p>
         </div>
       ) : null}
@@ -310,7 +310,7 @@ function GaugeList() {
   if (data.gauges.length === 0) {
     return (
       <div className="grid place-items-center px-8 pt-16 text-center">
-        <span className="rounded-lg bg-[#f4f4f4] px-4 py-3 text-[14px] leading-relaxed">
+        <span className="rounded-lg bg-[#f4f4f4] px-4 py-3 text-[17px] leading-[22px]">
           세탁 전후 게이지,
           <br />
           뜨니가 체크해 드려요!
@@ -356,7 +356,7 @@ function GaugeList() {
 export function GaugeDetailScreen({ id }: { id: string }) {
   const { data, push } = useApp();
   const gauge = data.gauges.find((item) => item.id === id);
-  if (!gauge) return <p className="px-6 py-16 text-center text-[14px]">게이지를 찾지 못했어요.</p>;
+  if (!gauge) return <p className="px-6 py-16 text-center text-[15px]">게이지를 찾지 못했어요.</p>;
   const project = data.projects.find((item) => item.id === gauge.projectId);
   return (
     <div className="px-4 pb-12">
@@ -383,7 +383,7 @@ export function GaugeDetailScreen({ id }: { id: string }) {
         <InfoRow label="세탁 후" value={gauge.after} />
         <div className="memo-lines rounded-lg border border-[#f0f0f0] border-l-4 border-l-blush px-4 py-3">
           <p className="text-[12px] text-[#999]">메모</p>
-          <p className="mt-1 whitespace-pre-wrap text-[14px] leading-7">{gauge.memo?.trim() || "적어 둔 메모가 없어요."}</p>
+          <p className="mt-1 whitespace-pre-wrap text-[15px] leading-7">{gauge.memo?.trim() || "적어 둔 메모가 없어요."}</p>
         </div>
       </div>
     </div>
@@ -436,11 +436,11 @@ export function GaugeFormScreen() {
       }}
     >
       {done ? <DoneMark message={"게이지 등록을\n완료했어요!"} onDone={back} /> : null}
-      <label className="block text-[14px] font-bold">
+      <label className="block text-[15px] font-bold">
         게이지 이름
         <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal outline-none" />
       </label>
-      <label className="block text-[14px] font-bold">
+      <label className="block text-[15px] font-bold">
         연결된 프로젝트
         <select value={projectId} onChange={(event) => setProjectId(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal">
           <option value="">프로젝트 없음</option>
@@ -451,7 +451,7 @@ export function GaugeFormScreen() {
           ))}
         </select>
       </label>
-      <label className="block text-[14px] font-bold">
+      <label className="block text-[15px] font-bold">
         실 정보
         <select value={yarnName} onChange={(event) => setYarnName(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal">
           {data.yarns.map((yarn) => (
@@ -459,7 +459,7 @@ export function GaugeFormScreen() {
           ))}
         </select>
       </label>
-      <label className="block text-[14px] font-bold">
+      <label className="block text-[15px] font-bold">
         바늘 정보
         <select value={needle} onChange={(event) => setNeedle(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal">
           {data.needles.map((item) => (
@@ -467,13 +467,13 @@ export function GaugeFormScreen() {
           ))}
         </select>
       </label>
-      <label className="block text-[14px] font-bold">
+      <label className="block text-[15px] font-bold">
         도안명
         <input value={pattern} onChange={(event) => setPattern(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-3 font-normal outline-none" />
       </label>
       <Pair title="세탁 전 게이지" sts={beforeSts} rows={beforeRows} onSts={setBeforeSts} onRows={setBeforeRows} />
       <Pair title="세탁 후 게이지" sts={afterSts} rows={afterRows} onSts={setAfterSts} onRows={setAfterRows} />
-      <label className="block text-[14px] font-bold">
+      <label className="block text-[15px] font-bold">
         메모
         <textarea value={memo} onChange={(event) => setMemo(event.target.value)} className="mt-2 h-24 w-full rounded-lg bg-[#f6f6f6] px-3 py-3 font-normal outline-none" />
       </label>
@@ -499,7 +499,7 @@ function Pair({
 }) {
   return (
     <div>
-      <p className="text-[14px] font-bold">{title}</p>
+      <p className="text-[15px] font-bold">{title}</p>
       <div className="mt-2 grid grid-cols-2 gap-2">
         <input value={sts} onChange={(event) => onSts(event.target.value)} placeholder="코수" aria-label={`${title} 코수`} className="h-11 rounded-xl bg-[#f6f6f6] px-3 outline-none" />
         <input value={rows} onChange={(event) => onRows(event.target.value)} placeholder="단수" aria-label={`${title} 단수`} className="h-11 rounded-xl bg-[#f6f6f6] px-3 outline-none" />
@@ -524,7 +524,7 @@ export function CounterListScreen() {
                 onCommit={(next) => renameCounter(counter.id, next)}
                 onOpen={() => push({ name: "counter", id: counter.id })}
                 label="카운터 이름"
-                className="text-[18px]"
+                className="text-[17px]"
               />
               <button type="button" onClick={() => push({ name: "counter", id: counter.id })} className="mt-0.5 text-[13px] text-[#999]">
                 카운터 {counter.rows.length}개
@@ -806,7 +806,7 @@ export function CounterScreen({ id }: { id: string }) {
   return (
     <div className="space-y-4 px-4 pb-10">
       <label className="block">
-        <span className="text-[14px] font-bold">카운터 이름</span>
+        <span className="text-[15px] font-bold">카운터 이름</span>
         <input
           value={counter.name}
           onChange={(event) => renameCounter(counter.id, event.target.value)}
@@ -815,11 +815,11 @@ export function CounterScreen({ id }: { id: string }) {
         />
       </label>
       <div className="rounded-lg border border-[#f2f2f2] p-4">
-        <span className="text-[14px] font-bold">연결 프로젝트</span>
+        <span className="text-[15px] font-bold">연결 프로젝트</span>
         <button
           type="button"
           onClick={() => setOpenProjects((value) => !value)}
-          className="mt-2 flex h-12 w-full items-center justify-between rounded-lg bg-[#f6f6f6] px-4 text-left text-[14px]"
+          className="mt-2 flex h-12 w-full items-center justify-between rounded-lg bg-[#f6f6f6] px-4 text-left text-[15px]"
           aria-expanded={openProjects}
         >
           <span className="truncate">{linked ? linked.title : "프로젝트 선택하기"}</span>
@@ -834,7 +834,7 @@ export function CounterScreen({ id }: { id: string }) {
                   setCounterProject(counter.id, null);
                   setOpenProjects(false);
                 }}
-                className={cx("w-full rounded-lg border px-4 py-3 text-left text-[14px]", !linked ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
+                className={cx("w-full rounded-lg border px-4 py-3 text-left text-[15px]", !linked ? "border-blush bg-blush-soft" : "border-[#f0f0f0]")}
               >
                 연결 안 함
               </button>
@@ -891,7 +891,7 @@ export function CounterScreen({ id }: { id: string }) {
                 onCommit={(next) => renameCounterRow(counter.id, row.id, next)}
                 onOpen={() => push({ name: "counter-run", id: counter.id, row: row.id })}
                 label="칸 이름"
-                className="text-[14px] text-white caret-white"
+                className="text-[15px] text-white caret-white"
                 dark
               />
             </div>
@@ -1071,7 +1071,7 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
             <path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-        <h1 className="truncate text-center text-[17px] font-bold">{title}</h1>
+        <h1 className="truncate text-center text-[17px] font-semibold">{title}</h1>
         <button type="button" onClick={finishWork} className="mr-1 h-8 rounded-full bg-black px-3 text-[13px] font-semibold">
           완료
         </button>
@@ -1096,7 +1096,7 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
         >
           <SpeakerGlyph off={!soundOn} />
         </button>
-        <p className="min-w-0 flex-1 text-center font-mono text-[18px] font-semibold tracking-wide">{clock}</p>
+        <p className="min-w-0 flex-1 text-center font-mono text-[17px] font-semibold tracking-wide">{clock}</p>
         <button
           type="button"
           aria-label="숫자 초기화"
@@ -1155,7 +1155,7 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
             aria-label="카운터 목록"
           >
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[#e6e6e6]" />
-            <h2 className="text-[17px] font-bold">카운터 목록</h2>
+            <h2 className="text-[17px] font-semibold">카운터 목록</h2>
             <ul className="mt-4 space-y-4">
               {data.counters.map((item) => (
                 <li key={item.id}>
@@ -1175,7 +1175,7 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
                             )}
                           >
                             <span className="font-semibold">{entry.label}</span>
-                            <span className="text-[18px] font-bold">{entry.value}</span>
+                            <span className="text-[20px] font-bold">{entry.value}</span>
                           </button>
                         </li>
                       );
@@ -1192,7 +1192,7 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
         <div className="absolute inset-0 z-20 flex items-end bg-black/35" onClick={() => setSettingsOpen(false)}>
           <div className="w-full rounded-t-lg bg-white px-5 pb-8 pt-4 text-ink" onClick={(event) => event.stopPropagation()} role="dialog" aria-label="세기 설정">
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[#e6e6e6]" />
-            <h2 className="text-[17px] font-bold">세기 설정</h2>
+            <h2 className="text-[17px] font-semibold">세기 설정</h2>
             <p className="mt-4 text-[13px] font-semibold text-[#888]">크기</p>
             <div className="mt-2 grid grid-cols-3 gap-2">
               {COUNT_SIZES.map((item) => (
@@ -1201,7 +1201,7 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
                   type="button"
                   aria-pressed={scale === item.id}
                   onClick={() => setScale(item.id)}
-                  className={cx("h-10 rounded-full text-[14px] font-semibold", scale === item.id ? "bg-ink text-white" : "bg-[#f6f6f6]")}
+                  className={cx("h-10 rounded-full text-[15px] font-semibold", scale === item.id ? "bg-ink text-white" : "bg-[#f6f6f6]")}
                 >
                   {item.label}
                 </button>
@@ -1249,10 +1249,10 @@ export function CounterRunScreen({ id, row }: { id: string; row: string }) {
                   setDraftValue(next);
                   if (next !== "") setCounterRowValue(counter.id, active.id, Number(next));
                 }}
-                className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[18px] font-semibold text-ink outline-none"
+                className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[17px] font-semibold text-ink outline-none"
               />
             </label>
-            <button type="button" onClick={() => setSettingsOpen(false)} className="mt-5 h-11 w-full rounded-full bg-[#f6f6f6] text-[14px] font-semibold">
+            <button type="button" onClick={() => setSettingsOpen(false)} className="mt-5 h-11 w-full rounded-full bg-[#f6f6f6] text-[15px] font-semibold">
               닫기
             </button>
           </div>
@@ -1434,7 +1434,7 @@ export function ChatScreen() {
         {messages.map((message, index) => (
           <div key={`${message.from}-${index}`} className={cx("flex", message.from === "me" ? "justify-end" : "justify-start gap-2")}>
             {message.from === "bot" ? <Mascot className="h-11 w-11 shrink-0" /> : null}
-            <p className={cx("max-w-[75%] rounded-lg px-3 py-2 text-[14px] leading-relaxed", message.from === "me" ? "bg-ink text-white" : "bg-[#f5f5f5]")}>
+            <p className={cx("max-w-[75%] rounded-lg px-3 py-2 text-[17px] leading-[22px]", message.from === "me" ? "bg-ink text-white" : "bg-[#f5f5f5]")}>
               {message.text}
             </p>
           </div>
@@ -1455,7 +1455,7 @@ export function ChatScreen() {
         }}
       >
         <input value={text} onChange={(event) => setText(event.target.value)} placeholder="뜨니에게 물어보기" aria-label="메시지" className="h-11 flex-1 rounded-full bg-[#f6f6f6] px-4 outline-none" />
-        <button type="submit" className="h-11 shrink-0 rounded-full bg-blush px-4 text-[14px] font-semibold text-white">
+        <button type="submit" className="h-11 shrink-0 rounded-full bg-blush px-4 text-[15px] font-semibold text-white">
           보내기
         </button>
       </form>

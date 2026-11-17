@@ -17,7 +17,7 @@ function yarnDot(color: string) {
 export function YarnScreen({ id }: { id: string }) {
   const { data, goTab, setBalls } = useApp();
   const yarn = data.yarns.find((item) => item.id === id);
-  if (!yarn) return <p className="px-6 py-16 text-center text-[14px]">실을 찾지 못했어요.</p>;
+  if (!yarn) return <p className="px-6 py-16 text-center text-[15px]">실을 찾지 못했어요.</p>;
   return (
     <div className="pb-10">
       <div className="mt-1">
@@ -66,7 +66,7 @@ export function YarnScreen({ id }: { id: string }) {
         </section>
         <section className="memo-lines mt-3 rounded-lg border border-[#f0f0f0] border-l-4 border-l-blush px-4 py-3">
           <p className="text-[12px] text-[#999]">메모</p>
-          <p className="whitespace-pre-wrap text-[14px] leading-7">{yarn.memo}</p>
+          <p className="whitespace-pre-wrap text-[15px] leading-7">{yarn.memo}</p>
         </section>
         <ShopCard name={yarn.shop} url={yarn.shopUrl} />
       </div>
@@ -77,7 +77,7 @@ export function YarnScreen({ id }: { id: string }) {
 export function NeedleScreen({ id }: { id: string }) {
   const { data, goTab } = useApp();
   const needle = data.needles.find((item) => item.id === id);
-  if (!needle) return <p className="px-6 py-16 text-center text-[14px]">바늘을 찾지 못했어요.</p>;
+  if (!needle) return <p className="px-6 py-16 text-center text-[15px]">바늘을 찾지 못했어요.</p>;
   return (
     <div className="pb-10">
       <div className="mt-1">
@@ -113,7 +113,7 @@ export function NeedleScreen({ id }: { id: string }) {
         </section>
         <section className="memo-lines mt-3 rounded-lg border border-[#f0f0f0] border-l-4 border-l-blush px-4 py-3">
           <p className="text-[12px] text-[#999]">메모</p>
-          <p className="whitespace-pre-wrap text-[14px] leading-7">{needle.memo}</p>
+          <p className="whitespace-pre-wrap text-[15px] leading-7">{needle.memo}</p>
         </section>
         <ShopCard name={needle.shop} url={needle.shopUrl} />
       </div>
@@ -125,7 +125,7 @@ function Spec({ icon, value, label }: { icon: ReactNode; value: string; label: s
   return (
     <div className="rounded-[22px] border border-[#f0f0f0] px-3 py-3">
       <p className="text-[16px]">{icon}</p>
-      <p className="mt-1 text-[14px] font-bold">{value}</p>
+      <p className="mt-1 text-[15px] font-bold">{value}</p>
       <p className="text-[12px] text-[#999]">{label}</p>
     </div>
   );

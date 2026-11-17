@@ -243,7 +243,7 @@ function CollectionBrowse() {
               onChange={(event) => setQuery(event.target.value)}
               placeholder="실 이름을 검색해보세요."
               aria-label="도안 검색"
-              className="w-full bg-transparent text-[14px] outline-none placeholder:text-[#b0b0b0]"
+              className="w-full bg-transparent text-[15px] outline-none placeholder:text-[#b0b0b0]"
             />
             <SearchIcon />
           </label>
@@ -281,7 +281,7 @@ function CollectionBrowse() {
 
       {liked.length > 0 ? (
         <section className="px-4 pt-5">
-          <h2 className="text-[18px] font-bold">좋아요한 작품</h2>
+          <h2 className="text-[20px] font-bold">좋아요한 작품</h2>
           <ul className="mt-3 grid grid-cols-3 gap-2">
             {liked.map((work) => (
               <li key={work.id}>
@@ -315,7 +315,7 @@ function CollectionBrowse() {
       {recent ? (
         <section className="px-4 pt-6">
           <p className="text-[12px] text-[#999]">최근 사용</p>
-          <h2 className="text-[18px] font-bold">가장 최근에 사용한 도안</h2>
+          <h2 className="text-[20px] font-bold">가장 최근에 사용한 도안</h2>
           <button type="button" onClick={() => push({ name: "collection", id: recent.id })} className="mt-3 block w-full text-left">
             <img src={recent.image} alt="" className="aspect-[16/10] w-full rounded-lg object-cover" />
             <span className="mt-2 block text-[15px] font-bold">{recent.title}</span>
@@ -325,20 +325,20 @@ function CollectionBrowse() {
 
       <section className="px-4 pt-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-[18px] font-bold">모든 도안</h2>
+          <h2 className="text-[20px] font-bold">모든 도안</h2>
           <button type="button" onClick={() => setFiber(null)} className="text-[13px] text-[#999]">
             더 보기
           </button>
         </div>
         {all.length === 0 ? (
-          <p className="py-10 text-center text-[14px] text-[#888]">해당하는 도안이 없어요.</p>
+          <p className="py-10 text-center text-[15px] text-[#888]">해당하는 도안이 없어요.</p>
         ) : (
           <ul className="mt-3 grid grid-cols-2 gap-3">
             {all.map((item) => (
               <li key={item.id}>
                 <button type="button" onClick={() => push({ name: "collection", id: item.id })} className="w-full text-left">
                   <img src={item.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
-                  <span className="mt-2 block text-[14px] font-bold">{item.title}</span>
+                  <span className="mt-2 block text-[15px] font-bold">{item.title}</span>
                   <span className="mt-0.5 block text-[12px] leading-snug text-[#888]">{item.blurb}</span>
                 </button>
               </li>
@@ -351,7 +351,7 @@ function CollectionBrowse() {
       {popular.length > 0 ? (
         <section className="pt-7">
           <div className="flex items-center justify-between px-4">
-            <h2 className="text-[18px] font-bold">지금 인기</h2>
+            <h2 className="text-[20px] font-bold">지금 인기</h2>
             <ChevronRight />
           </div>
           <p className="px-4 text-[12px] text-[#999]">지금 주목받고 있는 도안을 살펴보세요.</p>
@@ -360,7 +360,7 @@ function CollectionBrowse() {
               <li key={item.id} className="w-36 shrink-0">
                 <button type="button" onClick={() => push({ name: "collection", id: item.id })} className="w-full text-left">
                   <img src={item.image} alt="" className="aspect-[3/4] w-full rounded-lg object-cover" />
-                  <span className="mt-2 block text-[14px] font-bold">{item.title}</span>
+                  <span className="mt-2 block text-[15px] font-bold">{item.title}</span>
                   <span className="block text-[12px] text-[#888]">{item.fiber}</span>
                 </button>
               </li>
@@ -401,7 +401,7 @@ function PatternDetail({ pattern }: { pattern: PatternCard }) {
       </div>
       {menu ? (
         <div className="mx-4 mt-2 overflow-hidden rounded-lg border border-[#eee]">
-          <button type="button" onClick={() => push({ name: "project-form" })} className="block w-full px-4 py-3 text-left text-[14px]">
+          <button type="button" onClick={() => push({ name: "project-form" })} className="block w-full px-4 py-3 text-left text-[15px]">
             이 도안으로 프로젝트 만들기
           </button>
         </div>
@@ -410,7 +410,7 @@ function PatternDetail({ pattern }: { pattern: PatternCard }) {
       <DragScroll as="ul" className="mt-5 flex gap-2 overflow-x-auto px-4 pb-1">
         {pattern.parts.map((part) => (
           <li key={part.name} className="w-24 shrink-0">
-            <p className="text-[14px] font-bold">{part.name}</p>
+            <p className="text-[15px] font-bold">{part.name}</p>
             <p className="mt-0.5 text-[12px] leading-snug text-[#888]">{part.note}</p>
           </li>
         ))}
@@ -420,8 +420,8 @@ function PatternDetail({ pattern }: { pattern: PatternCard }) {
       </DragScroll>
 
       <section className="px-4 pt-6">
-        <h2 className="text-[18px] font-bold">도안 설명</h2>
-        <p className="mt-2 text-[14px] leading-relaxed text-[#333]">{pattern.description}</p>
+        <h2 className="text-[20px] font-bold">도안 설명</h2>
+        <p className="mt-2 text-[17px] leading-[22px] text-[#333]">{pattern.description}</p>
       </section>
 
       <DragScroll as="ul" className="mt-4 flex gap-2 overflow-x-auto px-4">
@@ -440,14 +440,14 @@ function PatternDetail({ pattern }: { pattern: PatternCard }) {
             setAdded(true);
             notify("풀착장에 추가했어요");
           }}
-          className="inline-flex items-center gap-1 text-[14px] font-semibold"
+          className="inline-flex items-center gap-1 text-[15px] font-semibold"
         >
           {added ? "추가됨" : "추가"} <PlusIcon className="h-4 w-4" />
         </button>
       </section>
 
       <section className="px-4 pt-5">
-        <h2 className="text-[18px] font-bold">튜토리얼</h2>
+        <h2 className="text-[20px] font-bold">튜토리얼</h2>
         <img src={pattern.tutorial} alt="" className="mt-3 aspect-[4/3] w-full rounded-lg object-cover" />
       </section>
     </article>

@@ -18,7 +18,7 @@ export function BagScreen() {
     <div className="pb-28">
       <div className="sticky top-0 z-20 bg-white">
         <div className="flex items-center justify-center gap-1 pt-1">
-          <h1 className="text-[18px] font-bold">뜨개가방</h1>
+          <h1 className="text-[20px] font-bold">뜨개가방</h1>
           <InfoButton
             title="뜨개가방"
             body={"진행 중인 프로젝트, 완성작, 실, 바늘을 한곳에 모아 둬요.\n카드의 + 로 새로 추가하고, 휴지통으로 실장고에서 뺄 수 있어요."}
@@ -66,7 +66,7 @@ function CategoryRow({
 }) {
   return (
     <div className="px-4 pt-4">
-      <p className="text-[14px] font-semibold">카테고리</p>
+      <p className="text-[15px] font-semibold">카테고리</p>
       <DragScroll className="mt-3 flex gap-3 overflow-x-auto pb-1">
         {items.map((item) => {
           const active = value === item;
@@ -101,7 +101,7 @@ function ProjectPane() {
             <img src={current.image} alt="" className="h-44 w-full object-cover" />
             <div className="flex items-end justify-between px-4 py-3">
               <span>
-                <span className="block text-[18px] font-bold">{current.title}</span>
+                <span className="block text-[20px] font-bold">{current.title}</span>
                 <span className="text-[12px] text-[#999]">
                   시작일: {current.started} {formatClock(current.elapsed)}
                 </span>
@@ -116,7 +116,7 @@ function ProjectPane() {
           </button>
         </section>
       ) : (
-        <p className="px-4 pt-8 text-center text-[14px] text-[#999]">이 카테고리의 프로젝트가 없어요.</p>
+        <p className="px-4 pt-8 text-center text-[15px] text-[#999]">이 카테고리의 프로젝트가 없어요.</p>
       )}
       <ProjectCatalog projects={projects} />
     </div>
@@ -174,7 +174,7 @@ function ProjectGrid({ projects }: { projects: Project[] }) {
             <span className="mt-2 flex items-center gap-2">
               <ProgressRing value={project.progress} size={40} />
               <span>
-                <span className="block text-[14px] font-bold leading-tight">{project.title}</span>
+                <span className="block text-[15px] font-bold leading-tight">{project.title}</span>
                 <span className="text-[12px] text-[#999]">{project.ago}</span>
               </span>
             </span>
@@ -259,7 +259,7 @@ function DonePane() {
           <li key={project.id}>
             <button type="button" onClick={() => push({ name: "finished", id: project.id })} className="w-full text-left">
               <img src={project.image} alt="" className="aspect-[3/4] w-full rounded-lg object-cover" />
-              <span className="mt-2 block text-[14px] font-bold">{project.title}</span>
+              <span className="mt-2 block text-[15px] font-bold">{project.title}</span>
               <span className="text-[12px] text-[#999]">{finishedMeta(project, sort)}</span>
             </button>
           </li>
@@ -309,7 +309,7 @@ function SearchRow({
             value={value}
             onChange={(event) => onChange(event.target.value)}
             placeholder={placeholder}
-            className="w-full bg-transparent text-[14px] outline-none"
+            className="w-full bg-transparent text-[15px] outline-none"
             aria-label={placeholder}
           />
           <SearchIcon />
@@ -328,7 +328,7 @@ function SearchRow({
         <>
           <button type="button" aria-label="정렬 닫기" className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
           <div className="absolute right-4 top-[4.25rem] z-30 w-[15.5rem] max-w-[calc(100%-1rem)] rounded-2xl border border-[#eee] bg-white p-3 shadow-card">
-            <p className="px-1 text-[14px] font-bold">정렬</p>
+            <p className="px-1 text-[15px] font-bold">정렬</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
               {SORTS.map((item) => (
                 <div key={item.field} className={cx("flex h-9 items-center justify-center gap-1 rounded-full border px-2 text-[12px]", sort.field === item.field ? "border-[#ddd] bg-[#fafafa] font-semibold" : "border-[#ececec]")}>
@@ -520,7 +520,7 @@ export function ProjectScreen({ id }: { id: string }) {
         <div className="mt-4 flex justify-around">
           {project.parts.map((part) => (
             <button key={part.id} type="button" onClick={() => togglePart(project.id, part.id)} className="text-center">
-              <span className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-[#eee] bg-white text-[18px] font-bold">
+              <span className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-[#eee] bg-white text-[20px] font-bold">
                 {part.done ? <CheckIcon /> : part.count}
               </span>
               <span className="mt-1 block text-[13px] font-semibold">{part.name}</span>
@@ -641,7 +641,7 @@ export function NaviScreen({ id }: { id: string }) {
                   {checked ? <CheckIcon /> : index + 1}
                 </span>
                 <span>
-                  <span className="block text-[14px] font-semibold">{step}</span>
+                  <span className="block text-[15px] font-semibold">{step}</span>
                   {current ? <span className="text-[12px] text-[#888]">지금 여기예요</span> : null}
                 </span>
               </button>
@@ -695,12 +695,12 @@ export function ProjectFormScreen({ id }: { id?: string }) {
     >
       {done ? <DoneMark message={"프로젝트 생성을\n완료했어요!"} onDone={back} /> : null}
       <label className="block">
-        <span className="text-[14px] font-bold">프로젝트 이름</span>
-        <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="프로젝트 이름을 입력하세요." className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[14px] outline-none" />
+        <span className="text-[15px] font-bold">프로젝트 이름</span>
+        <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="프로젝트 이름을 입력하세요." className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[15px] outline-none" />
       </label>
       <label className="block">
-        <span className="text-[14px] font-bold">도안</span>
-        <select value={patternId} onChange={(event) => setPatternId(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[14px]">
+        <span className="text-[15px] font-bold">도안</span>
+        <select value={patternId} onChange={(event) => setPatternId(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[15px]">
           {PATTERNS.map((pattern) => (
             <option key={pattern.id} value={pattern.id}>
               {pattern.title}
@@ -709,7 +709,7 @@ export function ProjectFormScreen({ id }: { id?: string }) {
         </select>
       </label>
       <div>
-        <p className="text-[14px] font-bold">사용한 실</p>
+        <p className="text-[15px] font-bold">사용한 실</p>
         <p className="mt-1 text-[12px] text-[#888]">가진 실에서 이 프로젝트에 쓴 것을 골라 주세요.</p>
         <DragScroll className="mt-2 flex gap-2 overflow-x-auto pb-1">
           {data.yarns.map((yarn) => {
@@ -731,7 +731,7 @@ export function ProjectFormScreen({ id }: { id?: string }) {
         </DragScroll>
       </div>
       <div>
-        <p className="text-[14px] font-bold">사용한 바늘</p>
+        <p className="text-[15px] font-bold">사용한 바늘</p>
         <DragScroll className="mt-2 flex gap-2 overflow-x-auto pb-1">
           {data.needles.map((needle) => {
             const selected = needleIds.includes(needle.id);
@@ -752,8 +752,8 @@ export function ProjectFormScreen({ id }: { id?: string }) {
         </DragScroll>
       </div>
       <label className="block">
-        <span className="text-[14px] font-bold">카테고리</span>
-        <select value={category} onChange={(event) => setCategory(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[14px]">
+        <span className="text-[15px] font-bold">카테고리</span>
+        <select value={category} onChange={(event) => setCategory(event.target.value)} className="mt-2 h-12 w-full rounded-lg bg-[#f6f6f6] px-4 text-[15px]">
           {YARN_CATEGORIES.map((item) => (
             <option key={item}>{item}</option>
           ))}
@@ -762,8 +762,8 @@ export function ProjectFormScreen({ id }: { id?: string }) {
       <GaugePair label="세탁 전 게이지" sts={beforeSts} rows={beforeRows} onSts={setBeforeSts} onRows={setBeforeRows} />
       <GaugePair label="세탁 후 게이지" sts={afterSts} rows={afterRows} onSts={setAfterSts} onRows={setAfterRows} />
       <label className="block">
-        <span className="text-[14px] font-bold">메모</span>
-        <textarea value={memo} onChange={(event) => setMemo(event.target.value)} placeholder="게이지 측정에 대한 추가 정보를 입력하세요." className="mt-2 h-24 w-full rounded-lg bg-[#f6f6f6] px-4 py-3 text-[14px] outline-none" />
+        <span className="text-[15px] font-bold">메모</span>
+        <textarea value={memo} onChange={(event) => setMemo(event.target.value)} placeholder="게이지 측정에 대한 추가 정보를 입력하세요." className="mt-2 h-24 w-full rounded-lg bg-[#f6f6f6] px-4 py-3 text-[15px] outline-none" />
       </label>
       <button type="submit" className="h-12 w-full rounded-full bg-blush font-semibold text-white">
         저장
@@ -787,10 +787,10 @@ function GaugePair({
 }) {
   return (
     <div>
-      <p className="text-[14px] font-bold">{label}</p>
+      <p className="text-[15px] font-bold">{label}</p>
       <div className="mt-2 grid grid-cols-2 gap-2">
-        <input value={sts} onChange={(event) => onSts(event.target.value)} inputMode="numeric" placeholder="코수" aria-label={`${label} 코수`} className="h-11 rounded-xl bg-[#f6f6f6] px-3 text-[14px] outline-none" />
-        <input value={rows} onChange={(event) => onRows(event.target.value)} inputMode="numeric" placeholder="단수" aria-label={`${label} 단수`} className="h-11 rounded-xl bg-[#f6f6f6] px-3 text-[14px] outline-none" />
+        <input value={sts} onChange={(event) => onSts(event.target.value)} inputMode="numeric" placeholder="코수" aria-label={`${label} 코수`} className="h-11 rounded-xl bg-[#f6f6f6] px-3 text-[15px] outline-none" />
+        <input value={rows} onChange={(event) => onRows(event.target.value)} inputMode="numeric" placeholder="단수" aria-label={`${label} 단수`} className="h-11 rounded-xl bg-[#f6f6f6] px-3 text-[15px] outline-none" />
       </div>
     </div>
   );
@@ -804,13 +804,13 @@ export function FinishedScreen({ id }: { id: string }) {
       <img src={project.image} alt="" className="h-72 w-full object-cover" />
       <div className="px-5 pt-4">
         <h2 className="text-[22px] font-bold">{project.title}</h2>
-        <p className="mt-2 text-[14px] text-[#777]">시작 {project.started} · 기록 {formatClock(project.elapsed)}</p>
-        <p className="mt-3 text-[14px] leading-relaxed">완성작 탭에 모아 둔 기록이에요. 같은 도안으로 다시 뜨려면 프로젝트를 새로 만들면 돼요.</p>
+        <p className="mt-2 text-[15px] text-[#777]">시작 {project.started} · 기록 {formatClock(project.elapsed)}</p>
+        <p className="mt-3 text-[17px] leading-[22px]">완성작 탭에 모아 둔 기록이에요. 같은 도안으로 다시 뜨려면 프로젝트를 새로 만들면 돼요.</p>
       </div>
     </article>
   );
 }
 
 function Missing() {
-  return <p className="px-6 py-16 text-center text-[14px] text-[#888]">화면을 찾지 못했어요.</p>;
+  return <p className="px-6 py-16 text-center text-[15px] text-[#888]">화면을 찾지 못했어요.</p>;
 }

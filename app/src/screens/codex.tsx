@@ -67,7 +67,7 @@ function CodexBrowse({ initialKind = "yarn" }: { initialKind?: CodexKind }) {
             onClick={() => push({ name: "codex", id: "explore" })}
             className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-full border border-[#ececec] bg-white px-4 text-left"
           >
-            <span className="flex-1 truncate text-[14px] text-[#b0b0b0]">검색어를 입력해보세요.</span>
+            <span className="flex-1 truncate text-[15px] text-[#b0b0b0]">검색어를 입력해보세요.</span>
             <SearchIcon />
           </button>
           <button
@@ -130,7 +130,7 @@ function CodexBrowse({ initialKind = "yarn" }: { initialKind?: CodexKind }) {
               type="button"
               onClick={() => chooseKind(tab.id)}
               className={cx(
-                "h-10 flex-1 text-[14px]",
+                "h-10 flex-1 text-[15px]",
                 active ? "rounded-t-2xl bg-black font-bold text-white" : "text-[#a3a3a3]",
               )}
             >
@@ -141,7 +141,7 @@ function CodexBrowse({ initialKind = "yarn" }: { initialKind?: CodexKind }) {
       </div>
 
       {items.length === 0 ? (
-        <p className="px-5 py-16 text-center text-[14px] text-[#888]">해당하는 항목이 없어요.</p>
+        <p className="px-5 py-16 text-center text-[15px] text-[#888]">해당하는 항목이 없어요.</p>
       ) : (
         <ul className="grid grid-cols-3">
           {items.map((entry) => (
@@ -219,7 +219,7 @@ function CodexDiscover() {
               }}
               placeholder="검색어를 입력해보세요."
               aria-label="도감 검색"
-              className="w-full bg-transparent text-[14px] outline-none placeholder:text-[#b0b0b0]"
+              className="w-full bg-transparent text-[15px] outline-none placeholder:text-[#b0b0b0]"
             />
             {query ? (
               <button type="button" aria-label="검색어 지우기" onClick={() => setQuery("")} className="grid h-6 w-6 place-items-center text-[#999]">
@@ -265,7 +265,7 @@ function CodexDiscover() {
 
       {needle ? (
         results.length === 0 ? (
-          <p className="px-5 py-16 text-center text-[14px] text-[#888]">해당하는 항목이 없어요.</p>
+          <p className="px-5 py-16 text-center text-[15px] text-[#888]">해당하는 항목이 없어요.</p>
         ) : (
           <ul className="mt-5 grid grid-cols-3">
             {results.map((entry) => (
@@ -328,7 +328,7 @@ function CodexDiscover() {
               <p className="mt-1 text-[12px] text-[#999]">사용 후기와 함께 빠르게 비교하세요.</p>
             </div>
             {popular.length === 0 ? (
-              <p className="px-4 py-8 text-[14px] text-[#888]">이 조건에 맞는 실이 없어요.</p>
+              <p className="px-4 py-8 text-[15px] text-[#888]">이 조건에 맞는 실이 없어요.</p>
             ) : (
               <DragScroll as="ul" className="mt-3 flex gap-3 overflow-x-auto px-4 pb-1">
                 {popular.map((yarn) => (
@@ -386,7 +386,7 @@ function PopularCard({ yarn, onOpen }: { yarn: PopularYarn; onOpen: () => void }
           <img src={yarn.image} alt="" className="aspect-square w-full rounded-lg object-cover" />
           <span className={cx("absolute left-2 top-2 rounded-full px-2 py-0.5 text-[11px] font-semibold text-white", badge)}>{yarn.badge}</span>
         </span>
-        <span className="mt-2 block text-[14px] font-bold leading-tight">{yarn.title}</span>
+        <span className="mt-2 block text-[15px] font-bold leading-tight">{yarn.title}</span>
         {yarn.tags.map((tag) => (
           <span key={tag.label} className="mt-0.5 block text-[12px] text-[#777]">
             <span className="mr-1 font-semibold text-blush">{tag.label}</span>
@@ -474,7 +474,7 @@ function CodexCare() {
   return (
     <div className="px-5 pb-12 pt-2">
       <img src={media("media/swatch-rose.jpg")} alt="" className="aspect-[4/3] w-full rounded-lg object-cover" />
-      <h2 className="mt-5 text-[24px] font-bold">세탁 & 관리</h2>
+      <h2 className="mt-5 text-[28px] font-bold leading-[34px]">세탁 & 관리</h2>
       <Explain title="손세탁" body="미지근한 물에 중성세제를 풀어 짧게 눌러 빨아요. 비비거나 탈수기로 짜면 코가 늘어지고 털이 뭉칩니다." />
       <Explain title="세탁망" body="수면사, 모헤어, 레이스는 세탁망에 넣어 마찰을 줄여요. 색이 진한 실은 처음 몇 번은 따로 빨아요." />
       <Explain title="건조" body="수건 위에 눕혀 눌러 물기를 빼고, 그늘에서 말려요. 아크릴과 수면사는 건조기 열에 눌리면 자국이 남아요." />
@@ -492,7 +492,7 @@ function CodexDetail({ entry }: { entry: CodexEntry }) {
       <img src={entry.image} alt="" className="aspect-[4/3] w-full object-cover" />
       <div className="px-5 pt-5">
         <p className="text-[12px] font-semibold text-[#999]">{kindLabel}</p>
-        <h2 className="mt-1 text-[26px] font-bold">{entry.name}</h2>
+        <h2 className="mt-1 text-[28px] font-bold leading-[34px]">{entry.name}</h2>
         <Explain title="특징" body={entry.trait} />
         <Explain title="보통 이렇게 써요" body={entry.usual} />
         <Explain title="이런 걸 만들어요" body={entry.makes} />

@@ -72,7 +72,7 @@ export function DiaryEntryScreen({ id, index }: { id: string; index: number }) {
   const [editing, setEditing] = useState(false);
   const project = data.projects.find((item) => item.id === id);
   const entry = project?.diary[index];
-  if (!project || !entry) return <p className="px-6 py-16 text-center text-[14px]">일기를 찾지 못했어요.</p>;
+  if (!project || !entry) return <p className="px-6 py-16 text-center text-[15px]">일기를 찾지 못했어요.</p>;
   const save = (next: { title?: string; body?: string }) => {
     updateDiary(project.id, index, { title: next.title ?? entry.title, body: next.body ?? entry.body });
   };
@@ -208,7 +208,7 @@ export function DiaryScreen({ id }: { id: string }) {
     setMemo(diaryMemoText(project, data.yarns, data.needles, data.counters, linked));
   }, [data.counters, data.needles, data.yarns, project]);
 
-  if (!project) return <p className="px-6 py-16 text-center text-[14px]">프로젝트를 찾지 못했어요.</p>;
+  if (!project) return <p className="px-6 py-16 text-center text-[15px]">프로젝트를 찾지 못했어요.</p>;
 
   const active = project.parts.find((part) => !part.done) ?? project.parts[0];
   const rows = active?.count ?? project.parts.reduce((sum, part) => sum + (part.count ?? 0), 0);
@@ -276,7 +276,7 @@ export function DiaryScreen({ id }: { id: string }) {
         <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
           <ChevronLeft />
         </button>
-        <h1 className="flex-1 text-center text-[17px] font-bold">뜨개일기</h1>
+        <h1 className="flex-1 text-center text-[17px] font-semibold">뜨개일기</h1>
         <button type="button" onClick={save} className="px-3 text-[15px] font-semibold text-blush">
           저장
         </button>
@@ -284,7 +284,7 @@ export function DiaryScreen({ id }: { id: string }) {
 
       <div className="flex items-start gap-2 px-4 pt-3">
         <Mascot className="h-16 w-16 shrink-0" mood="cheer" />
-        <p className="rounded-lg bg-white px-4 py-3 text-[14px] font-semibold leading-snug shadow-card">
+        <p className="rounded-lg bg-white px-4 py-3 text-[15px] font-semibold leading-snug shadow-card">
           오늘의 뜨개 완료! 오늘 뜬 소중한 한 땀, 뜨니랑 같이 기록해 볼까요?
         </p>
       </div>
@@ -365,7 +365,7 @@ export function DiaryScreen({ id }: { id: string }) {
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="재료 검색"
                 aria-label="재료 검색"
-                className="w-full bg-transparent text-[14px] outline-none"
+                className="w-full bg-transparent text-[15px] outline-none"
               />
             </label>
             {addingYarn ? (
@@ -385,7 +385,7 @@ export function DiaryScreen({ id }: { id: string }) {
                   placeholder="새 실 이름"
                   aria-label="새 실 이름"
                   autoFocus
-                  className="h-10 min-w-0 flex-1 bg-transparent text-[14px] outline-none"
+                  className="h-10 min-w-0 flex-1 bg-transparent text-[15px] outline-none"
                 />
                 <button type="submit" className="shrink-0 rounded-full bg-ink px-3 py-1.5 text-[12px] font-semibold text-white">
                   추가
@@ -398,7 +398,7 @@ export function DiaryScreen({ id }: { id: string }) {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-[11px] text-[#999]">실</span>
-                  <span className="block text-[14px] font-semibold">목록에 없는 실 추가</span>
+                  <span className="block text-[15px] font-semibold">목록에 없는 실 추가</span>
                 </span>
               </button>
             )}
@@ -427,11 +427,11 @@ export function DiaryScreen({ id }: { id: string }) {
                       {item.image ? (
                         <img src={item.image} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />
                       ) : (
-                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#f3f3f3] text-[14px] font-bold">{item.label.slice(0, 1)}</span>
+                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#f3f3f3] text-[15px] font-bold">{item.label.slice(0, 1)}</span>
                       )}
                       <span className="min-w-0 flex-1">
                         <span className="block text-[11px] text-[#999]">{item.kind}</span>
-                        <span className="block truncate text-[14px] font-semibold">{item.label}</span>
+                        <span className="block truncate text-[15px] font-semibold">{item.label}</span>
                       </span>
                       {selected ? <CheckIcon /> : null}
                     </button>
@@ -460,7 +460,7 @@ export function DiaryScreen({ id }: { id: string }) {
           }}
           placeholder="오늘의 뜨개 느낌이나 팁을 적어보세요."
           aria-label="나의 메모"
-          className="memo-lines mt-3 h-56 w-full resize-none rounded-lg border border-[#f0e4d8] bg-[#fffdf8] px-4 py-3 text-[14px] leading-[28px] outline-none"
+          className="memo-lines mt-3 h-56 w-full resize-none rounded-lg border border-[#f0e4d8] bg-[#fffdf8] px-4 py-3 text-[15px] leading-[28px] outline-none"
         />
         {project.diary.length > 0 ? (
           <ul className="mt-3 space-y-2">

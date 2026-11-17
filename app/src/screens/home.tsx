@@ -41,7 +41,7 @@ function HomePane() {
   return (
     <div className="pb-8">
       <header className="sticky top-0 z-20 flex items-end justify-between bg-white px-4 pb-2">
-        <div className="flex gap-4 text-[18px]">
+        <div className="flex gap-4 text-[17px]">
           <button type="button" className="border-b-2 border-blush pb-1 font-bold" onClick={() => setHomeTab("home")}>
             홈
           </button>
@@ -127,7 +127,7 @@ function HomePane() {
       </section>
 
       <section className="px-4 pt-8">
-        <h2 className="text-[18px] font-bold">뜨개 도구</h2>
+        <h2 className="text-[20px] font-bold">뜨개 도구</h2>
         <div className="mx-auto mt-4 grid max-w-md grid-cols-4 gap-2 text-center text-[12px]">
           <ToolButton label="행/코 카운터" onClick={() => push({ name: "counters" })}>
             <CounterGlyph />
@@ -239,13 +239,13 @@ function HomePane() {
 
       <section className="px-4 pb-4 pt-10 text-center">
         <p className="text-[40px] font-black tracking-wide text-blush">FAQ</p>
-        <p className="text-[18px] font-bold">궁금한 점이 있으신가요?</p>
+        <p className="text-[20px] font-bold">궁금한 점이 있으신가요?</p>
         <label className="mt-4 flex h-12 items-center gap-2 rounded-lg bg-[#f5f5f5] px-4 text-left">
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="궁금한 점을 검색해보세요."
-            className="w-full bg-transparent text-[14px] outline-none"
+            className="w-full bg-transparent text-[15px] outline-none"
             aria-label="FAQ 검색"
           />
           <SearchIcon />
@@ -258,7 +258,7 @@ function HomePane() {
               <div key={item.q} className="rounded-lg border border-[#ececec]">
                 <button
                   type="button"
-                  className="flex w-full items-center justify-between px-4 py-3 text-[14px] font-semibold"
+                  className="flex w-full items-center justify-between px-4 py-3 text-[15px] font-semibold"
                   onClick={() => setOpenFaq(open ? null : index)}
                   aria-expanded={open}
                 >
@@ -271,7 +271,7 @@ function HomePane() {
           })}
           {faqs.length === 0 ? <p className="py-6 text-[13px] text-[#999]">같은 질문을 찾지 못했어요.</p> : null}
         </div>
-        <button type="button" onClick={() => openSheet({ kind: "support" })} className="mt-6 h-11 w-full rounded-full bg-ink text-[14px] font-semibold text-white">
+        <button type="button" onClick={() => openSheet({ kind: "support" })} className="mt-6 h-11 w-full rounded-full bg-ink text-[15px] font-semibold text-white">
           고객센터 문의
         </button>
       </section>
@@ -303,7 +303,7 @@ function MarketPane() {
   return (
     <div className="pb-8">
       <header className="sticky top-0 z-20 flex items-end justify-between bg-white px-4 pb-2">
-        <div className="flex items-end gap-4 text-[18px]">
+        <div className="flex items-end gap-4 text-[17px]">
           <button type="button" className="pb-1 text-[#b5b5b5]" onClick={() => setHomeTab("home")}>
             홈
           </button>
@@ -327,7 +327,7 @@ function MarketPane() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="도안, 실, 클래스를 찾아보세요"
-            className="w-full bg-transparent text-[14px] outline-none"
+            className="w-full bg-transparent text-[15px] outline-none"
             aria-label="마켓 검색"
           />
         </label>
@@ -360,7 +360,7 @@ function MarketPane() {
           })}
         </DragScroll>
       </div>
-      {items.length === 0 ? <p className="px-4 py-10 text-center text-[14px] text-[#888]">이 조건에 맞는 상품이 없어요.</p> : null}
+      {items.length === 0 ? <p className="px-4 py-10 text-center text-[15px] text-[#888]">이 조건에 맞는 상품이 없어요.</p> : null}
       <ul className="mt-4 space-y-3 px-4">
         {items.map((item) => (
           <li key={item.id}>
@@ -370,7 +370,7 @@ function MarketPane() {
                 <span className="text-[11px] text-blush">{item.kind}</span>
                 <span className="mt-0.5 block text-[15px] font-bold">{item.title}</span>
                 <span className="mt-1 block text-[12px] text-[#888]">{item.seller}</span>
-                <span className="mt-1 block text-[14px] font-semibold">{item.price}</span>
+                <span className="mt-1 block text-[15px] font-semibold">{item.price}</span>
               </span>
             </button>
           </li>
@@ -480,7 +480,7 @@ export function RankingScreen() {
                   <CrownIcon color={king.crown} />
                   {index + 1}위
                 </p>
-                <p className="text-[18px] font-bold">{king.name}</p>
+                <p className="text-[20px] font-bold">{king.name}</p>
                 <p className="mt-1 text-[13px] leading-snug text-[#666]">{king.bio}</p>
               </div>
             </div>
@@ -525,7 +525,7 @@ export function LikesScreen() {
     return (
       <div className="grid place-items-center px-8 py-16 text-center">
         <Mascot mood="wave" />
-        <p className="mt-2 text-[14px] text-[#777]">마음에 드는 작품에 하트를 눌러 보세요.</p>
+        <p className="mt-2 text-[15px] text-[#777]">마음에 드는 작품에 하트를 눌러 보세요.</p>
       </div>
     );
   }
@@ -575,10 +575,10 @@ export function WorkScreen({ id }: { id: string }) {
       <div className="px-5 pt-4">
         <p className="text-[13px] text-[#999]">{work.author}</p>
         <h2 className="text-[22px] font-bold">{work.title}</h2>
-        <button type="button" aria-pressed={liked} onClick={() => toggleLike(work.id)} className="mt-3 flex items-center gap-1 text-[14px] text-black">
+        <button type="button" aria-pressed={liked} onClick={() => toggleLike(work.id)} className="mt-3 flex items-center gap-1 text-[15px] text-black">
           <HeartIcon filled={liked} /> {work.likes + (liked ? 1 : 0)}
         </button>
-        <p className="mt-3 text-[14px] leading-relaxed text-[#666]">라운지에 올라온 완성작이에요. 하트는 이 기기에만 남아요.</p>
+        <p className="mt-3 text-[17px] leading-[22px] text-[#666]">라운지에 올라온 완성작이에요. 하트는 이 기기에만 남아요.</p>
       </div>
     </article>
   );
@@ -593,9 +593,9 @@ export function PatternScreen({ id }: { id: string }) {
       <div className="px-5 pt-4">
         <h2 className="text-[22px] font-bold">{pattern.title}</h2>
         <p className="mt-1 text-[13px] text-[#999]">{pattern.needles}</p>
-        <p className="mt-3 text-[14px] leading-relaxed">{pattern.summary}</p>
+        <p className="mt-3 text-[17px] leading-[22px]">{pattern.summary}</p>
         <p className="mt-2 text-[13px] text-[#888]">{pattern.tags.join("  ")}</p>
-        <p className="mt-4 text-[14px]">
+        <p className="mt-4 text-[15px]">
           {pattern.seller} · {pattern.price}
         </p>
         <button type="button" onClick={() => push({ name: "project-form" })} className="mt-5 h-12 w-full rounded-full bg-blush font-semibold text-white">
@@ -629,11 +629,11 @@ export function ProductScreen({ id }: { id: string }) {
       <div className="px-5 pt-4">
         <p className="text-[12px] font-semibold text-blush">{product.kind}</p>
         <h2 className="text-[22px] font-bold">{product.title}</h2>
-        <p className="mt-1 text-[14px] text-[#888]">{mine ? "내가 판매 중" : product.seller}</p>
+        <p className="mt-1 text-[15px] text-[#888]">{mine ? "내가 판매 중" : product.seller}</p>
         <p className="mt-3 text-[20px] font-bold">{product.price}</p>
-        <p className="mt-3 text-[14px] leading-relaxed text-[#555]">{product.blurb}</p>
+        <p className="mt-3 text-[17px] leading-[22px] text-[#555]">{product.blurb}</p>
         {mine ? (
-          <p className="mt-6 rounded-lg bg-[#f6f6f6] px-4 py-3 text-center text-[14px] text-[#666]">내가 판매 중인 물품이에요.</p>
+          <p className="mt-6 rounded-lg bg-[#f6f6f6] px-4 py-3 text-center text-[15px] text-[#666]">내가 판매 중인 물품이에요.</p>
         ) : (
           <div className="mt-6 flex gap-2">
             <button type="button" onClick={addToCart} className="h-12 flex-1 rounded-full border border-ink font-semibold">
@@ -664,7 +664,7 @@ export function CartScreen() {
         <BagFillIcon className="mx-auto h-12 w-12 text-[#ccc]" />
         <p className="mt-4 text-[16px] font-bold">장바구니가 비어 있어요</p>
         <p className="mt-1 text-[13px] text-[#888]">뜨개마켓에서 도안, 실, 바늘을 담아 보세요.</p>
-        <button type="button" onClick={() => goTab("home", "market")} className="mt-6 h-11 rounded-full bg-ink px-5 text-[14px] font-semibold text-white">
+        <button type="button" onClick={() => goTab("home", "market")} className="mt-6 h-11 rounded-full bg-ink px-5 text-[15px] font-semibold text-white">
           뜨개마켓 보러가기
         </button>
       </div>
@@ -680,7 +680,7 @@ export function CartScreen() {
               <span className="min-w-0">
                 <span className="text-[11px] text-blush">{item.kind}</span>
                 <span className="mt-0.5 block truncate text-[15px] font-bold">{item.title}</span>
-                <span className="mt-1 block text-[14px] font-semibold">{item.price}</span>
+                <span className="mt-1 block text-[15px] font-semibold">{item.price}</span>
               </span>
             </button>
             <button type="button" aria-label={`${item.title} 빼기`} onClick={() => remove(item.id)} className="grid h-9 w-9 shrink-0 place-items-center text-[#888]">
@@ -692,7 +692,7 @@ export function CartScreen() {
       <div className="mx-4 mt-4 rounded-lg bg-[#f7f7f7] px-4 py-4">
         <div className="flex items-center justify-between text-[15px]">
           <span className="text-[#666]">합계</span>
-          <span className="text-[18px] font-bold">{total.toLocaleString("ko-KR")}원</span>
+          <span className="text-[20px] font-bold">{total.toLocaleString("ko-KR")}원</span>
         </div>
         <button type="button" onClick={() => notify("데모라 결제는 진행되지 않아요")} className="mt-4 h-12 w-full rounded-full bg-ink font-semibold text-white">
           구매하기
