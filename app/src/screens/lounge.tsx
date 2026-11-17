@@ -1,19 +1,170 @@
+import { useEffect, useRef, useState } from "react";
 import { QUESTIONS, SHORTS, WORKS } from "../data.ts";
+import { HeartFillIcon } from "../icons/webFill.tsx";
 import { useApp } from "../store.tsx";
 import type { LoungeTab } from "../types.ts";
-import { HeartIcon, UnderlineTabs } from "../ui.tsx";
+import { ChevronLeft, HeartIcon, UnderlineTabs } from "../ui.tsx";
+
+const REEL_LIKES: Record<string, number> = {
+  s1: 248,
+  s2: 91,
+  s3: 163,
+  s4: 74,
+  s5: 120,
+};
+
+function SpeakerIcon({ off }: { off: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden>
+      <path d="M4 9h3.2L12 5.2v13.6L7.2 15H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1z" fill="currentColor" />
+      {off ? (
+        <path d="M16 9.5 21 14.5M21 9.5 16 14.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      ) : (
+        <path d="M16 9.2a4 4 0 0 1 0 5.6M18.2 7a7 7 0 0 1 0 10" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      )}
+    </svg>
+  );
+}
+
+function ReelFeed({ startId }: { startId?: string }) {
+  const { data, toggleLike } = useApp();
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const soundRef = useRef(false);
+  const pausedRef = useRef(false);
+  const activeRef = useRef(0);
+  const [sound, setSound] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [active, setActive] = useState(0);
+
+  const playActive = () => {
+    const root = scrollerRef.current;
+    if (!root) return;
+    const slides = [...root.querySelectorAll<HTMLElement>("[data-reel]")];
+    slides.forEach((slide, index) => {
+      const video = slide.querySelector("video");
+      if (!video) return;
+      video.muted = !soundRef.current;
+      if (index === activeRef.current && !pausedRef.current) void video.play().catch(() => {});
+      else video.pause();
+    });
+  };
+
+  useEffect(() => {
+    const root = scrollerRef.current;
+    if (!root) return;
+    if (startId) {
+      const target = root.querySelector<HTMLElement>(`[data-reel="${CSS.escape(startId)}"]`);
+      if (target) root.scrollTop = target.offsetTop;
+    }
+    const slides = [...root.querySelectorAll<HTMLElement>("[data-reel]")];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const hit = entries
+          .filter((entry) => entry.isIntersecting && entry.intersectionRatio >= 0.6)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!hit) return;
+        const index = slides.indexOf(hit.target as HTMLElement);
+        if (index < 0) return;
+        if (index !== activeRef.current) {
+          pausedRef.current = false;
+          setPaused(false);
+        }
+        activeRef.current = index;
+        setActive(index);
+        slides.forEach((slide, slideIndex) => {
+          const video = slide.querySelector("video");
+          if (!video) return;
+          video.muted = !soundRef.current;
+          if (slideIndex === index && !pausedRef.current) void video.play().catch(() => {});
+          else video.pause();
+        });
+      },
+      { root, threshold: [0.6, 0.85] },
+    );
+    slides.forEach((slide) => observer.observe(slide));
+    return () => observer.disconnect();
+  }, [startId]);
+
+  return (
+    <div ref={scrollerRef} data-reels className="min-h-0 flex-1 snap-y snap-mandatory overflow-y-scroll overscroll-y-contain bg-black">
+      {SHORTS.map((clip, index) => {
+        const liked = data.likes.includes(clip.id);
+        return (
+          <article
+            key={clip.id}
+            data-reel={clip.id}
+            className="relative h-full shrink-0 snap-start snap-always"
+            onClick={(event) => {
+              if ((event.target as HTMLElement).closest("button")) return;
+              const video = event.currentTarget.querySelector("video");
+              if (!video) return;
+              if (video.paused) {
+                pausedRef.current = false;
+                setPaused(false);
+                void video.play().catch(() => {});
+              } else {
+                pausedRef.current = true;
+                setPaused(true);
+                video.pause();
+              }
+            }}
+          >
+            <video src={clip.video} poster={clip.image} playsInline loop muted preload="metadata" className="h-full w-full object-cover" />
+            {paused && active === index ? (
+              <span className="pointer-events-none absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-black/45 text-white">
+                <svg viewBox="0 0 24 24" className="ml-1 h-8 w-8" aria-hidden>
+                  <path d="M8 5.5v13l11-6.5-11-6.5z" fill="currentColor" />
+                </svg>
+              </span>
+            ) : null}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent px-4 pb-5 pt-20 text-white">
+              <p className="text-[15px] font-bold">{clip.author}</p>
+              <p className="mt-1 max-w-[75%] text-[14px] leading-snug">{clip.title}</p>
+            </div>
+            <div className="absolute bottom-8 right-3 flex flex-col items-center gap-4 text-white">
+              <button
+                type="button"
+                aria-label={liked ? "좋아요 취소" : "좋아요"}
+                aria-pressed={liked}
+                onClick={() => toggleLike(clip.id)}
+                className="flex flex-col items-center gap-1"
+              >
+                <HeartFillIcon filled={liked} className="h-8 w-8" />
+                <span className="text-[12px] font-semibold">{(REEL_LIKES[clip.id] ?? 12) + (liked ? 1 : 0)}</span>
+              </button>
+              <button
+                type="button"
+                aria-label={sound ? "소리 끄기" : "소리 켜기"}
+                aria-pressed={sound}
+                onClick={() => {
+                  soundRef.current = !soundRef.current;
+                  setSound(soundRef.current);
+                  playActive();
+                }}
+                className="grid h-11 w-11 place-items-center"
+              >
+                <SpeakerIcon off={!sound} />
+              </button>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  );
+}
 
 export function LoungeScreen() {
   const { loungeTab, setLoungeTab, push, data, toggleLike } = useApp();
   const tabs: { id: LoungeTab; label: string }[] = [
     { id: "works", label: "작품" },
     { id: "qa", label: "질문" },
-    { id: "shorts", label: "기와뜨기" },
+    { id: "shorts", label: "뜨개소통" },
   ];
+  const reels = loungeTab === "shorts";
   return (
-    <div className="pb-6">
-      <h1 className="px-4 pt-1 text-[20px] font-bold">뜨개 라운지</h1>
-      <div className="mt-3">
+    <div className={reels ? "flex h-full min-h-0 flex-col" : "pb-6"}>
+      <h1 className="shrink-0 px-4 pt-1 text-[20px] font-bold">뜨개 라운지</h1>
+      <div className="mt-3 shrink-0">
         <UnderlineTabs value={loungeTab} options={tabs} onChange={setLoungeTab} />
       </div>
       {loungeTab === "works" ? (
@@ -52,28 +203,7 @@ export function LoungeScreen() {
           ))}
         </ul>
       ) : null}
-      {loungeTab === "shorts" ? (
-        <ul className="mt-3 space-y-4 px-4">
-          {SHORTS.map((clip) => (
-            <li key={clip.id} className="overflow-hidden rounded-lg bg-black text-white">
-              <video
-                src={clip.video}
-                poster={clip.image}
-                controls
-                playsInline
-                preload="metadata"
-                className="aspect-[9/16] max-h-[70vh] w-full bg-black object-cover"
-              />
-              <button type="button" onClick={() => push({ name: "short", id: clip.id })} className="block w-full px-3 py-2 text-left">
-                <span className="block text-[14px] font-semibold">{clip.title}</span>
-                <span className="text-[12px] text-white/70">
-                  {clip.author} · {clip.length}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      {reels ? <ReelFeed /> : null}
     </div>
   );
 }
@@ -97,15 +227,13 @@ export function QuestionScreen({ id }: { id: string }) {
 }
 
 export function ShortScreen({ id }: { id: string }) {
-  const clip = SHORTS.find((item) => item.id === id) ?? SHORTS[0];
+  const { back } = useApp();
   return (
-    <article className="pb-10">
-      <div className="mx-4 mt-2 overflow-hidden rounded-lg bg-black">
-        <video src={clip.video} poster={clip.image} controls playsInline autoPlay className="aspect-[9/16] max-h-[70vh] w-full object-cover" />
-      </div>
-      <p className="px-5 pt-4 text-[14px] leading-relaxed text-[#666]">
-        {clip.author} · {clip.length}. {clip.title}
-      </p>
-    </article>
+    <div className="relative flex h-full min-h-0 flex-col bg-black">
+      <ReelFeed startId={id} />
+      <button type="button" aria-label="뒤로" onClick={back} className="absolute left-1 top-1 z-30 grid h-10 w-10 place-items-center text-white">
+        <ChevronLeft />
+      </button>
+    </div>
   );
 }
