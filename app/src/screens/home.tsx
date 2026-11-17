@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
-import { FAQ, KINGS, LISTINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, findProduct, formatClock, media } from "../data.ts";
+import { FAQ, KINGS, LISTINGS, NEWS, PATTERNS, PRODUCTS, WORKS, findProduct, formatClock, media, userNotifications } from "../data.ts";
 import { useApp } from "../store.tsx";
 import { BagFillIcon } from "../icons/webFill.tsx";
 import { BellIcon, ChevronDown, ChevronRight, CrownIcon, DragScroll, FigmaIcon, GearIcon, HeartIcon, Mascot, MinusIcon, NaviIcon, PauseIcon, PlayIcon, PlusIcon, SearchIcon, TrashIcon, cx } from "../ui.tsx";
@@ -548,13 +548,20 @@ export function NotificationsScreen() {
   useEffect(() => {
     if (!data.notifRead) patch({ notifRead: true });
   }, [data.notifRead, patch]);
+  const items = userNotifications({ nickname: data.nickname, projects: data.projects, yarns: data.yarns });
+  if (items.length === 0) {
+    return <p className="px-6 py-16 text-center text-[14px] text-[#888]">새 알림이 없어요.</p>;
+  }
   return (
     <ul className="space-y-2 px-4 pb-8">
-      {NOTIFICATIONS.map((item) => (
-        <li key={item.title}>
+      {items.map((item) => (
+        <li key={item.id}>
           <button type="button" onClick={() => push(item.to)} className="flex w-full items-center gap-3 rounded-lg bg-[#fafafa] px-4 py-3 text-left">
             <span className="min-w-0 flex-1">
-              <span className="block font-bold">{item.title}</span>
+              <span className="flex items-baseline justify-between gap-3">
+                <span className="font-bold">{item.title}</span>
+                <span className="shrink-0 text-[12px] text-[#999]">{item.time}</span>
+              </span>
               <span className="mt-1 block text-[13px] leading-relaxed text-[#666]">{item.body}</span>
             </span>
             <ChevronRight />
