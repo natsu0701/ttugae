@@ -632,11 +632,79 @@ export const NAVI_STEPS = [
   "시보리로 마감하고 실을 정리해요",
 ];
 
-export const NOTIFICATIONS: { title: string; body: string; to: Route }[] = [
-  { title: "벤쿠버 가디건", body: "어제 몸통까지 떠 두었어요. 오늘은 왼쪽 팔 23단부터예요.", to: { name: "project", id: "p1" } },
-  { title: "게이지", body: "10cm에 20코, 목표 60cm면 120코예요. 저장해 둘까요?", to: { name: "gauge", tab: "calc" } },
-  { title: "이번 달 뜨개왕", body: "김뜨개, 이현수, 김미니의 기록이 올라왔어요.", to: { name: "ranking" } },
-];
+export type AppNotification = {
+  id: string;
+  title: string;
+  body: string;
+  time: string;
+  to: Route;
+};
+
+export function userNotifications(input: {
+  nickname: string;
+  projects: Project[];
+  yarns: Yarn[];
+}): AppNotification[] {
+  const items: AppNotification[] = [];
+  const name = input.nickname.trim() || "회원";
+  const stalled = input.projects.find((project) => project.parts.some((part) => !part.done)) ?? input.projects[0];
+  if (stalled) {
+    const part = stalled.parts.find((item) => !item.done) ?? stalled.parts[0];
+    const where = !part
+      ? "이어서 뜰 자리가 있어요."
+      : part.count
+        ? `${part.name} ${part.count}단에서 멈췄어요.`
+        : `${part.name}을 아직 시작하지 않았어요.`;
+    items.push({
+      id: `project-${stalled.id}`,
+      title: `${name}님 작업을 이어서 뜰까요?`,
+      body: `${stalled.title}, ${where}`,
+      time: stalled.ago,
+      to: { name: "project", id: stalled.id },
+    });
+  }
+
+  const low = input.yarns
+    .filter((yarn) => yarn.linkedProject && yarn.balls > 0 && yarn.balls <= 2)
+    .sort((a, b) => a.balls - b.balls)[0];
+  if (low?.linkedProject) {
+    items.push({
+      id: `yarn-${low.id}`,
+      title: "쓰는 실이 얼마 남지 않았어요",
+      body: `${low.linkedProject}에 쓰는 ${low.name}, ${low.balls}볼 남았어요.`,
+      time: "오늘",
+      to: { name: "yarn", id: low.id },
+    });
+  }
+
+  const commented = input.projects.find(
+    (project) => project.id !== stalled?.id && project.parts.some((part) => (part.count ?? 0) > 0 && !part.done),
+  );
+  const commentedPart = commented?.parts.find((part) => (part.count ?? 0) > 0 && !part.done);
+  if (commented && commentedPart) {
+    items.push({
+      id: `comment-${commented.id}`,
+      title: "내 작업에 댓글이 달렸어요",
+      body: `이은주님이 ${commented.title} ${commentedPart.name} ${commentedPart.count}단에 “코가 당기지 않게 한 단만 풀어 보세요”라고 남겼어요.`,
+      time: "3시간 전",
+      to: { name: "project", id: commented.id },
+    });
+  }
+
+  const almost = input.projects.find((project) => project.progress >= 50 && project.parts.some((part) => part.done));
+  const finishedPart = almost?.parts.find((part) => part.done);
+  if (almost && finishedPart) {
+    items.push({
+      id: `done-${almost.id}`,
+      title: "거의 다 뜬 작품이 있어요",
+      body: `${almost.title} ${finishedPart.name}까지 끝냈어요. 완성작으로 옮길 수 있어요.`,
+      time: almost.ago,
+      to: { name: "project", id: almost.id },
+    });
+  }
+
+  return items;
+}
 
 export const REVIEWS = [
   {
