@@ -410,6 +410,7 @@ function bodyFor(route: Route) {
     case "finished":
       return <ProjectSkeleton />;
     case "diary":
+    case "diary-entry":
       return <DiarySkeleton />;
     case "counter":
       return <CounterSkeleton />;

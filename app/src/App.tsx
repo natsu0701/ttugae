@@ -141,6 +141,7 @@ const OWN_CHROME = new Set([
   "my",
   "camera",
   "diary",
+  "diary-entry",
   "counter-run",
 ]);
 

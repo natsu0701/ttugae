@@ -67,65 +67,255 @@ function diaryMemoText(
   ].join("\n");
 }
 
+function savedDiaryParts(body: string) {
+  const lines = body.split("\n");
+  let status = "";
+  let rows: number | null = null;
+  let minutes: number | null = null;
+  let clock = "";
+  let materials: string[] = [];
+  let photos = 0;
+  const memo: string[] = [];
+  let sawField = false;
+  for (const line of lines) {
+    const amount = /^작업량 (\d+)단$/.exec(line);
+    const time = /^소요 시간 (\d+)분 \((.+)\)$/.exec(line);
+    const mats = /^재료: (.+)$/.exec(line);
+    const photo = /^사진 (\d+)장$/.exec(line);
+    if (amount) {
+      rows = Number(amount[1]);
+      sawField = true;
+    } else if (time) {
+      minutes = Number(time[1]);
+      clock = time[2];
+      sawField = true;
+    } else if (mats) {
+      materials = mats[1].split(", ").map((item) => item.trim()).filter(Boolean);
+      sawField = true;
+    } else if (photo) {
+      photos = Number(photo[1]);
+      sawField = true;
+    } else if (!status && memo.length === 0 && /(진행중|완료)$/.test(line)) {
+      status = line;
+      sawField = true;
+    } else {
+      memo.push(line);
+    }
+  }
+  return { status, rows, minutes, clock, materials, photos, memo: memo.join("\n").trim(), structured: sawField };
+}
+
+function composeDiaryBody(
+  saved: ReturnType<typeof savedDiaryParts>,
+  memo: string,
+) {
+  if (!saved.structured) return memo;
+  return [
+    saved.status,
+    saved.rows != null ? `작업량 ${saved.rows}단` : "",
+    saved.minutes != null ? `소요 시간 ${saved.minutes}분 (${saved.clock})` : "",
+    saved.materials.length ? `재료: ${saved.materials.join(", ")}` : "",
+    memo.trim(),
+    saved.photos ? `사진 ${saved.photos}장` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function DiaryProjectBlock({
+  project,
+  statusLine,
+}: {
+  project: {
+    title: string;
+    image: string;
+    ago: string;
+    started: string;
+    elapsed: number;
+    progress: number;
+    parts: { id: string; name: string; count: number | null; done: boolean; ago: string }[];
+  };
+  statusLine: string;
+}) {
+  return (
+    <section className="px-4 pt-6">
+      <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 진행 중인 프로젝트</h2>
+      <article className="mt-3 overflow-hidden rounded-lg bg-white shadow-card">
+        <div className="flex gap-3 p-3">
+          <img src={project.image} alt="" className="h-28 w-24 rounded-lg object-cover" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-[16px] font-bold">{project.title}</p>
+              <p className="shrink-0 text-[13px] text-[#888]">{project.ago}</p>
+            </div>
+            <p className="mt-1 text-[12px] text-[#888]">시작일: {project.started}</p>
+            <p className="font-mono text-[13px]">{formatClock(project.elapsed)}</p>
+            <p className="mt-2 text-[13px]">{statusLine}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 px-3 pb-3">
+          <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#f0f0f0]">
+            <span className="block h-full bg-blush" style={{ width: `${project.progress}%` }} />
+          </span>
+          <span className="text-[13px] font-semibold text-blush">{project.progress}%</span>
+        </div>
+      </article>
+      {project.parts.length > 0 ? (
+        <ul className="mt-2 space-y-1 px-1 text-[12px] text-[#777]">
+          {project.parts.map((part) => (
+            <li key={part.id}>
+              {part.name} · {part.done ? "완료" : `${part.count ?? 0}단`} · {part.ago}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </section>
+  );
+}
+
+function DiaryRecordBlock({ rows, minutes, clock }: { rows: number; minutes: number; clock: string }) {
+  return (
+    <section className="px-4 pt-6">
+      <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 오늘의 기록</h2>
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <div className="flex flex-col items-center rounded-lg bg-white px-4 py-5 text-center shadow-card">
+          <span className="grid h-7 w-7 place-items-center">
+            <RowsIcon />
+          </span>
+          <p className="mt-2 text-[28px] font-bold">{rows}단</p>
+          <p className="text-[13px] text-[#888]">작업량</p>
+        </div>
+        <div className="flex flex-col items-center rounded-lg bg-white px-4 py-5 text-center shadow-card">
+          <ClockIcon className="h-7 w-7" />
+          <p className="mt-2 text-[28px] font-bold">{minutes}분</p>
+          <p className="text-[13px] text-[#888]">소요 시간</p>
+          <p className="mt-1 font-mono text-[12px] text-[#aaa]">{clock}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function DiaryEntryScreen({ id, index }: { id: string; index: number }) {
   const { data, back, updateDiary, removeDiary } = useApp();
   const [editing, setEditing] = useState(false);
   const project = data.projects.find((item) => item.id === id);
   const entry = project?.diary[index];
   if (!project || !entry) return <p className="px-6 py-16 text-center text-[14px]">일기를 찾지 못했어요.</p>;
-  const save = (next: { title?: string; body?: string }) => {
-    updateDiary(project.id, index, { title: next.title ?? entry.title, body: next.body ?? entry.body });
+  const saved = savedDiaryParts(entry.body);
+  const active = project.parts.find((part) => !part.done) ?? project.parts[0];
+  const fallbackRows = active?.count ?? project.parts.reduce((sum, part) => sum + (part.count ?? 0), 0);
+  const statusLine = saved.status || (active
+    ? `${active.name}${active.count ? ` ${active.count}단` : ""} ${active.done ? "완료" : "진행중"}`
+    : "진행 중인 부위가 없어요");
+  const linked = data.yarns
+    .filter((yarn) => yarn.linkedProject === project.title || project.yarnIds?.includes(yarn.id))
+    .map((yarn) => `${yarn.name} ${yarn.balls}볼`);
+  const materials = saved.materials.length ? saved.materials : linked;
+  const memo = saved.structured ? saved.memo : entry.body;
+  const save = (next: { title?: string; memo?: string }) => {
+    updateDiary(project.id, index, {
+      title: next.title ?? entry.title,
+      body: next.memo === undefined ? entry.body : composeDiaryBody(saved, next.memo),
+    });
   };
   return (
-    <article className="px-5 pb-12 pt-5">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-[13px] text-[#999]">{entry.date}</p>
-        <span className="flex items-center">
-          <button
-            type="button"
-            aria-label={editing ? "수정 완료" : "일기 수정"}
-            onClick={() => setEditing((value) => !value)}
-            className="grid h-10 w-10 place-items-center"
-          >
-            {editing ? <CheckIcon /> : <PencilIcon />}
-          </button>
-          <button
-            type="button"
-            aria-label="일기 삭제"
-            onClick={() => {
-              removeDiary(project.id, index);
-              back();
-            }}
-            className="grid h-10 w-10 place-items-center"
-          >
-            <TrashIcon />
-          </button>
-        </span>
+    <div className="bg-white pb-8">
+      <header className="sticky top-0 z-20 flex h-12 items-center bg-white px-1">
+        <button type="button" aria-label="뒤로" onClick={back} className="grid h-10 w-10 place-items-center">
+          <ChevronLeft />
+        </button>
+        <span className="w-10" aria-hidden />
+        <h1 className="flex-1 text-center text-[17px] font-bold">뜨개일기</h1>
+        <button
+          type="button"
+          aria-label={editing ? "수정 완료" : "일기 수정"}
+          onClick={() => setEditing((value) => !value)}
+          className="grid h-10 w-10 place-items-center"
+        >
+          {editing ? <CheckIcon /> : <PencilIcon />}
+        </button>
+        <button
+          type="button"
+          aria-label="일기 삭제"
+          onClick={() => {
+            removeDiary(project.id, index);
+            back();
+          }}
+          className="grid h-10 w-10 place-items-center"
+        >
+          <TrashIcon />
+        </button>
+      </header>
+
+      <div className="flex items-start gap-2 px-4 pt-3">
+        <Mascot className="h-16 w-16 shrink-0" mood="cheer" />
+        <div className="rounded-lg bg-white px-4 py-3 shadow-card">
+          {editing ? (
+            <input
+              value={entry.title}
+              aria-label="일기 제목"
+              autoFocus
+              onChange={(event) => save({ title: event.target.value })}
+              className="w-full bg-transparent text-[14px] font-semibold leading-snug outline-none"
+            />
+          ) : (
+            <p className="text-[14px] font-semibold leading-snug">{entry.title}</p>
+          )}
+          <p className="mt-1 text-[13px] font-medium text-[#888]">{entry.date}에 남긴 기록이에요.</p>
+        </div>
       </div>
-      {editing ? (
-        <input
-          value={entry.title}
-          aria-label="일기 제목"
-          autoFocus
-          onChange={(event) => save({ title: event.target.value })}
-          className="mt-2 w-full bg-transparent text-[22px] font-bold leading-snug outline-none"
-        />
-      ) : (
-        <h2 className="mt-2 text-[22px] font-bold leading-snug">{entry.title}</h2>
-      )}
-      <p className="mt-1 text-[13px] text-[#888]">{project.title}</p>
-      {editing ? (
-        <textarea
-          value={entry.body}
-          aria-label="일기 내용"
-          rows={Math.min(12, Math.max(4, entry.body.split("\n").length + 1))}
-          onChange={(event) => save({ body: event.target.value })}
-          className="mt-6 w-full resize-none bg-transparent text-[15px] leading-relaxed outline-none"
-        />
-      ) : (
-        <p className="mt-6 whitespace-pre-line text-[15px] leading-relaxed">{entry.body}</p>
-      )}
-    </article>
+
+      <DiaryProjectBlock project={project} statusLine={statusLine} />
+      <DiaryRecordBlock
+        rows={saved.rows ?? fallbackRows ?? 0}
+        minutes={saved.minutes ?? Math.max(0, Math.round(project.elapsed / 60))}
+        clock={saved.clock || formatClock(project.elapsed)}
+      />
+
+      <section className="px-4 pt-6">
+        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 사용한 재료</h2>
+        {materials.length > 0 ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {materials.map((chip) => (
+              <span key={chip} className="inline-flex h-9 items-center rounded-full border border-[#eee] bg-white px-3 text-[13px]">
+                {chip}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-[13px] text-[#888]">기록된 재료가 없어요.</p>
+        )}
+      </section>
+
+      <section className="px-4 pt-6">
+        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 나의 메모</h2>
+        {editing ? (
+          <textarea
+            value={memo}
+            aria-label="나의 메모"
+            onChange={(event) => save({ memo: event.target.value })}
+            className="memo-lines mt-3 h-56 w-full resize-none rounded-lg border border-[#f0e4d8] bg-[#fffdf8] px-4 py-3 text-[14px] leading-[28px] outline-none"
+          />
+        ) : (
+          <div className="memo-lines mt-3 min-h-56 whitespace-pre-line rounded-lg border border-[#f0e4d8] bg-[#fffdf8] px-4 py-3 text-[14px] leading-[28px]">
+            {memo || "남긴 메모가 없어요."}
+          </div>
+        )}
+      </section>
+
+      {saved.photos > 0 ? (
+        <div className="px-4 pt-6">
+          <ul className={saved.photos === 1 ? "" : "grid grid-cols-3 gap-2"}>
+            {Array.from({ length: saved.photos }, (_, photo) => (
+              <li key={photo} className="grid aspect-square place-items-center rounded-lg bg-[#f4f4f4] text-[12px] text-[#888]">
+                사진 {photo + 1}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -289,57 +479,8 @@ export function DiaryScreen({ id }: { id: string }) {
         </p>
       </div>
 
-      <section className="px-4 pt-6">
-        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 진행 중인 프로젝트</h2>
-        <article className="mt-3 overflow-hidden rounded-lg bg-white shadow-card">
-          <div className="flex gap-3 p-3">
-            <img src={project.image} alt="" className="h-28 w-24 rounded-lg object-cover" />
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-[16px] font-bold">{project.title}</p>
-                <p className="shrink-0 text-[13px] text-[#888]">{project.ago}</p>
-              </div>
-              <p className="mt-1 text-[12px] text-[#888]">시작일: {project.started}</p>
-              <p className="font-mono text-[13px]">{formatClock(project.elapsed)}</p>
-              <p className="mt-2 text-[13px]">{statusLine}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 px-3 pb-3">
-            <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#f0f0f0]">
-              <span className="block h-full bg-blush" style={{ width: `${project.progress}%` }} />
-            </span>
-            <span className="text-[13px] font-semibold text-blush">{project.progress}%</span>
-          </div>
-        </article>
-        {project.parts.length > 0 ? (
-          <ul className="mt-2 space-y-1 px-1 text-[12px] text-[#777]">
-            {project.parts.map((part) => (
-              <li key={part.id}>
-                {part.name} · {part.done ? "완료" : `${part.count ?? 0}단`} · {part.ago}
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </section>
-
-      <section className="px-4 pt-6">
-        <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 오늘의 기록</h2>
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          <div className="flex flex-col items-center rounded-lg bg-white px-4 py-5 text-center shadow-card">
-            <span className="grid h-7 w-7 place-items-center">
-              <RowsIcon />
-            </span>
-            <p className="mt-2 text-[28px] font-bold">{rows}단</p>
-            <p className="text-[13px] text-[#888]">작업량</p>
-          </div>
-          <div className="flex flex-col items-center rounded-lg bg-white px-4 py-5 text-center shadow-card">
-            <ClockIcon className="h-7 w-7" />
-            <p className="mt-2 text-[28px] font-bold">{minutes}분</p>
-            <p className="text-[13px] text-[#888]">소요 시간</p>
-            <p className="mt-1 font-mono text-[12px] text-[#aaa]">{formatClock(project.elapsed)}</p>
-          </div>
-        </div>
-      </section>
+      <DiaryProjectBlock project={project} statusLine={statusLine} />
+      <DiaryRecordBlock rows={rows ?? 0} minutes={minutes} clock={formatClock(project.elapsed)} />
 
       <section className="px-4 pt-6">
         <h2 className="flex items-center gap-1 text-[16px] font-bold"><HeartIcon /> 사용한 재료</h2>
