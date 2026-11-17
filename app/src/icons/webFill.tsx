@@ -109,10 +109,11 @@ export function ChatFillIcon({ className = "h-5 w-5" }: IconProps) {
 export function FileTextFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <rect x="5" y="3" width="14" height="18" rx="3.5" fill="currentColor" />
-      <rect x="8" y="8" width="8" height="1.8" rx="0.9" fill="white" />
-      <rect x="8" y="12" width="8" height="1.8" rx="0.9" fill="white" />
-      <rect x="8" y="16" width="5.2" height="1.8" rx="0.9" fill="white" />
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M8.5 3h7A3.5 3.5 0 0119 6.5v11A3.5 3.5 0 0115.5 21h-7A3.5 3.5 0 015 17.5v-11A3.5 3.5 0 018.5 3zM8 8h8v1.8H8V8zm0 4h8v1.8H8V12zm0 4h5.2v1.8H8V16z"
+      />
     </svg>
   );
 }
@@ -187,7 +188,10 @@ export function PencilFillIcon({ className = "h-4 w-4" }: IconProps) {
 export function PlayFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path fill="currentColor" d="M8 5.4c0-.8.9-1.3 1.6-.9l10 6.6a1 1 0 010 1.8l-10 6.6A1 1 0 018 18.6V5.4z" />
+      <path
+        fill="currentColor"
+        d="M7.6 4.8c0-.9 1-1.5 1.8-1l11.2 7.2a1.2 1.2 0 010 2L9.4 20.2a1.2 1.2 0 01-1.8-1V4.8z"
+      />
     </svg>
   );
 }
@@ -195,8 +199,8 @@ export function PlayFillIcon({ className = "h-5 w-5" }: IconProps) {
 export function PauseFillIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <rect x="6" y="5" width="4.2" height="14" rx="1.4" fill="currentColor" />
-      <rect x="13.8" y="5" width="4.2" height="14" rx="1.4" fill="currentColor" />
+      <rect x="5.4" y="4.4" width="5" height="15.2" rx="1.8" fill="currentColor" />
+      <rect x="13.6" y="4.4" width="5" height="15.2" rx="1.8" fill="currentColor" />
     </svg>
   );
 }
