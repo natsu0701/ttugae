@@ -92,7 +92,7 @@ function titleFor(route: Route, data: ReturnType<typeof useApp>["data"]) {
     case "profile":
       return "내 프로필";
     case "short":
-      return "기와뜨기";
+      return "뜨개소통";
     case "question":
       return "질문";
     case "diary-entry":
@@ -141,6 +141,7 @@ const OWN_CHROME = new Set([
   "my",
   "camera",
   "diary",
+  "short",
   "counter-run",
 ]);
 
@@ -162,6 +163,7 @@ function Shell() {
   const counting = route.name === "counter-run";
   const scrolling = route.name !== "chat" && !counting;
   const fillScreen = route.name === "login" || route.name === "signup" || route.name === "onboarding" || route.name === "chat" || counting;
+  const stretch = route.name === "lounge" || route.name === "short";
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const ready = usePageReady(skeletonKey, !reduceMotion && !NO_SKELETON.has(route.name));
   return (
@@ -209,10 +211,10 @@ function Shell() {
           <div
             key={route.name}
             data-tab-motion={slide || undefined}
-            className={[slide ? `tab-enter-${slide}` : "", fillScreen ? "flex min-h-0 w-full flex-1 flex-col" : ""].filter(Boolean).join(" ") || undefined}
+            className={[slide ? `tab-enter-${slide}` : "", fillScreen ? "flex min-h-0 w-full flex-1 flex-col" : "", stretch ? "h-full" : ""].filter(Boolean).join(" ") || undefined}
           >
             {ready ? (
-              <div className={fillScreen ? "page-in flex min-h-full w-full flex-1 flex-col" : "page-in"}>{screen}</div>
+              <div className={fillScreen ? "page-in flex min-h-full w-full flex-1 flex-col" : stretch ? "page-in h-full" : "page-in"}>{screen}</div>
             ) : (
               <PageSkeleton route={route} />
             )}
