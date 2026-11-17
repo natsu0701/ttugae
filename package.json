@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build && cp dist/index.html dist/404.html && cp dist/index.html dist/ar.html && mkdir -p dist/ar dist/about dist/editor && cp dist/index.html dist/ar/index.html && cp dist/index.html dist/about/index.html && cp dist/index.html dist/editor/index.html && npm --prefix app ci && TTUGAE_APP_BASE=/ttugae/app/ npm --prefix app run build && rm -rf dist/app && cp -a app/dist dist/app && touch dist/.nojekyll",
+    "build": "tsc --noEmit && vite build && cp dist/index.html dist/404.html && cp dist/index.html dist/ar.html && mkdir -p dist/ar dist/about dist/editor && cp dist/index.html dist/ar/index.html && cp dist/index.html dist/about/index.html && cp dist/index.html dist/editor/index.html && npm --prefix app ci && TTUGAE_APP_BASE=/ttugae/app/ npm --prefix app run build && rm -rf dist/app && cp -a app/dist dist/app && touch dist/.nojekyll && node scripts/write-precache-sw.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

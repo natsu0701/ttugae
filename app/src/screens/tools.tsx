@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { formatClock } from "../data.ts";
+import { formatClock, media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import type { GaugeRecord, GaugeTab } from "../types.ts";
 import { BlackButton, CameraIcon, ChevronDown, DoneMark, Fab, GearIcon, Mascot, MinusIcon, PencilIcon, PinkButton, PlusIcon, Segment, TrashIcon, YarnBallIcon, cx } from "../ui.tsx";
@@ -57,7 +57,7 @@ const HELP_HEADINGS = [
 function GaugeTutorial() {
   return (
     <div className="relative mt-6 [container-type:inline-size]">
-      <img src="/media/gauge-help-tutorial.png" alt="스와치 예시와 10cm 코 세기, 필요한 코수 계산식" className="w-full" />
+      <img src={media("media/gauge-help-tutorial.png")} alt="스와치 예시와 10cm 코 세기, 필요한 코수 계산식" className="w-full" />
       {HELP_HEADINGS.map((heading) => (
         <h2
           key={heading.n}

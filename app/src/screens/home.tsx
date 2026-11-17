@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
-import { FAQ, KINGS, LISTINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, findProduct, formatClock } from "../data.ts";
+import { FAQ, KINGS, LISTINGS, NEWS, NOTIFICATIONS, PATTERNS, PRODUCTS, WORKS, findProduct, formatClock, media } from "../data.ts";
 import { useApp } from "../store.tsx";
 import { BagFillIcon } from "../icons/webFill.tsx";
 import { BellIcon, ChevronDown, ChevronRight, CrownIcon, DragScroll, FigmaIcon, GearIcon, HeartIcon, Mascot, MinusIcon, NaviIcon, PauseIcon, PlayIcon, PlusIcon, SearchIcon, TrashIcon, cx } from "../ui.tsx";
@@ -145,7 +145,7 @@ function HomePane() {
       </section>
 
       <section className="relative mt-8">
-        <img src="/media/editor-banner.png" alt="뜨개 고수와 함께 도안을 제작해요! 지금 바로 체험해보세요!" className="block w-full" />
+        <img src={media("media/editor-banner.png")} alt="뜨개 고수와 함께 도안을 제작해요! 지금 바로 체험해보세요!" className="block w-full" />
         <a
           href="https://natsu0701.github.io/ttugae/editor"
           target="_blank"

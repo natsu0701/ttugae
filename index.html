@@ -39,6 +39,18 @@
         35% { transform: translateY(-3px); opacity: 1; }
       }
     </style>
+    <script>
+      (function () {
+        if (!("serviceWorker" in navigator)) return;
+        if (location.pathname.indexOf("/ttugae/") !== 0) return;
+        if (location.port === "5173" || location.port === "5174" || location.port === "5175") return;
+        navigator.serviceWorker.register("/ttugae/sw.js", { scope: "/ttugae/" }).then(function () {
+          return navigator.serviceWorker.ready;
+        }).then(function (reg) {
+          if (reg.active) reg.active.postMessage("precache");
+        });
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
