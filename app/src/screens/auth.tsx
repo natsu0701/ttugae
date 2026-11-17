@@ -297,8 +297,8 @@ export function OnboardingScreen() {
 
 function UnitStep({ unit, onChange }: { unit: UnitSystem; onChange: (unit: UnitSystem) => void }) {
   return (
-    <div className="flex-1 pt-10">
-      <h1 className="whitespace-pre-wrap text-[26px] font-bold leading-snug">{"단위를 어떻게\n표시할까요?"}</h1>
+    <div className="flex-1">
+      <h1 className="mt-8 whitespace-pre-wrap text-[26px] font-bold leading-snug">{"단위를 어떻게\n표시할까요?"}</h1>
       <p className="mt-2 text-[13px] text-[#999]">나중에 설정에서 변경할 수 있어요.</p>
       <div className="mt-6 grid gap-3">
         <Choice active={unit === "metric"} onClick={() => onChange("metric")} title="미터법 (m, cm, mm)" />
