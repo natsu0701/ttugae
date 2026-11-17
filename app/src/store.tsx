@@ -79,13 +79,22 @@ function freshPersisted(): Persisted {
   };
 }
 
+function partShare(part: Project["parts"][number]) {
+  if (part.done) return 100;
+  return Math.min(100, Math.max(0, part.count ?? 0));
+}
+
+function completionFromParts(parts: Project["parts"]) {
+  if (parts.length === 0) return 0;
+  return Math.round(parts.reduce((sum, part) => sum + partShare(part), 0) / parts.length);
+}
+
 function correctCardigan(project: Project): Project {
   if (project.id !== "p1") return project;
   const body = project.parts.find((part) => part.name === "몸통");
   if (!body || body.count != null || !body.done) return project;
   const parts = project.parts.map((part) => (part.name === "몸통" ? { ...part, count: 0, done: false } : part));
-  const progress = Math.round(parts.reduce((sum, part) => sum + (part.done ? 100 : (part.count ?? 0)), 0) / parts.length);
-  return { ...project, parts, progress };
+  return { ...project, parts, progress: completionFromParts(parts) };
 }
 
 function loadPersisted(): Persisted {
@@ -503,9 +512,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const parts = project.parts.map((part) =>
             part.id === partId ? { ...part, done: !part.done } : part,
           );
-          const done = parts.filter((part) => part.done).length;
-          const progress = Math.max(project.progress, Math.round((done / parts.length) * 100));
-          return { ...project, parts, progress };
+          return { ...project, parts, progress: completionFromParts(parts) };
         }),
       saveProject: ({ id, title, category, patternId, yarnIds, needleIds }) => {
         setData((current) => {
