@@ -261,8 +261,8 @@ export function OnboardingScreen() {
           {step < 5 ? (
             <>
               <h1 className="mt-8 whitespace-pre-wrap text-[26px] font-bold leading-snug">{SLIDES[step]}</h1>
-              <div className="mt-4 min-h-0 flex-1">
-                <img src={onboardingArt(step)} alt="" className="max-h-full w-full object-contain object-top" />
+              <div className="flex min-h-0 flex-1 items-center justify-center">
+                <img src={onboardingArt(step)} alt="" className="max-h-full w-full object-contain" />
               </div>
             </>
           ) : null}
