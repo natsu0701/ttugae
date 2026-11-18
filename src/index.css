@@ -288,7 +288,7 @@ body {
   .tteuni-hero-mascot {
     width: auto;
     height: auto;
-    max-width: min(22rem, calc(100vw - 5rem));
+    max-width: min(22rem, calc(100vw - 8rem));
     max-height: 100%;
     object-fit: contain;
     object-position: bottom center;
@@ -380,7 +380,7 @@ body.yarn-trail-active {
 }
 
 @keyframes tteuni-peek-in {
-  from { transform: translate3d(0, 64px, 0); }
+  from { transform: translate3d(0, 16px, 0); }
   to { transform: translate3d(0, 0, 0); }
 }
 
