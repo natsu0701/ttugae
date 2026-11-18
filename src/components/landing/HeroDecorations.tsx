@@ -18,7 +18,7 @@ function asset(name: string) {
 const FLOATERS: Floater[] = [
   {
     src: asset("stiker1.png"),
-    className: "left-1 top-[24%] w-16 sm:left-4 sm:top-[30%] sm:w-14 lg:left-[10%] lg:w-[10.5rem] xl:left-[10%]",
+    className: "left-8 top-[26%] w-16 sm:left-10 sm:top-[30%] sm:w-14 lg:left-[11%] lg:w-[10.5rem] xl:left-[11%]",
     duration: 4.4,
     delay: 0.15,
     y: -14,
@@ -27,7 +27,7 @@ const FLOATERS: Floater[] = [
   },
   {
     src: asset("stiker2.png"),
-    className: "right-1 top-[24%] w-14 sm:right-4 sm:top-[30%] sm:w-12 lg:right-12 lg:w-[14rem] xl:right-16",
+    className: "right-8 top-[26%] w-14 sm:right-10 sm:top-[30%] sm:w-12 lg:right-16 lg:w-[14rem] xl:right-20",
     duration: 5.1,
     delay: 0.6,
     y: -11,
@@ -84,7 +84,7 @@ const FLOATERS: Floater[] = [
 function HeroDecorations() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[5] h-full w-full overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-[5] h-full w-full overflow-visible"
       aria-hidden
     >
       {FLOATERS.map((item) => (
