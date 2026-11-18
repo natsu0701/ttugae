@@ -600,6 +600,7 @@
     "scanBusy": "Drawing the chart",
     "scanRun": "Make chart",
     "scanTitle": "Chart from photo",
+    "scanDrop": "Click or drop a photo to upload",
     "yarnSearch": "Search yarn",
     "yarnSearchPh": "e.g. merino, mohair",
     "inPalette": " · already in palette",
