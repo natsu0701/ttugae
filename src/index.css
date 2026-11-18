@@ -285,8 +285,33 @@ body {
     animation: hero-floater var(--float-dur, 4s) ease-in-out var(--float-delay, 0s) infinite;
   }
 
+  .tteuni-peek-frame {
+    height: min(
+      100%,
+      24rem,
+      calc(24rem * 1020 / 1212),
+      calc((100vw - 4rem) * 1020 / 1212)
+    );
+    width: auto;
+    max-width: min(24rem, calc(100vw - 4rem));
+    aspect-ratio: 1212 / 1020;
+    overflow: hidden;
+  }
+
+  @media (max-width: 639px) {
+    .tteuni-peek-frame {
+      height: min(
+        100%,
+        28rem,
+        calc((100vw - 2.75rem) * 1120 / 1212)
+      );
+      max-width: min(28rem, calc(100vw - 2.75rem));
+      aspect-ratio: 1212 / 1120;
+    }
+  }
+
   .tteuni-peek {
-    transform: translate3d(0, 8px, 0);
+    transform: translate3d(0, 0, 0);
     will-change: transform;
     backface-visibility: hidden;
     animation:
@@ -371,13 +396,13 @@ body.yarn-trail-active {
 }
 
 @keyframes tteuni-peek-in {
-  from { transform: translate3d(0, 72px, 0); }
-  to { transform: translate3d(0, 8px, 0); }
+  from { transform: translate3d(0, 64px, 0); }
+  to { transform: translate3d(0, 0, 0); }
 }
 
 @keyframes tteuni-peek-float {
-  0%, 100% { transform: translate3d(0, 8px, 0); }
-  50% { transform: translate3d(0, 2px, 0); }
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -6px, 0); }
 }
 
 @keyframes caret-blink {
@@ -509,7 +534,7 @@ body.yarn-trail-active {
   }
 
   .tteuni-peek {
-    transform: translate3d(0, 8px, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -810,8 +835,8 @@ body.yarn-trail-active {
   pointer-events: none;
 }
 
-/* 낮은 화면(가로 놓은 휴대폰 등)에서는 레이스를 낮추고 문구를 한 화면에 담는다. */
-@media (max-height: 760px) {
+/* 낮은 데스크톱·가로 휴대폰에서는 레이스를 낮추고 문구를 한 화면에 담아 하단 뜨니 얼굴을 남긴다. */
+@media (max-height: 860px) and (min-width: 768px), (max-height: 760px) {
   .nav-lace {
     top: -1.25rem !important;
     height: 9.25rem !important;
