@@ -331,14 +331,14 @@ function KnitOfflineHub() {
                     </p>
                   </div>
                   <div className="space-y-3 pt-1">
-                    <div className="flex items-start gap-3 rounded-2xl bg-stone-50 p-4">
+                    <div className="flex items-start gap-3">
                       <CalendarFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                       <div className="font-sans">
                         <span className="block text-sm font-bold uppercase text-stone-400">{t("offline.dateLabel")}</span>
                         <span className="text-sm font-semibold text-stone-700">{selectedEvent.date}</span>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3 rounded-2xl bg-stone-50 p-4">
+                    <div className="flex items-start gap-3">
                       <PinFillIcon className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                       <div className="min-w-0 font-sans">
                         <span className="block text-sm font-bold uppercase text-stone-400">{t("offline.placeLabel")}</span>
