@@ -5,7 +5,7 @@ import { askTteuniChat } from "../../utils/tteuniChatApi.ts";
 import { loadYarnInventory } from "../../utils/personalizationStorage.ts";
 import SmoothInput from "../ui/SmoothInput.tsx";
 import ChatTypingDots from "../ui/ChatTypingDots.tsx";
-import { editorPanel, editorSectionTitle } from "../ui/tabButtonStyles.ts";
+import { editorSectionTitle } from "../ui/tabButtonStyles.ts";
 import { SendFillIcon } from "../icons/FillIcons.tsx";
 import { iconTip } from "../../utils/iconTip.ts";
 
@@ -78,7 +78,7 @@ export default function TteuniChatbot({ onUserMessage }: TteuniChatbotProps) {
   };
 
   return (
-    <div className={`${editorPanel} p-4`}>
+    <div>
       <p className={`mb-3 ${editorSectionTitle}`}>{t("editor.tteuniAi")}</p>
 
       <div
