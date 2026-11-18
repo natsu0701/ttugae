@@ -17,7 +17,7 @@ function asset(name: string) {
 
 const FLOATERS: Floater[] = [
   {
-    src: asset("Stroked Image1.png"),
+    src: asset("stiker1.png"),
     className: "hidden lg:block left-4 top-[30%] w-14 lg:left-[10%] lg:w-[10.5rem] xl:left-[10%]",
     duration: 4.4,
     delay: 0.15,
@@ -26,7 +26,7 @@ const FLOATERS: Floater[] = [
     dy: 36,
   },
   {
-    src: asset("Stroked Image2.png"),
+    src: asset("stiker2.png"),
     className: "hidden lg:block right-4 top-[30%] w-12 lg:right-12 lg:w-[14rem] xl:right-16",
     duration: 5.1,
     delay: 0.6,
