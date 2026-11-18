@@ -285,29 +285,13 @@ body {
     animation: hero-floater var(--float-dur, 4s) ease-in-out var(--float-delay, 0s) infinite;
   }
 
-  .tteuni-peek-frame {
-    height: min(
-      100%,
-      24rem,
-      calc(24rem * 1020 / 1212),
-      calc((100vw - 4rem) * 1020 / 1212)
-    );
+  .tteuni-hero-mascot {
     width: auto;
-    max-width: min(24rem, calc(100vw - 4rem));
-    aspect-ratio: 1212 / 1020;
-    overflow: hidden;
-  }
-
-  @media (max-width: 639px) {
-    .tteuni-peek-frame {
-      height: min(
-        100%,
-        28rem,
-        calc((100vw - 2.75rem) * 1120 / 1212)
-      );
-      max-width: min(28rem, calc(100vw - 2.75rem));
-      aspect-ratio: 1212 / 1120;
-    }
+    height: auto;
+    max-width: min(22rem, calc(100vw - 5rem));
+    max-height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
   }
 
   .tteuni-peek {
@@ -835,8 +819,8 @@ body.yarn-trail-active {
   pointer-events: none;
 }
 
-/* 낮은 데스크톱·가로 휴대폰에서는 레이스를 낮추고 문구를 한 화면에 담아 하단 뜨니 얼굴을 남긴다. */
-@media (max-height: 860px) and (min-width: 768px), (max-height: 760px) {
+/* 노트북 높이에서도 하단 뜨니 전체가 들어가게 문구를 한 화면에 담는다. */
+@media (max-height: 1000px) and (min-width: 768px), (max-height: 760px) {
   .nav-lace {
     top: -1.25rem !important;
     height: 9.25rem !important;

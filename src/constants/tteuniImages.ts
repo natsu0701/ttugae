@@ -5,7 +5,7 @@ import { assetUrl } from "../utils/appPath.ts";
  * 동일 파일명의 PNG를 넣으면 앱 전역에 바로 반영됩니다.
  */
 export const TTEUNI_IMAGES = {
-  /** 홈 Hero — 하단에서 빼꼼, 눈과 그 위 얼굴은 항상 보이게 */
+  /** 홈 Hero — 하단 큰 뜨니. 얼굴·몸을 잘라 내지 않는다. */
   hero: assetUrl("/뜨니_메인반신.png"),
   /** 에디터 AI 챗봇 아바타 */
   chatProfile: assetUrl("/뜨니_챗봇프로필.png"),
