@@ -182,7 +182,7 @@ async function cacheFontCss(cache, cssUrl) {
 
 async function fromCache(request) {
   const url = new URL(request.url);
-  const cached = await matchAny(request);
+  const cached = await matchCache(request, CACHE);
   if (cached) {
     const range = request.headers.get("range");
     if (range) {
@@ -203,6 +203,15 @@ async function fromCache(request) {
     }
     return response;
   } catch {
+    const stale = await matchAny(request);
+    if (stale) {
+      const range = request.headers.get("range");
+      if (range) {
+        const partial = await sliceRange(stale, range);
+        if (partial) return partial;
+      }
+      return stale;
+    }
     if (request.mode === "navigate") {
       const fallback = url.pathname.startsWith(BASE + "app")
         ? await matchAny(BASE + "app/")
@@ -213,14 +222,18 @@ async function fromCache(request) {
   }
 }
 
+async function matchCache(request, name) {
+  const cache = await caches.open(name);
+  return cache.match(request, { ignoreSearch: true, ignoreVary: true });
+}
+
 async function matchAny(request) {
-  const current = await caches.open(CACHE);
-  const hit = await current.match(request, { ignoreSearch: true, ignoreVary: true });
-  if (hit) return hit;
+  const current = await matchCache(request, CACHE);
+  if (current) return current;
   const names = await caches.keys();
   for (const name of names) {
     if (name === CACHE) continue;
-    const found = await (await caches.open(name)).match(request, { ignoreSearch: true, ignoreVary: true });
+    const found = await matchCache(request, name);
     if (found) return found;
   }
   return null;

@@ -19,7 +19,14 @@
         if (!("serviceWorker" in navigator)) return;
         if (location.pathname.indexOf("/ttugae/") !== 0) return;
         if (location.port === "5173" || location.port === "5174" || location.port === "5175") return;
-        navigator.serviceWorker.register("/ttugae/sw.js", { scope: "/ttugae/" }).then(function () {
+        var reloading = false;
+        navigator.serviceWorker.addEventListener("controllerchange", function () {
+          if (reloading) return;
+          reloading = true;
+          location.reload();
+        });
+        navigator.serviceWorker.register("/ttugae/sw.js", { scope: "/ttugae/" }).then(function (reg) {
+          if (reg.update) reg.update();
           return navigator.serviceWorker.ready;
         }).then(function (reg) {
           if (reg.active) reg.active.postMessage("precache");
