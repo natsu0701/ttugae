@@ -630,7 +630,6 @@ export default function MyPage({
       {diaryOpen ? null : (
         <div className="page-shell pt-8">
           <WelcomeBanner
-            chip="MY PAGE"
             title={t("mypage.title")}
             subtitle={t("mypage.subtitle")}
             image={TTEUNI_IMAGES.feature}

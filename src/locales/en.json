@@ -413,7 +413,6 @@
     "writeAnswer": "Write an answer",
     "shareToCommunity": "Share to Tteugae Lounge",
     "patternPreview": "Chart preview",
-    "loungeChip": "TTEUGAE LOUNGE",
     "searchResultCount": "Search results {{count}}",
     "searchIncludesAuthor": "Search includes pattern titles and author nicknames or IDs.",
     "follow": "Follow",
@@ -804,7 +803,6 @@
     "tabCommunityDesc": "Wrap your finished chart and share it in Tteugae Lounge. Peek at others’ photos and one click pulls a chart into your editor."
   },
   "about": {
-    "chip": "ABOUT",
     "heroTitle": "Meet Knit Together",
     "heroSubtitle": "From the editor to Tteuni AI, the camera app, and Tteugae Lounge — every knitting moment in one place.",
     "videoTitle": "Intro video",
@@ -818,7 +816,6 @@
     "videoExitFullscreen": "Exit full screen",
     "bodyTitle": "A studio that never breaks your stitch",
     "body": "The editor and Tteuni handle the fiddly chart math so you can just knit. Read your chart as written stitches, follow along in the camera app, and share in the lounge.",
-    "appChip": "APP",
     "appTitle": "A knitting nav in your hand",
     "appBody": "The Tteuni app lays the chart you drew on the web over your camera so you can knit stitch by stitch. On a phone or iPad the pattern sits on the fabric, and you stay on track.",
     "appPoint1Title": "Chart overlay",

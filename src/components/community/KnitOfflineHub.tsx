@@ -219,10 +219,7 @@ function KnitOfflineHub() {
     <div className="w-full select-none rounded-xl border border-stone-200/50 bg-[#FFFBF7] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.015)] md:p-8">
       <div className="mb-8 flex flex-col justify-between gap-6 border-b border-stone-200/40 pb-6 md:flex-row md:items-center">
         <div>
-          <span className="font-sans text-sm font-bold uppercase tracking-widest text-coral">
-            Offline Connection
-          </span>
-          <h3 className="mt-2 text-title font-sans font-bold tracking-tight text-stone-900">
+          <h3 className="text-title font-sans font-bold tracking-tight text-stone-900">
             {t("offline.title")}
           </h3>
         </div>
@@ -475,9 +472,6 @@ function KnitOfflineHub() {
               className="relative z-10 w-full max-w-sm space-y-6 rounded-xl bg-white p-6 text-center shadow-[0_30px_70px_rgba(0,0,0,0.15)]"
             >
               <div className="space-y-1.5">
-                <span className="font-sans text-sm font-bold uppercase tracking-widest text-coral">
-                  Mobile Entrance Pass
-                </span>
                 <h4 className="font-sans text-base font-black leading-snug text-stone-900">
                   {t("offline.ticketTitle")}
                 </h4>

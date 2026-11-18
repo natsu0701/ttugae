@@ -413,7 +413,6 @@
     "writeAnswer": "回答を書く",
     "shareToCommunity": "トゥゲラウンジにシェア",
     "patternPreview": "編み図プレビュー",
-    "loungeChip": "TTEUGAE LOUNGE",
     "searchResultCount": "検索結果 {{count}}件",
     "searchIncludesAuthor": "作品名と作者名を検索します。",
     "follow": "フォロー",
@@ -804,7 +803,6 @@
     "tabCommunityDesc": "仕上げた編み図カードを包んでトゥゲラウンジに自慢しましょう。実物写真を見て、クリック1つで自分のエディターに取り込み、直して公開できます。"
   },
   "about": {
-    "chip": "ABOUT",
     "heroTitle": "編み物トゥゲザーのご紹介",
     "heroSubtitle": "エディター、AIトゥニ、カメラアプリ、トゥゲラウンジまで。編み物のすべてがここに。",
     "videoTitle": "紹介動画",
@@ -817,7 +815,6 @@
     "videoExitFullscreen": "全画面を終了",
     "bodyTitle": "一目の流れを切らない作業室",
     "body": "複雑な編み図の計算はエディターとトゥニにまかせて、あなたは編み物に集中してください。描いた図案は文章で読み、カメラアプリで目を追い、ラウンジで分かち合いましょう。",
-    "appChip": "APP",
     "appTitle": "手のひらの編みナビ、トゥニアプリ",
     "appBody": "ウェブで描いた編み図をカメラの上に重ね、一目ずつ追って編むアプリです。スマホやiPadでカメラをオンにすると実物の編地の上に図案が浮かび、道に迷わず編めます。",
     "appPoint1Title": "編み図オーバーレイ",
