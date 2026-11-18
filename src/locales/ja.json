@@ -560,7 +560,7 @@
       "recommendedBefore": "洗い前基準 {{sts}}目 · {{rows}}段",
       "applyRecommended": "推奨目数を入れる",
       "gaugeSave": "ゲージ (Gauge) を保存",
-      "needleTitle": "針の仕様",
+      "needleTitle": "針",
       "needleHint": "棒針かかぎ針かを選び、形に合うタイプと号数を指定してください。",
       "cancel": "キャンセル",
       "createCanvas": "キャンバスを作成"
@@ -618,8 +618,7 @@
     "resetView": "リセット",
     "needleSizePhKnit": "例: 5.5mm",
     "needleSizePhCrochet": "例: 4号",
-    "needlePanelTitle": "針の仕様",
-    "needlePanelHint": "目数・段数と一緒に編み図へ紐づく使用針です。",
+    "needlePanelTitle": "針",
     "needleKind": "針の種類",
     "needleDetailLabel": "針のタイプ",
     "needleSizeLabel": "針サイズ",

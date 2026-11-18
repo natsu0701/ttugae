@@ -560,7 +560,7 @@
       "recommendedBefore": "Before wash: {{sts}} sts · {{rows}} rows",
       "applyRecommended": "Use recommended count",
       "gaugeSave": "Save gauge",
-      "needleTitle": "Needle spec",
+      "needleTitle": "Needle",
       "needleHint": "Choose knitting needles or a crochet hook, then pick a type and size.",
       "cancel": "Cancel",
       "createCanvas": "Create canvas"
@@ -618,8 +618,7 @@
     "resetView": "Reset",
     "needleSizePhKnit": "e.g. 5.5mm",
     "needleSizePhCrochet": "e.g. size 4",
-    "needlePanelTitle": "Needle settings",
-    "needlePanelHint": "Needles saved with this chart, along with stitch and row counts.",
+    "needlePanelTitle": "Needle",
     "needleKind": "Needle type",
     "needleDetailLabel": "Needle style",
     "needleSizeLabel": "Needle size",

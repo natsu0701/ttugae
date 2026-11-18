@@ -950,10 +950,7 @@ export default function PatternEditor({
         <EditorResizableSidebar side="left" asideRef={leftToolbarRef}>
         <div className="scrollbar-thin flex h-full min-h-0 flex-col overflow-y-auto p-4 pb-10 md:px-5 md:pt-5 md:pb-12">
           <div className="border-b border-stone-200 pb-8">
-            <p className={`mb-1 ${editorSectionTitle}`}>{t("editor.needlePanelTitle")}</p>
-            <p className="mb-3 font-seoyun text-sm font-normal text-stone-500">
-              {t("editor.needlePanelHint")}
-            </p>
+            <p className={`mb-3 ${editorSectionTitle}`}>{t("editor.needlePanelTitle")}</p>
             <NeedleSpecFields
               value={needle}
               onChange={(next) => commitNeedle(clearNeedleCustomLabel(next))}
