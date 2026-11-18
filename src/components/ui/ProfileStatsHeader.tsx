@@ -31,13 +31,13 @@ function Stat({
 
   if (onClick) {
     return (
-      <button type="button" className="min-w-[4.5rem] text-center hover:opacity-70" onClick={onClick}>
+      <button type="button" className="min-w-0 text-left hover:opacity-70" onClick={onClick}>
         {content}
       </button>
     );
   }
 
-  return <div className="min-w-[4.5rem] text-center">{content}</div>;
+  return <div className="min-w-0 text-left">{content}</div>;
 }
 
 export default function ProfileStatsHeader({
@@ -55,7 +55,7 @@ export default function ProfileStatsHeader({
     <div className={`flex gap-8 sm:gap-12 ${extra ? "items-start" : "items-center"}`}>
       <div className="shrink-0">{avatar}</div>
       <div className="min-w-0 flex-1">
-        <div className="flex justify-around">
+        <div className="grid grid-cols-3">
           <Stat value={posts} label={t("profileStats.posts")} />
           <Stat value={followers} label={t("profileStats.followers")} onClick={onFollowersClick} />
           <Stat value={following} label={t("profileStats.following")} onClick={onFollowingClick} />
