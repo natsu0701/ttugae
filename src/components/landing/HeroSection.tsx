@@ -37,7 +37,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
       <HeroDecorations />
 
       {/* 텍스트 컨테이너 여백 (레이스 아래 안전지대 확보) */}
-      <div className="hero-copy relative z-10 mx-auto w-full shrink-0 text-center pt-52 md:pt-64">
+      <div className="hero-copy relative z-10 mx-auto w-full shrink-0 text-center pt-48 md:pt-56">
         <div className="page-shell py-4">
           <Reveal delay={0.4}>
             <h1 className="break-keep">
@@ -61,7 +61,7 @@ function HeroSection({ onOpenEditor }: HeroSectionProps) {
         </div>
 
         {/* 시작 버튼 그룹 */}
-        <Reveal delay={0.9} className="hero-cta relative z-10 mt-8 md:mt-10">
+        <Reveal delay={0.9} className="hero-cta relative z-10 mt-6 md:mt-8">
           <Button
             variant="primary"
             onClick={onOpenEditor}

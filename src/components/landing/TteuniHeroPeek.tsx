@@ -2,25 +2,24 @@ import { memo } from "react";
 import { TTEUNI_IMAGES } from "../../constants/tteuniImages.ts";
 
 /**
- * 뜨니 PNG(1128×1225)에서 눈은 세로 약 49%다.
- * 너비는 화면보다 조금 작게 잡아 오른쪽 아래 버튼과 겹치지 않게 하고,
- * 아래를 기준으로 42%를 내려 눈과 그 위만 남긴다. 다리는 잘린다.
+ * 버튼 아래 남은 높이에 맞춰 크기를 정하고, 위 78%(눈·입·볼)만 담아
+ * 얼굴이 잘리지 않게 한다. 다리는 박스 밖으로 둔다.
  */
 function TteuniHeroPeek() {
   return (
     <div
-      className="pointer-events-none relative z-10 mx-auto mt-auto min-h-32 w-full min-w-0 flex-1 basis-0 overflow-hidden [@media(max-height:760px)]:min-h-20"
+      className="pointer-events-none relative z-10 mx-auto mt-5 flex min-h-0 w-full min-w-0 flex-1 basis-0 items-end justify-center overflow-hidden sm:mt-6"
       aria-hidden
     >
       <div
-        className="tteuni-peek-shift absolute bottom-0 left-1/2 w-max max-w-none -translate-x-1/2 translate-y-[42%]"
+        className="tteuni-peek-shift tteuni-peek-frame relative"
         data-par-dx="22"
         data-par-dy="14"
       >
         <img
           src={TTEUNI_IMAGES.hero}
           alt=""
-          className="tteuni-peek block h-auto w-[min(28rem,calc(100vw-9rem))] max-w-none"
+          className="tteuni-peek block h-auto w-full max-w-none"
         />
       </div>
     </div>
