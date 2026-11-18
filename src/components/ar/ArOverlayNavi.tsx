@@ -149,6 +149,69 @@ function prepareOverlayVideo(video: HTMLVideoElement, rate = 1) {
   applyOverlayRate(video, rate);
 }
 
+const OVERLAY_FRAME = 1 / 24;
+
+function clampOverlayTime(time: number, duration: number) {
+  if (!Number.isFinite(time) || time <= 0) return 0;
+  if (!(duration > 0)) return time;
+  return Math.min(time, Math.max(0, duration - OVERLAY_FRAME));
+}
+
+/** 끝난 알파 WebM은 pause 상태로 0초로 돌려도 프레임이 안 나와 캔버스가 비어 버린다. */
+function rewindOverlayVideo(video: HTMLVideoElement) {
+  try {
+    if (!video.paused) video.pause();
+  } catch {
+    // ignore
+  }
+  const toStart = () => {
+    try {
+      video.currentTime = 0;
+    } catch {
+      // ignore
+    }
+  };
+  toStart();
+  if (!video.ended && video.currentTime < OVERLAY_FRAME) return;
+  void video
+    .play()
+    .then(() => {
+      try {
+        video.pause();
+      } catch {
+        // ignore
+      }
+      toStart();
+    })
+    .catch(toStart);
+}
+
+function seekOverlayVideo(
+  video: HTMLVideoElement,
+  time: number,
+  duration: number,
+  lockRef: { current: number },
+) {
+  const target = clampOverlayTime(time, duration);
+  if (!Number.isFinite(target)) return;
+  if (lockRef.current !== 0) return;
+  if (Math.abs(video.currentTime - target) <= OVERLAY_FRAME) return;
+  const token = performance.now() || 1;
+  lockRef.current = token;
+  const unlock = () => {
+    if (lockRef.current === token) lockRef.current = 0;
+    video.removeEventListener("seeked", onSeeked);
+  };
+  const onSeeked = () => unlock();
+  video.addEventListener("seeked", onSeeked);
+  window.setTimeout(unlock, 160);
+  try {
+    video.currentTime = target;
+  } catch {
+    unlock();
+  }
+}
+
 function syncOverlayCanvasSize(canvas: HTMLCanvasElement) {
   const host = canvas.parentElement;
   const cssW = Math.max(1, host?.clientWidth || window.innerWidth);
@@ -318,6 +381,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const [overlayPaused, setOverlayPaused] = useState(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>("loop");
   const [imgEpoch, setImgEpoch] = useState(0);
+  const [clockEpoch, setClockEpoch] = useState(0);
   const [overlayError, setOverlayError] = useState<string | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
   const [playhead, setPlayhead] = useState(0);
@@ -336,6 +400,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
   const lastOpacityRef = useRef(50);
   const overlayPausedRef = useRef(false);
   const playbackRateRef = useRef<PlaybackRate>(1);
+  const videoSeekLockRef = useRef(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const playlistPanelRef = useRef<HTMLElement>(null);
   const [webmOk] = useState(() => canPlayWebmVp9Alpha());
@@ -534,12 +599,15 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     };
   }, []);
 
-  const restartClipClock = useCallback(() => {
+  const restartPlaybackClock = useCallback((remountImage = false) => {
     imageClockRef.current.origin = 0;
     imageClockRef.current.startedAt = performance.now();
     playheadRef.current = 0;
+    endedHandledRef.current = false;
+    videoSeekLockRef.current = 0;
     setPlayhead(0);
-    setImgEpoch((n) => n + 1);
+    setClockEpoch((n) => n + 1);
+    if (remountImage) setImgEpoch((n) => n + 1);
   }, []);
 
   const handleOverlayEnded = useCallback(() => {
@@ -550,12 +618,9 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
 
     if (mode === "loop") {
       overlayPausedRef.current = false;
-      if (video) {
-        video.pause();
-        video.currentTime = 0;
-      }
+      if (video) rewindOverlayVideo(video);
       setOverlayPaused(false);
-      restartClipClock();
+      restartPlaybackClock(false);
       return;
     }
 
@@ -564,12 +629,9 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
       const next = AR_PLAYLIST.length === 0 ? current : (current + 1) % AR_PLAYLIST.length;
       if (next === current) {
         overlayPausedRef.current = false;
-        if (video) {
-          video.pause();
-          video.currentTime = 0;
-        }
+        if (video) rewindOverlayVideo(video);
         setOverlayPaused(false);
-        restartClipClock();
+        restartPlaybackClock(false);
         return;
       }
       setActiveIndex(next);
@@ -583,13 +645,13 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     overlayPausedRef.current = true;
     setOverlayPaused(true);
     if (video) video.pause();
-  }, [restartClipClock]);
+  }, [restartPlaybackClock]);
 
   useEffect(() => {
     if (!activeItem) return;
     endedHandledRef.current = false;
     const clipDuration = playlistClipDuration(activeItem);
-    restartClipClock();
+    restartPlaybackClock(true);
     setDuration(clipDuration);
     setOverlayPaused(false);
     setOverlayError(null);
@@ -602,7 +664,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     overlay.src = playlistVideoUrl(activeItem);
     overlay.loop = false;
     overlay.pause();
-  }, [activeItem, restartClipClock, useImageFallback]);
+  }, [activeItem, restartPlaybackClock, useImageFallback]);
 
   useEffect(() => {
     const video = overlayRef.current;
@@ -639,7 +701,13 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     imageClockRef.current.origin = playheadRef.current;
     imageClockRef.current.startedAt = performance.now();
     const video = useImageFallback ? null : overlayRef.current;
-    if (video) video.pause();
+    if (video && !video.ended) {
+      try {
+        video.pause();
+      } catch {
+        // ignore
+      }
+    }
     let raf = 0;
     let lastShown = playheadRef.current;
     const tick = (now: number) => {
@@ -660,14 +728,12 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         lastShown = next;
         setPlayhead(next);
       }
-      if (video && Number.isFinite(next) && Math.abs(video.currentTime - next) > 0.02) {
-        video.currentTime = next;
-      }
+      if (video) seekOverlayVideo(video, next, max, videoSeekLockRef);
       raf = window.requestAnimationFrame(tick);
     };
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [handleOverlayEnded, overlayPaused, useImageFallback, activeItem, imgEpoch]);
+  }, [handleOverlayEnded, overlayPaused, useImageFallback, activeItem, clockEpoch]);
 
   useEffect(() => {
     if (useImageFallback) return;
@@ -678,10 +744,10 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
     if (!ctx) return;
     let frame = 0;
     const draw = () => {
-      if (!video.paused) video.pause();
       const width = video.videoWidth;
       const height = video.videoHeight;
-      if (width > 0 && height > 0) {
+      // 시크 중 readyState가 떨어지면 마지막 프레임을 지워 오버레이가 사라지지 않게 둔다.
+      if (width > 0 && height > 0 && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
         syncOverlayCanvasSize(canvas);
         drawCoverBottom(ctx, video, width, height);
       }
@@ -705,7 +771,10 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         return;
       }
       const video = overlayRef.current;
-      if (video && Number.isFinite(clamped)) video.currentTime = clamped;
+      if (video && Number.isFinite(clamped)) {
+        videoSeekLockRef.current = 0;
+        seekOverlayVideo(video, clamped, max, videoSeekLockRef);
+      }
     },
     [duration, useImageFallback],
   );
@@ -748,14 +817,14 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
 
     overlayPausedRef.current = false;
     if (nearEnd) {
-      restartClipClock();
-      if (overlay && !useImageFallback) overlay.currentTime = 0;
+      if (overlay && !useImageFallback) rewindOverlayVideo(overlay);
+      restartPlaybackClock(useImageFallback);
     } else {
       imageClockRef.current.origin = playheadRef.current;
       imageClockRef.current.startedAt = performance.now();
     }
     setOverlayPaused(false);
-  }, [hasOverlay, overlayPaused, restartClipClock, useImageFallback]);
+  }, [hasOverlay, overlayPaused, restartPlaybackClock, useImageFallback]);
 
   const overlayVisible = hasOverlay && overlayOn && overlayOpacity > 0;
   const overlayAlpha = overlayVisible ? overlayOpacity / 100 : 0;
@@ -939,7 +1008,7 @@ export default function ArOverlayNavi({ onExit }: ArOverlayNaviProps) {
         {useImageFallback && fallbackUrl ? (
           <img
             key={`${activeItem?.id ?? "overlay"}-${imgEpoch}`}
-            src={fallbackUrl}
+            src={`${fallbackUrl}${fallbackUrl.includes("?") ? "&" : "?"}replay=${imgEpoch}`}
             alt={t("ar.overlayLabel")}
             aria-hidden={!overlayVisible}
           />
