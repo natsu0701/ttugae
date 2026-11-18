@@ -1022,6 +1022,13 @@ export default function PatternEditor({
           </div>
 
           <div className="border-b border-stone-200 py-8">
+            <WorkshopPalettePanel
+              activePaletteId={activeWorkshopPaletteId}
+              onSelectPalette={applyWorkshopPalette}
+            />
+          </div>
+
+          <div className="border-b border-stone-200 py-8">
             <p className={`mb-3 ${editorSectionTitle}`}>
               {t("editor.chartKey")}
             </p>
@@ -1072,7 +1079,7 @@ export default function PatternEditor({
             />
           </div>
 
-          <div className="border-b border-stone-200 py-8">
+          <div className="pt-8">
             <GaugeCalculator
               compact
               gauge={gauge}
@@ -1081,13 +1088,6 @@ export default function PatternEditor({
                 saveGaugeProfile(next);
               }}
               onApplySize={applySize}
-            />
-          </div>
-
-          <div className="pt-8">
-            <WorkshopPalettePanel
-              activePaletteId={activeWorkshopPaletteId}
-              onSelectPalette={applyWorkshopPalette}
             />
           </div>
         </div>
